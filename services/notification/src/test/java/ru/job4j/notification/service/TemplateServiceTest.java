@@ -1,0 +1,53 @@
+/**
+ * 
+ */
+package ru.job4j.notification.service;
+
+import static org.junit.Assert.*;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import ru.job4j.notification.domain.Template;
+import ru.job4j.notification.service.TemplateService;
+
+/**
+ * @author olegbelov
+ *
+ */
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class TemplateServiceTest {
+	
+	@Autowired
+	TemplateService templateService;
+	
+	@Test
+	public void whenGetAllTemplatesReturnContainsValue() {
+		Template template = this.templateService.save(new Template("TestSubject","TestBody"));
+		List<Template> result = this.templateService.findAll();
+		assertTrue(result.contains(template));
+	}
+	
+	@Test
+	public void requestByIDReturnCorrectValue() {
+		Template template = this.templateService.save(new Template("TestSubjectByID","TestBodyByID"));
+		Template result = this.templateService.getById(template.getId());
+		assertTrue(result.equals(template));
+	}
+	
+	@Test
+	public void whenDeleteTemplateItIsNotExist() {
+		Template template = this.templateService.save(new Template("TestSubjectForDelete","TestBodyForDelete"));
+		this.templateService.delete(template.getId());
+		List<Template> result = this.templateService.findAll();
+		assertFalse(result.contains(template));
+	}
+
+}

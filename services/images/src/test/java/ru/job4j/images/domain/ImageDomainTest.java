@@ -1,0 +1,30 @@
+package ru.job4j.images.domain;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+/**
+ * @author olegbelov
+ * @since 17.11.2016
+ */
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class ImageDomainTest {
+
+	@Test
+	public void ImageDefaultCreationTest() {
+		Image image = new Image();
+		assertNotNull(image);
+	}
+	
+	@Test
+	public void ImageCreationTest() {
+		Image image = new Image("testFileName","testDescription", new byte[] {1,2,3});
+		assertNotNull(image);
+	}
+
+}
