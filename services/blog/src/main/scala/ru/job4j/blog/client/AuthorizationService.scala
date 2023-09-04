@@ -1,6 +1,6 @@
-package ru.job4j.blog.client
+package ru.checkdev.blog.client
 
-import ru.job4j.blog.config.AppConfig
+import ru.checkdev.blog.config.AppConfig
 import scalaj.http.HttpResponse
 
 /**

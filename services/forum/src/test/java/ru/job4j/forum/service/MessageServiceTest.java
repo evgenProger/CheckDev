@@ -1,4 +1,4 @@
-package ru.job4j.forum.service;
+package ru.checkdev.forum.service;
 
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsSame;
@@ -12,9 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.job4j.forum.TestConstants;
-import ru.job4j.forum.domain.Message;
-import ru.job4j.forum.repository.MessageRepository;
+import ru.checkdev.forum.TestConstants;
+import ru.checkdev.forum.domain.Message;
+import ru.checkdev.forum.repository.MessageRepository;
 
 import java.util.Arrays;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package ru.job4j.forum.web;
+package ru.checkdev.forum.web;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -15,13 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import ru.job4j.forum.TestConstants;
-import ru.job4j.forum.domain.Category;
-import ru.job4j.forum.domain.Message;
-import ru.job4j.forum.domain.Subject;
-import ru.job4j.forum.service.CategoryService;
-import ru.job4j.forum.service.MessageService;
-import ru.job4j.forum.service.SubjectService;
+import ru.checkdev.forum.TestConstants;
+import ru.checkdev.forum.domain.Category;
+import ru.checkdev.forum.domain.Message;
+import ru.checkdev.forum.domain.Subject;
+import ru.checkdev.forum.service.CategoryService;
+import ru.checkdev.forum.service.MessageService;
+import ru.checkdev.forum.service.SubjectService;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;

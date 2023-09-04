@@ -1,4 +1,4 @@
-package ru.job4j.forum.service;
+package ru.checkdev.forum.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,9 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.job4j.forum.domain.Category;
-import ru.job4j.forum.domain.Message;
-import ru.job4j.forum.domain.Subject;
+import ru.checkdev.forum.domain.Category;
+import ru.checkdev.forum.domain.Message;
+import ru.checkdev.forum.domain.Subject;
 
 import java.util.Collections;
 import java.util.concurrent.Executors;

@@ -1,4 +1,4 @@
-package ru.job4j.forum.domain;
+package ru.checkdev.forum.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;

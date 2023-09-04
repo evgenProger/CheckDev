@@ -1,9 +1,9 @@
-package ru.job4j.forum.web;
+package ru.checkdev.forum.web;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import ru.job4j.forum.TestConstants;
-import ru.job4j.forum.domain.Category;
+import ru.checkdev.forum.TestConstants;
+import ru.checkdev.forum.domain.Category;
 
 import java.util.Arrays;
 

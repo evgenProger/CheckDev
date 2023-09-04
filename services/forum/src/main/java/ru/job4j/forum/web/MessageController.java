@@ -1,13 +1,13 @@
-package ru.job4j.forum.web;
+package ru.checkdev.forum.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.forum.domain.Message;
-import ru.job4j.forum.domain.Subject;
-import ru.job4j.forum.service.MessageService;
-import ru.job4j.forum.service.MessageNotification;
-import ru.job4j.forum.service.SubjectService;
+import ru.checkdev.forum.domain.Message;
+import ru.checkdev.forum.domain.Subject;
+import ru.checkdev.forum.service.MessageService;
+import ru.checkdev.forum.service.MessageNotification;
+import ru.checkdev.forum.service.SubjectService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.file.AccessDeniedException;

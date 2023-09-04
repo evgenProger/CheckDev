@@ -1,10 +1,10 @@
-package ru.job4j.forum.web;
+package ru.checkdev.forum.web;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.data.domain.PageImpl;
-import ru.job4j.forum.TestConstants;
-import ru.job4j.forum.domain.Subject;
+import ru.checkdev.forum.TestConstants;
+import ru.checkdev.forum.domain.Subject;
 
 import java.util.Arrays;
 

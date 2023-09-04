@@ -1,4 +1,4 @@
-package ru.job4j.blog.client
+package ru.checkdev.blog.client
 
 import scalaj.http.{Http, HttpRequest}
 

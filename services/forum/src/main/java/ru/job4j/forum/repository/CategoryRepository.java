@@ -1,7 +1,7 @@
-package ru.job4j.forum.repository;
+package ru.checkdev.forum.repository;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
-import ru.job4j.forum.domain.Category;
+import ru.checkdev.forum.domain.Category;
 
 /**
  * Repository used to manipulate forum categories in database.

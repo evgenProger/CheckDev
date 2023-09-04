@@ -1,4 +1,4 @@
-package ru.job4j.blog.errors
+package ru.checkdev.blog.errors
 
 /**
   * Case class ServiceException help wrapped exception occuring in service application.

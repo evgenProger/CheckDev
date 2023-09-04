@@ -1,14 +1,14 @@
-package ru.job4j.forum.web;
+package ru.checkdev.forum.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.forum.domain.Category;
-import ru.job4j.forum.domain.Subject;
-import ru.job4j.forum.service.CategoryService;
-import ru.job4j.forum.service.SubjectService;
+import ru.checkdev.forum.domain.Category;
+import ru.checkdev.forum.domain.Subject;
+import ru.checkdev.forum.service.CategoryService;
+import ru.checkdev.forum.service.SubjectService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.file.AccessDeniedException;

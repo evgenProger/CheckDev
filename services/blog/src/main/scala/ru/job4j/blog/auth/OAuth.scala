@@ -1,4 +1,4 @@
-package ru.job4j.blog.auth
+package ru.checkdev.blog.auth
 
 
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException
@@ -6,11 +6,11 @@ import org.apache.oltu.oauth2.common.message.types.ParameterStyle
 import org.apache.oltu.oauth2.rs.request.OAuthAccessResourceRequest
 import org.scalatra.ScalatraBase
 import play.api.libs.json.Json
-import ru.job4j.blog.client.AuthorizationService
-import ru.job4j.blog.errors.Answer
+import ru.checkdev.blog.client.AuthorizationService
+import ru.checkdev.blog.errors.Answer
 
 import scala.util.{Failure, Success, Try}
-import ru.job4j.blog.errors.ServiceException.{ACCESS_TOKEN_ERROR, unauthorized}
+import ru.checkdev.blog.errors.ServiceException.{ACCESS_TOKEN_ERROR, unauthorized}
 
 
 /**

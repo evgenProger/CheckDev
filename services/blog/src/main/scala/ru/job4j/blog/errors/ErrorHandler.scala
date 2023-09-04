@@ -1,4 +1,4 @@
-package ru.job4j.blog.errors
+package ru.checkdev.blog.errors
 
 import org.scalatra.{ActionResult, BadRequest, InternalServerError, Unauthorized}
 import play.api.libs.json.Json

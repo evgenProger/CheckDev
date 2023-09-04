@@ -1,4 +1,4 @@
-package ru.job4j.forum;
+package ru.checkdev.forum;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

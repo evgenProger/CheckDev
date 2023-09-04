@@ -8,5 +8,6 @@ public class SiteApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SiteApplication.class, args);
+		System.out.println("Go to http://localhost:8080/");
 	}
 }

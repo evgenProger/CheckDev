@@ -1,4 +1,4 @@
-package ru.job4j.forum.repository;
+package ru.checkdev.forum.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.job4j.forum.domain.Subject;
+import ru.checkdev.forum.domain.Subject;
 
 import java.util.Calendar;
 

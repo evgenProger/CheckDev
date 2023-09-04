@@ -6,7 +6,7 @@
   version="3.1">
   <context-param>
     <param-name>org.scalatra.LifeCycle</param-name>
-    <param-value>ru.job4j.blog.boot.ScalatraBootstrap</param-value>
+    <param-value>ru.checkdev.blog.boot.ScalatraBootstrap</param-value>
   </context-param>
   <listener>
     <listener-class>org.scalatra.servlet.ScalatraListener</listener-class>
