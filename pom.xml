@@ -18,6 +18,7 @@
         <module>services/train</module>
         <module>services/video</module>
         <module>services/site</module>
+        <module>services/sitemy</module>
     </modules>
 
     <build>
