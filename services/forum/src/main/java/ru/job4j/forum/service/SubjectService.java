@@ -1,7 +1,7 @@
-package ru.job4j.forum.service;
+package ru.checkdev.forum.service;
 
 import org.springframework.data.domain.Page;
-import ru.job4j.forum.domain.Subject;
+import ru.checkdev.forum.domain.Subject;
 
 /**
  * Service used to perform actions on subjects.

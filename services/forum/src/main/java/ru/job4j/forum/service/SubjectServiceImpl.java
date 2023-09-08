@@ -1,4 +1,4 @@
-package ru.job4j.forum.service;
+package ru.checkdev.forum.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataRetrievalFailureException;
@@ -7,9 +7,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.job4j.forum.domain.Subject;
-import ru.job4j.forum.domain.User;
-import ru.job4j.forum.repository.SubjectRepository;
+import ru.checkdev.forum.domain.Subject;
+import ru.checkdev.forum.domain.User;
+import ru.checkdev.forum.repository.SubjectRepository;
 
 import java.util.Arrays;
 import java.util.Calendar;

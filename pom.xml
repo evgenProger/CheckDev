@@ -17,6 +17,7 @@
         <module>services/notification</module>
         <module>services/train</module>
         <module>services/video</module>
+        <module>services/desc</module>
         <module>services/site</module>
     </modules>
 

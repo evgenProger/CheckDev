@@ -1,4 +1,4 @@
-package ru.job4j.blog.auth
+package ru.checkdev.blog.auth
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 

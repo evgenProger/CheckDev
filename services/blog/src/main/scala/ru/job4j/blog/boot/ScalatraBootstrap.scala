@@ -1,8 +1,8 @@
-package ru.job4j.blog.boot
+package ru.checkdev.blog.boot
 
 import javax.servlet.ServletContext
 import org.scalatra.LifeCycle
-import ru.job4j.blog.controllers.BlogController
+import ru.checkdev.blog.controllers.BlogController
 
 /**
   * Class ScalatraBootstrap represents special Scalatra framework class.

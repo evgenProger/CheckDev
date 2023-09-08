@@ -1,14 +1,14 @@
-package ru.job4j.forum.service;
+package ru.checkdev.forum.service;
 
 import com.google.common.collect.Lists;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.job4j.forum.domain.Message;
-import ru.job4j.forum.domain.User;
-import ru.job4j.forum.repository.MessageRepository;
-import ru.job4j.forum.repository.SubjectRepository;
+import ru.checkdev.forum.domain.Message;
+import ru.checkdev.forum.domain.User;
+import ru.checkdev.forum.repository.MessageRepository;
+import ru.checkdev.forum.repository.SubjectRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

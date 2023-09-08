@@ -1,11 +1,11 @@
-package ru.job4j.forum.service;
+package ru.checkdev.forum.service;
 
 import com.google.common.collect.Lists;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.job4j.forum.domain.Category;
-import ru.job4j.forum.repository.CategoryRepository;
+import ru.checkdev.forum.domain.Category;
+import ru.checkdev.forum.repository.CategoryRepository;
 
 import java.util.List;
 

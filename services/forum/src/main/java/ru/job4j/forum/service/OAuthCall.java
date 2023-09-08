@@ -1,4 +1,4 @@
-package ru.job4j.forum.service;
+package ru.checkdev.forum.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -6,7 +6,7 @@ import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
-import ru.job4j.forum.domain.User;
+import ru.checkdev.forum.domain.User;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;

@@ -1,4 +1,4 @@
-package ru.job4j.forum.web;
+package ru.checkdev.forum.web;
 
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.access.AccessDeniedException;

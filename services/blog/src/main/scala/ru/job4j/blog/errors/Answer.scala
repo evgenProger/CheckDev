@@ -1,4 +1,4 @@
-package ru.job4j.blog.errors
+package ru.checkdev.blog.errors
 import java.io.{PrintWriter, StringWriter}
 
 import play.api.libs.json.{Reads, Writes, JsPath, Json, JsValue}

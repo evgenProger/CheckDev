@@ -1,7 +1,7 @@
-package ru.job4j.blog.controllers
+package ru.checkdev.blog.controllers
 import org.scalatra.ScalatraServlet
-import ru.job4j.blog.auth.OAuth
-import ru.job4j.blog.errors.ErrorHandler
+import ru.checkdev.blog.auth.OAuth
+import ru.checkdev.blog.errors.ErrorHandler
 
 import scala.util.{Failure, Success}
 

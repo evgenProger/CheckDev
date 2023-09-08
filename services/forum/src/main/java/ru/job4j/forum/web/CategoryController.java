@@ -1,11 +1,11 @@
-package ru.job4j.forum.web;
+package ru.checkdev.forum.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.forum.domain.Category;
-import ru.job4j.forum.service.CategoryService;
+import ru.checkdev.forum.domain.Category;
+import ru.checkdev.forum.service.CategoryService;
 
 import java.util.List;
 

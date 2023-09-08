@@ -1,6 +1,6 @@
-package ru.job4j.forum.service;
+package ru.checkdev.forum.service;
 
-import ru.job4j.forum.domain.Message;
+import ru.checkdev.forum.domain.Message;
 
 import java.util.List;
 

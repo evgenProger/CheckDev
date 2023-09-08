@@ -1,4 +1,4 @@
-package ru.job4j.forum.web;
+package ru.checkdev.forum.web;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

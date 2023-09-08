@@ -1,4 +1,4 @@
-package ru.job4j.forum.web;
+package ru.checkdev.forum.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import ru.job4j.forum.domain.Category;
-import ru.job4j.forum.domain.Message;
-import ru.job4j.forum.domain.Subject;
-import ru.job4j.forum.service.CategoryService;
-import ru.job4j.forum.service.MessageService;
-import ru.job4j.forum.service.SubjectService;
+import ru.checkdev.forum.domain.Category;
+import ru.checkdev.forum.domain.Message;
+import ru.checkdev.forum.domain.Subject;
+import ru.checkdev.forum.service.CategoryService;
+import ru.checkdev.forum.service.MessageService;
+import ru.checkdev.forum.service.SubjectService;
 
 import java.util.List;
 

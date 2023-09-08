@@ -1,4 +1,4 @@
-package ru.job4j.forum;
+package ru.checkdev.forum;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -12,6 +12,6 @@ public class SiteApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SiteApplication.class, args);
-        LOG.info("GO TO -> :{}", SITE);
+        LOG.info("Go to -> :{}", SITE);
     }
 }

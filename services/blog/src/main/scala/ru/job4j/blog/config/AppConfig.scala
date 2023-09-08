@@ -1,4 +1,4 @@
-package ru.job4j.blog.config
+package ru.checkdev.blog.config
 
 import com.typesafe.config.ConfigFactory
 

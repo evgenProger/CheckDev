@@ -1,4 +1,4 @@
-package ru.job4j.forum.service;
+package ru.checkdev.forum.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.job4j.forum.domain.Message;
-import ru.job4j.forum.domain.Notify;
-import ru.job4j.forum.domain.Subject;
-import ru.job4j.forum.domain.User;
-import ru.job4j.forum.repository.MessageRepository;
-import ru.job4j.forum.repository.SubjectRepository;
+import ru.checkdev.forum.domain.Message;
+import ru.checkdev.forum.domain.Notify;
+import ru.checkdev.forum.domain.Subject;
+import ru.checkdev.forum.domain.User;
+import ru.checkdev.forum.repository.MessageRepository;
+import ru.checkdev.forum.repository.SubjectRepository;
 
 import java.util.HashMap;
 import java.util.HashSet;
