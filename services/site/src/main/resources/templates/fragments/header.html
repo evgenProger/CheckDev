@@ -1,21 +1,49 @@
-<div th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{#}">Темы</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{#}">Собеседования</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{#}">Профили</a>
-                    </li>
-                </ul>
+<div th:fragment="header" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="top-header">
+        <div class="container">
+            <div class="row">
+                <div class="top-header__logo col-xl-3 col-lg-3 col-md-3">
+                    <a id='index' href="#">
+                        <img id='logo' th:src="@{/img/logo.png}" alt="logo">
+                    </a>
+                </div>
+                <div class="top-header__navigation col-xl-9 col-lg-9 col-md-9 float-right">
+                    <ul class="navigation">
+                        <li class="navigation__item"><a th:href="@{/categories/}">Направления</a></li>
+                        <li class="navigation__item"><a href="#" onclick="return loadPage('index.html', '#/resume');">Кандидаты</a></li>
+                        <li class="navigation__item"><a href="#" onclick="return loadPage('exams/exams.html', '');">Сертификаты</a></li>
+                        <!--<li class="navigation__item"><a href="#">Как это работает</a></li>-->
+
+                        <li class="navigation__item dropdown" id="logout-item" style="display: none;">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"  onclick="return false;">
+                                <i class="fa fa-user fa-fw"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#" onclick="return loadPage('index.html', '#/owner');">
+                                    <i class="fa fa-list fa-fw"></i> Мои вакансии
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="return loadPage('index.html', '#/taken');">
+                                    <i class="fa fa-id-card fa-fw"></i> Пройденный интервью
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="document.location.href = CONTEXT + 'settings/settings.html';">
+                                    <i class="fa fa-user fa-fw"></i> <span id="user-info"></span>
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="document.location.href = CONTEXT + 'exams/exams.html';">
+                                    <i class="fa fa-certificate fa-fw"></i> Сертификаты
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="return logout();">
+                                    <i class="fa fa-share fa-fw"></i> Выйти
+                                </a>
+                            </div>
+                        </li>
+                        <li  class="navigation__item" id="login-item">
+                            <a th:href="@{/login}">
+                                Войти
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
 </div>
