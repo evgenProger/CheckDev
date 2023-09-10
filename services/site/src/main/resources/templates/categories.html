@@ -23,11 +23,18 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
+    <div class="row pt-2" th:if="${canManage}">
+        <div class="col-md-12 pull-right">
+            <a th:href="@{/category/createForm}" class="btn btn-secondary active" role="button" aria-pressed="true">
+                Создать направление
+            </a>
+        </div>
+    </div>
     <div class="row">
-        <table class="table">
+        <table class="table table-hover">
             <thead>
             <tr>
-                <th scope="col">Направление</th>
+                <th scope="col">Направления</th>
             </tr>
             </thead>
             <tbody>
