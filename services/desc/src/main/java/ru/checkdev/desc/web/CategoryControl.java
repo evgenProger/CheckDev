@@ -3,6 +3,7 @@ package ru.checkdev.desc.web;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.desc.domain.Category;
 import ru.checkdev.desc.service.CategoryService;
@@ -33,6 +34,7 @@ public class CategoryControl {
     }
 
     @PostMapping("/")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Category> create(@RequestBody Category category) {
         var created = categoryService.create(category);
         return new ResponseEntity<>(created, HttpStatus.CREATED);

@@ -25,7 +25,7 @@ public class RestAuthCall {
         ).getBody();
     }
 
-    public String post(Map<String, String> params) {
+    public String token(Map<String, String> params) {
         var restTemplate = new RestTemplate();
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -36,6 +36,16 @@ public class RestAuthCall {
         map.add("grant_type", "password");
         return restTemplate.postForEntity(
                 url, new HttpEntity<>(map, headers), String.class
+        ).getBody();
+    }
+
+    public String post(String token, String json) {
+        var restTemplate = new RestTemplate();
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+        return restTemplate.postForEntity(
+                url, new HttpEntity<>(json, headers), String.class
         ).getBody();
     }
 }
