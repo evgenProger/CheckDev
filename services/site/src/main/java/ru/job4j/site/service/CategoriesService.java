@@ -3,7 +3,6 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.CategoryDTO;
 
@@ -24,5 +23,13 @@ public class CategoriesService {
                 mapper.writeValueAsString(category)
         );
         return mapper.readValue(out, CategoryDTO.class);
+    }
+
+    public void update(String token, CategoryDTO category) throws JsonProcessingException {
+        var mapper = new ObjectMapper();
+        new RestAuthCall("http://localhost:9902/category/").put(
+                token,
+                mapper.writeValueAsString(category)
+        );
     }
 }
