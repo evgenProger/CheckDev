@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.site.dto.CredentialDTO;
 import ru.job4j.site.service.AuthService;
 
@@ -19,18 +20,39 @@ public class LoginControl {
     private final AuthService authService;
 
     @GetMapping("/login")
-    public String loginPage(Model model) {
+    public String loginPage(@RequestParam(value = "error", required = false) String error,
+                            Model model) {
+        String errorMessage = null;
+        if (error != null) {
+            errorMessage = "Email or Password is incorrect !!";
+        }
+        model.addAttribute("errorMessage", errorMessage);
         return "login";
     }
 
     @PostMapping("/signIn")
     public String signIn(@ModelAttribute CredentialDTO credentialDTO,
                          HttpServletRequest req) throws JsonProcessingException {
-        req.getSession()
-                .setAttribute("token", authService.token(
-                        Map.of("username", credentialDTO.getEmail(),
-                                "password", credentialDTO.getPassword()))
-                );
+        var isLogin = authService.token(
+                Map.of("username", credentialDTO.getEmail(),
+                        "password", credentialDTO.getPassword()));
+        if (isLogin.isEmpty()) {
+            return "redirect:/login?error=true";
+        }
+        req.getSession().setAttribute("token", isLogin);
+        return "redirect:/";
+    }
+
+    @PostMapping("/signInIndex")
+    public String signInIndex(@ModelAttribute CredentialDTO credentialDTO,
+                         HttpServletRequest req) throws JsonProcessingException {
+        var isLogin = authService.token(
+                Map.of("username", credentialDTO.getEmail(),
+                        "password", credentialDTO.getPassword()));
+        if (isLogin.isEmpty()) {
+            return "redirect:/?error=true";
+        }
+        req.getSession().setAttribute("token", isLogin);
         return "redirect:/";
     }
 }
