@@ -51,4 +51,10 @@ public class CategoryControl {
         categoryService.delete(categoryId);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/statistic")
+    public ResponseEntity<Void> updateStatistic(@RequestBody int categoryId) {
+        categoryService.updateStatistic(categoryId);
+        return ResponseEntity.ok().build();
+    }
 }

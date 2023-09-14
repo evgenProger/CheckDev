@@ -51,6 +51,16 @@ public class CategoryControl {
         return "redirect:/categories/";
     }
 
+    @GetMapping("/statistic/{id}")
+    public String onCategoryClick(Model model,
+                                  @PathVariable("id") int id,
+                                  HttpServletRequest req) throws JsonProcessingException {
+        var token = (String) req.getSession().getAttribute("token");
+        categoriesService.updateStatistic(token, id);
+
+        return "empty";
+    }
+
     private void setManage(Model model, HttpServletRequest req) throws JsonProcessingException {
         var token = (String) req.getSession().getAttribute("token");
         var userInfo = authService.userInfo(token);

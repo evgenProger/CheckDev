@@ -35,11 +35,13 @@
             <thead>
             <tr>
                 <th scope="col">Направления</th>
+                <th scope="col">Просмотры</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="category: ${categories}">
-                <td th:text="${category.name}" />
+                <td><a th:href="@{|/category/statistic/${category.id}|}" th:text="${category.name}"></a></td>
+                <td th:text="${category.total}"></td>
                 <td th:if="${canManage}">
                 <p>
                     <a th:href="@{|/category/editForm/${category.id}/${category.name}|}">

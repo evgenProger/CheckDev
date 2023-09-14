@@ -32,7 +32,11 @@ public class CategoryService {
 
     public List<Category> getAll() {
         var list = new ArrayList<Category>();
-        categoryRepository.findAll().forEach(list::add);
+        categoryRepository.findAllByOrderByTotalDesc().forEach(list::add);
         return list;
+    }
+
+    public void updateStatistic(int id) {
+        categoryRepository.updateStatistic(id);
     }
 }
