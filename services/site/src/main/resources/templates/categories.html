@@ -39,7 +39,9 @@
             </thead>
             <tbody>
             <tr th:each="category: ${categories}">
-                <td th:text="${category.name}" />
+                <td>
+                    <a th:text="${category.name}" th:href="@{/topics/{id}(id=${category.id})}"></a>
+                </td>
             </tr>
             </tbody>
         </table>
