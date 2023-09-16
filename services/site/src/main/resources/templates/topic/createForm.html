@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/png" href="../static/img/favorite.png">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+	<meta name="description" content="Обучение и трудоустройство Java-программистов от Junior до Senior">
+	<meta name="author" content="Job4j.ru">
+	<title>Check Dev</title>
+
+	<!-- Required meta tags -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700,400i,900|Open+Sans:300,400,600,700,800&amp;subset=cyrillic"
+	      rel="stylesheet">
+	<!-- Bootstrap 5.1.3 CSS -->
+	<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+	<link th:href="@{/css/main.min.css}" rel="stylesheet">
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+	<script th:src="@{/js/code.jquery.com_jquery-3.7.0.min.js}"></script>
+</head>
+<body>
+<div th:insert="fragments/header :: header"></div>
+<div class="container">
+	<div class="row pt-2" th:if="${canManage}">
+		<div class="col-sm">
+		</div>
+		<div class="col-sm">
+			<form th:action="@{/topic/create}" method="post">
+				<div class="form-group">
+					<input type="hidden" th:value="${categoryId}" name="categoryId">
+					<label for="name">Название</label>
+					<input type="text" class="form-control" id="name"
+					       name="name"
+					       aria-describedby="emailHelp" placeholder="Введите название">
+					<label for="text">Описание</label>
+					<textarea type="text" class="form-control" id="text"
+					       name="text"
+					       aria-describedby="text" placeholder="Введите описание"></textarea>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary">Сохранить</button>
+				</div>
+			</form>
+		</div>
+		<div class="col-sm">
+		</div>
+	</div>
+</div>
+<div th:insert="fragments/footer :: footer"></div>
+</body>
+</html>

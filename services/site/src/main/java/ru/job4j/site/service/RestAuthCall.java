@@ -48,4 +48,22 @@ public class RestAuthCall {
                 url, new HttpEntity<>(json, headers), String.class
         ).getBody();
     }
+
+    public void update(String token, String json) {
+        var restTemplate = new RestTemplate();
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+        var request = new HttpEntity<>(json, headers);
+        restTemplate.exchange(url, HttpMethod.PUT, request, String.class);
+    }
+
+    public void delete(String token, String json) {
+        var restTemplate = new RestTemplate();
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+        var request = new HttpEntity<>(json, headers);
+        restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
+    }
 }
