@@ -12,8 +12,6 @@ import java.text.ParseException;
 import java.util.Properties;
 
 /**
-
- *
  * @author Petr Arsentev (parsentev@yandex.ru)
  * @version $Id$
  * @since 0.1
@@ -32,9 +30,7 @@ public class JobServiceTest {
     @Test
     public void whenCreateDicThenPathShouldExic() {
         File file = new File("C:\\tmp\\students\\\\job4j\\");
-        if(file.mkdirs()) {
-
-        } else {
+        if (!file.mkdirs()) {
             System.out.println(String.format("Folder %s could not created", file.getAbsoluteFile()));
         }
     }

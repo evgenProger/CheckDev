@@ -1,11 +1,16 @@
 package ru.checkdev.ci.domain;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.OrderBy;
+import javax.persistence.FetchType;
 import java.util.List;
 
 /**
-
- *
  * @author Petr Arsentev (parsentev@yandex.ru)
  * @version $Id$
  * @since 0.1
@@ -21,8 +26,8 @@ public class Job {
     private String cron;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="job_id", updatable = false)
-    @OrderBy(value="pos")
+    @JoinColumn(name = "job_id", updatable = false)
+    @OrderBy(value = "pos")
     private List<Task> tasks;
 
     public Job() {

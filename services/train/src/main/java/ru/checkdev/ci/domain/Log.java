@@ -1,8 +1,6 @@
 package ru.checkdev.ci.domain;
 
 /**
-
- *
  * @author Petr Arsentev (parsentev@yandex.ru)
  * @version $Id$
  * @since 0.1
