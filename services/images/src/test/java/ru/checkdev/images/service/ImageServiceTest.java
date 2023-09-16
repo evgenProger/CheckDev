@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ru.checkdev.images.service;
 
@@ -23,17 +23,18 @@ import ru.checkdev.images.repository.ImageRepository;
 @SpringBootTest
 public class ImageServiceTest {
 
-	@Autowired
-	ImageService imageService;
-	
-	@Autowired
-	ImageRepository imageRepository;
-	
-	@Test
-	public void whenGetByIdShouldReturnCorrectObject() {
-		Image image = this.imageRepository.save(new Image("testFileName","testDescription",new byte[] {1,2,3}));
-		Image result = this.imageService.getById(image.getId());
-		assertThat(result, is(image));
-	}
+    @Autowired
+    ImageService imageService;
+
+    @Autowired
+    ImageRepository imageRepository;
+
+    @Test
+    public void whenGetByIdShouldReturnCorrectObject() {
+        Image image = this.imageRepository.save(new Image("testFileName",
+                "testDescription", new byte[]{1, 2, 3}));
+        Image result = this.imageService.getById(image.getId());
+        assertThat(result, is(image));
+    }
 
 }

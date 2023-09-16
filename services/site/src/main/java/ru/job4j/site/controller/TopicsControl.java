@@ -5,28 +5,30 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.job4j.site.service.AuthService;
-import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.TopicsService;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("/categories")
+@RequestMapping("/topics")
 @AllArgsConstructor
-public class CategoriesControl {
-    private final CategoriesService categoriesService;
+public class TopicsControl {
+    private final TopicsService topicsService;
     private final AuthService authService;
 
-    @GetMapping("/")
-    public String categories(Model model, HttpServletRequest req) throws JsonProcessingException {
+    @GetMapping("/{id}")
+    public String getByCategory(@PathVariable int id, Model model, HttpServletRequest req) throws JsonProcessingException {
         var token = (String) req.getSession().getAttribute("token");
-        model.addAttribute("categories", categoriesService.getAll(token));
+        model.addAttribute("categoryId", id);
+        model.addAttribute("topics", topicsService.getByCategory(id, token));
         var userInfo = authService.userInfo(token);
         model.addAttribute("userInfo", userInfo);
         var canManage = userInfo.getRoles().stream()
                 .anyMatch(role -> role.getValue().equals("ROLE_ADMIN"));
         model.addAttribute("canManage", canManage);
-        return "categories";
+        return "topic/topics";
     }
 }
