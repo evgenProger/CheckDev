@@ -20,7 +20,12 @@ public class CategoryControl {
 
     @GetMapping("/createForm")
     public String createForm(Model model, HttpServletRequest req) throws JsonProcessingException {
-        setManage(model, req);
+        var token = (String) req.getSession().getAttribute("token");
+        var userInfo = authService.userInfo(token);
+        model.addAttribute("userInfo",userInfo);
+        var canManage = userInfo.getRoles().stream()
+                .anyMatch(role -> role.getValue().equals("ROLE_ADMIN"));
+        model.addAttribute("canManage", canManage);
         return "createForm";
     }
 

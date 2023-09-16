@@ -52,10 +52,13 @@
                     <div class="col-xl-12 col-lg-12 controls-wrp">
                         <div class="controls">
                             <div class="controls__item">
-                                <a href="#"  onclick="return loadPage('index.html', '#/vacancy/update');" class="btn btn-watch yellow">Выбрать раздел</a>
+                                <a href="#" onclick="return loadPage('index.html', '#/vacancy/update');"
+                                   class="btn btn-watch yellow">Выбрать раздел</a>
                             </div>
                             <div class="controls__item">
-                                <a href="#" class="btn btn-watch blue" onclick="return loadPage('settings/settings.html', '#/profile');">Пройти собеседование</a>
+                                <a href="#" class="btn btn-watch blue"
+                                   onclick="return loadPage('settings/settings.html', '#/profile');">Пройти
+                                    собеседование</a>
                             </div>
                         </div>
                     </div>
@@ -63,85 +66,28 @@
             </div>
             <div class="col-xl-4 col-lg-5 col-md-6 login-form" id="sign_form">
                 <div class="form-wrapper">
-                    <div class="tabs">
-                        <ul class="tabs__caption">
-                        </ul>
-                        <div class="tabs__content active">
-                            <form id="login-form" class="login">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="username" name="email"
-                                           data-error="Адрес email не корректный" required
-                                           placeholder="Введите Ваш e-mail">
-                                </div>
-                                <div class="form-group">
-                                    <input type="password" class="form-control" id="password" name="password"
-                                           data-minlength="6"
-                                           data-error="Заполните поле пароль" required
-                                           placeholder="Введите пароль">
-                                </div>
-                                <button class="btn btn-send" type="submit" onclick="return login('#login-form');">Войти</button>
-
-                                <a href="forgot.html" class="link">Забыли пароль?</a>
-
-                                <div class="login-soc">
-                                <span class="title">
-                                Войти с помощью
-                                </span>
-                                    <div class="social-links">
-                                        <div class="link-wrp">
-                                            <a href="#">
-                                                <i class="icon vk"></i>
-                                            </a>
-                                        </div>
-                                        <div class="link-wrp">
-                                            <a href="#">
-                                                <i class="icon fb"></i>
-                                            </a>
-                                        </div>
-                                        <div class="link-wrp">
-                                            <a href="#">
-                                                <i class="icon gp"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                    <div class="col-sm"></div>
+                    <div class="col-sm">
+                        <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger" role="alert">
+                            <span th:text="${errorMessage}"></span>
                         </div>
-
-                        <div class="tabs__content">
-                            <div id="register-form" class="reg">
-                                <div class="form-group">
-                                    <input type="text" name="reg-username" id="reg-username" tabindex="1" class="form-control" placeholder="ФИО" data-minlength="6"
-                                           data-error="Заполните поле" required>
-                                    <div class="help-block with-errors"></div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" name="reg-email" id="reg-email" tabindex="1" class="form-control" placeholder="Email адрес"
-                                           data-error="Адрес email не корректный" required>
-                                    <div class="help-block with-errors"></div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="password" name="reg-password" id="reg-password" tabindex="2" class="form-control"
-                                           placeholder="Пароль"
-                                           data-minlength="6"
-                                           data-error="Заполните поле пароль" required>
-                                    <div class="help-block with-errors"></div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="password" name="reg-confirm-password" id="reg-confirm-password" tabindex="2"
-                                           class="form-control" placeholder="Подтвердить"
-                                           data-minlength="6"
-                                           data-error="Заполните поле подтверждение"
-                                           data-match="#reg-password" data-match-error="Пароли не совпадают" required>
-                                    <div class="help-block with-errors"></div>
-                                </div>
-                                <div class="form-group check">
-                                    <input type="checkbox" class="checkbox" id="reg-privacy" required name="reg-privacy"/>
-                                    <label  for="reg-privacy"><span class="txt">Я прочитал и принимаю условия пользовательского
-                                            соглашения</span></label>
-                                </div>
-                                <input type="button" name="register-submit" id="register-submit" tabindex="4" onclick="return registration('#register-form');" class="form-control btn btn-send" value="Зарегистрироваться">
+                        <form th:action="@{/signInIndex}" method="post">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email"
+                                       name="email"
+                                       aria-describedby="emailHelp" placeholder="Введите email">
                             </div>
+                            <div class="form-group pb-3">
+                                <label for="password">Пароль</label>
+                                <input type="password" class="form-control" id="password"
+                                       name="password" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Войти</button>
+                        </form>
+                        <div id="register-form" class="reg">
+                            <a th:href="@{https://t.me/checkdev_bot?start=true}">Регистрация через телеграм бота</a>
                         </div>
                     </div>
                 </div>

@@ -27,6 +27,10 @@
         <div class="col-sm">
         </div>
         <div class="col-sm">
+            <h1 class="h3 mb-3 fw-normal">Авторизация</h1>
+            <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger" role="alert">
+                <span th:text="${errorMessage}"></span>
+            </div>
             <form th:action="@{/signIn}" method="post">
                 <div class="form-group">
                     <label for="email">Email</label>
