@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.TopicsService;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -26,7 +25,7 @@ public class TopicsControl {
         model.addAttribute("categoryId", id);
         model.addAttribute("topics", topicsService.getByCategory(id, token));
         var userInfo = authService.userInfo(token);
-        model.addAttribute("userInfo",userInfo);
+        model.addAttribute("userInfo", userInfo);
         var canManage = userInfo.getRoles().stream()
                 .anyMatch(role -> role.getValue().equals("ROLE_ADMIN"));
         model.addAttribute("canManage", canManage);
