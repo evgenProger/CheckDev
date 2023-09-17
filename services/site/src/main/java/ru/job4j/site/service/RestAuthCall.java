@@ -66,4 +66,14 @@ public class RestAuthCall {
         var request = new HttpEntity<>(json, headers);
         restTemplate.exchange(url, HttpMethod.DELETE, request, String.class);
     }
+
+    public void put(String token, String json) {
+        var restTemplate = new RestTemplate();
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+        restTemplate.put(
+                url, new HttpEntity<>(json, headers), String.class
+        );
+    }
 }

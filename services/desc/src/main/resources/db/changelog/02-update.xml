@@ -10,4 +10,11 @@
             <column name="name"  value="Java Base"/>
         </insert>
     </changeSet>
+
+    <changeSet id="cat_update" author="Daniil62">
+        <addColumn tableName="cd_category">
+            <column name="total" type="integer" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
