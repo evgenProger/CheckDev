@@ -19,6 +19,8 @@
     <link th:href="@{/css/main.min.css}" rel="stylesheet">
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/code.jquery.com_jquery-3.7.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
@@ -29,7 +31,8 @@
             <div class="col-xl-12 col-lg-12 col-md-12 search">
                 <form class="search-form">
                     <div class="form-group flex">
-                        <input type="text" class="form-control col-xl-12" id="inputSearch" placeholder="Я ищу..." ng-model="key">
+                        <input type="text" class="form-control col-xl-12" id="inputSearch" placeholder="Я ищу..."
+                               ng-model="key">
                         <button type="submit" class="btn btn-primary col-xl-2" ng-click="search(key)">Найти</button>
                     </div>
                 </form>
@@ -68,26 +71,46 @@
                 <div class="form-wrapper">
                     <div class="col-sm"></div>
                     <div class="col-sm">
-                        <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger" role="alert">
-                            <span th:text="${errorMessage}"></span>
-                        </div>
-                        <form th:action="@{/signInIndex}" method="post">
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email"
-                                       name="email"
-                                       aria-describedby="emailHelp" placeholder="Введите email">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab"
+                                   aria-controls="login" aria-selected="true">Вход</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="registration-tab" data-toggle="tab" href="#registration"
+                                   role="tab" aria-controls="registration" aria-selected="false">Регистрация</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="login" role="tabpanel"
+                                 aria-labelledby="login-tab">
+                                <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger"
+                                     role="alert">
+                                    <span th:text="${errorMessage}"></span>
+                                </div>
+                                <form th:action="@{/signInIndex}" method="post">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" id="email"
+                                               name="email"
+                                               aria-describedby="emailHelp" placeholder="Введите email">
+                                    </div>
+                                    <div class="form-group pb-3">
+                                        <label for="password">Пароль</label>
+                                        <input type="password" class="form-control" id="password"
+                                               name="password" placeholder="Password">
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Войти</button>
+                                        <a href="forgot.html" class="link">Забыли пароль?</a>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="form-group pb-3">
-                                <label for="password">Пароль</label>
-                                <input type="password" class="form-control" id="password"
-                                       name="password" placeholder="Password">
+                            <div class="tab-pane fade" id="registration" role="tabpanel"
+                                 aria-labelledby="registration-tab">
+                                <a th:href="@{https://t.me/checkdev_bot?start=true}">Регистрация через телеграм
+                                    бота</a>
                             </div>
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary">Войти</button>
-                        </form>
-                        <div id="register-form" class="reg">
-                            <a th:href="@{https://t.me/checkdev_bot?start=true}">Регистрация через телеграм бота</a>
                         </div>
                     </div>
                 </div>
