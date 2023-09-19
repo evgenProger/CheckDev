@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.TopicsService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -19,12 +20,13 @@ import java.util.List;
 public class CategoriesControl {
     private final CategoriesService categoriesService;
     private final AuthService authService;
+    private final TopicsService topicsService;
 
     @GetMapping("/")
     public String categories(Model model, HttpServletRequest req) throws JsonProcessingException {
         var session = req.getSession();
         var token = (String) session.getAttribute("token");
-        model.addAttribute("categories", categoriesService.getAll(token));
+        model.addAttribute("categories", categoriesService.getAllWithTopics(token, topicsService));
         var userInfo = authService.userInfo(token);
         model.addAttribute("userInfo", userInfo);
         var canManage = userInfo.getRoles().stream()
