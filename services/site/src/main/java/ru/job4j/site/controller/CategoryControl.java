@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 @RequestMapping("/category")
@@ -20,12 +22,17 @@ public class CategoryControl {
 
     @GetMapping("/createForm")
     public String createForm(Model model, HttpServletRequest req) throws JsonProcessingException {
-        var token = (String) req.getSession().getAttribute("token");
+        var session = req.getSession();
+        var token = (String) session.getAttribute("token");
         var userInfo = authService.userInfo(token);
         model.addAttribute("userInfo", userInfo);
         var canManage = userInfo.getRoles().stream()
                 .anyMatch(role -> role.getValue().equals("ROLE_ADMIN"));
         model.addAttribute("canManage", canManage);
+        model.addAttribute("breadcrumbs", List.of(
+                new Breadcrumb("Главная", "/index"),
+                new Breadcrumb("Направления", "/categories/"),
+                new Breadcrumb("Создать направление", "/category/createForm")));
         return "createForm";
     }
 
@@ -43,6 +50,11 @@ public class CategoryControl {
                            HttpServletRequest req) throws JsonProcessingException {
         model.addAttribute("category", new CategoryDTO(id, name));
         setManage(model, req);
+        model.addAttribute("breadcrumbs", List.of(
+                new Breadcrumb("Главная", "/index"),
+                new Breadcrumb("Направления", "/categories/"),
+                new Breadcrumb("Редактировать направление",
+                        String.format("/category/editForm/%d/%s", id, name))));
         return "editCategoryForm";
     }
 
@@ -62,7 +74,6 @@ public class CategoryControl {
                                   HttpServletRequest req) throws JsonProcessingException {
         var token = (String) req.getSession().getAttribute("token");
         categoriesService.updateStatistic(token, id);
-
         return "empty";
     }
 
