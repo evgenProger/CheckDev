@@ -45,7 +45,7 @@ public class LoginControl {
 
     @PostMapping("/signInIndex")
     public String signInIndex(@ModelAttribute CredentialDTO credentialDTO,
-                         HttpServletRequest req) throws JsonProcessingException {
+                              HttpServletRequest req) throws JsonProcessingException {
         var isLogin = authService.token(
                 Map.of("username", credentialDTO.getEmail(),
                         "password", credentialDTO.getPassword()));
@@ -53,6 +53,21 @@ public class LoginControl {
             return "redirect:/?error=true";
         }
         req.getSession().setAttribute("token", isLogin);
+        return "redirect:/";
+    }
+
+    /**
+     * Метод Get очищает сессию и осуществляет выход пользователя.
+     *
+     * @param request HttpServletRequest
+     * @return "/index"
+     */
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        var session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         return "redirect:/";
     }
 }

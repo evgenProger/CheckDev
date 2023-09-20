@@ -20,7 +20,6 @@
     <script th:href="@{/js_bootstrap_5_3_2/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/js_bootstrap_5_3_2/popper.min.js}"></script>
     <script th:src="@{/js_bootstrap_5_3_2/bootstrap.min.js}"></script>
-    <script th:src="@{/js_bootstrap_5_3_2/bootstrap.js}"></script>
     <script th:src="@{/js_bootstrap_5_3_2/code.jquery.com_jquery-3.7.0.min.js}"></script>
 </head>
 <body>
@@ -68,7 +67,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-lg-5 col-md-6 login-form" id="sign_form">
+            <div th:if="${userInfo == null}" class="col-xl-4 col-lg-5 col-md-6 login-form" id="sign_form">
                 <div class="form-wrapper">
                     <div class="col-sm"></div>
                     <div class="col-sm">
