@@ -23,6 +23,8 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
+    <div class="card"
+         th:insert="fragments/breadcrumbs :: breadcrumbs(breadcrumbs=${breadcrumbs})"></div>
     <div class="row pt-2">
         <div th:if="${canManage}" class="col-md-12 pull-right">
             <a th:href="@{/category/createForm}" class="btn btn-secondary active" role="button" aria-pressed="true">
@@ -35,12 +37,23 @@
             <thead>
             <tr>
                 <th scope="col">Направления</th>
+                <th scope="col">Темы</th>
                 <th scope="col">Просмотры</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="category: ${categories}">
                 <td><a th:href="@{|/category/statistic/${category.id}|}" th:text="${category.name}"></a></td>
+                <td>
+                    <table>
+                        <tbody>
+                        <tr th:each="topic: ${category.topics}">
+                            <td><h5 th:text="${topic.name}"></h5></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
                 <td th:text="${category.total}"></td>
                 <td th:if="${canManage}">
                 <p>

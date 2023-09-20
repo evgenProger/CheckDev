@@ -7,11 +7,12 @@ import org.springframework.stereotype.Service;
 import ru.job4j.site.domain.Category;
 import ru.job4j.site.dto.CategoryDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class CategoriesService {
-    public List<Category> getAll(String token) throws JsonProcessingException {
+    public List<CategoryDTO> getAll(String token) throws JsonProcessingException {
         var text = new RestAuthCall("http://localhost:9902/categories/").get(token);
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>(){});
@@ -38,5 +39,20 @@ public class CategoriesService {
         var mapper = new ObjectMapper();
         new RestAuthCall("http://localhost:9902/category/statistic").put(
                 token, mapper.writeValueAsString(categoryId));
+    }
+
+    public List<Category> getAllWithTopics(String token, TopicsService topicsService) throws JsonProcessingException {
+        var categoriesDTO = getAll(token);
+        var result = new ArrayList<Category>();
+        for (CategoryDTO categoryDTO : categoriesDTO) {
+            var category = new Category(
+                    categoryDTO.getId(),
+                    categoryDTO.getName(),
+                    categoryDTO.getTotal(),
+                    new ArrayList<>());
+            category.getTopics().addAll(topicsService.getByCategory(category.getId(), token));
+            result.add(category);
+        }
+        return result;
     }
 }
