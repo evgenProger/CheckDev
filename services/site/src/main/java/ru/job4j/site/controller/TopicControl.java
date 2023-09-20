@@ -1,19 +1,16 @@
 package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.dto.TopicLiteDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.TopicsService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Calendar;
 
 @Controller
 @RequestMapping("/topic")
