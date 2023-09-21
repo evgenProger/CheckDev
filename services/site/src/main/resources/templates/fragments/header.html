@@ -14,6 +14,22 @@
                         </li>
                         <li class="navigation__item"><a href="#" onclick="return loadPage('exams/exams.html', '');">Профили</a>
                         </li>
+                        <li class="navigation__item" th:if="${userInfo == null}">
+                            <a th:href="@{/login}">
+                                Войти
+                            </a>
+                        </li>
+                        <li class="navigation__item dropdown" th:if="${userInfo != null}">
+                            <span class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                <span th:text="${userInfo.username != null} ? ${userInfo.username} : ${userInfo.email}">Login/Email пользователя</span>
+                            </span>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Профиль</a></li>
+                                <li><a class="dropdown-item" th:href="@{/logout}">Выйти</a></li>
+                            </ul>
+                        </li>
+
                         <!--<li class="navigation__item"><a href="#">Как это работает</a></li>-->
 
                         <li class="navigation__item dropdown" id="logout-item" style="display: none;">
@@ -37,18 +53,6 @@
                                 </a>
                                 <a class="dropdown-item" href="#" onclick="return logout();">
                                     <i class="fa fa-share fa-fw"></i> Выйти
-                                </a>
-                            </div>
-                        </li>
-                        <li class="navigation__item" id="login-item">
-                            <div class="d-flex" th:if="${userInfo == null}">
-                                <a th:href="@{/login}">
-                                    Войти
-                                </a>
-                            </div>
-                            <div class="d-flex" th:if="${userInfo != null}">
-                                <a class="nav-link text-secondary" th:href="@{/persons/edit}">
-                                    <span th:text="${userInfo.username != null} ? ${userInfo.username} : ${userInfo.email}">Login/Email пользователя</span>
                                 </a>
                             </div>
                         </li>
