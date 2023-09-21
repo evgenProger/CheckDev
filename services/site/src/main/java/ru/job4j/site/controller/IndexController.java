@@ -1,26 +1,37 @@
 package ru.job4j.site.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.service.AuthService;
+import ru.job4j.site.service.CategoriesService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
 @Slf4j
 public class IndexController {
     private final AuthService authService;
+    private final CategoriesService categoriesService;
 
     @GetMapping({"/", "index"})
     public String getIndexPage(@RequestParam(value = "error", required = false) String error,
                                Model model,
-                               HttpServletRequest request) {
+                               HttpServletRequest request) throws JsonProcessingException {
+        var session = request.getSession();
+        var token = (String) session.getAttribute("token");
+        model.addAttribute("breadcrumbs", List.of(
+                new Breadcrumb("Главная", "/index"),
+                new Breadcrumb("Категории", "/categories/")));
+        model.addAttribute("categories", categoriesService.getAll(token));
         String errorMessage = null;
         if (error != null) {
             errorMessage = "Email or Password is incorrect !!";

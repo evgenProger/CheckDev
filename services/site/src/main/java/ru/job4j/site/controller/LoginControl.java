@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.CredentialDTO;
 import ru.job4j.site.service.AuthService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -22,6 +24,9 @@ public class LoginControl {
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             Model model) {
+        model.addAttribute("breadcrumbs", List.of(
+                new Breadcrumb("Главная", "/index"),
+                new Breadcrumb("Авторизация", "/login")));
         String errorMessage = null;
         if (error != null) {
             errorMessage = "Email or Password is incorrect !!";
