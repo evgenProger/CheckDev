@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Calendar;
 
+import static ru.job4j.site.controller.RequestResponseTools.getToken;
+
 /**
  * CheckDev пробное собеседование
  *
@@ -63,9 +65,7 @@ public class PersonController {
         return "redirect:/";
     }
 
-    private static String getToken(HttpServletRequest request) {
-        return (String) request.getSession().getAttribute("token");
-    }
+
 
     private PersonDTO getPersonDTO(HttpServletRequest request) {
         var token = getToken(request);

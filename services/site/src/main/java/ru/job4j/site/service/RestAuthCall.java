@@ -15,6 +15,15 @@ import java.util.Map;
 public class RestAuthCall {
     private final String url;
 
+    public String get() {
+        var restTemplate = new RestTemplate();
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        return restTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<>(headers), new ParameterizedTypeReference<String>() { }
+        ).getBody();
+    }
+
     public String get(String token) {
         var restTemplate = new RestTemplate();
         var headers = new HttpHeaders();

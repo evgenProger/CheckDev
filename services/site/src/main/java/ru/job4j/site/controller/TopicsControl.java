@@ -12,6 +12,8 @@ import ru.job4j.site.service.TopicsService;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static ru.job4j.site.controller.RequestResponseTools.getToken;
+
 @Controller
 @RequestMapping("/topics")
 @AllArgsConstructor
@@ -21,14 +23,14 @@ public class TopicsControl {
 
     @GetMapping("/{id}")
     public String getByCategory(@PathVariable int id, Model model, HttpServletRequest req) throws JsonProcessingException {
-        var token = (String) req.getSession().getAttribute("token");
         model.addAttribute("categoryId", id);
-        model.addAttribute("topics", topicsService.getByCategory(id, token));
-        var userInfo = authService.userInfo(token);
-        model.addAttribute("userInfo", userInfo);
-        var canManage = userInfo.getRoles().stream()
-                .anyMatch(role -> role.getValue().equals("ROLE_ADMIN"));
-        model.addAttribute("canManage", canManage);
+        model.addAttribute("topics", topicsService.getByCategory(id));
+        var token = getToken(req);
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            model.addAttribute("userInfo", userInfo);
+            RequestResponseTools.addAttrCanManage(model, userInfo);
+        }
         return "topic/topics";
     }
 }

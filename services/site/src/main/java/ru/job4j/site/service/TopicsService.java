@@ -15,8 +15,8 @@ import java.util.List;
 @Service
 public class TopicsService {
 
-    public List<TopicDTO> getByCategory(int id, String token) throws JsonProcessingException {
-        var text = new RestAuthCall("http://localhost:9902/topics/" + id).get(token);
+    public List<TopicDTO> getByCategory(int id) throws JsonProcessingException {
+        var text = new RestAuthCall("http://localhost:9902/topics/" + id).get();
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>(){});
     }

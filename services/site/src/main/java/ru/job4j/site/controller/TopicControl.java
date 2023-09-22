@@ -12,6 +12,8 @@ import ru.job4j.site.service.TopicsService;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static ru.job4j.site.controller.RequestResponseTools.getToken;
+
 @Controller
 @RequestMapping("/topic")
 @AllArgsConstructor
@@ -20,52 +22,49 @@ public class TopicControl {
     private final AuthService authService;
 
     @GetMapping("/createForm/{categoryId}")
-    public String createForm(@PathVariable int categoryId, Model model, HttpServletRequest req) throws JsonProcessingException {
+    public String createForm(@PathVariable int categoryId, Model model, HttpServletRequest req)
+            throws JsonProcessingException {
         var token = getToken(req);
-        var userInfo = authService.userInfo(token);
-        model.addAttribute("userInfo", userInfo);
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            model.addAttribute("userInfo", token);
+            RequestResponseTools.addAttrCanManage(model, userInfo);
+        }
         model.addAttribute("categoryId", categoryId);
-        var canManage = userInfo.getRoles().stream()
-                .anyMatch(role -> role.getValue().equals("ROLE_ADMIN"));
-        model.addAttribute("canManage", canManage);
         return "topic/createForm";
     }
 
     @PostMapping("/create")
-    public String createTopic(@ModelAttribute TopicLiteDTO topic, HttpServletRequest req) throws JsonProcessingException {
-        var token = getToken(req);
-        topicsService.create(token, topic);
+    public String createTopic(@ModelAttribute TopicLiteDTO topic, HttpServletRequest req)
+            throws JsonProcessingException {
+        topicsService.create(getToken(req), topic);
         return "redirect:/categories/";
     }
 
     @GetMapping("/updateForm")
-    public String updateForm(@ModelAttribute(name = "id") int id, Model model, HttpServletRequest req) throws JsonProcessingException {
+    public String updateForm(@ModelAttribute(name = "id") int id, Model model, HttpServletRequest req)
+            throws JsonProcessingException {
         var token = getToken(req);
-        var userInfo = authService.userInfo(token);
-        var topic = topicsService.getById(id, token);
-        model.addAttribute("userInfo", userInfo);
-        model.addAttribute("topic", topic);
-        var canManage = userInfo.getRoles().stream()
-                .anyMatch(role -> role.getValue().equals("ROLE_ADMIN"));
-        model.addAttribute("canManage", canManage);
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            var topic = topicsService.getById(id, token);
+            model.addAttribute("userInfo", userInfo);
+            model.addAttribute("topic", topic);
+            RequestResponseTools.addAttrCanManage(model, userInfo);
+        }
         return "topic/updateForm";
     }
 
     @PostMapping("/update")
     public String updateTopic(TopicDTO topic, HttpServletRequest req) throws JsonProcessingException {
-        var token = getToken(req);
-        topicsService.update(token, topic);
+        topicsService.update(getToken(req), topic);
         return "redirect:/categories/";
     }
 
     @PostMapping("/delete")
-    public String deleteTopic(@ModelAttribute(name = "id") int id, HttpServletRequest req) throws JsonProcessingException {
-        var token = getToken(req);
-        topicsService.delete(token, id);
+    public String deleteTopic(@ModelAttribute(name = "id") int id, HttpServletRequest req)
+            throws JsonProcessingException {
+        topicsService.delete(getToken(req), id);
         return "redirect:/categories/";
-    }
-
-    private static String getToken(HttpServletRequest req) {
-        return (String) req.getSession().getAttribute("token");
     }
 }

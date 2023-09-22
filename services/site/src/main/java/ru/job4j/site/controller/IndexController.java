@@ -7,13 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+
+import static ru.job4j.site.controller.RequestResponseTools.getToken;
 
 @Controller
 @AllArgsConstructor
@@ -24,14 +24,12 @@ public class IndexController {
 
     @GetMapping({"/", "index"})
     public String getIndexPage(@RequestParam(value = "error", required = false) String error,
-                               Model model,
-                               HttpServletRequest request) throws JsonProcessingException {
-        var session = request.getSession();
-        var token = (String) session.getAttribute("token");
-        model.addAttribute("breadcrumbs", List.of(
-                new Breadcrumb("Главная", "/index"),
-                new Breadcrumb("Категории", "/categories/")));
-        model.addAttribute("categories", categoriesService.getAll(token));
+                               Model model, HttpServletRequest request) throws JsonProcessingException {
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/index",
+                "Категории", "/categories/"
+        );
+        model.addAttribute("categories", categoriesService.getAll());
         String errorMessage = null;
         if (error != null) {
             errorMessage = "Email or Password is incorrect !!";
@@ -39,10 +37,6 @@ public class IndexController {
         model.addAttribute("errorMessage", errorMessage);
         model.addAttribute("userInfo", getUserInfo(request));
         return "index";
-    }
-
-    private static String getToken(HttpServletRequest request) {
-        return (String) request.getSession().getAttribute("token");
     }
 
     private UserInfoDTO getUserInfo(HttpServletRequest request) {
