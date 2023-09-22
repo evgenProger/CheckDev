@@ -12,8 +12,8 @@ import java.util.List;
 
 @Service
 public class CategoriesService {
-    public List<CategoryDTO> getAll(String token) throws JsonProcessingException {
-        var text = new RestAuthCall("http://localhost:9902/categories/").get(token);
+    public List<CategoryDTO> getAll() throws JsonProcessingException {
+        var text = new RestAuthCall("http://localhost:9902/categories/").get();
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>(){});
     }
@@ -41,8 +41,8 @@ public class CategoriesService {
                 token, mapper.writeValueAsString(categoryId));
     }
 
-    public List<Category> getAllWithTopics(String token, TopicsService topicsService) throws JsonProcessingException {
-        var categoriesDTO = getAll(token);
+    public List<Category> getAllWithTopics(TopicsService topicsService) throws JsonProcessingException {
+        var categoriesDTO = getAll();
         var result = new ArrayList<Category>();
         for (CategoryDTO categoryDTO : categoriesDTO) {
             var category = new Category(
@@ -50,7 +50,7 @@ public class CategoriesService {
                     categoryDTO.getName(),
                     categoryDTO.getTotal(),
                     new ArrayList<>());
-            category.getTopics().addAll(topicsService.getByCategory(category.getId(), token));
+            category.getTopics().addAll(topicsService.getByCategory(category.getId()));
             result.add(category);
         }
         return result;

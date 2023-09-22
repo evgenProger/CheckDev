@@ -7,3 +7,4 @@ target
 *.ear
 hs_err_pid*
 .idea
+*.db
