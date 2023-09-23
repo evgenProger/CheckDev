@@ -5,10 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <property name="now" value="now()" dbms="postgresql"/>
-    <changeSet id="07" author="Petr Arsentev">
+    <changeSet id="010" author="Dima Stepanov">
         <addColumn schemaName="public"
                    tableName="person">
-            <column name="updated" defaultValueComputed="CURRENT_TIMESTAMP" type="timestamp">
+            <column name="created" defaultValueComputed="CURRENT_TIMESTAMP" type="timestamp">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
