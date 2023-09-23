@@ -8,11 +8,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import ru.checkdev.auth.domain.Person;
 import ru.checkdev.auth.domain.Photo;
+import ru.checkdev.auth.dto.ProfileDTO;
 
 import java.util.List;
 
 /**
- *
  * @author parsentev
  * @since 25.09.2016
  */
@@ -52,4 +52,24 @@ public interface PersonRepository extends CrudRepository<Person, Integer> {
 
     @Query("select p from person p left join  p.photo where p.email = :email")
     Person findPerson(@Param("email") String email);
+
+    /**
+     * Метод нативным запросом ищет пользователей по ID,
+     * возвращая DTO модель ProfileDTO
+     *
+     * @param id int person id
+     * @return ProfileDTO
+     */
+    @Query("SELECT new ru.checkdev.auth.dto.ProfileDTO(p.id, p.username, p.experience, p.photo.id, p.updated, p.created) FROM person p WHERE p.id = :id")
+    ProfileDTO findProfileById(@Param("id") int id);
+
+    /**
+     * Метод нативным запросом формирует список всех пользователей,
+     * возвращая список DTO моделей ProfileDTO
+     * сортированных по убыванию даты создания Профиля.
+     *
+     * @return List ProfileDTO
+     */
+    @Query("SELECT new ru.checkdev.auth.dto.ProfileDTO(p.id, p.username, p.experience, p.photo.id, p.updated, p.created) FROM person p ORDER BY p.created DESC")
+    List<ProfileDTO> findProfileOrderByCreatedDesc();
 }

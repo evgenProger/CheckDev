@@ -14,4 +14,5 @@
   <include file="changelog/07-update.xml" relativeToChangelogFile="true"/>
   <include file="changelog/08-create.xml" relativeToChangelogFile="true"/>
   <include file="changelog/09_dml_person_insert.xml" relativeToChangelogFile="true"/>
+  <include file="changelog/010_ddl_person_add_column_created.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
