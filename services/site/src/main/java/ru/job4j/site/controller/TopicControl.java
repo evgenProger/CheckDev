@@ -21,6 +21,31 @@ public class TopicControl {
     private final TopicsService topicsService;
     private final AuthService authService;
 
+    @GetMapping("/{categoryName}/{categoryId}/{topicId}")
+    public String details(@PathVariable String categoryName,
+                          @PathVariable int categoryId,
+                          @PathVariable int topicId,
+                          Model model,
+                          HttpServletRequest req) throws JsonProcessingException {
+        var token = getToken(req);
+        var topic = new TopicDTO();
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            model.addAttribute("userInfo", token);
+            RequestResponseTools.addAttrCanManage(model, userInfo);
+            topic = topicsService.getById(topicId, token);
+        }
+        model.addAttribute("topic", topic);
+        model.addAttribute("categoryName", categoryName);
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/index",
+                "Направления", "/categories/",
+                String.format("%s. Темы", categoryName),
+                String.format("/topics/%s/%d", categoryName, categoryId),
+                topic.getName(), String.format("/topic/%d/%d", categoryId, topicId));
+        return "/topic/details";
+    }
+
     @GetMapping("/createForm/{categoryId}")
     public String createForm(@PathVariable int categoryId, Model model, HttpServletRequest req)
             throws JsonProcessingException {
@@ -31,6 +56,11 @@ public class TopicControl {
             RequestResponseTools.addAttrCanManage(model, userInfo);
         }
         model.addAttribute("categoryId", categoryId);
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/index",
+                "Направления", "/categories/",
+                "Темы", String.format("/topics/%d", categoryId),
+                "Создание темы", String.format("/topic/createForm/%d", categoryId));
         return "topic/createForm";
     }
 
@@ -41,17 +71,28 @@ public class TopicControl {
         return "redirect:/categories/";
     }
 
-    @GetMapping("/updateForm")
-    public String updateForm(@ModelAttribute(name = "id") int id, Model model, HttpServletRequest req)
+    @GetMapping("/updateForm/{categoryName}/{categoryId}")
+    public String updateForm(@ModelAttribute(name = "id") int id,
+                             Model model,
+                             HttpServletRequest req,
+                             @PathVariable String categoryName,
+                             @PathVariable int categoryId)
             throws JsonProcessingException {
+        var topic = new TopicDTO();
+        topic.setName("");
         var token = getToken(req);
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            var topic = topicsService.getById(id, token);
-            model.addAttribute("userInfo", userInfo);
-            model.addAttribute("topic", topic);
+            topic = topicsService.getById(id, token);
             RequestResponseTools.addAttrCanManage(model, userInfo);
+            model.addAttribute("userInfo", userInfo);
         }
+        model.addAttribute("topic", topic);
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/index",
+                "Направления", "/categories/",
+                "Темы", String.format("/topics/%s/%d", categoryName, categoryId),
+                "Редактировать тему", String.format("/topic/updateForm/%d", categoryId));
         return "topic/updateForm";
     }
 

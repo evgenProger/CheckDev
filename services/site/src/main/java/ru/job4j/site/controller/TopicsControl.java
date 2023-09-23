@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.job4j.site.service.AuthService;
+import ru.job4j.site.service.CategoriesService;
 import ru.job4j.site.service.TopicsService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,16 +21,26 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 public class TopicsControl {
     private final TopicsService topicsService;
     private final AuthService authService;
+    private final CategoriesService categoriesService;
 
-    @GetMapping("/{id}")
-    public String getByCategory(@PathVariable int id, Model model, HttpServletRequest req) throws JsonProcessingException {
-        model.addAttribute("categoryId", id);
-        model.addAttribute("topics", topicsService.getByCategory(id));
+    @GetMapping("/{categoryName}/{categoryId}")
+    public String getByCategory(@PathVariable String categoryName,
+                                @PathVariable int categoryId,
+                                Model model,
+                                HttpServletRequest req) throws JsonProcessingException {
+        model.addAttribute("categoryName", categoryName);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("topics", topicsService.getByCategory(categoryId));
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/index",
+                "Направления", "/categories/",
+                String.format("%s. Темы", categoryName), String.format("/topics/%d", categoryId));
         var token = getToken(req);
         if (token != null) {
             var userInfo = authService.userInfo(token);
             model.addAttribute("userInfo", userInfo);
             RequestResponseTools.addAttrCanManage(model, userInfo);
+            categoriesService.updateStatistic(token, categoryId);
         }
         return "topic/topics";
     }

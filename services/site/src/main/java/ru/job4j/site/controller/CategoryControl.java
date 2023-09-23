@@ -67,11 +67,4 @@ public class CategoryControl {
         addAttrCanManage(model, userInfo);
         return "redirect:/categories/";
     }
-
-    @GetMapping("/statistic/{id}")
-    public String onCategoryClick(@PathVariable("id") int id, HttpServletRequest req)
-            throws JsonProcessingException {
-        categoriesService.updateStatistic(getToken(req), id);
-        return "empty";
-    }
 }
