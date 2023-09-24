@@ -21,19 +21,6 @@ public class TopicsControl {
     private final TopicsService topicsService;
     private final AuthService authService;
 
-    @GetMapping("/all")
-    public String getAll(Model model, HttpServletRequest req) throws JsonProcessingException {
-        model.addAttribute("topics", topicsService.getAll());
-        model.addAttribute("amount", topicsService.getAll().size());
-        var token = getToken(req);
-        if (token != null) {
-            var userInfo = authService.userInfo(token);
-            model.addAttribute("userInfo", userInfo);
-            RequestResponseTools.addAttrCanManage(model, userInfo);
-        }
-        return "topic/topics";
-    }
-
     @GetMapping("/{id}")
     public String getByCategory(@PathVariable int id, Model model, HttpServletRequest req) throws JsonProcessingException {
         model.addAttribute("categoryId", id);
