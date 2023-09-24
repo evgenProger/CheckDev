@@ -28,7 +28,7 @@
                             <span th:text="${userInfo.username != null} ? ${userInfo.username} : ${userInfo.email}">Login/Email пользователя</span>
                         </span>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Профиль</a></li>
+                            <li><a class="dropdown-item" th:href="@{/persons/}">Профиль</a></li>
                             <li><a class="dropdown-item" th:href="@{/logout}">Выйти</a></li>
                         </ul>
                     </li>

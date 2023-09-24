@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="../static/img/favorite.png">
+    <link rel="icon" type="image/png" href="../../static/img/favorite.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta name="description" content="Обучение и трудоустройство Java-программистов от Junior до Senior">
@@ -27,23 +27,42 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <div class="container mt-3">
-        <div class="row mb-3">
-            <div class="col-3">
-                <div class="mb-3">
-                    <img th:src="@{http://localhost:9900/img(id=*{profile.photoId})}" class="w-100"
-                         alt="No image">
-                </div>
+    <div class="row pt-3">
+        <div class="card" style="width: 100%">
+            <div class="card-header">
+                Просмотр пользователя
             </div>
-            <div class="col-9">
-                <div class="mb-3">
-                    <h3>
-                        <p th:text="${profile.username}">Имя пользователя</p>
-                    </h3>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-3">
+                        <div class="mb-3">
+                            <img th:src="@{http://localhost:9900/img(id=*{personDto.photo.id})}" class="w-100"
+                                 alt="No image">
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="mb-3">
+                            <h4>
+                                <p th:text="'Имя: ' + ${personDto.username}">Имя пользователя</p>
+                            </h4>
+                        </div>
+                        <div class="mb-3">
+                            <p th:text="'Email: ' + ${personDto.email}">Email</p>
+                        </div>
+                        <div class="mb-3">
+                            <p th:text="'Опыт: ' + ${personDto.experience}">Опыт</p>
+                        </div>
+                        <div class="mb-3">
+                            <p th:text="'Ожидаемый доход: ' + ${personDto.salary}">Ожидаемый доход</p>
+                        </div>
+                        <div class="mb-3">
+                            <p th:text="'Город: ' + ${personDto.location}">Город</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <p th:text="${profile.experience}">Описание</p>
-                </div>
+                <!--Кнопка редактировать-->
+                <a class="btn btn-success mt-3"
+                   th:href="@{/persons/edit}">Редактировать</a>
             </div>
         </div>
     </div>
