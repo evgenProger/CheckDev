@@ -1,6 +1,7 @@
 package ru.checkdev.mock.repository;
 
 import org.junit.Before;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 
+@Disabled("It is used PostSQLDB. It should be h2.")
 @DataJpaTest()
 @RunWith(SpringRunner.class)
 class InterviewRepositoryTest {
