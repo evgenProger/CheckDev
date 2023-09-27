@@ -2,13 +2,18 @@ package ru.job4j.site.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import ru.job4j.site.dto.ProfileDTO;
+
+import java.util.List;
 
 /**
  * CheckDev пробное собеседование
@@ -21,7 +26,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @AllArgsConstructor
 public class WebClientAuthCall {
-    private WebClient webClient;
+    private final WebClient webClient;
 
     /**
      * Метод doGet отправляет get запрос в сервис AUTH
@@ -59,6 +64,48 @@ public class WebClientAuthCall {
                 .body(BodyInserters.fromMultipartData(builder.build()))
                 .retrieve()
                 .toEntity(String.class)
+                .doOnError(err -> log.error("API not found: {}", err.getMessage()));
+    }
+
+    /**
+     * Метод обрабатывает запросы Get,
+     * тело запроса RequestParam key.
+     *
+     * @param url String URL API
+     * @param key String RequestParam
+     * @return Mono<ResponseEntity>
+     */
+    public Mono<ResponseEntity<ProfileDTO>> doGetReqParamKey(String url, String key) {
+        return webClient
+                .get()
+                .uri(urlBuilder -> urlBuilder
+                        .path(url)
+                        .queryParam("key", key)
+                        .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .toEntity(ProfileDTO.class)
+                .doOnError(err -> log.error("API not found: {}", err.getMessage()));
+    }
+
+    /**
+     * Метод обрабатывает запросы Get,
+     * тело запроса RequestParam key. Возвращает List ProfileDTO
+     *
+     * @param url String URL API
+     * @param key String RequestParam
+     * @return Mono<ResponseEntity < List < ProfileDTO>>>
+     */
+    public Mono<ResponseEntity<List<ProfileDTO>>> doGetReqParamKeyAll(String url, String key) {
+        return webClient
+                .get()
+                .uri(urlBuilder -> urlBuilder
+                        .path(url)
+                        .queryParam("key", key)
+                        .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .toEntityList(ProfileDTO.class)
                 .doOnError(err -> log.error("API not found: {}", err.getMessage()));
     }
 }
