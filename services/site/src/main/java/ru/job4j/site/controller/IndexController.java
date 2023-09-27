@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.TopicsService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +22,7 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 public class IndexController {
     private final AuthService authService;
     private final CategoriesService categoriesService;
+    private final TopicsService topicsService;
 
     @GetMapping({"/", "index"})
     public String getIndexPage(@RequestParam(value = "error", required = false) String error,
@@ -29,7 +31,7 @@ public class IndexController {
                 "Главная", "/index",
                 "Категории", "/categories/"
         );
-        model.addAttribute("categories", categoriesService.getAll());
+        model.addAttribute("categories", categoriesService.getAllWithTopics(topicsService));
         String errorMessage = null;
         if (error != null) {
             errorMessage = "Email or Password is incorrect !!";
