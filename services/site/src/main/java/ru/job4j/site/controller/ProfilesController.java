@@ -1,6 +1,5 @@
 package ru.job4j.site.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -8,13 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.job4j.site.dto.UserInfoDTO;
-import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.ProfilesService;
-
-import javax.servlet.http.HttpServletRequest;
-
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
 
 /**
  * CheckDev пробное собеседование
@@ -29,13 +22,11 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 public class ProfilesController {
     private final String key;
     private final ProfilesService profilesService;
-    private final AuthService authService;
 
     public ProfilesController(@Value("${server.auth.access.key}") String key,
-                              ProfilesService profilesService, AuthService authService) {
+                              ProfilesService profilesService) {
         this.key = key;
         this.profilesService = profilesService;
-        this.authService = authService;
     }
 
     /**
@@ -46,13 +37,17 @@ public class ProfilesController {
      * @return String "oneProfile" page
      */
     @GetMapping("/{id}")
-    public String getProfileById(@PathVariable int id, Model model, HttpServletRequest request) {
+    public String getProfileById(@PathVariable int id, Model model) {
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/",
+                "Профили", "/profiles/",
+                "Просмотр профиля", "/" + id
+        );
         var profileOptional = profilesService.getProfileById(id, key);
         profileOptional.ifPresent(
                 p -> model.addAttribute("profile", p)
         );
-        model.addAttribute("userInfo", getUserInfo(request));
-        return "/oneProfile";
+        return "/profiles/profileView";
     }
 
     /**
@@ -62,23 +57,13 @@ public class ProfilesController {
      * @return String "/profiles" pge
      */
     @GetMapping("/")
-    public String getAllProfiles(Model model, HttpServletRequest request) {
+    public String getAllProfiles(Model model) {
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/",
+                "Профили", "/profiles"
+        );
         var profilesList = profilesService.getAllProfile(key);
         model.addAttribute("profiles", profilesList);
-        model.addAttribute("userInfo", getUserInfo(request));
-        return "/profiles";
-    }
-
-    private UserInfoDTO getUserInfo(HttpServletRequest request) {
-        var token = getToken(request);
-        if (token == null) {
-            return null;
-        }
-        try {
-            return authService.userInfo(token);
-        } catch (Exception e) {
-            log.error("UserInfo data available. {}", e.getMessage());
-            return null;
-        }
+        return "/profiles/profiles";
     }
 }
