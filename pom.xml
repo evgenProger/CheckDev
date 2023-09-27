@@ -19,6 +19,7 @@
         <module>services/video</module>
         <module>services/desc</module>
         <module>services/site</module>
+        <module>services/mock</module>
     </modules>
 
     <build>
