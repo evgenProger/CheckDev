@@ -3,6 +3,7 @@ package ru.job4j.site.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,8 +13,12 @@ import org.springframework.ui.ConcurrentModel;
 import ru.job4j.site.SiteApplication;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.CategoryDTO;
+import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.TopicsService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -39,11 +44,17 @@ class IndexControllerTest {
     @MockBean
     private CategoriesService categoriesService;
 
+    @MockBean
+    private AuthService authService;
+
+    @MockBean
+    private TopicsService topicsService;
+
     private IndexController indexController;
 
     @BeforeEach
     void initTest() {
-        this.indexController = new IndexController(categoriesService);
+        this.indexController = new IndexController(categoriesService, topicsService, authService);
     }
 
     @Test
@@ -60,11 +71,12 @@ class IndexControllerTest {
         var catDTO2 = new CategoryDTO(2, "name2");
         var listCatDTO = List.of(catDTO1, catDTO2);
         when(categoriesService.getAll()).thenReturn(listCatDTO);
-        var listBread = List.of(new Breadcrumb("Главная", "/"),
-                new Breadcrumb("Категории", "/categories/"));
+        when(categoriesService.getAllWithTopics(topicsService)).thenReturn(listCatDTO);
+        var listBread = List.of(new Breadcrumb("Главная", "/"));
         var model = new ConcurrentModel();
-
-        var view = indexController.getIndexPage(model);
+        var req = Mockito.mock(HttpServletRequest.class);
+        when(req.getSession()).thenReturn(Mockito.mock(HttpSession.class));
+        var view = indexController.getIndexPage(model, req);
         var actualCategories = model.getAttribute("categories");
         var actualBreadCrumbs = model.getAttribute("breadcrumbs");
         var actualUserInfo = model.getAttribute("userInfo");
