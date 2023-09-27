@@ -1,5 +1,6 @@
 package ru.checkdev.mock.service;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Disabled("It is used PostSQLDB. It should be h2.")
 @SpringBootTest(classes = Application.class)
 class InterviewServiceTest {
 
