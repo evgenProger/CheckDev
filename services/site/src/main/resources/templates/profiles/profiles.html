@@ -39,8 +39,11 @@
                 <tr th:each="profile: ${profiles}" style="cursor: pointer;">
                     <td>
                         <div>
-                            <img th:src="@{http://localhost:9900/img(id=*{profile.photoId})}" class="w-25"
-                                 alt="No image">
+                            <i th:if="${#strings.isEmpty(profile.photoId)}"
+                               class="fas fa-image"></i>
+                            <img th:if="${not #strings.isEmpty(profile.photoId)}"
+                                 th:src="@{http://localhost:9900/img(id=*{profile.photoId})}"
+                                 class="w-25" alt="No image">
                         </div>
                     </td>
                     <td>
