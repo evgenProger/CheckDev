@@ -15,7 +15,6 @@ import java.util.Optional;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 
-@Disabled("It is used PostSQLDB. It should be h2.")
 @DataJpaTest()
 @RunWith(SpringRunner.class)
 class WisherRepositoryTest {
