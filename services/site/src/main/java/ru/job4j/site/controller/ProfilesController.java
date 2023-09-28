@@ -41,7 +41,7 @@ public class ProfilesController {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
                 "Профили", "/profiles/",
-                "Просмотр профиля", "/" + id
+                "Просмотр профиля", "/profiles/" + id
         );
         var profileOptional = profilesService.getProfileById(id, key);
         profileOptional.ifPresent(
@@ -60,7 +60,7 @@ public class ProfilesController {
     public String getAllProfiles(Model model) {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
-                "Профили", "/profiles"
+                "Профили", "/profiles/"
         );
         var profilesList = profilesService.getAllProfile(key);
         model.addAttribute("profiles", profilesList);
