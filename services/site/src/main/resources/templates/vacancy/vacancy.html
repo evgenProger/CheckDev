@@ -32,13 +32,21 @@
     </div>
     <div class="row" ng-show="loaded">
         <div class="col-md-12 text-center" ng-hide="showIntro || last">
-            <button ng-click="intro(vacancy)" class="btn btn-success center-block" ng-show="process">Продолжить собеседование</button>
-            <button ng-click="intro(vacancy)" class="btn btn-success center-block" ng-hide="process">Начать собеседование</button>
+            <button class="btn btn-success center-block" ng-click="intro(vacancy)" ng-show="process">Продолжить
+                собеседование
+            </button>
+            <button class="btn btn-success center-block" ng-click="intro(vacancy)" ng-hide="process">Начать
+                собеседование
+            </button>
         </div>
 
         <div class="col-md-12 text-center" ng-hide="!showIntro || last">
-            <button ng-click="start(vacancy)" class="btn btn-success center-block" ng-show="process">Продолжить собеседование</button>
-            <button ng-click="start(vacancy)" class="btn btn-success center-block" ng-hide="process">Начать собеседование</button>
+            <button class="btn btn-success center-block" ng-click="start(vacancy)" ng-show="process">Продолжить
+                собеседование
+            </button>
+            <button class="btn btn-success center-block" ng-click="start(vacancy)" ng-hide="process">Начать
+                собеседование
+            </button>
         </div>
     </div>
 

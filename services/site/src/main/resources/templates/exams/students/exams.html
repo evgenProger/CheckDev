@@ -41,7 +41,8 @@
                 </td>
                 <td class="text-center">{{exam.start | date: 'dd.MM.yyyy'}}</td>
                 <td class="text-center">{{exam.finish | date: 'dd.MM.yyyy'}}</td>
-                <td class="text-center"><a href="#/result/{{exam.exam.id}}" ng-hide="!exam.finish">{{exam.result}}%</a></td>
+                <td class="text-center"><a href="#/result/{{exam.exam.id}}" ng-hide="!exam.finish">{{exam.result}}%</a>
+                </td>
                 <td class="text-center">{{exam.total}}</td>
             </tr>
             </tbody>

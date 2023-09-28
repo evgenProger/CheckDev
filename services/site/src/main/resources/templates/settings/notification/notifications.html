@@ -1,7 +1,7 @@
 <div class="row" ng-show="isAdmin">
     <div class="col-md-12">
-        <a href="#/notifications/template/update" class="btn btn-secondary">Добавить шаблон</a>
-        <a href="#/notifications/settings" class="btn btn-secondary float-right">Настройки</a>
+        <a class="btn btn-secondary" href="#/notifications/template/update">Добавить шаблон</a>
+        <a class="btn btn-secondary float-right" href="#/notifications/settings">Настройки</a>
     </div>
 </div>
 <div class="row">
@@ -17,11 +17,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="template in templates" ng-hide="template.deleted">
+            <tr ng-hide="template.deleted" ng-repeat="template in templates">
                 <td>{{ template.subject }}</td>
                 <td>{{ template.type }}</td>
                 <td>
-                    <a ng-href="#/notifications/template/update/{{template.id}}" class="btn btn-link">
+                    <a class="btn btn-link" ng-href="#/notifications/template/update/{{template.id}}">
                         <i class="fa fa-edit fa-fw"></i>
                     </a>
                     <button class="btn btn-link" ng-click="delete(template)">

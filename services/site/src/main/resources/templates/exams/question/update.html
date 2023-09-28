@@ -1,6 +1,6 @@
 <div class="row" id="manager-panel-exams" style="display: none;">
     <div class="col-md-12">
-        <button type="button" class="btn btn-default pull-right">Добавить тест</button>
+        <button class="btn btn-default pull-right" type="button">Добавить тест</button>
     </div>
 </div>
 <div class="row">
@@ -10,21 +10,21 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="usr">Название:</label>
-                    <input type="text" class="form-control" id="name" ng-model="question.name" required>
+                    <input class="form-control" id="name" ng-model="question.name" required type="text">
                 </div>
                 <div class="form-group">
                     <label for="usr">Порядок:</label>
-                    <input type="number" class="form-control" ng-model="question.pos" required>
+                    <input class="form-control" ng-model="question.pos" required type="number">
                 </div>
                 <div class="form-group">
                     <label for="comment">Описание:</label>
-                    <textarea class="form-control" rows="20" id="description" required></textarea>
+                    <textarea class="form-control" id="description" required rows="20"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="comment">Рекомендации:</label>
-                    <textarea class="form-control" rows="20" id="hint" required></textarea>
+                    <textarea class="form-control" id="hint" required rows="20"></textarea>
                 </div>
-                <a ng-href="#/exam/view/{{question.exam.id}}" class="btn btn-default pull-left">
+                <a class="btn btn-default pull-left" ng-href="#/exam/view/{{question.exam.id}}">
                     Отменить
                 </a>
                 <button class="btn btn-default pull-right" ng-click="save(question)">Добавить</button>

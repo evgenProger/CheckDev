@@ -1,6 +1,6 @@
 <div class="row" ng-show="isAdmin">
     <div class="col-md-12">
-        <a href="#/exam/update" class="btn btn-default pull-right">Добавить тест</a>
+        <a class="btn btn-default pull-right" href="#/exam/update">Добавить тест</a>
     </div>
 </div>
 <div class="row">
@@ -16,7 +16,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="exam in exams" ng-hide="exam.deleted">
+            <tr ng-hide="exam.deleted" ng-repeat="exam in exams">
                 <td>
                     <h4>
                         {{ exam.position }}.
@@ -30,7 +30,7 @@
                     {{ exam.active }}
                 </td>
                 <td class="text-center" ng-show="isAdmin">
-                    <a ng-href="#/exam/update/{{exam.id}}" class="btn btn-link">
+                    <a class="btn btn-link" ng-href="#/exam/update/{{exam.id}}">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </a>
                     <button class="btn btn-link" ng-click="delete(exam)">

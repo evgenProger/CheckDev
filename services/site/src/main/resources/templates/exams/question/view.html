@@ -1,11 +1,12 @@
 <div class="row" ng-show="isAdmin">
     <div class="col-md-12 pull-right">
-        <a ng-href="#/exam/view/{{question.exam.id}}" class="btn btn-default">К тесту</a>
-        <a ng-href="#/question/{{question.id}}/option/update" class="btn btn-default">Добавить вариант</a>
-        <a ng-href="#/exam/{{question.exam.id}}/question/update/{{question.id}}" class="btn btn-default">Отредактировать</a>
-        <a ng-show="previous" ng-href="#/question/{{previous.id}}" class="btn btn-default">назад</a>
-        <a ng-show="next" ng-href="#/question/{{next.id}}" class="btn btn-default">вперед</a>
-        <button type="button" class="btn btn-default pull-right" ng-click="delete(exam)">Удалить</button>
+        <a class="btn btn-default" ng-href="#/exam/view/{{question.exam.id}}">К тесту</a>
+        <a class="btn btn-default" ng-href="#/question/{{question.id}}/option/update">Добавить вариант</a>
+        <a class="btn btn-default"
+           ng-href="#/exam/{{question.exam.id}}/question/update/{{question.id}}">Отредактировать</a>
+        <a class="btn btn-default" ng-href="#/question/{{previous.id}}" ng-show="previous">назад</a>
+        <a class="btn btn-default" ng-href="#/question/{{next.id}}" ng-show="next">вперед</a>
+        <button class="btn btn-default pull-right" ng-click="delete(exam)" type="button">Удалить</button>
     </div>
 </div>
 <div class="row" style="padding-top: 10px;">
@@ -25,11 +26,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="option in options" ng-hide="option.deleted">
+                    <tr ng-hide="option.deleted" ng-repeat="option in options">
                         <td> {{ option.pos }}. {{ option.description }}</td>
                         <td> {{ option.correct }}</td>
                         <td>
-                            <a ng-href="#/question/{{question.id}}/option/update/{{option.id}}" class="btn btn-link">
+                            <a class="btn btn-link" ng-href="#/question/{{question.id}}/option/update/{{option.id}}">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </a>
                             <button class="btn btn-link" ng-click="deleteOpt(option)">

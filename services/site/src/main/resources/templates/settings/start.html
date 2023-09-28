@@ -5,12 +5,13 @@
             <div class="col-xl-12 col-lg-12 col-md-12 search">
                 <form class="search-form">
                     <div class="form-group flex">
-                        <input type="text" class="form-control col-xl-10 " id="inputSearch" placeholder="Я ищу..." ng-model="key">
+                        <input class="form-control col-xl-10 " id="inputSearch" ng-model="key" placeholder="Я ищу..."
+                               type="text">
                         <select id="select" name="select">
                             <option value="1">Вакансии</option>
                             <option value="2">Кандидаты</option>
                         </select>
-                        <button type="submit" class="btn btn-primary col-xl-2" ng-click="search(key)">Найти</button>
+                        <button class="btn btn-primary col-xl-2" ng-click="search(key)" type="submit">Найти</button>
                     </div>
                 </form>
             </div>
@@ -33,10 +34,12 @@
                     <div class="col-xl-12 col-lg-12 controls-wrp">
                         <div class="controls">
                             <div class="controls__item">
-                                <a href="#"  onclick="return loadPage('index.html', '#/vacancy/update');" class="btn btn-watch yellow">Разместить вакансию</a>
+                                <a class="btn btn-watch yellow" href="#"
+                                   onclick="return loadPage('index.html', '#/vacancy/update');">Разместить вакансию</a>
                             </div>
                             <div class="controls__item">
-                                <a href="#" class="btn btn-watch blue" onclick="return loadPage('settings/settings.html', '#/profile');">Добавить резюме</a>
+                                <a class="btn btn-watch blue" href="#"
+                                   onclick="return loadPage('settings/settings.html', '#/profile');">Добавить резюме</a>
                             </div>
                         </div>
                     </div>
@@ -50,21 +53,23 @@
                             <li>Регистрация</li>
                         </ul>
                         <div class="tabs__content active">
-                            <form id="login-form" class="login">
+                            <form class="login" id="login-form">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" id="username" name="email"
-                                           data-error="Адрес email не корректный" required
-                                           placeholder="Введите Ваш e-mail">
+                                    <input class="form-control" data-error="Адрес email не корректный" id="username" name="email"
+                                           placeholder="Введите Ваш e-mail" required
+                                           type="text">
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control" id="password" name="password"
-                                           data-minlength="6"
-                                           data-error="Заполните поле пароль" required
-                                           placeholder="Введите пароль">
+                                    <input class="form-control" data-error="Заполните поле пароль" data-minlength="6" id="password"
+                                           name="password"
+                                           placeholder="Введите пароль" required
+                                           type="password">
                                 </div>
-                                <button class="btn btn-send" type="submit" onclick="return login('#login-form');">Войти</button>
+                                <button class="btn btn-send" onclick="return login('#login-form');" type="submit">
+                                    Войти
+                                </button>
 
-                                <a href="forgot.html" class="link">Забыли пароль?</a>
+                                <a class="link" href="forgot.html">Забыли пароль?</a>
 
                                 <!--<div class="login-soc">-->
                                 <!--<span class="title">-->
@@ -92,38 +97,45 @@
                         </div>
 
                         <div class="tabs__content">
-                            <div id="register-form" class="reg">
+                            <div class="reg" id="register-form">
                                 <div class="form-group">
-                                    <input type="text" name="reg-username" id="reg-username" tabindex="1" class="form-control" placeholder="ФИО" data-minlength="6"
-                                           data-error="Заполните поле" required>
+                                    <input class="form-control" data-error="Заполните поле" data-minlength="6" id="reg-username"
+                                           name="reg-username" placeholder="ФИО" required
+                                           tabindex="1" type="text">
                                     <div class="help-block with-errors"></div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" name="reg-email" id="reg-email" tabindex="1" class="form-control" placeholder="Email адрес"
-                                           data-error="Адрес email не корректный" required>
+                                    <input class="form-control" data-error="Адрес email не корректный" id="reg-email" name="reg-email"
+                                           placeholder="Email адрес" required
+                                           tabindex="1" type="email">
                                     <div class="help-block with-errors"></div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" name="reg-password" id="reg-password" tabindex="2" class="form-control"
+                                    <input class="form-control" data-error="Заполните поле пароль" data-minlength="6" id="reg-password"
+                                           name="reg-password"
                                            placeholder="Пароль"
-                                           data-minlength="6"
-                                           data-error="Заполните поле пароль" required>
+                                           required
+                                           tabindex="2" type="password">
                                     <div class="help-block with-errors"></div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" name="reg-confirm-password" id="reg-confirm-password" tabindex="2"
-                                           class="form-control" placeholder="Подтвердить"
-                                           data-minlength="6"
-                                           data-error="Заполните поле подтверждение"
-                                           data-match="#reg-password" data-match-error="Пароли не совпадают" required>
+                                    <input class="form-control" data-error="Заполните поле подтверждение" data-match="#reg-password"
+                                           data-match-error="Пароли не совпадают"
+                                           data-minlength="6" id="reg-confirm-password"
+                                           name="reg-confirm-password"
+                                           placeholder="Подтвердить"
+                                           required tabindex="2" type="password">
                                     <div class="help-block with-errors"></div>
                                 </div>
                                 <div class="form-group check">
-                                    <input type="checkbox" class="checkbox" id="reg-privacy" required name="reg-privacy"/>
-                                    <label  for="reg-privacy"><span class="txt">Я прочитал и принимаю условия пользовательского
+                                    <input class="checkbox" id="reg-privacy" name="reg-privacy" required
+                                           type="checkbox"/>
+                                    <label for="reg-privacy"><span class="txt">Я прочитал и принимаю условия пользовательского
                                             соглашения</span></label>
                                 </div>
-                                <input type="button" name="register-submit" id="register-submit" tabindex="4" onclick="return registration('#register-form');" class="form-control btn btn-send" value="Зарегистрироваться">
+                                <input class="form-control btn btn-send" id="register-submit" name="register-submit" onclick="return registration('#register-form');"
+                                       tabindex="4"
+                                       type="button" value="Зарегистрироваться">
                             </div>
                         </div>
                     </div>
@@ -150,7 +162,7 @@
                         <div class="descr">
                             <div class="row-descr">
                                 <div class="title">
-                                    {{  person.aboutShort | limitTo: 55 }}{{ person.aboutShort.length > 55 ? '...' : ''}}
+                                    {{ person.aboutShort | limitTo: 55 }}{{ person.aboutShort.length > 55 ? '...' : ''}}
                                 </div>
                             </div>
                             <div class="experience" ng-show="person.salary">
@@ -163,7 +175,7 @@
                                 Опыт работы - начало карьеры
                             </div>
                             <div class="row-descr float-right">
-                                <a href="index.html#/cv/{{person.key}}" class="btn btn-more">Подробнее</a>
+                                <a class="btn btn-more" href="index.html#/cv/{{person.key}}">Подробнее</a>
                             </div>
                             <div class="experience" ng-show="person.location">
                                 Место нахождения - {{ person.location }}
@@ -175,7 +187,8 @@
                     </div>
                 </div>
                 <div class="link-wrp">
-                    <a class="link" href="#" onclick="return loadPage('index.html', '#/resume');">Посмотреть всех кандидатов</a>
+                    <a class="link" href="#" onclick="return loadPage('index.html', '#/resume');">Посмотреть всех
+                        кандидатов</a>
                 </div>
             </div>
             <div class="col-xl-6 col-lg-6 col-md-12 help-item">
@@ -183,7 +196,7 @@
                     <span class="block blue">Если Вы <span class="bold">Кандидат,</span></span>
                     <span class="block">то Вы можете ознакомиться со списком вакансий:</span>
                 </div>
-                <div class="offers candidate" ng-repeat="vacancy in vacancies" ng-click="toVacancy(vacancy)">
+                <div class="offers candidate" ng-click="toVacancy(vacancy)" ng-repeat="vacancy in vacancies">
                     <div class="offers__item">
                         <div class="descr">
                             <div class="row-descr">
@@ -203,7 +216,8 @@
                     </div>
                 </div>
                 <div class="link-wrp">
-                    <a class="link" href="#" onclick="return loadPage('index.html', '#/vacancies');">Посмотреть все вакансии</a>
+                    <a class="link" href="#" onclick="return loadPage('index.html', '#/vacancies');">Посмотреть все
+                        вакансии</a>
                 </div>
             </div>
         </div>
@@ -240,7 +254,8 @@
                         <div class="descr">
                             <div class="title">Всесторонне проверить навыки кандидата</div>
                             <div class="text">
-                                Система проверяет умение решать логические и алгоритмические задачи, проводить теоретические экзамены. Система безпристрастна
+                                Система проверяет умение решать логические и алгоритмические задачи, проводить
+                                теоретические экзамены. Система безпристрастна
                             </div>
                         </div>
                     </div>
@@ -249,7 +264,8 @@
                         <div class="descr">
                             <div class="title">Автоматически проверить тестовое задание</div>
                             <div class="text">
-                                Система проверяет правильность решение задания, качество кода, скорость решения задания.  Это позволяется экономить время технических
+                                Система проверяет правильность решение задания, качество кода, скорость решения задания.
+                                Это позволяется экономить время технических
                             </div>
                         </div>
                     </div>
@@ -258,7 +274,8 @@
                         <div class="descr">
                             <div class="title">Экономить время и фокусироваться только на успешных кандидатах</div>
                             <div class="text">
-                                Процесс интервью создается единожды, а используется многократно. Сотрудник фирмы получает уведомление только об успешных кандитатах
+                                Процесс интервью создается единожды, а используется многократно. Сотрудник фирмы
+                                получает уведомление только об успешных кандитатах
                             </div>
                         </div>
                     </div>
@@ -267,7 +284,8 @@
                         <div class="descr">
                             <div class="title">Воспользоваться базой резюме программистов</div>
                             <div class="text">
-                                Сотрудник фирмы может пригласить пройти интервью любого кандидата, который уже существует в системе, воспользовавшись кнопкой «пригласить кандидата»
+                                Сотрудник фирмы может пригласить пройти интервью любого кандидата, который уже
+                                существует в системе, воспользовавшись кнопкой «пригласить кандидата»
                             </div>
                         </div>
                     </div>
@@ -294,7 +312,8 @@
                         <div class="descr">
                             <div class="title">Быстро найти подходящую работу</div>
                             <div class="text">
-                                Вы находите интересующую вакансии  и начинаете сразу проходить интервью. В системе постоянно добавляются новые
+                                Вы находите интересующую вакансии и начинаете сразу проходить интервью. В системе
+                                постоянно добавляются новые
                             </div>
                         </div>
                     </div>
@@ -303,7 +322,8 @@
                         <div class="descr">
                             <div class="title">Экономия времени</div>
                             <div class="text">
-                                Проходя интервью дома, а не тратя его на дорогу в офис компании. Сейчас, чтобы пройти собеседование вам нужно договориться о времени,
+                                Проходя интервью дома, а не тратя его на дорогу в офис компании. Сейчас, чтобы пройти
+                                собеседование вам нужно договориться о времени,
                             </div>
                         </div>
                     </div>
@@ -312,7 +332,8 @@
                         <div class="descr">
                             <div class="title">Автоматически отслеживать появление новых вакансий в системе</div>
                             <div class="text">
-                                Это позволяет быстрее среагировать и пройти интервью первым, а так же экономить время на поиск новых объявлений в сети, к же экономить время на поиск новых
+                                Это позволяет быстрее среагировать и пройти интервью первым, а так же экономить время на
+                                поиск новых объявлений в сети, к же экономить время на поиск новых
                             </div>
                         </div>
                     </div>
@@ -321,7 +342,8 @@
                         <div class="descr">
                             <div class="title">Гарантированная обратная связь</div>
                             <div class="text">
-                                Если вы прошли успешно интервью, с Вами гарантированно свяжутся. Если вы провалили интервью, Вам гарантированно дадут рекомендации по улучшению
+                                Если вы прошли успешно интервью, с Вами гарантированно свяжутся. Если вы провалили
+                                интервью, Вам гарантированно дадут рекомендации по улучшению
                             </div>
                         </div>
                     </div>
@@ -462,8 +484,10 @@
             <div class="col-xl-12 col-lg-12 col-md-12">
                 <span class="bold">Hunt4 PRO</span> – молодой проект, который только выходит на рынок,
                 <span class="block">Поэтому все услуги мы предоставляем бесплатно.</span>
-                <span class="block">Будем благодарны получить от вас обратную связь об использовании</span> нашего сервиса.
-                <span class="block">Пишите в любое время на почту <a class="bold" href="#">parsentev@yandex.ru</a></span>
+                <span class="block">Будем благодарны получить от вас обратную связь об использовании</span> нашего
+                сервиса.
+                <span class="block">Пишите в любое время на почту <a class="bold"
+                                                                     href="#">parsentev@yandex.ru</a></span>
             </div>
         </div>
     </div>
@@ -491,12 +515,13 @@
                 <div class="videos__item active" data-video-link="HVVqTaQ6wb8">
                     Стажер - разработчик Java. Экстрим про. Екатеринбург. от 20 000 руб. Hunt4 PRO 1 0 #4
                 </div>
-                <a href="#" class="link">
+                <a class="link" href="#">
                     Смотреть все видео на канале YouTube
                 </a>
             </div>
             <div class="col-xl-7 col-lg-7 col-md-12 current-video">
-                <iframe width="670" height="346" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0" height="346" src=""
+                        width="670"></iframe>
             </div>
         </div>
     </div>
@@ -512,8 +537,8 @@
                             <div class="card-header">
                                 <span class="text">Сколько стоит подписка на портале?</span>
                                 <span class="icon">
-                                        <img src="img/icons/plus.png" alt="">
-                                        <img src="img/icons/minus.png" alt="">
+                                        <img alt="" src="img/icons/plus.png">
+                                        <img alt="" src="img/icons/minus.png">
                                     </span>
                             </div>
                             <div class="panel-collapse">
@@ -528,8 +553,8 @@
                             <div class="card-header">
                                 <span class="text">Сколько стоит подписка на портале?</span>
                                 <span class="icon">
-                                        <img src="img/icons/plus.png" alt="">
-                                        <img src="img/icons/minus.png" alt="">
+                                        <img alt="" src="img/icons/plus.png">
+                                        <img alt="" src="img/icons/minus.png">
                                     </span>
                             </div>
                             <div class="panel-collapse">
@@ -544,8 +569,8 @@
                             <div class="card-header">
                                 <span class="text">Сколько стоит подписка на портале?</span>
                                 <span class="icon">
-                                        <img src="img/icons/plus.png" alt="">
-                                        <img src="img/icons/minus.png" alt="">
+                                        <img alt="" src="img/icons/plus.png">
+                                        <img alt="" src="img/icons/minus.png">
                                     </span>
                             </div>
                             <div class="panel-collapse">
@@ -560,8 +585,8 @@
                             <div class="card-header">
                                 <span class="text">Сколько стоит подписка на портале?</span>
                                 <span class="icon">
-                                        <img src="img/icons/plus.png" alt="">
-                                        <img src="img/icons/minus.png" alt="">
+                                        <img alt="" src="img/icons/plus.png">
+                                        <img alt="" src="img/icons/minus.png">
                                     </span>
                             </div>
                             <div class="panel-collapse">
@@ -581,7 +606,7 @@
                     Все оставшиеся вопросы, либо
                     предложения о сотрудничестве Вы
                     можете отправить на электронную
-                    почту <a href="#" class="link">parsentev@yandex.ru</a>
+                    почту <a class="link" href="#">parsentev@yandex.ru</a>
                 </div>
             </div>
         </div>
@@ -594,18 +619,23 @@
                 <div class="wrapper">
                     <div class="title">Я работодатель</div>
                     <div class="text">
-                        Я ответственное лицо компании, занимающееся отбором персонала, и я хочу разговаривать с достойными кандидатами, обладающими необходимым уровнем знаний и навыков в сфере программирования
+                        Я ответственное лицо компании, занимающееся отбором персонала, и я хочу разговаривать с
+                        достойными кандидатами, обладающими необходимым уровнем знаний и навыков в сфере
+                        программирования
                     </div>
-                    <a href="#" class="btn btn-transp" onclick="return loadPage('index.html', '#/vacancy/update');">Разместить вакансию</a>
+                    <a class="btn btn-transp" href="#" onclick="return loadPage('index.html', '#/vacancy/update');">Разместить
+                        вакансию</a>
                 </div>
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6 candidate">
                 <div class="wrapper">
                     <div class="title">Я кандидат</div>
                     <div class="text">
-                        Я кандидат на работу, я ценю свое время и время других людей, я хочу показать свои навыки программирования, которые являются наилучшей характеристикой, и я хочу найти достойную работу
+                        Я кандидат на работу, я ценю свое время и время других людей, я хочу показать свои навыки
+                        программирования, которые являются наилучшей характеристикой, и я хочу найти достойную работу
                     </div>
-                    <a href="#" class="btn btn-transp" onclick="return loadPage('index.html', '#/vacancies');">Посмотреть вакансии</a>
+                    <a class="btn btn-transp" href="#" onclick="return loadPage('index.html', '#/vacancies');">Посмотреть
+                        вакансии</a>
                 </div>
             </div>
         </div>

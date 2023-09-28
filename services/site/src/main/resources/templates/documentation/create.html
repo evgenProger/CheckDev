@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link rel="icon" type="image/png" href="img/favorite.png"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Обучение и трудоустройство Java-программистов от Junior до Senior">
-    <meta name="author" content="Job4j.ru">
+    <link href="img/favorite.png" rel="icon" type="image/png"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Обучение и трудоустройство Java-программистов от Junior до Senior" name="description">
+    <meta content="Job4j.ru" name="author">
     <title>Обучение и трудоустройство Java-программистов от Junior до Senior</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/modern-business.css" rel="stylesheet">
@@ -32,6 +32,7 @@
             );
             $("#footer").load("footer.html?v=03.07.2018");
         });
+
     </script>
 </head>
 
@@ -56,19 +57,24 @@
         <div class="col-md-12">
             <div id="vacancy_creation">
                 <h3>Создание новой вакансии.</h3>
-                <p>В системе нет разделения на роли. Каждый пользователь может быть одновременно и работодателем и кандидатом.</p>
+                <p>В системе нет разделения на роли. Каждый пользователь может быть одновременно и работодателем и
+                    кандидатом.</p>
                 <ul>
                     <li><p>Первоначально необходимо зарегистрироваться в системе.</p>
                         <ul>
-                            <li>Заполнить <a target="_blank" href="http://job4j.ru:8088/login.html">форму регистрации.</br></a>
+                            <li>Заполнить <a href="http://job4j.ru:8088/login.html" target="_blank">форму
+                                регистрации.</br></a>
                                 <img src="img/documentation/doc_registration.png"/></li>
-                            <li>После регистрации на email адрес придет уведомление о подтверждении.</li></ul></li>
+                            <li>После регистрации на email адрес придет уведомление о подтверждении.</li>
+                        </ul>
+                    </li>
 
                     <li>С введенным ранее email адресом и паролем переходим в форму авторизации.
                         <img src="img/documentation/doc_filled.png"/></li>
 
                     <li>Главное окно программы выглядит так
-                        <img src="img/documentation/doc_mainpanel.png"/></li></ul>
+                        <img src="img/documentation/doc_mainpanel.png"/></li>
+                </ul>
 
                 <p style="margin:20px 0px 20px 0px"><b>Для того, чтобы создать новую вакансию</b> нужно</p>
                 <ul>
@@ -78,26 +84,34 @@
                         </br><img src="img/documentation/doc_formfornew.png"/></li>
                     <li>Заполнить поля ввода
                         <ul>
-                            <li>Название – название вакансии. Например Senior Java программист. </li>
+                            <li>Название – название вакансии. Например Senior Java программист.</li>
                             <li>Компания – имя компании или фирмы, в которую устраивается кандидат.</li>
                             <li>Где находится – где находится рабочее место или удаленно.</li>
                             <li>Уровень заработной платны – диапазон или почасовка.</li>
                             <li>Опыт работы – ожидаемый опыт работы.</li>
                             <li>Описание вакансии.
                                 </br><img src="img/documentation/doc_vacdesc.png"/></li>
-                        </ul></ul>
+                        </ul>
+                </ul>
                 <p style="margin:20px 0px 20px 0px">Пример вакансии.
-                    </br><img src="img/documentation/doc_vacexample.png"/> </p>
+                    </br><img src="img/documentation/doc_vacexample.png"/></p>
 
 
             </div>
             <div id="interview">
                 <h3>Создание этапов собеседования.</h3>
-                <p>Любое собеседование состоит из нескольких этапов отбора. Обычно на позицию программиста проводят три собеседования</p>
+                <p>Любое собеседование состоит из нескольких этапов отбора. Обычно на позицию программиста проводят три
+                    собеседования</p>
                 <ol>
-                    <li>Общее ознакомительное собеседование. На этом собеседовании собирают общую информацию о кандидате: уровень з/п, опыт работы, отношение к командировкам.</li>
-                    <li>Проверка теоретических знаний. Техническое интервью c кандидатом, где спрашивают теоретические вопросы по программированию.</li>
-                    <li>Решение практических задач. Кандидату предлагается решить одну или несколько задач относящихся к работе. Обычно это тестовое задание или решение алгоритмических задач.</li>
+                    <li>Общее ознакомительное собеседование. На этом собеседовании собирают общую информацию о
+                        кандидате: уровень з/п, опыт работы, отношение к командировкам.
+                    </li>
+                    <li>Проверка теоретических знаний. Техническое интервью c кандидатом, где спрашивают теоретические
+                        вопросы по программированию.
+                    </li>
+                    <li>Решение практических задач. Кандидату предлагается решить одну или несколько задач относящихся к
+                        работе. Обычно это тестовое задание или решение алгоритмических задач.
+                    </li>
                 </ol>
                 </br><img src="img/documentation/doc_addinterview.png"/>
                 </br><img src="img/documentation/doc_interviewnew.png"/>
@@ -118,25 +132,30 @@
                 </br><img src="img/documentation/doc_questionedit.png"/>
                 <ul>
                     <li>Короткое название – короткое название задания.</li>
-                    <li>Тип поля ввода – форма ввода для заданий может выглядеть: как числовое поле, календарь, список тестов, алгоритмическая задача.</li>
-                    <li>Условие прохождения заданий – критерий проверки по которой определяется верно ли сделано задание или нет. Это поле зависит от типа задания. Например для алгоритмической задачи условия могут быть только выполнено верно или нет. Для календаря можно указывать диапозон.</li>
+                    <li>Тип поля ввода – форма ввода для заданий может выглядеть: как числовое поле, календарь, список
+                        тестов, алгоритмическая задача.
+                    </li>
+                    <li>Условие прохождения заданий – критерий проверки по которой определяется верно ли сделано задание
+                        или нет. Это поле зависит от типа задания. Например для алгоритмической задачи условия могут
+                        быть только выполнено верно или нет. Для календаря можно указывать диапозон.
+                    </li>
                     <li>Описание заданий – текст содержит описание выполняемого задания.</li>
                 </ul>
                 <p>Пример заданий.</p>
                 <p>Сбор контактной информации.
-                    </br><img src="img/documentation/doc_questioncontactinfo.png"/> </p>
+                    </br><img src="img/documentation/doc_questioncontactinfo.png"/></p>
                 <p>Пример отображения задания для кандидата.</p>
                 <ul>
                     <li>Описание вакансии. Вид для кандидата.
-                        </br><img src="img/documentation/doc_questioncandidatevacancyview.png"/> </li>
+                        </br><img src="img/documentation/doc_questioncandidatevacancyview.png"/></li>
                     <li>Демонстрация этапа. Вид для кандидата.
-                        </br><img src="img/documentation/doc_questioncandidateview.png"/> </li>
+                        </br><img src="img/documentation/doc_questioncandidateview.png"/></li>
                     <li>Демонстрация формы задания. Вид для кандидата.
-                        </br><img src="img/documentation/doc_questioncandidateformview.png"/>  </li>
+                        </br><img src="img/documentation/doc_questioncandidateformview.png"/></li>
                     <li>Вид алгоритмического задания.
-                        </br><img src="img/documentation/doc_questioncandidatealgorithmicview.png"/> </li>
+                        </br><img src="img/documentation/doc_questioncandidatealgorithmicview.png"/></li>
                     <li>Публикация/Остановка вакансии.
-                        </br><img src="img/documentation/doc_questionpublishstop.png"/> </li>
+                        </br><img src="img/documentation/doc_questionpublishstop.png"/></li>
                 </ul>
             </div>
             <div id="analyze">

@@ -7,14 +7,17 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <a href="#/algo/update/{{algo.id}}" class="btn btn-secondary">Отредактировать</a>
-        <a ng-href="#/algos" class="btn btn-secondary">Назад</a>
+        <a class="btn btn-secondary" href="#/algo/update/{{algo.id}}">Отредактировать</a>
+        <a class="btn btn-secondary" ng-href="#/algos">Назад</a>
         <button class="btn btn-secondary float-right" ng-click="run(algo)">Запустить</button>
     </div>
 </div>
 <div class="row" ng-show="running">
     <div class="col-md-2 col-md-offset-5">
-        <div class='uil-ripple-css' style='transform:scale(0.54);'><div></div><div></div></div>
+        <div class='uil-ripple-css' style='transform:scale(0.54);'>
+            <div></div>
+            <div></div>
+        </div>
     </div>
 </div>
 <div class="row" style="padding-top: 10px;">

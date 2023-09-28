@@ -4,33 +4,34 @@
         width: 100px;
         border:2px solid #03b1ce ;}
     .bot-border{ border-bottom:1px #f8f8f8 solid;  margin:5px 0  5px 0}
+
 </style>
 <div class="container pt-3">
     <div class="row pt-3" ng-show="loaded">
         <div class="col-md-12">
-            <div class="alert alert-warning" role="alert"  ng-show="vacancies.length == 0">
+            <div class="alert alert-warning" ng-show="vacancies.length == 0" role="alert">
                 <h4 class="alert-heading">
                     <i class="fa fa-bell fa-fw"></i>Вам нужно добавить вакансии, чтобы пригласить кандидата</h4>
                 <p>
                     Добавьте ваканисию и пригласите понравившегося кандидата пройти собеседование.
-                    Для этого нажимите на кнопку <a href="#/vacancy/update/" class="btn-link">Добавить вакансию</a>.
+                    Для этого нажимите на кнопку <a class="btn-link" href="#/vacancy/update/">Добавить вакансию</a>.
                 </p>
             </div>
         </div>
         <div class="col-md-12">
-            <a href="#/vacancy/update/" class="btn btn-secondary" data-toggle="tooltip"
+            <a class="btn btn-secondary" data-toggle="tooltip" href="#/vacancy/update/"
                title="Перейти на страницу с открытыми вакансиями">
                 Добавить вакансию</a>
-            <a href="#/teams" class="btn btn-secondary" data-toggle="tooltip"
+            <a class="btn btn-secondary" data-toggle="tooltip" href="#/teams"
                title="Перейти на страницу с открытыми вакансиями">Группы</a>
-            <a href="#/archive" class="btn btn-secondary" data-toggle="tooltip"
+            <a class="btn btn-secondary" data-toggle="tooltip" href="#/archive"
                title="Перейти на страницу с архивированными вакансиями">Архив</a>
-            <button id="showAll" class="btn btn-secondary" data-toggle="popover" ng-click="showAll()">
+            <button class="btn btn-secondary" data-toggle="popover" id="showAll" ng-click="showAll()">
                 Вакансии всех пользователей
             </button>
-            <button class="btn btn-secondary" data-toggle="popover"
-                    title="Страница опубликованный вакансий"
-                    data-content="На этой странице находятся все опубликованные вакансии.">
+            <button class="btn btn-secondary" data-content="На этой странице находятся все опубликованные вакансии."
+                    data-toggle="popover"
+                    title="Страница опубликованный вакансий">
                 <i class="fa fa-question fa-fw"></i>
             </button>
         </div>
@@ -58,8 +59,10 @@
                             <div class="row">
                                 <div class="col-sm">
                                     <span class="card-subtitle mb-2 text-muted">Опыт работы:</span>
-                                    <span class="card-text" ng-show="person.experience">{{ res.experience }} г.(лет)</span>
-                                    <span class="card-text" ng-hide="person.experience"> Опыт работы - начало карьеры</span>
+                                    <span class="card-text"
+                                          ng-show="person.experience">{{ res.experience }} г.(лет)</span>
+                                    <span class="card-text"
+                                          ng-hide="person.experience"> Опыт работы - начало карьеры</span>
                                     <br/>
                                     <span class="card-subtitle mb-2 text-muted">О себе кратко:</span>
                                     <span class="card-text">{{person.aboutShort}}</span>
@@ -70,7 +73,8 @@
                                 </div>
                                 <div class="col-sm">
                                     <div class="float-right">
-                                        <img alt="User Pic" ng-src="{{photo.imgUrl}}" id="profile-image1" class="img-circle img-responsive">
+                                        <img alt="User Pic" class="img-circle img-responsive" id="profile-image1"
+                                             ng-src="{{photo.imgUrl}}">
                                     </div>
                                 </div>
                             </div>
@@ -114,27 +118,35 @@
                         <h5>{{ data.vacancy.created | date: 'dd.MM.yyyy'}}</h5>
                     </td>
                     <td>
-                        <button class="btn btn-secondary" ng-show="data.result =='NOT'" data-toggle="popover" title="Пригласить" data-content="Пригласить" ng-click="sendInvitation(data.vacancy.id)">
+                        <button class="btn btn-secondary" data-content="Пригласить" data-toggle="popover"
+                                ng-click="sendInvitation(data.vacancy.id)" ng-show="data.result =='NOT'" title="Пригласить">
                             <i class="fa fa-paper-plane fa-fw"></i> Пригласить
                         </button>
-                        <button class="btn btn-success" ng-show="data.result =='SUCCESS'" ng-disabled='true' data-toggle="popover" title="Пройдено" data-content="Пройдено">
+                        <button class="btn btn-success" data-content="Пройдено" data-toggle="popover"
+                                ng-disabled='true' ng-show="data.result =='SUCCESS'" title="Пройдено">
                             <i class="fa fa-thumbs-up fa-fw"></i> Пройдено
                         </button>
-                        <button class="btn btn-warning" ng-show="data.result =='PROCESS'" ng-disabled='true' data-toggle="popover" title="В процессе" data-content="В процессе">
-                            <i class="fa fa-hourglass-half fa-fw"></i>В процессе</button>
-                        <button class="btn btn-danger" ng-show="data.result =='FAIL'" ng-disabled='true' data-toggle="popover" title="Провалено" data-content="Провалено">
-                        <i class="fa fa-thumbs-down fa-fw"></i>Провалено</button>
-                        <button class="btn  btn-info" ng-show="data.result =='OFFER'" ng-disabled='true' data-toggle="popover" title="Предложено" data-content="Предложено">
-                        <i class="fa fa-envelope fa-fw"></i>Предложено</button>
+                        <button class="btn btn-warning" data-content="В процессе" data-toggle="popover"
+                                ng-disabled='true' ng-show="data.result =='PROCESS'" title="В процессе">
+                            <i class="fa fa-hourglass-half fa-fw"></i>В процессе
+                        </button>
+                        <button class="btn btn-danger" data-content="Провалено" data-toggle="popover"
+                                ng-disabled='true' ng-show="data.result =='FAIL'" title="Провалено">
+                            <i class="fa fa-thumbs-down fa-fw"></i>Провалено
+                        </button>
+                        <button class="btn  btn-info" data-content="Предложено" data-toggle="popover"
+                                ng-disabled='true' ng-show="data.result =='OFFER'" title="Предложено">
+                            <i class="fa fa-envelope fa-fw"></i>Предложено
+                        </button>
                     </td>
                 </tr>
                 </tbody>
             </table>
-            <dir-pagination-controls template-url="./js/dirPagination.tpl.html"
-                                     max-size="10"
+            <dir-pagination-controls boundary-links="true"
                                      direction-links="true"
-                                     boundary-links="true"
-                                     on-page-change="data.getData(newPageNumber)">
+                                     max-size="10"
+                                     on-page-change="data.getData(newPageNumber)"
+                                     template-url="./js/dirPagination.tpl.html">
             </dir-pagination-controls>
         </div>
     </div>

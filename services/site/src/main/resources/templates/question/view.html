@@ -1,9 +1,9 @@
 <div class="row" ng-show="isAdmin">
     <div class="col-md-12 float-right">
-        <a ng-href="#/exam/view/{{question.exam.id}}" class="btn btn-secondary">К тесту</a>
-        <a ng-href="#/question/{{question.id}}/option/update" class="btn btn-secondary">Добавить вариант</a>
-        <a ng-href="#/exam/{{question.exam.id}}/question/update/{{question.id}}" class="btn btn-secondary">Отредактировать</a>
-        <button type="button" class="btn btn-secondary float-right" ng-click="delete(exam)">Удалить</button>
+        <a class="btn btn-secondary" ng-href="#/exam/view/{{question.exam.id}}">К тесту</a>
+        <a class="btn btn-secondary" ng-href="#/question/{{question.id}}/option/update">Добавить вариант</a>
+        <a class="btn btn-secondary" ng-href="#/exam/{{question.exam.id}}/question/update/{{question.id}}">Отредактировать</a>
+        <button class="btn btn-secondary float-right" ng-click="delete(exam)" type="button">Удалить</button>
     </div>
 </div>
 <div class="row" style="padding-top: 10px;">
@@ -23,11 +23,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="option in options" ng-hide="option.deleted">
+                    <tr ng-hide="option.deleted" ng-repeat="option in options">
                         <td> {{ option.pos }}. {{ option.description }}</td>
                         <td> {{ option.correct }}</td>
                         <td>
-                            <a ng-href="#/question/{{question.id}}/option/update/{{option.id}}" class="btn btn-link">
+                            <a class="btn btn-link" ng-href="#/question/{{question.id}}/option/update/{{option.id}}">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </a>
                             <button class="btn btn-link" ng-click="deleteOpt(option)">

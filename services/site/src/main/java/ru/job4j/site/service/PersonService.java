@@ -24,9 +24,9 @@ import java.io.IOException;
 @Slf4j
 @AllArgsConstructor
 public class PersonService {
-    private final WebClientAuthCall webClientAuthCall;
     private static final String URL_PERSON_CURRENT = "/person/current";
     private static final String URL_PERSON_UPDATE = "/person/updateMultipart";
+    private final WebClientAuthCall webClientAuthCall;
 
     /**
      * Метод получает модель PersonDTO по токену.

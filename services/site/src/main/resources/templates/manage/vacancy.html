@@ -8,20 +8,20 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="alert alert-warning" role="alert"  ng-show="tasks.length == 0">
+            <div class="alert alert-warning" ng-show="tasks.length == 0" role="alert">
                 <h4 class="alert-heading">
                     <i class="fa fa-bell fa-fw"></i>В вакансии отсуствуют задания</h4>
                 <p>
                     Рекомендуем добавить задания в вакансию.
                     Для этого нажимите на кнопку
-                    <a href="#/task/update/{{vacancy.id}}" class="btn-link">Добавить заданиe</a>.
+                    <a class="btn-link" href="#/task/update/{{vacancy.id}}">Добавить заданиe</a>.
                     Начните с добавление алгоритмической задачи.
                     Для задачи выставьте условия успешного опрохождения.
                     Без заданий система не может произвести отбор кандидатов. Все кандидаты пройдут интервью.
                 </p>
             </div>
 
-            <div class="alert alert-info" role="alert"  ng-show="tasks.length > 0 && !vacancy.active">
+            <div class="alert alert-info" ng-show="tasks.length > 0 && !vacancy.active" role="alert">
                 <h4 class="alert-heading">
                     <i class="fa fa-bell fa-fw"></i>Вакансия готова к публикации</h4>
                 <p>
@@ -31,26 +31,26 @@
                 </p>
             </div>
 
-            <a href="#/task/update/{{vacancy.id}}" class="btn btn-secondary">
+            <a class="btn btn-secondary" href="#/task/update/{{vacancy.id}}">
                 <i class="fa fa-plus fa-fw"></i> Добавить задание
             </a>
-            <a href="#/vacancy/update/{{vacancy.id}}" class="btn btn-secondary">
+            <a class="btn btn-secondary" href="#/vacancy/update/{{vacancy.id}}">
                 <span class="glyphicon glyphicon-edit"></span> Отредактировать
             </a>
-            <button ng-show="!vacancy.active" ng-click="actived(vacancy, true)" class="btn btn-success">
+            <button class="btn btn-success" ng-click="actived(vacancy, true)" ng-show="!vacancy.active">
                 <span class="glyphicon glyphicon-play"></span> Опубликовать
             </button>
-            <button ng-click="actived(vacancy, false)" ng-show="vacancy.active" class="btn btn-warning">
+            <button class="btn btn-warning" ng-click="actived(vacancy, false)" ng-show="vacancy.active">
                 <span class="glyphicon glyphicon-pause"></span> Остановить публикацию
             </button>
-            <a ng-href="#/owner" class="btn btn-secondary">
+            <a class="btn btn-secondary" ng-href="#/owner">
                 <span class="glyphicon glyphicon-step-backward"></span> Назад
             </a>
             <div class='float-right'>
-                <a href="#/vacancy/invited/{{vacancy.id}}" class="btn btn-secondary">
+                <a class="btn btn-secondary" href="#/vacancy/invited/{{vacancy.id}}">
                     <span class="glyphicon glyphicon-send"></span> Отправить приглашение
                 </a>
-                <a href="#/vacancy/candidates/{{vacancy.id}}/total" class="btn btn-secondary">Канидидаты</a>
+                <a class="btn btn-secondary" href="#/vacancy/candidates/{{vacancy.id}}/total">Канидидаты</a>
             </div>
         </div>
     </div>
@@ -99,18 +99,18 @@
                 <div class="card-header">
                     <span>{{index + 1}}. {{task.name}}</span>
                     <span class="float-right">
-                    <button ng-click="changeTaskPosition(stage.id, index_task, index_task - 1)"
-                            ng-attr-id="{{'task_up_' + index}}" ng-hide="index_task == 0"
-                            class="btn btn-secondary">
+                    <button class="btn btn-secondary"
+                            ng-attr-id="{{'task_up_' + index}}" ng-click="changeTaskPosition(stage.id, index_task, index_task - 1)"
+                            ng-hide="index_task == 0">
                         <i class="fa fa-arrow-up fa-fw"></i>
                     </button>
-                    <button ng-click="changeTaskPosition(stage.id, index_task, index_task + 1)"
-                            ng-attr-id="{{'task_down_' + index}}" class="btn btn-secondary"
+                    <button class="btn btn-secondary"
+                            ng-attr-id="{{'task_down_' + index}}" ng-click="changeTaskPosition(stage.id, index_task, index_task + 1)"
                             ng-hide="tasks[stage.id].length - 1 == index_task">
                         <i class="fa fa-arrow-down fa-fw"></i>
                     </button>
-                    <a href="#/task/update/{{vacancy.id}}/{{task.id}}"
-                       class="btn btn-secondary">
+                    <a class="btn btn-secondary"
+                       href="#/task/update/{{vacancy.id}}/{{task.id}}">
                         <i class="fa fa-edit fa-fw"></i>
                     </a>
                     <button class="btn btn-secondary" ng-click="deleteTask(task)">
@@ -144,7 +144,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div style="margin-top: 20px;" data-ng-bind-html="html(task.description)"></div>
+                    <div data-ng-bind-html="html(task.description)" style="margin-top: 20px;"></div>
                 </div>
             </div>
         </div>
