@@ -37,7 +37,8 @@ public class SecurityConfig {
                 "/img",
                 "/person/profile",
                 "/template/queue",
-                "/template/ping"
+                "/template/ping",
+                "/profiles/**"
         );
     }
 

@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.site.dto.PersonDTO;
 import ru.job4j.site.service.PersonService;
@@ -32,6 +29,27 @@ public class PersonController {
     private final PersonService personService;
 
     /**
+     * Метод GET отображения страницы для просмотра данных пользователя.
+     *
+     * @param request HttpServletRequest
+     * @param model   Model
+     * @return String
+     */
+    @GetMapping("/")
+    public String getViewPerson(HttpServletRequest request, Model model) {
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/",
+                "Профиль", "/persons"
+        );
+        var personDTO = getPersonDTO(request);
+        if (personDTO == null) {
+            return "redirect:/";
+        }
+        model.addAttribute("personDto", personDTO);
+        return "/persons/personView";
+    }
+
+    /**
      * Метод GET отображения страницы для редактирования пользователя.
      *
      * @param request HttpServletRequest
@@ -44,8 +62,13 @@ public class PersonController {
         if (personDTO == null) {
             return "redirect:/";
         }
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/",
+                "Профиль", "/persons/",
+                "Редактирование", "/edit"
+        );
         model.addAttribute("personDto", personDTO);
-        return "/person";
+        return "/persons/personEdit";
     }
 
     /**
@@ -66,9 +89,8 @@ public class PersonController {
     }
 
 
-
     private PersonDTO getPersonDTO(HttpServletRequest request) {
-        var token = getToken(request);
+        var token = (String) request.getSession().getAttribute("token");
         if (token == null) {
             return null;
         }
