@@ -44,7 +44,7 @@ public class PersonController {
     public String getViewPerson(HttpServletRequest request, Model model) {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
-                "Профиль", "/persons"
+                "Профиль", "/persons/"
         );
         var personDTO = getPersonDTO(request);
         if (personDTO == null) {
@@ -71,7 +71,7 @@ public class PersonController {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
                 "Профиль", "/persons/",
-                "Редактирование", "/edit"
+                "Редактирование", "/persons/edit"
         );
         model.addAttribute("personDto", personDTO);
         model.addAttribute("photo", getPhotoByPersonDTO(personDTO));

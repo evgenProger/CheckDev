@@ -30,8 +30,11 @@
         <div class="row mb-3">
             <div class="col-3">
                 <div class="mb-3">
-                    <img th:src="@{http://localhost:9900/img(id=*{profile.photoId})}" class="w-100"
-                         alt="No image">
+                    <i th:if="${#strings.isEmpty(profile.photoId)}"
+                       class="fas fa-image"></i>
+                    <img th:if="${not #strings.isEmpty(profile.photoId)}"
+                            th:src="@{http://localhost:9900/img(id=*{profile.photoId})}"
+                            class="w-100" alt="No image">
                 </div>
             </div>
             <div class="col-9">
