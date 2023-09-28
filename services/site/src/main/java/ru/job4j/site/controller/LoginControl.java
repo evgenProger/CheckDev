@@ -22,7 +22,10 @@ public class LoginControl {
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             Model model) {
-        RequestResponseTools.addAttrBreadcrumbs(model);
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/",
+                "Авторизация", "/login"
+        );
         String errorMessage = null;
         if (error != null) {
             errorMessage = "Email or Password is incorrect !!";
@@ -39,19 +42,6 @@ public class LoginControl {
                         "password", credentialDTO.getPassword()));
         if (isLogin.isEmpty()) {
             return "redirect:/login?error=true";
-        }
-        req.getSession().setAttribute("token", isLogin);
-        return "redirect:/";
-    }
-
-    @PostMapping("/signInIndex")
-    public String signInIndex(@ModelAttribute CredentialDTO credentialDTO,
-                              HttpServletRequest req) throws JsonProcessingException {
-        var isLogin = authService.token(
-                Map.of("username", credentialDTO.getEmail(),
-                        "password", credentialDTO.getPassword()));
-        if (isLogin.isEmpty()) {
-            return "redirect:/?error=true";
         }
         req.getSession().setAttribute("token", isLogin);
         return "redirect:/";

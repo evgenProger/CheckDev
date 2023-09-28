@@ -74,6 +74,8 @@ public class Person {
 
     private Calendar updated;
 
+    private Calendar created;
+
     public Person() {
     }
 
@@ -252,6 +254,15 @@ public class Person {
      */
     public void setPrivacy(boolean privacy) {
         this.privacy = privacy;
+    }
+
+
+    public Calendar getCreated() {
+        return created;
+    }
+
+    public void setCreated(Calendar created) {
+        this.created = created;
     }
 
     @Override

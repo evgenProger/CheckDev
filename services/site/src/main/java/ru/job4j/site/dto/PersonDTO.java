@@ -23,4 +23,5 @@ public class PersonDTO {
     private PhotoDTO photo;
     private String location;
     private Calendar updated;
+    private Calendar created;
 }
