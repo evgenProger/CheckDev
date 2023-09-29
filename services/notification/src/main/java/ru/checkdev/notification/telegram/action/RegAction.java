@@ -9,6 +9,8 @@ import ru.checkdev.notification.domain.PersonDTO;
 import ru.checkdev.notification.telegram.config.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 
+import java.util.Calendar;
+
 /**
  * 3. Мидл
  * Класс реализует пункт меню регистрации нового пользователя в телеграм бот
@@ -62,7 +64,7 @@ public class RegAction implements Action {
         }
 
         var password = tgConfig.getPassword();
-        var person = new PersonDTO(email, password, true);
+        var person = new PersonDTO(email, password, true, Calendar.getInstance());
         Object result;
 
         try {
