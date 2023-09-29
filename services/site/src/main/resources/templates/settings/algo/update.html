@@ -4,39 +4,40 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="usr">Название:</label>
-                    <input type="text" class="form-control" id="name" ng-model="algo.name" required>
+                    <input class="form-control" id="name" ng-model="algo.name" required type="text">
                 </div>
                 <div class="form-group">
                     <label for="usr">Сложность от 0 до 10:</label>
-                    <input type="number" class="form-control" id="name" ng-model="algo.level" required>
+                    <input class="form-control" id="name" ng-model="algo.level" required type="number">
                 </div>
                 <div class="form-group checkbox">
                     <label>
-                        <input type="checkbox" ng-model="algo.published" required> Опубликовать
+                        <input ng-model="algo.published" required type="checkbox"> Опубликовать
                     </label>
                 </div>
                 <div class="form-group">
                     <label for="comment">Описание:</label>
-                    <textarea class="form-control" rows="20" id="description" ng-model="algo.desription" required></textarea>
+                    <textarea class="form-control" id="description" ng-model="algo.desription" required
+                              rows="20"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="usr">Имя исходника:</label>
-                    <input type="text" class="form-control" id="name" ng-model="algo.sname" required>
+                    <input class="form-control" id="name" ng-model="algo.sname" required type="text">
                 </div>
                 <div class="form-group">
                     <label for="comment">Каркас:</label>
-                    <textarea class="form-control" rows="20" id="source" ng-model="algo.source" required></textarea>
+                    <textarea class="form-control" id="source" ng-model="algo.source" required rows="20"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="usr">Имя теста:</label>
-                    <input type="text" class="form-control" id="name" ng-model="algo.tname" required>
+                    <input class="form-control" id="name" ng-model="algo.tname" required type="text">
                 </div>
                 <div class="form-group">
                     <label for="comment">Тест:</label>
-                    <textarea class="form-control" rows="20" id="test" ng-model="algo.test" required></textarea>
+                    <textarea class="form-control" id="test" ng-model="algo.test" required rows="20"></textarea>
                 </div>
-                <a ng-href="#/algo/{{id}}" class="btn btn-secondary" ng-show="id">Назад</a>
-                <a ng-href="#/algos" class="btn btn-secondary" ng-hide="id">Назад</a>
+                <a class="btn btn-secondary" ng-href="#/algo/{{id}}" ng-show="id">Назад</a>
+                <a class="btn btn-secondary" ng-hide="id" ng-href="#/algos">Назад</a>
                 <button class="btn btn-secondary float-right" ng-click="save(algo)">Сохранить</button>
             </div>
         </div>

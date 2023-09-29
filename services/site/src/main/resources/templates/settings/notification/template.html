@@ -1,6 +1,6 @@
 <div class="row" id="manager-panel-exams" style="display: none;">
     <div class="col-md-12">
-        <button type="button" class="btn btn-secondary float-right">Добавить тест</button>
+        <button class="btn btn-secondary float-right" type="button">Добавить тест</button>
     </div>
 </div>
 <div class="row">
@@ -10,17 +10,18 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="usr">Заголовок:</label>
-                    <input type="text" class="form-control" id="name" ng-model="template.subject" required>
+                    <input class="form-control" id="name" ng-model="template.subject" required type="text">
                 </div>
                 <div class="form-group">
                     <label for="usr">Тип:</label>
-                    <input type="text" class="form-control" id="type" ng-model="template.type" required>
+                    <input class="form-control" id="type" ng-model="template.type" required type="text">
                 </div>
                 <div class="form-group">
                     <label for="comment">Описание:</label>
-                    <textarea class="form-control" rows="10" id="description" ng-model="template.body" required></textarea>
+                    <textarea class="form-control" id="description" ng-model="template.body" required
+                              rows="10"></textarea>
                 </div>
-                <a ng-href="#/exam/view/{{exam.id}}" class="btn btn-secondary">Назад</a>
+                <a class="btn btn-secondary" ng-href="#/exam/view/{{exam.id}}">Назад</a>
                 <button class="btn btn-secondary float-right" ng-click="save(template)">Добавить</button>
             </div>
         </div>

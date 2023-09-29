@@ -7,16 +7,16 @@
                     <div class="form-group">
                         <label for="emails">Email адреса кандидатов:
                             <small><span class="glyphicon glyphicon-question-sign"
-                                         style="color:grey" data-toggle="tooltip"
+                                         data-toggle="tooltip" style="color:grey"
                                          title="Введите подробное описание вакансии">
                         </span></small>
                         </label>
-                        <textarea class="form-control" rows="10" id="emails" ng-model="emails" required>
+                        <textarea class="form-control" id="emails" ng-model="emails" required rows="10">
                     </textarea>
                     </div>
                 </div>
-                <a ng-href="#/vacancy/{{vacancyId}}" class="btn btn-secondary">Назад</a>
-                <button ng-click="sendInvite()"  class="btn btn-secondary float-right">Отправить</button>
+                <a class="btn btn-secondary" ng-href="#/vacancy/{{vacancyId}}">Назад</a>
+                <button class="btn btn-secondary float-right" ng-click="sendInvite()">Отправить</button>
             </div>
         </div>
     </div>

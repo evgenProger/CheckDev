@@ -1,9 +1,9 @@
 <div class="row" ng-show="isAdmin">
     <div class="col-md-12 pull-right">
-        <a ng-href="#/exam/{{exam.id}}/question/update" class="btn btn-default">Добавить вопрос</a>
-        <a ng-href="#/exam/update/{{exam.id}}" class="btn btn-default">Отредактировать</a>
-        <button type="button" class="btn btn-default" ng-click="delete(exam)">Удалить</button>
-        <a ng-href="#/load" class="btn btn-default">Назад</a>
+        <a class="btn btn-default" ng-href="#/exam/{{exam.id}}/question/update">Добавить вопрос</a>
+        <a class="btn btn-default" ng-href="#/exam/update/{{exam.id}}">Отредактировать</a>
+        <button class="btn btn-default" ng-click="delete(exam)" type="button">Удалить</button>
+        <a class="btn btn-default" ng-href="#/load">Назад</a>
     </div>
 </div>
 <div class="row" style="padding-top: 10px;">
@@ -32,7 +32,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="(index, question) in questions" ng-hide="question.deleted">
+            <tr ng-hide="question.deleted" ng-repeat="(index, question) in questions">
                 <td>
                     <h4>
                         <a ng-href="#/question/{{question.id}}">
@@ -43,7 +43,7 @@
                 <!--<td class="text-center"><a href="#">6532</a></td>-->
                 <td class="text-center">{{question.pos}}</td>
                 <td class="text-center" ng-show="isAdmin">
-                    <a ng-href="#/exam/{{exam.id}}/question/update/{{question.id}}" class="btn btn-link">
+                    <a class="btn btn-link" ng-href="#/exam/{{exam.id}}/question/update/{{question.id}}">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </a>
                     <button class="btn btn-link" ng-click="deleteQuestion(question)">

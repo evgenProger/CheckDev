@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
-        <a href="#/orders/fresh" class="btn btn-secondary">Новые заявки</a>
-        <a href="#/orders" class="btn btn-secondary">Все заявки</a>
+        <a class="btn btn-secondary" href="#/orders/fresh">Новые заявки</a>
+        <a class="btn btn-secondary" href="#/orders">Все заявки</a>
     </div>
 </div>
 <div class="row p-3" ng-hide="loaded">
@@ -31,7 +31,7 @@
                 </td>
                 <td class="text-center">{{ order.created | date: 'dd.MM.yyyy'}}</td>
                 <td class="text-center">
-                    <button ng-click="archive(order)" class="btn btn-link" ng-hide="order.archive">
+                    <button class="btn btn-link" ng-click="archive(order)" ng-hide="order.archive">
                         <span class="glyphicon glyphicon-trash"></span>
                     </button>
                 </td>

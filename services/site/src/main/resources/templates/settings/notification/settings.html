@@ -1,7 +1,7 @@
 <div class="row" ng-show="isAdmin">
     <div class="col-md-12">
-        <a href="#/notifications" class="btn btn-secondary">Шаблоны</a>
-        <a href="#/notifications/settings/update" class="btn btn-secondary float-right">Добавить настройку</a>
+        <a class="btn btn-secondary" href="#/notifications">Шаблоны</a>
+        <a class="btn btn-secondary float-right" href="#/notifications/settings/update">Добавить настройку</a>
     </div>
 </div>
 <div class="row">
@@ -19,7 +19,7 @@
                 <td>{{ setting.key }}</td>
                 <td>{{ setting.value }}</td>
                 <td ng-show="isAdmin">
-                    <a ng-href="#/notifications/settings/update/{{setting.id}}" class="btn btn-link">
+                    <a class="btn btn-link" ng-href="#/notifications/settings/update/{{setting.id}}">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </a>
                     <button class="btn btn-link" ng-click="delete(exam)">

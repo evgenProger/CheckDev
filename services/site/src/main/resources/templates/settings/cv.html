@@ -4,6 +4,7 @@
         width: 100px;
         border:2px solid #03b1ce ;}
     .bot-border{ border-bottom:1px #f8f8f8 solid;  margin:5px 0  5px 0}
+
 </style>
 
 <div class="container">
@@ -25,7 +26,9 @@
                         </div>
                         <div class="col-md-6">
                             <div class="float-right">
-                                <button type="button" ng-click="listVacancies(person)" class="btn btn-success btn-lg">Пригласить кандидата</button>
+                                <button class="btn btn-success btn-lg" ng-click="listVacancies(person)" type="button">
+                                    Пригласить кандидата
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -45,7 +48,8 @@
                                     </div>
                                     <span class="card-subtitle mb-2 text-muted">Опыт работы:</span>
                                     <span class="card-text" ng-show="person.experience">{{ person.experience }}</span>
-                                    <span class="card-text" ng-hide="person.experience"> Опыт работы - начало карьеры</span>
+                                    <span class="card-text"
+                                          ng-hide="person.experience"> Опыт работы - начало карьеры</span>
                                     <br/>
                                     <span class="card-subtitle mb-2 text-muted">Место нахождения:</span>
                                     <span class="card-text" ng-show="person.location">{{ person.location }}</span>
@@ -60,7 +64,8 @@
                                 </div>
                                 <div class="col-sm">
                                     <div class="float-right">
-                                        <img alt="User Pic" ng-src="{{photo.imgUrl}}" id="profile-image1" class="img-circle img-responsive">
+                                        <img alt="User Pic" class="img-circle img-responsive" id="profile-image1"
+                                             ng-src="{{photo.imgUrl}}">
                                     </div>
                                 </div>
                             </div>

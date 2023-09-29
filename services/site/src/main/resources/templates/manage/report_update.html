@@ -4,7 +4,7 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="name">Название:</label>
-                    <input type="text" class="form-control" id="name" ng-model="report.name" required>
+                    <input class="form-control" id="name" ng-model="report.name" required type="text">
                 </div>
                 <div class="form-group">
                     <label for="sel1">Отправлять:</label>
@@ -24,7 +24,7 @@
                     </select>
                 </div>
                 <div class="form-group" ng-show="task.type == 'TEST'" style="overflow-y: scroll; height: 200px;">
-                    <table id="table" class="table table-bordered" ng-show="loadedExam">
+                    <table class="table table-bordered" id="table" ng-show="loadedExam">
                         <thead>
                         <tr>
                             <th data-field="state" data-radio="true"></th>
@@ -33,14 +33,15 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="exam in exams">
-                            <input type="hidden" ng-model="task.values[0].info" ng-init="task.values[0].info = exam.name" />
-                            <td><input type="radio" ng-value="exam.id" ng-model="task.values[0].value"></td>
+                            <input ng-init="task.values[0].info = exam.name" ng-model="task.values[0].info"
+                                   type="hidden"/>
+                            <td><input ng-model="task.values[0].value" ng-value="exam.id" type="radio"></td>
                             <td>{{ exam.name }}</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-                <a ng-href="#/vacancy/{{vacancyId}}" class="btn btn-secondary">Назад</a>
+                <a class="btn btn-secondary" ng-href="#/vacancy/{{vacancyId}}">Назад</a>
                 <button class="btn btn-secondary float-right" ng-click="save(stage)">Сохранить</button>
             </div>
         </div>

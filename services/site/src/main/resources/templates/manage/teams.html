@@ -1,8 +1,8 @@
 <div class="container p-3">
     <div class="row" ng-show="loaded">
         <div class="col-md-12">
-            <a href="#/team/update" class="btn btn-secondary">Добавить группу</a>
-            <a href="#/owner" class="btn btn-secondary">Назад</a>
+            <a class="btn btn-secondary" href="#/team/update">Добавить группу</a>
+            <a class="btn btn-secondary" href="#/owner">Назад</a>
         </div>
     </div>
     <div class="row p-3" ng-hide="loaded">
@@ -16,12 +16,12 @@
         <div class="col-md-12">
             <h3>Группы</h3>
         </div>
-        <div class="col-md-12" ng-repeat="(index , team) in teams" ng-hide="team.deleted">
+        <div class="col-md-12" ng-hide="team.deleted" ng-repeat="(index , team) in teams">
             <div class="card">
                 <div class="card-header clearfix">
                     <h4 class="panel-title pull-left" style="padding-top: 7.5px;">{{ team.team.name }}</h4>
                     <div class="float-right">
-                        <a href="#/team/update/{{team.id}}" class="btn btn-secondary">
+                        <a class="btn btn-secondary" href="#/team/update/{{team.id}}">
                             <span class="glyphicon glyphicon-edit"></span> Отредактировать
                         </a>
                         <button class="btn btn-secondary" ng-click="deleteTeam(team)">
@@ -32,7 +32,9 @@
                 <div class="card-body">
                     <div class="input-group">
                         <select class="form-control" ng-model="team.vacancyId">
-                            <option data-ng-repeat="vacancy in vacancies" value="{{vacancy.id}}"> {{ vacancy.name }} | {{ vacancy.company }} </option>
+                            <option data-ng-repeat="vacancy in vacancies" value="{{vacancy.id}}"> {{ vacancy.name }} |
+                                {{ vacancy.company }}
+                            </option>
                         </select>
                         <span class="input-group-btn">
                                 <button class="btn btn-secondary" ng-click="addPermission(team)">
@@ -46,14 +48,17 @@
                             <th>Вакансии</th>
                             <th class="col-md-4">Действия</th>
                         </tr>
-                        <tr ng-repeat="(index_person, permission) in team.permissions" ng-hide="permission.permission.deleted">
+                        <tr ng-hide="permission.permission.deleted"
+                            ng-repeat="(index_person, permission) in team.permissions">
                             <td>{{ permission.vacancy.name }} | {{ permission.vacancy.company }}</td>
                             <td>
                                 <div class="btn-group btn-group">
-                                    <button class="btn {{ permission.permission.read ? '' : 'btn-secondary'}}" ng-click="updatePermission(permission.permission, 'READ')">
+                                    <button class="btn {{ permission.permission.read ? '' : 'btn-secondary'}}"
+                                            ng-click="updatePermission(permission.permission, 'READ')">
                                         Чтение
                                     </button>
-                                    <button class="btn {{ permission.permission.write ? '' : 'btn-secondary'}}" ng-click="updatePermission(permission.permission, 'WRITE')">
+                                    <button class="btn {{ permission.permission.write ? '' : 'btn-secondary'}}"
+                                            ng-click="updatePermission(permission.permission, 'WRITE')">
                                         Запись
                                     </button>
                                 </div>
@@ -67,7 +72,8 @@
                     <hr/>
                     <div>
                         <div class="input-group">
-                            <input type="text" class="form-control" ng-model="team.email" placeholder="Email адрес сотрудника.">
+                            <input class="form-control" ng-model="team.email" placeholder="Email адрес сотрудника."
+                                   type="text">
                             <span class="input-group-btn">
                                 <button class="btn btn-secondary" ng-click="addMember(team)">
                                     <span class="glyphicon glyphicon-plus"></span> Добавить сотрудника
@@ -81,7 +87,7 @@
                             <th>Сотрудники</th>
                             <th class="col-md-4">Действия</th>
                         </tr>
-                        <tr ng-repeat="(index_person, person) in team.persons" ng-hide="person.deleted">
+                        <tr ng-hide="person.deleted" ng-repeat="(index_person, person) in team.persons">
                             <td>{{ person.username }} ({{ person.email }})</td>
                             <td>
                                 <button class="btn btn-secondary" ng-click="deleteMember(person, index_person)">

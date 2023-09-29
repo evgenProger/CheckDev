@@ -6,6 +6,7 @@
     input::-webkit-inner-spin-button {
         -webkit-appearance: none;
     }
+
 </style>
 <div class="container p-3">
     <div class="row p-3" ng-hide="loaded">
@@ -27,10 +28,12 @@
                         </span></small>
                     </label>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="link" ng-model="link"
-                               placeholder="https://bryansk.hh.ru/vacancy/27890168" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <input aria-describedby="basic-addon2" aria-label="Recipient's username" class="form-control" id="link"
+                               ng-model="link" placeholder="https://bryansk.hh.ru/vacancy/27890168"
+                               type="text">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" ng-click="load(link)">Загрузить</button>
+                            <button class="btn btn-outline-secondary" ng-click="load(link)" type="button">Загрузить
+                            </button>
                         </div>
                     </div>
                     <div class="form-group">
@@ -40,7 +43,8 @@
                                          title="Введите название вакансии">
                         </span></small>
                         </label>
-                        <input type="text" class="form-control" id="name" ng-model="vacancy.name" required placeholder="Название вакансии"/>
+                        <input class="form-control" id="name" ng-model="vacancy.name" placeholder="Название вакансии" required
+                               type="text"/>
                     </div>
                     <div class="form-group">
                         <label for="company">Компания:
@@ -49,7 +53,8 @@
                                          title="Введите название компании">
                         </span></small>
                         </label>
-                        <input type="text" class="form-control" id="company" ng-model="vacancy.company" required placeholder="Название компании">
+                        <input class="form-control" id="company" ng-model="vacancy.company" placeholder="Название компании" required
+                               type="text">
                     </div>
                     <div class="form-group">
                         <label for="location">Адрес офиса:
@@ -58,7 +63,8 @@
                                          title="Введите адрес месторасположения офиса">
                         </span></small>
                         </label>
-                        <input type="text" class="form-control" id="location" ng-model="vacancy.location" required placeholder="Адрес">
+                        <input class="form-control" id="location" ng-model="vacancy.location" placeholder="Адрес" required
+                               type="text">
                     </div>
                     <div class="form-group">
                         <label for="rate">Зарплата:
@@ -67,7 +73,8 @@
                                          title="Введите сумму заработной платы">
                         </span></small>
                         </label>
-                        <input type="text" class="form-control" id="rate" ng-model="vacancy.rate" required placeholder="Зарплата">
+                        <input class="form-control" id="rate" ng-model="vacancy.rate" placeholder="Зарплата" required
+                               type="text">
                     </div>
                     <div class="form-group">
                         <label for="experience">Опыт работы:
@@ -76,7 +83,8 @@
                                          title="Введите опыт работы">
                         </span></small>
                         </label>
-                        <input type="text" class="form-control" id="experience" ng-model="vacancy.experience" required placeholder="Опыт работы">
+                        <input class="form-control" id="experience" ng-model="vacancy.experience" placeholder="Опыт работы" required
+                               type="text">
                     </div>
                     <div class="form-group">
                         <label for="limit">Время выполнения тестового задания в часах:
@@ -85,7 +93,8 @@
                                          title="Введите время выполнения тестового задания">
                         </span></small>
                         </label>
-                        <input type="number" class="form-control" id="limit" ng-model="vacancy.limit" required placeholder="Время выполнения тестового задания">
+                        <input class="form-control" id="limit" ng-model="vacancy.limit" placeholder="Время выполнения тестового задания" required
+                               type="number">
                     </div>
 
                     <div class="form-group">
@@ -109,7 +118,8 @@
                                          title="Введите подробное описание вакансии">
                         </span></small>
                         </label>
-                        <textarea class="form-control" rows="20" id="description" ng-model="vacancy.description" required>
+                        <textarea class="form-control" id="description" ng-model="vacancy.description" required
+                                  rows="20">
                             Кратко о фирме:
                             Обязанности:
                             Требования:
@@ -126,7 +136,7 @@
                                          title="Введите подробное описание вакансии">
                         </span></small>
                         </label>
-                        <textarea class="form-control" rows="20" id="intro" ng-model="vacancy.intro" required>
+                        <textarea class="form-control" id="intro" ng-model="vacancy.intro" required rows="20">
                            Поздравляем. Вы успешно прошли этот этап.
                             <br/>
                             В течении 3 дней мы с вами свяжемся по контактной информации оставленной в вашем профиле.
@@ -140,7 +150,8 @@
                                          title="Введите подробное описание вакансии">
                         </span></small>
                         </label>
-                        <textarea class="form-control" rows="20" id="congratulate" ng-model="vacancy.congratulate" required>
+                        <textarea class="form-control" id="congratulate" ng-model="vacancy.congratulate" required
+                                  rows="20">
                         </textarea>
                     </div>
 
@@ -150,12 +161,12 @@
                                          title="Введите подробное описание вакансии">
                         </span></small>
                         </label>
-                        <textarea class="form-control" rows="20" id="failure" ng-model="vacancy.failure" required>
+                        <textarea class="form-control" id="failure" ng-model="vacancy.failure" required rows="20">
                         </textarea>
                     </div>
 
-                    <a ng-href="#/vacancy/{{id}}" class="btn btn-secondary" ng-show="id">Назад</a>
-                    <a ng-href="#/owner" class="btn btn-secondary" ng-hide="id">Назад</a>
+                    <a class="btn btn-secondary" ng-href="#/vacancy/{{id}}" ng-show="id">Назад</a>
+                    <a class="btn btn-secondary" ng-hide="id" ng-href="#/owner">Назад</a>
                     <button class="btn btn-secondary float-right" ng-click="save(vacancy)">Сохранить</button>
                 </div>
             </div>

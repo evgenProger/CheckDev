@@ -14,38 +14,42 @@
                     <h5> {{ info }} </h5>
                 </div>
                 <div class="col-md-3 float-right" ng-show="limit">
-                    <h6 class="float-right">Осталось времени: <span class="float-right" id="timer"></span> </h6>
+                    <h6 class="float-right">Осталось времени: <span class="float-right" id="timer"></span></h6>
                 </div>
             </div>
             <div class="progress" ng-show="percent">
-                <div class="progress-bar progress-bar-info" role="progressbar"  aria-valuenow="50"
-                     aria-valuemin="0" aria-valuemax="100" style="background-color: #a2a2a2; !important; width:{{percent}}%;">
+                <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="50"
+                     class="progress-bar progress-bar-info" role="progressbar"
+                     style="background-color: #a2a2a2; !important; width:{{percent}}%;">
                     {{ current }} \ {{ total }}
                 </div>
             </div>
-            <div class="card mt-3" >
+            <div class="card mt-3">
                 <div class="card-header" ng-show="task.name">
                     {{task.name}}
                 </div>
                 <div class="card-body">
                     <div class="form-group" data-ng-bind-html="description"></div>
                     <div class="form-group" ng-show="task.type == 'SINGLE_LINE'">
-                        <input type="text" class="form-control" ng-model="itask.values[0].value" required>
+                        <input class="form-control" ng-model="itask.values[0].value" required type="text">
                     </div>
                     <div class="form-group" ng-show="task.type == 'AREA'">
-                        <textarea class="form-control" rows="5" id="comment" ng-model="itask.values[0].value" required></textarea>
+                        <textarea class="form-control" id="comment" ng-model="itask.values[0].value" required
+                                  rows="5"></textarea>
                     </div>
                     <div class="form-group" ng-show="task.type == 'LIST'">
                         <select class="form-control" id="sel1" ng-model="itask.values[0].value" required>
-                            <option ng-repeat="option in task.values" ng-value="{{option.id}}">{{ option.value }}</option>
+                            <option ng-repeat="option in task.values" ng-value="{{option.id}}">{{ option.value }}
+                            </option>
                         </select>
                     </div>
                     <div class="form-group" ng-show="task.type == 'MULTILIST'">
-                        <table id="table" class="table table-bordered">
+                        <table class="table table-bordered" id="table">
                             <tbody>
                             <tr ng-repeat="(index, option) in task.values">
                                 <td>
-                                    <input type="checkbox" ng-model="itask.values[index].value" ng-true-value="{{option.id}}" ng-false-value="">
+                                    <input ng-false-value="" ng-model="itask.values[index].value"
+                                           ng-true-value="{{option.id}}" type="checkbox">
                                     {{ option.value }}
                                 </td>
                             </tr>
@@ -53,22 +57,22 @@
                         </table>
                     </div>
                     <div class="form-group" ng-show="task.type == 'DATE'">
-                        <input type="date" class="form-control" id="usr" ng-model="itask.values[0].value" required>
+                        <input class="form-control" id="usr" ng-model="itask.values[0].value" required type="date">
                     </div>
                     <div class="form-group" ng-show="task.type == 'INT'">
-                        <input type="number" class="form-control" id="usr" ng-model="itask.values[0].value" required>
+                        <input class="form-control" id="usr" ng-model="itask.values[0].value" required type="number">
                     </div>
                     <div class="form-group" ng-show="task.type == 'URL'">
-                        <input type="url" class="form-control" id="usr" ng-model="itask.values[0].value" required>
+                        <input class="form-control" id="usr" ng-model="itask.values[0].value" required type="url">
                     </div>
                     <div class="form-group" ng-show="task.type == 'ATTACH'">
-                        <input type="file" class="form-control"
-                               onchange="angular.element(this).scope().uploadFile(this.files);" required>
+                        <input class="form-control" onchange="angular.element(this).scope().uploadFile(this.files);"
+                               required type="file">
                     </div>
 
                     <div class="form-group" ng-show="task.type == 'TASK'">
                         <label for="comment">{{ algo.sname }}.java</label>
-                        <textarea class="form-control" rows="20" ng-model="itask.values[0].value" required></textarea>
+                        <textarea class="form-control" ng-model="itask.values[0].value" required rows="20"></textarea>
                     </div>
 
                     <div class="form-group" ng-show="task.type == 'TASK'">
@@ -83,31 +87,39 @@
 
                     <div class="row" ng-show="running">
                         <div class="col-md-2 col-md-offset-5">
-                            <div class='uil-ripple-css' style='transform:scale(0.54);'><div></div><div></div></div>
+                            <div class='uil-ripple-css' style='transform:scale(0.54);'>
+                                <div></div>
+                                <div></div>
+                            </div>
                         </div>
                     </div>
 
-                <div class="form-group" ng-show="task.type == 'TASK'">
-                    <button ng-click="run(itask)" class="btn btn-secondary float-right">Запустить</button>
-                </div>
-                <div class="form-group" ng-show="task.type == 'TEST'">
-                    <div ng-show="exam && exam.finish">
-                        <div>{{exam.exam.name}}</div>
-                        <div>Ваш результат : {{exam.result}}%</div>
-                        <div>Дата сдачи : {{exam.finish | date: 'dd.MM.yyyy'}}</div>
-                        <a href="{{CONTEXT}}exams/exams.html#/result/{{exam.exam.id}}">Подробно</a>
+                    <div class="form-group" ng-show="task.type == 'TASK'">
+                        <button class="btn btn-secondary float-right" ng-click="run(itask)">Запустить</button>
                     </div>
-                    <a href="{{CONTEXT}}exams/exams.html?vacancy={{interviewId}}#/exam/{{exam.exam.id}}"  ng-hide="exam && exam.finish" class="btn btn-success">Пройти тест</a>
+                    <div class="form-group" ng-show="task.type == 'TEST'">
+                        <div ng-show="exam && exam.finish">
+                            <div>{{exam.exam.name}}</div>
+                            <div>Ваш результат : {{exam.result}}%</div>
+                            <div>Дата сдачи : {{exam.finish | date: 'dd.MM.yyyy'}}</div>
+                            <a href="{{CONTEXT}}exams/exams.html#/result/{{exam.exam.id}}">Подробно</a>
+                        </div>
+                        <a class="btn btn-success"
+                           href="{{CONTEXT}}exams/exams.html?vacancy={{interviewId}}#/exam/{{exam.exam.id}}" ng-hide="exam && exam.finish">Пройти тест</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row pt-3" ng-show="loaded">
-    <div class="col-md-12 text-center">
-        <button ng-click="vacancies()" class="btn btn-secondary center-block" ng-show="last" id="finish" ng-disabled="!invalid">К списку вакансий</button>
-        <button ng-click="next(itask, task.type)" class="btn btn-success center-block" ng-hide="last" id="next" ng-disabled="!invalid">Далее</button>
+    <div class="row pt-3" ng-show="loaded">
+        <div class="col-md-12 text-center">
+            <button class="btn btn-secondary center-block" id="finish" ng-click="vacancies()" ng-disabled="!invalid"
+                    ng-show="last">К списку вакансий
+            </button>
+            <button class="btn btn-success center-block" id="next" ng-click="next(itask, task.type)" ng-disabled="!invalid"
+                    ng-hide="last">Далее
+            </button>
+        </div>
     </div>
-</div>
 </div>

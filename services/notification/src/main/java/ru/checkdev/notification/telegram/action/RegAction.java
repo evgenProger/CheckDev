@@ -58,8 +58,8 @@ public class RegAction implements Action {
 
         if (!tgConfig.isEmail(email)) {
             text = "Email: " + email + " не корректный." + sl
-                   + "попробуйте снова." + sl
-                   + "/new";
+                    + "попробуйте снова." + sl
+                    + "/new";
             return new SendMessage(chatId, text);
         }
 
@@ -72,7 +72,7 @@ public class RegAction implements Action {
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             text = "Сервис не доступен попробуйте позже" + sl
-                   + "/start";
+                    + "/start";
             return new SendMessage(chatId, text);
         }
 
@@ -84,9 +84,9 @@ public class RegAction implements Action {
         }
 
         text = "Вы зарегистрированы: " + sl
-               + "Логин: " + email + sl
-               + "Пароль: " + password + sl
-               + urlSiteAuth;
+                + "Логин: " + email + sl
+                + "Пароль: " + password + sl
+                + urlSiteAuth;
         return new SendMessage(chatId, text);
     }
 }

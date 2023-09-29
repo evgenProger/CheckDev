@@ -7,36 +7,37 @@
                     <div class="form-group">
                         <label for="name">Название:</label>
                         <small><span class="glyphicon glyphicon-question-sign"
-                                     style="color:grey" data-toggle="tooltip"
+                                     data-toggle="tooltip" style="color:grey"
                                      title="Введите название">
                         </span></small>
-                        <input type="text" class="form-control" id="name" ng-model="stage.name" required
-                               placeholder="Название">
+                        <input class="form-control" id="name" ng-model="stage.name" placeholder="Название" required
+                               type="text">
                     </div>
                     <div class="form-group">
                         <label for="description">Описание:</label>
-                        <textarea class="form-control" rows="20" id="description" ng-model="stage.description"
-                                  required></textarea>
+                        <textarea class="form-control" id="description" ng-model="stage.description" required
+                                  rows="20"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="comment">Успешно пройдено:</label>
                         <small><span class="glyphicon glyphicon-question-sign"
-                                     style="color:grey" data-toggle="tooltip"
+                                     data-toggle="tooltip" style="color:grey"
                                      title="Введите шаблон успешно пройденного этапа">
                         </span></small>
 
-                        <textarea class="form-control" rows="20" id="congratulate" ng-model="stage.congratulate"
-                                  required></textarea>
+                        <textarea class="form-control" id="congratulate" ng-model="stage.congratulate" required
+                                  rows="20"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="comment">Отказ:</label>
                         <small><span class="glyphicon glyphicon-question-sign"
-                                     style="color:grey" data-toggle="tooltip"
+                                     data-toggle="tooltip" style="color:grey"
                                      title="Введите шаблон не пройденного этапа">
                         </span></small>
-                        <textarea class="form-control" rows="20" id="failure" ng-model="stage.failure" required></textarea>
+                        <textarea class="form-control" id="failure" ng-model="stage.failure" required
+                                  rows="20"></textarea>
                     </div>
-                    <a ng-href="#/vacancy/{{vacancyId}}" class="btn btn-secondary">Назад</a>
+                    <a class="btn btn-secondary" ng-href="#/vacancy/{{vacancyId}}">Назад</a>
                     <button class="btn btn-secondary float-right" ng-click="save(stage)">Сохранить</button>
                 </div>
             </div>

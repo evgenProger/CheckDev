@@ -10,8 +10,10 @@
         <div class="col-xl-12 col-lg-12 col-md-12 search">
             <form class="search-form">
                 <div class="form-group flex">
-                    <input type="text" class="form-control col-xl-10" style="border: 1px solid #a2a2a2; max-width: 100% !important;" id="inputSearch" placeholder="Я ищу вакансию ..." ng-model="vac.name">
-                    <button type="submit" class="btn btn-primary col-xl-2"  ng-click="search(vac)">Найти</button>
+                    <input class="form-control col-xl-10" id="inputSearch"
+                           ng-model="vac.name" placeholder="Я ищу вакансию ..."
+                           style="border: 1px solid #a2a2a2; max-width: 100% !important;" type="text">
+                    <button class="btn btn-primary col-xl-2" ng-click="search(vac)" type="submit">Найти</button>
                 </div>
             </form>
         </div>
@@ -20,7 +22,8 @@
         <div class="col-md-12">
             <table class="table table-hover">
                 <tbody>
-                <tr dir-paginate="vacancy in data.vacancies | itemsPerPage:data.itemsPerPage" total-items="data.total_count"  class='clickable-row' ng-click="toVacancy(vacancy)">
+                <tr class='clickable-row'
+                    dir-paginate="vacancy in data.vacancies | itemsPerPage:data.itemsPerPage" ng-click="toVacancy(vacancy)" total-items="data.total_count">
                     <td>
                         <h5><strong>{{ vacancy.name }}</strong></h5>
                         <h6 class="mb-2 text-muted font-italic pt-1">{{ vacancy.company }}</h6>
@@ -37,11 +40,11 @@
                 </tbody>
             </table>
             <div class="text-center">
-                <dir-pagination-controls template-url="./js/dirPagination.tpl.html"
-                                         max-size="10"
+                <dir-pagination-controls boundary-links="true"
                                          direction-links="true"
-                                         boundary-links="true"
-                                         on-page-change="data.getData(newPageNumber)">
+                                         max-size="10"
+                                         on-page-change="data.getData(newPageNumber)"
+                                         template-url="./js/dirPagination.tpl.html">
                 </dir-pagination-controls>
             </div>
         </div>

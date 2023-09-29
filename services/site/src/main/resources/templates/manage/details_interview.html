@@ -4,6 +4,7 @@
         width: 100px;
         border:2px solid #03b1ce ;}
     .bot-border{ border-bottom:1px #f8f8f8 solid;  margin:5px 0  5px 0}
+
 </style>
 
 <div class="container">
@@ -17,7 +18,7 @@
 
     <div class="row pt-3">
         <div class="col-md-12">
-            <a ng-href="#/vacancy/candidates/{{interview.vacancy.id}}/total" class="btn btn-secondary">
+            <a class="btn btn-secondary" ng-href="#/vacancy/candidates/{{interview.vacancy.id}}/total">
                 <span class="glyphicon glyphicon-step-backward"></span> Назад
             </a>
             <button class="btn btn-secondary float-right" ng-click="deleteInterview(interview)">
@@ -52,10 +53,11 @@
                                        {{ findListValue(tasks[track.id].values, value.value) }}
                                     </span>
                             <span ng-if="tasks[track.id].type == 'TASK'">
-                                        <a href="#/algo/{{track.values[0].id}}" target="_blank" class="btn-link">Исходный код</a>
+                                        <a class="btn-link" href="#/algo/{{track.values[0].id}}" target="_blank">Исходный код</a>
                                     </span>
                             <span ng-if="tasks[track.id].type == 'ATTACH'">
-                                        <a ng-href="{{url}}/interview/interview/download/{{value.id}}?access_token={{access_token}}" target="_blank" class="btn-link">Скачать</a>
+                                        <a class="btn-link"
+                                           ng-href="{{url}}/interview/interview/download/{{value.id}}?access_token={{access_token}}" target="_blank">Скачать</a>
                                     </span>
                             <span ng-if="tasks[track.id].type == 'TEST' && value.value != null">
                                          {{ tasks[track.id].values[0].info }} - {{ value.value }}%
@@ -63,8 +65,8 @@
                         </div>
                     </td>
                     <td>
-                        <i ng-show="track.key == 'FAILURE'" class="fa fa-times" aria-hidden="true"></i>
-                        <i ng-hide="track.key == 'FAILURE'" class="fa fa-check" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fa fa-times" ng-show="track.key == 'FAILURE'"></i>
+                        <i aria-hidden="true" class="fa fa-check" ng-hide="track.key == 'FAILURE'"></i>
                     </td>
                 </tr>
             </table>
@@ -87,10 +89,12 @@
                             <div class="row">
                                 <div class="col-sm-10">
                                     <span class="card-subtitle mb-2 text-muted">Email:</span>
-                                    <span class="card-text">{{person.email}}</span>    <br/>
+                                    <span class="card-text">{{person.email}}</span> <br/>
                                     <span class="card-subtitle mb-2 text-muted">Опыт работы:</span>
-                                    <span class="card-text" ng-show="person.experience">{{ person.experience }} г.(лет)</span>
-                                    <span class="card-text" ng-hide="person.experience"> Опыт работы - начало карьеры</span>
+                                    <span class="card-text"
+                                          ng-show="person.experience">{{ person.experience }} г.(лет)</span>
+                                    <span class="card-text"
+                                          ng-hide="person.experience"> Опыт работы - начало карьеры</span>
                                     <br/>
                                     <span class="card-subtitle mb-2 text-muted">О себе кратко:</span>
                                     <span class="card-text">{{person.aboutShort}}</span>
@@ -101,7 +105,8 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="float-right">
-                                        <img alt="User Pic" ng-src="{{photo.imgUrl}}" id="profile-image1" class="img-circle img-responsive">
+                                        <img alt="User Pic" class="img-circle img-responsive" id="profile-image1"
+                                             ng-src="{{photo.imgUrl}}">
                                     </div>
                                 </div>
                             </div>
