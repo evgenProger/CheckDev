@@ -2,9 +2,9 @@ package ru.job4j.site.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Base64;
 
 /**
  * CheckDev пробное собеседование
@@ -17,8 +17,8 @@ import java.util.Base64;
 @AllArgsConstructor
 @Slf4j
 public class PhotoServices {
-    private final WebClientAuthCall webClientAuthCall;
     private static final String URL_IMG = "/img";
+    private final WebClientAuthCall webClientAuthCall;
 
     /**
      * Загрузка изображения по ID
@@ -26,19 +26,9 @@ public class PhotoServices {
      * @param id IMG ID
      * @return ByteArrayResource
      */
-    public String getPhotoById(String id) {
-        var responseEntityMono = webClientAuthCall
+    public ResponseEntity<ByteArrayResource> getPhotoById(int id) {
+        return webClientAuthCall
                 .doGetPhoto(URL_IMG, id)
                 .block();
-
-        if (responseEntityMono == null) {
-            return "";
-        }
-        var body = responseEntityMono.getBody();
-        if (body == null) {
-            return "";
-        }
-        var array = body.getByteArray();
-        return Base64.getEncoder().encodeToString(array);
     }
 }

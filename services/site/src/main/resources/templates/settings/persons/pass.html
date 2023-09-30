@@ -1,0 +1,37 @@
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="alert alert-info" ng-show="updated">
+                    {{ message }}
+                </div>
+                <div class="form-group">
+                    <label for="username">ФИО:</label>
+                    <input class="form-control" disabled id="username" ng-model="person.username" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input class="form-control" disabled id="email" ng-model="person.email" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="oldPass">Прежний пароль:</label>
+                    <input class="form-control" id="oldPass" ng-model="pass.password" type="password">
+                </div>
+
+                <div class="form-group">
+                    <label for="newPass">Новый пароль:</label>
+                    <input class="form-control" data-minlength="6" id="newPass" ng-model="pass.newPass" type="password">
+                </div>
+                <div class="form-group">
+                    <label for="newRepeat">Повторите новый пароль:</label>
+                    <input class="form-control" data-minlength="6" id="newRepeat" ng-model="pass.repeat"
+                           type="password">
+                </div>
+
+                <a class="btn btn-secondary" ng-hide="id" ng-href="#/persons">Назад</a>
+                <button class="btn btn-secondary float-right" ng-click="save(person, pass)">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>

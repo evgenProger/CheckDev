@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.site.dto.PersonDTO;
 import ru.job4j.site.service.PersonService;
-import ru.job4j.site.service.PhotoServices;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -31,7 +30,6 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 @Slf4j
 public class PersonController {
     private final PersonService personService;
-    private final PhotoServices photoServices;
 
     /**
      * Метод GET отображения страницы для просмотра данных пользователя.
@@ -51,7 +49,7 @@ public class PersonController {
             return "redirect:/";
         }
         model.addAttribute("personDto", personDTO);
-        model.addAttribute("photo", getPhotoByPersonDTO(personDTO));
+        model.addAttribute("photoId", getPhotoIdByPersonDTO(personDTO));
         return "/persons/personView";
     }
 
@@ -74,7 +72,7 @@ public class PersonController {
                 "Редактирование", "/persons/edit"
         );
         model.addAttribute("personDto", personDTO);
-        model.addAttribute("photo", getPhotoByPersonDTO(personDTO));
+        model.addAttribute("photoId", getPhotoIdByPersonDTO(personDTO));
         return "/persons/personEdit";
     }
 
@@ -95,10 +93,16 @@ public class PersonController {
         return "redirect:/";
     }
 
-    private String getPhotoByPersonDTO(PersonDTO personDTO) {
-        String result = "";
+    /**
+     * Метод проверяет наличие фото у модели PhotoDTO
+     *
+     * @param personDTO PersontDTO
+     * @return int
+     */
+    private int getPhotoIdByPersonDTO(PersonDTO personDTO) {
+        int result = -1;
         if (personDTO.getPhoto() != null && personDTO.getPhoto().getId() > 0) {
-            result = photoServices.getPhotoById(String.valueOf(personDTO.getPhoto().getId()));
+            result = personDTO.getPhoto().getId();
         }
         return result;
     }

@@ -115,7 +115,7 @@ public class WebClientAuthCall {
      * @param id  img ID
      * @return Mono<ResponseEntity < ByteArrayResource>>
      */
-    public Mono<ResponseEntity<ByteArrayResource>> doGetPhoto(String url, String id) {
+    public Mono<ResponseEntity<ByteArrayResource>> doGetPhoto(String url, int id) {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
