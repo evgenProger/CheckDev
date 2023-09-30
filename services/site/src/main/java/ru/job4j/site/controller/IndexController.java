@@ -19,8 +19,7 @@ public class IndexController {
     @GetMapping({"/", "index"})
     public String getIndexPage(Model model) throws JsonProcessingException {
         RequestResponseTools.addAttrBreadcrumbs(model,
-                "Главная", "/",
-                "Категории", "/categories/"
+                "Главная", "/"
         );
         model.addAttribute("categories", categoriesService.getAllWithTopics(topicsService));
         return "index";
