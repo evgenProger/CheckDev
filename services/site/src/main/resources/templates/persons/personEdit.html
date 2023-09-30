@@ -47,7 +47,13 @@
                             </div>
                             <!--Photo load-->
                             <div class="mb-3">
-                                <input class="form-control form-control-sm w-100" type="file" id="formFile" name="file">
+                                <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger" role="alert">
+                                    <span th:text="${errorMessage}"></span>
+                                </div>
+                                <label for="formFile" class="form-label">фото формата jpeg, размер до 100KB.</label>
+                                <input class="form-control form-control-sm w-100"
+                                       type="file" accept="image/jpeg"
+                                       id="formFile" name="file">
                             </div>
                         </div>
                         <div class="col-9">
@@ -55,13 +61,13 @@
                             <div class="mb-3">
                                 <label for="username" class="form-label"><b>ФИО</b></label>
                                 <input type="text" class="form-control" id="username" name="username"
-                                       th:field="*{username}"
-                                       type="text">
+                                       th:field="*{username}">
                             </div>
                             <!--Email-->
                             <div class="mb-3">
                                 <label class="form-label" for="email"><b>Email</b></label>
-                                <input class="form-control" id="email" name="username" placeholder="Email" th:field="*{email}"
+                                <input class="form-control" id="email" name="username" placeholder="Email"
+                                       th:field="*{email}"
                                        type="email">
                             </div>
                             <!--Experience-->

@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.site.dto.PersonDTO;
 
-import java.io.IOException;
-
 /**
  * CheckDev пробное собеседование
  * Сервис обработки пользователя (получение отправка)
@@ -49,14 +47,12 @@ public class PersonService {
      * @param personDTO PersonDTO
      * @param file      MultipartFile
      * @return ResponseEntity<String>
-     * @throws IOException Exception
      */
-    public ResponseEntity<String> postUpdatePerson(String token, PersonDTO personDTO, MultipartFile file) throws IOException {
+    public ResponseEntity<String> postUpdatePerson(String token, PersonDTO personDTO, MultipartFile file) {
         var builder = new MultipartBodyBuilder();
         builder.part("person", personDTO, MediaType.APPLICATION_JSON);
-        builder.part("file", file.getResource(), MediaType.MULTIPART_FORM_DATA);
+        builder.part("file", file.getResource(), MediaType.IMAGE_JPEG);
         return webClientAuthCall.doPostMultipart(URL_PERSON_UPDATE, token, builder)
                 .block();
-
     }
 }
