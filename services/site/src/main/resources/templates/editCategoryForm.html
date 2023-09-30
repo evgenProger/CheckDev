@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link href="../static/img/favorite.png" rel="icon" type="image/png">
-    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/svg+xml" href="/img/icons/svg/check-double-solid.svg">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <meta content="Обучение и трудоустройство Java-программистов от Junior до Senior" name="description">
-    <meta content="Job4j.ru" name="author">
+    <meta name="description" content="Обучение и трудоустройство Java-программистов от Junior до Senior">
+    <meta name="author" content="Job4j.ru">
     <title>Check Dev</title>
 
     <!-- Required meta tags -->
-    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700,400i,900|Open+Sans:300,400,600,700,800&amp;subset=cyrillic"
           rel="stylesheet">
     <!-- Bootstrap 5.3.2 CSS -->
-    <link rel="stylesheet" th:href="@{/css_bootstrap_5_3_2/bootstrap.min.css}">
+    <link th:href="@{/css_bootstrap_5_3_2/bootstrap.min.css}" rel="stylesheet">
     <script th:href="@{/js_bootstrap_5_3_2/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/js_bootstrap_5_3_2/popper.min.js}"></script>
     <script th:src="@{/js_bootstrap_5_3_2/bootstrap.min.js}"></script>
@@ -28,18 +31,18 @@
         <div class="col-sm">
         </div>
         <div class="col-sm">
-            <form method="post" th:action="@{/category/update/}" th:object="${category}">
+            <form th:action="@{/category/update/}" th:object="${category}" method="post">
                 <div class="form-group">
-                    <input name="id" th:field="*{id}" type="hidden"/>
+                    <input type="hidden" name="id" th:field="*{id}"/>
                     <label class="fw-bold" for="name">Название направления</label>
-                    <input aria-describedby="emailHelp" class="form-control mb-3 mt-2"
+                    <input type="text" class="form-control mb-3 mt-2"
                            id="name"
                            name="name"
-                           placeholder="Название"
-                           th:field="*{name}" type="text">
+                           th:field="*{name}"
+                           aria-describedby="emailHelp" placeholder="Название">
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-primary" type="submit">Сохранить</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
                 </div>
             </form>
         </div>

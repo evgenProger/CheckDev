@@ -1,13 +1,13 @@
 <!-- HTML-код модального окна -->
-<div class="col-md-6 col-md-offset-3" id="myModalBox">
+<div id="myModalBox" class="col-md-6 col-md-offset-3">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
                 Копировать данную вакансию?
             </div>
             <div class="modal-footer">
-                <a class="btn btn-secondary pull-left" ng-hide="id" ng-href="#/owner">Назад</a>
-                <button class="btn btn-primary float-right" ng-click="copy()" type="button">Копировать</button>
+                <a ng-href="#/owner" class="btn btn-secondary pull-left" ng-hide="id">Назад</a>
+                <button type="button" class="btn btn-primary float-right" ng-click="copy()">Копировать</button>
             </div>
         </div>
     </div>

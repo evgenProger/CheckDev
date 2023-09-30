@@ -2,12 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link href="../static/img/favorite.png" rel="icon" type="image/png">
-    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/svg+xml" href="/img/icons/svg/check-double-solid.svg">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <meta content="Обучение и трудоустройство Java-программистов от Junior до Senior" name="description">
-    <meta content="Job4j.ru" name="author">
+    <meta name="description" content="Обучение и трудоустройство Java-программистов от Junior до Senior">
+    <meta name="author" content="Job4j.ru">
     <title>Check Dev</title>
 
     <!-- Required meta tags -->
@@ -27,9 +30,9 @@
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
     <div class="row pt-3">
-        <div class="col-md-12 pull-right" th:if="${canManage}">
-            <a aria-pressed="true"
-               class="btn btn-secondary active mb-2" role="button" th:href="@{/category/createForm}">
+        <div th:if="${canManage}" class="col-md-12 pull-right">
+            <a th:href="@{/category/createForm}"
+               class="btn btn-secondary active mb-2" role="button" aria-pressed="true">
                 Создать направление
             </a>
         </div>
@@ -44,19 +47,27 @@
                                th:href="@{|/topics/${category.name}/${category.id}|}">
                                 <h3 th:text="${category.name}"></h3>
                             </a>
-                            <a th:href="@{|/category/editForm/${category.id}/${category.name}|}"
-                               th:if="${canManage}">
-                                <svg class="bi bi-pencil" fill="currentColor" height="16"
-                                     viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
+                            <a th:if="${canManage}"
+                               th:href="@{|/category/editForm/${category.id}/${category.name}|}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                     fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                     <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
                                 </svg>
                             </a>
                         </div>
                         <small class="mb-2 text-muted">
-                            <span><i class="fas fa-eye pr-3"></i> : </span>
-                            <span class="fw-bold" th:text="${category.total}"></span> |
-                            <span class="mr-3">Тем : </span>
-                            <span class="fw-bold" th:text="${category.topicsSize}"></span>
+                            <span>
+                                <a class="fas fa-eye pr-3 text-decoration-none"
+                                   th:href="@{|/topics/${category.name}/${category.id}|}">
+                                </a>
+                                <span th:text="${': ' + category.total}"></span>
+                            </span> |
+                            <span>
+                                <a th:text="${'тем'}"
+                                   th:href="@{|/topics/${category.name}/${category.id}|}">
+                                </a>:
+                                <span th:text="${category.topics.size()}"></span>
+                            </span>
                         </small>
                 </tr>
             </table>

@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link href="../static/img/favorite.png" rel="icon" type="image/png">
-    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/svg+xml" href="/img/icons/svg/check-double-solid.svg">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <meta content="Обучение и трудоустройство Java-программистов от Junior до Senior" name="description">
-    <meta content="Job4j.ru" name="author">
+    <meta name="description" content="Обучение и трудоустройство Java-программистов от Junior до Senior">
+    <meta name="author" content="Job4j.ru">
     <title>Обучение и трудоустройство Java-программистов от Junior до Senior</title>
 
     <!-- Required meta tags -->
-    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <!-- Bootstrap 5.3.2 CSS -->
-    <link rel="stylesheet" th:href="@{/css_bootstrap_5_3_2/bootstrap.min.css}">
+    <link th:href="@{/css_bootstrap_5_3_2/bootstrap.min.css}" rel="stylesheet">
     <script th:href="@{/js_bootstrap_5_3_2/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/js_bootstrap_5_3_2/popper.min.js}"></script>
     <script th:src="@{/js_bootstrap_5_3_2/bootstrap.min.js}"></script>
@@ -31,25 +34,15 @@
         <div class="cell">
             <h5>Популярные категории</h5>
             <table class="table">
-                <tr th:each="category: ${categories}">
+                <tr th:each="category: ${categories}" style="cursor: pointer;">
                     <td>
                         <div>
-                            <a class="fw-bold text-dark text-decoration-none"
-                               th:href="@{|/topics/${category.name}/${category.id}|}">
-                                <h3 th:text="${category.name}"></h3>
-                            </a>
-                            <a th:href="@{|/category/editForm/${category.id}/${category.name}|}"
-                               th:if="${canManage}">
-                                <svg class="bi bi-pencil" fill="currentColor" height="16"
-                                     viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                                </svg>
-                            </a>
+                            <span class="fw-bold" th:text="${category.name}"></span>
                         </div>
                         <small class="mb-2 text-muted">
-                            <span><i class="fas fa-eye pr-3"></i> : </span>
+                            <span><a style="white-space: nowrap" th:href="@{|/category/statistic/${category.id}|}"><i class="fas fa-eye pr-3"></i></a> : </span>
                             <span class="fw-bold" th:text="${category.total}"></span> |
-                            <span class="mr-3">Тем : </span>
+                            <span><a style="white-space: nowrap" th:href="@{|/topics/${category.id}|}">Тем</a>: </span>
                             <span class="fw-bold" th:text="${category.topicsSize}"></span>
                         </small>
                     </td>

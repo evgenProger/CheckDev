@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link href="../../static/img/favorite.png" rel="icon" type="image/png">
-    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/svg+xml" href="/img/icons/svg/check-double-solid.svg">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <meta content="Обучение и трудоустройство Java-программистов от Junior до Senior" name="description">
-    <meta content="Job4j.ru" name="author">
+    <meta name="description" content="Обучение и трудоустройство Java-программистов от Junior до Senior">
+    <meta name="author" content="Job4j.ru">
     <title>Обучение и трудоустройство Java-программистов от Junior до Senior</title>
 
     <!-- Required meta tags -->
-    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700,400i,900|Open+Sans:300,400,600,700,800&amp;subset=cyrillic"
           rel="stylesheet">
     <!-- Bootstrap 5.3.2 CSS -->
-    <link rel="stylesheet" th:href="@{/css_bootstrap_5_3_2/bootstrap.min.css}">
+    <link th:href="@{/css_bootstrap_5_3_2/bootstrap.min.css}" rel="stylesheet">
     <script th:href="@{/js_bootstrap_5_3_2/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/js_bootstrap_5_3_2/popper.min.js}"></script>
     <script th:src="@{/js_bootstrap_5_3_2/bootstrap.min.js}"></script>
@@ -30,9 +33,9 @@
                 Редактирование пользователя
             </div>
             <div class="card-body">
-                <form enctype="multipart/form-data" method="POST" th:action="@{/persons/edit}" th:object="${personDto}">
-                    <input name="id" th:field="*{id}" type="hidden">
-                    <input name="photo" th:field="*{photo.id}" type="hidden">
+                <form th:action="@{/persons/edit}" method="POST" th:object="${personDto}" enctype="multipart/form-data">
+                    <input type="hidden" name="id" th:field="*{id}">
+                    <input type="hidden" name="photo" th:field="*{photo.id}">
                     <div class="row mb-3">
                         <div class="col-3">
                             <!--Photo view-->
@@ -44,14 +47,14 @@
                             </div>
                             <!--Photo load-->
                             <div class="mb-3">
-                                <input class="form-control form-control-sm w-100" id="formFile" name="file" type="file">
+                                <input class="form-control form-control-sm w-100" type="file" id="formFile" name="file">
                             </div>
                         </div>
                         <div class="col-9">
                             <!--Username-->
                             <div class="mb-3">
-                                <label class="form-label" for="username"><b>ФИО</b></label>
-                                <input class="form-control" id="username" name="username" placeholder="ФИО"
+                                <label for="username" class="form-label"><b>ФИО</b></label>
+                                <input type="text" class="form-control" id="username" name="username"
                                        th:field="*{username}"
                                        type="text">
                             </div>
