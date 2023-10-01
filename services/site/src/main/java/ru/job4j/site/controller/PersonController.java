@@ -1,19 +1,15 @@
 package ru.job4j.site.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.site.dto.PersonDTO;
 import ru.job4j.site.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Calendar;
 
 import static ru.job4j.site.controller.RequestResponseTools.getToken;
@@ -26,10 +22,15 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
  */
 @Controller
 @RequestMapping("/persons")
-@AllArgsConstructor
 @Slf4j
 public class PersonController {
+    private final String maxSizeFile;
     private final PersonService personService;
+
+    public PersonController(@Value("${server.site.maxSizeLoadFile}") String maxSizeFile, PersonService personService) {
+        this.maxSizeFile = maxSizeFile;
+        this.personService = personService;
+    }
 
     /**
      * Метод GET отображения страницы для просмотра данных пользователя.
@@ -61,7 +62,9 @@ public class PersonController {
      * @return String
      */
     @GetMapping("/edit")
-    public String getEditPerson(HttpServletRequest request, Model model) {
+    public String getEditPerson(HttpServletRequest request,
+                                Model model,
+                                @RequestParam(value = "error", required = false) String error) {
         var personDTO = getPersonDTO(request);
         if (personDTO == null) {
             return "redirect:/";
@@ -71,8 +74,13 @@ public class PersonController {
                 "Профиль", "/persons/",
                 "Редактирование", "/persons/edit"
         );
+        String errorMessage = null;
+        if (error != null) {
+            errorMessage = String.format("Файл для фото больше %s KB. уменьшите размер.", this.maxSizeFile);
+        }
         model.addAttribute("personDto", personDTO);
         model.addAttribute("photoId", getPhotoIdByPersonDTO(personDTO));
+        model.addAttribute("errorMessage", errorMessage);
         return "/persons/personEdit";
     }
 
@@ -83,11 +91,14 @@ public class PersonController {
     public String updatePerson(@ModelAttribute PersonDTO personDTO,
                                MultipartFile file,
                                HttpServletRequest request) {
+        if (!isValidFile(file)) {
+            return "redirect:/persons/edit?error=true";
+        }
         var token = getToken(request);
         personDTO.setUpdated(Calendar.getInstance());
         try {
             personService.postUpdatePerson(token, personDTO, file);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("API post method error: {}", e.getMessage());
         }
         return "redirect:/";
@@ -119,5 +130,23 @@ public class PersonController {
             log.error("PersonDTO data available. {}", e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * Метод проверяет загружаемый файл на содержимое и размер
+     *
+     * @param file MultipartFile
+     * @return boolean true/false
+     */
+    private boolean isValidFile(MultipartFile file) {
+        var maxFileSizeByte = Integer.parseInt(maxSizeFile) * 1024;
+        var result = true;
+        if (file == null || file.isEmpty() || file.getSize() == 0) {
+            return result;
+        }
+        if (file.getSize() > maxFileSizeByte) {
+            return !result;
+        }
+        return result;
     }
 }
