@@ -38,14 +38,16 @@ public class ProfilesController {
      */
     @GetMapping("/{id}")
     public String getProfileById(@PathVariable int id, Model model) {
+        String username = "";
+        var profileOptional = profilesService.getProfileById(id, key);
+        if (profileOptional.isPresent()) {
+            model.addAttribute("profile", profileOptional.get());
+            username = profileOptional.get().getUsername();
+        }
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
                 "Профили", "/profiles/",
-                "Просмотр профиля", "/profiles/" + id
-        );
-        var profileOptional = profilesService.getProfileById(id, key);
-        profileOptional.ifPresent(
-                p -> model.addAttribute("profile", p)
+                username, "/profiles/" + id
         );
         return "/profiles/profileView";
     }
