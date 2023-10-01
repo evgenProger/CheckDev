@@ -73,7 +73,6 @@ class IndexControllerTest {
         when(topicsService.getByCategory(cat2.getId())).thenReturn(List.of(topicDTO2));
         when(categoriesService.getAllWithTopics(topicsService)).thenReturn(listCat);
         var listBread = List.of(new Breadcrumb("Главная", "/"));
-                //  new Breadcrumb("Категории", "/categories/"));
         var model = new ConcurrentModel();
 
         var view = indexController.getIndexPage(model);
