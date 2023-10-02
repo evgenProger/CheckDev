@@ -19,7 +19,8 @@ public class InterviewsController {
 
     private final InterviewService interviewService;
 
-    @PreAuthorize("isAuthenticated()")
+    /*Аннотация не работает
+    @PreAuthorize("isAuthenticated()") */
     @GetMapping("/")
     public ResponseEntity<List<Interview>> findAll() throws SQLException {
         return ResponseEntity
