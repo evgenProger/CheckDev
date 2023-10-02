@@ -25,10 +25,14 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 @Slf4j
 public class PersonController {
     private final String maxSizeFile;
+    private final String contentTypeFile;
     private final PersonService personService;
 
-    public PersonController(@Value("${server.site.maxSizeLoadFile}") String maxSizeFile, PersonService personService) {
+    public PersonController(@Value("${server.site.maxSizeLoadFile}") String maxSizeFile,
+                            @Value("${server.site.contentTypeFile}") String contentTypeFile,
+                            PersonService personService) {
         this.maxSizeFile = maxSizeFile;
+        this.contentTypeFile = contentTypeFile;
         this.personService = personService;
     }
 
@@ -76,7 +80,7 @@ public class PersonController {
         );
         String errorMessage = null;
         if (error != null) {
-            errorMessage = String.format("Файл для фото больше %s KB. уменьшите размер.", this.maxSizeFile);
+            errorMessage = "Файл фото не соответствует ограничениям";
         }
         model.addAttribute("personDto", personDTO);
         model.addAttribute("photoId", getPhotoIdByPersonDTO(personDTO));
@@ -144,7 +148,7 @@ public class PersonController {
         if (file == null || file.isEmpty() || file.getSize() == 0) {
             return result;
         }
-        if (file.getSize() > maxFileSizeByte) {
+        if (file.getSize() > maxFileSizeByte || !this.contentTypeFile.equals(contentTypeFile)) {
             return !result;
         }
         return result;

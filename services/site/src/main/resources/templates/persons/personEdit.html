@@ -46,7 +46,8 @@
                             </div>
                             <!--Photo load-->
                             <div class="mb-3">
-                                <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger" role="alert">
+                                <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger"
+                                     role="alert">
                                     <span th:text="${errorMessage}"></span>
                                 </div>
                                 <label for="formFile" class="form-label">фото формата jpeg, размер до 100KB.</label>
