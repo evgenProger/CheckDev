@@ -33,8 +33,9 @@ public class CategoriesControl {
         }
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
-                "Направления", "/categories/"
+                "Категории", "/categories/"
         );
+        model.addAttribute("current_page", "categories");
         return "categories";
     }
 }

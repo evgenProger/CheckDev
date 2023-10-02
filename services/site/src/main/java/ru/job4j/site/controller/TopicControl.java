@@ -39,7 +39,7 @@ public class TopicControl {
         model.addAttribute("categoryName", categoryName);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
-                "Направления", "/categories/",
+                "Категории", "/categories/",
                 String.format("%s. Темы", categoryName),
                 String.format("/topics/%s/%d", categoryName, categoryId),
                 topic.getName(), String.format("/topic/%s/%d/%d", categoryName, categoryId, topicId));
@@ -58,7 +58,7 @@ public class TopicControl {
         model.addAttribute("categoryId", categoryId);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
-                "Направления", "/categories/",
+                "Категории", "/categories/",
                 "Темы", String.format("/topics/%d", categoryId),
                 "Создание темы", String.format("/topic/createForm/%d", categoryId));
         return "topic/createForm";
@@ -90,7 +90,7 @@ public class TopicControl {
         model.addAttribute("topic", topic);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
-                "Направления", "/categories/",
+                "Категории", "/categories/",
                 "Темы", String.format("/topics/%s/%d", categoryName, categoryId),
                 "Редактировать тему",
                 String.format("/topic/updateForm/%s/%d/%d", categoryName, categoryId, topicId));

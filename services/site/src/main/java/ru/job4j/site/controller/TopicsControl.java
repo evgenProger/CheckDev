@@ -33,7 +33,7 @@ public class TopicsControl {
         model.addAttribute("topics", topicsService.getByCategory(categoryId));
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
-                "Направления", "/categories/",
+                "Категории", "/categories/",
                 String.format("%s. Темы", categoryName),
                 String.format("/topics/%s/%d", categoryName, categoryId));
         var token = getToken(req);
