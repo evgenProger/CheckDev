@@ -33,7 +33,7 @@ public class CategoriesControl {
         }
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
-                "Направления", "/categories/"
+                "Категории", "/categories/"
         );
         return "categories";
     }

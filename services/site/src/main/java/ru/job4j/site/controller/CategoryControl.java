@@ -28,8 +28,8 @@ public class CategoryControl {
         RequestResponseTools.addAttrCanManage(model, userInfo);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
-                "Направления", "/categories/",
-                "Создать направление", "/category/createForm"
+                "Категории", "/categories/",
+                "Создать категорию", "/category/createForm"
         );
         return "createForm";
     }
@@ -52,8 +52,8 @@ public class CategoryControl {
         }
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
-                "Направления", "/categories/",
-                "Редактировать направление", String.format("/category/editForm/%d/%s", id, name)
+                "Категории", "/categories/",
+                "Редактировать категорию", String.format("/category/editForm/%d/%s", id, name)
         );
         return "editCategoryForm";
     }
