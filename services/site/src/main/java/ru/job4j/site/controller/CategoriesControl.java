@@ -35,6 +35,7 @@ public class CategoriesControl {
                 "Главная", "/index",
                 "Категории", "/categories/"
         );
+        model.addAttribute("current_page", "categories");
         return "categories";
     }
 }

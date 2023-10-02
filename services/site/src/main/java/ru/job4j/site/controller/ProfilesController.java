@@ -66,6 +66,7 @@ public class ProfilesController {
         );
         var profilesList = profilesService.getAllProfile(key);
         model.addAttribute("profiles", profilesList);
+        model.addAttribute("current_page", "profiles");
         return "/profiles/profiles";
     }
 }
