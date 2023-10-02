@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="../static/img/favorite.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <meta name="description" content="Обучение и трудоустройство Java-программистов от Junior до Senior">
+    <meta name="author" content="Job4j.ru">
+    <title>Check Dev</title>
+
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <!-- Bootstrap 5.3.2 CSS -->
+    <link th:href="@{/css_bootstrap_5_3_2/bootstrap.min.css}" rel="stylesheet">
+    <script th:href="@{/js_bootstrap_5_3_2/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js_bootstrap_5_3_2/popper.min.js}"></script>
+    <script th:src="@{/js_bootstrap_5_3_2/bootstrap.min.js}"></script>
+    <script th:src="@{/js_bootstrap_5_3_2/code.jquery.com_jquery-3.7.0.min.js}"></script>
+</head>
+<body>
+<div th:insert="fragments/header :: header"></div>
+<div class="container">
+    <div class="row pt-3">
+        <div class="cell">
+            <table class="table table-hover">
+                <tbody>
+                <tr th:each="interview: ${interviews}">
+                    <td>
+                        <div>
+                            <span class="fw-bold">
+                                    <h3 th:text="${interview.title}"></h3>
+                            </span>
+                            <small class="mb-2 text-muted">
+                            <span>
+                            <span th:text="${'Автор: ' + interview.submitterId}"></span>
+                            </span> |
+                                <span th:text="${'Дата создания: ' + interview.createDate}"></span> |
+                                <span th:text="${'Тип: ' + interview.typeInterview}"></span>
+                            </span>
+                            </small>
+                            </div>
+                    </td>
+                    <td>
+                        <div>
+                            <small class="mb-2 text-muted">
+                            <span> Дата проведения собеседования: </span>
+                            </small>
+                            <span class="mb-2 text-muted">
+                                    <h5 th:text="${interview.approximateDate}"></h5>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div th:insert="fragments/footer :: footer"></div>
+</body>
+</html>

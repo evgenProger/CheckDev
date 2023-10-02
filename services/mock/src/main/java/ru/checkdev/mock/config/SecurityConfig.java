@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,45 +20,16 @@ import javax.sql.DataSource;
 @AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private final DataSource ds;
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication().dataSource(ds)
-                .usersByUsernameQuery("select username, password, enabled "
-                        + "from users "
-                        + "where username = ?")
-                .authoritiesByUsernameQuery(
-                        " select u.username, a.authority "
-                                + "from authorities as a, users as u "
-                                + "where u.username = ? and u.authority_id = a.id");
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/interview/", "/interview/**", "/interviews/")
-                .permitAll()
-                .antMatchers("/wisher/", "wisher/**", "/wishers/")
-                .permitAll()
-                .antMatchers("/interview/**", "/interview/")
+                .antMatchers(HttpMethod.PUT, "/interview/**", "wisher/**")
                 .hasAnyRole("ADMIN", "USER")
-                .and()
-                .formLogin()
-                .loginPage("/interview/login")
-                .defaultSuccessUrl("/interview/index")
-                .failureUrl("/interview/login?error=true")
+                .antMatchers(HttpMethod.DELETE, "/interview/**", "wisher/**")
+                .hasAnyRole("ADMIN", "USER")
+                .antMatchers("/interviews/", "/interviews/**", "/interviews/")
                 .permitAll()
-                .and()
-                .logout()
-                .logoutSuccessUrl("/interview/login?logout=true")
-                .invalidateHttpSession(true)
+                .antMatchers("/wisher/", "wisher/**", "wishers/")
                 .permitAll()
                 .and()
                 .csrf()
