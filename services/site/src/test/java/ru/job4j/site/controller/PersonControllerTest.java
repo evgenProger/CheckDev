@@ -131,4 +131,29 @@ class PersonControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/persons/edit?error=true"));
     }
+
+    @Test
+    void whenPostUpdatePersonContentTypeNotJPEGThenRedirectErrorMessage() throws Exception {
+        var token = "123";
+        var person = new PersonDTO();
+        person.setId(1);
+        person.setUsername("username");
+        person.setEmail("email");
+        var fileSize = new byte[Integer.parseInt(maxSizeFile) * 1024 * 10];
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "file.jpeg",
+                MediaType.IMAGE_PNG_VALUE,
+                fileSize
+        );
+        when(personService.getPerson(token)).thenReturn(person);
+        this.mockMvc.perform(multipart("/persons/edit")
+                        .file(file)
+                        .accept(MediaType.MULTIPART_FORM_DATA)
+                        .requestAttr("personDTO", person)
+                        .sessionAttr("token", token))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/persons/edit?error=true"));
+    }
 }

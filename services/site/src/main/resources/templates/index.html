@@ -40,9 +40,9 @@
                             <span class="fw-bold" th:text="${category.name}"></span>
                         </div>
                         <small class="mb-2 text-muted">
-                            <span><a style="white-space: nowrap" th:href="@{|/category/statistic/${category.id}|}"><i class="fas fa-eye pr-3"></i></a> : </span>
+                            <span><i class="fas fa-eye pr-3"></i> : </span>
                             <span class="fw-bold" th:text="${category.total}"></span> |
-                            <span><a style="white-space: nowrap" th:href="@{|/topics/${category.id}|}">Тем</a>: </span>
+                            <span class="mr-3">Тем : </span>
                             <span class="fw-bold" th:text="${category.topicsSize}"></span>
                         </small>
                     </td>
