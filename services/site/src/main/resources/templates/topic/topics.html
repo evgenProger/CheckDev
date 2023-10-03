@@ -44,12 +44,12 @@
 				<tr th:each="topic: ${topics}">
 					<td>
 						<a class="fw-bold text-dark text-decoration-none"
-						   th:href="@{|/topic/${categoryName}/${categoryId}/${topic.id}|}">
+						   th:href="@{|/topic/${topic.id}|}">
 							<h3 th:text="${topic.name}"></h3>
 						</a>
 						<div th:if="${canManage}">
 							<form class="mt-3"
-								  th:action="@{|/topic/updateForm/${categoryName}/${categoryId}/${topic.id}|}"
+								  th:action="@{|/topic/updateForm/${topic.id}|}"
 								  method="get">
 								<label>
 									<input name="id" type="number"

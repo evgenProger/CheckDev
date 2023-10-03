@@ -23,19 +23,19 @@ public class TopicsControl {
     private final AuthService authService;
     private final CategoriesService categoriesService;
 
-    @GetMapping("/{categoryName}/{categoryId}")
-    public String getByCategory(@PathVariable String categoryName,
-                                @PathVariable int categoryId,
+    @GetMapping("/{categoryId}")
+    public String getByCategory(@PathVariable int categoryId,
                                 Model model,
                                 HttpServletRequest req) throws JsonProcessingException {
-        model.addAttribute("categoryName", categoryName);
+        var topics = topicsService.getByCategory(categoryId);
         model.addAttribute("categoryId", categoryId);
-        model.addAttribute("topics", topicsService.getByCategory(categoryId));
+        model.addAttribute("topics", topics);
+        String categoryName = topics.isEmpty() ? "" : topics.get(0).getCategory().getName();
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
                 String.format("%s. Темы", categoryName),
-                String.format("/topics/%s/%d", categoryName, categoryId));
+                String.format("/topics/%d", categoryId));
         var token = getToken(req);
         if (token != null) {
             var userInfo = authService.userInfo(token);
