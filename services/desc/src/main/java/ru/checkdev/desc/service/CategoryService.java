@@ -6,12 +6,14 @@ import ru.checkdev.desc.domain.Category;
 import ru.checkdev.desc.repository.CategoryRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class CategoryService {
+    private final static int MOST_POPULAR = 5;
     private final CategoryRepository categoryRepository;
 
     public Optional<Category> findById(int categoryId) {
@@ -33,6 +35,12 @@ public class CategoryService {
     public List<Category> getAll() {
         var list = new ArrayList<Category>();
         categoryRepository.findAllByOrderByTotalDesc().forEach(list::add);
+        return list;
+    }
+
+    public List<Category> getMostPopular() {
+        var list = new ArrayList<Category>();
+        categoryRepository.findTop5AllByOrderByTotalDesc().forEach(list::add);
         return list;
     }
 

@@ -11,6 +11,8 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
 
     Iterable<Category> findAllByOrderByTotalDesc();
 
+    Iterable<Category> findTop5AllByOrderByTotalDesc();
+
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Modifying
     @Query("UPDATE cd_category c SET total = total + 1 WHERE c.id = :id")
