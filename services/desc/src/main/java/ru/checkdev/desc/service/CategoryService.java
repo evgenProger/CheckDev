@@ -40,7 +40,7 @@ public class CategoryService {
 
     public List<Category> getMostPopular() {
         var list = new ArrayList<Category>();
-        categoryRepository.findTop5AllByOrderByTotalDesc().forEach(list::add);
+        categoryRepository.findMostPopular().forEach(list::add);
         return list;
     }
 

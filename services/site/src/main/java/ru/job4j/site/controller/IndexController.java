@@ -21,7 +21,7 @@ public class IndexController {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/"
         );
-        model.addAttribute("categories", categoriesService.getMostPopAllWithTopics(topicsService));
+        model.addAttribute("categories", categoriesService.getMostPopular(topicsService));
         return "index";
     }
 }

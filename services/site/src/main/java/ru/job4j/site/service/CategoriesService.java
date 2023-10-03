@@ -17,7 +17,7 @@ public class CategoriesService {
         });
     }
 
-    public List<CategoryDTO> getAllPop() throws JsonProcessingException {
+    public List<CategoryDTO> getPopularFromDesc() throws JsonProcessingException {
         var text = new RestAuthCall("http://localhost:9902/categories/most_pop").get();
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>() {
@@ -55,8 +55,8 @@ public class CategoriesService {
         return categoriesDTO;
     }
 
-    public List<CategoryDTO> getMostPopAllWithTopics(TopicsService topicsService) throws JsonProcessingException {
-        var categoriesDTO = getAllPop();
+    public List<CategoryDTO> getMostPopular(TopicsService topicsService) throws JsonProcessingException {
+        var categoriesDTO = getPopularFromDesc();
         for (var categoryDTO : categoriesDTO) {
             categoryDTO.setTopicsSize(topicsService.getByCategory(categoryDTO.getId()).size());
         }
