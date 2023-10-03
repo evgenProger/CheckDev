@@ -44,7 +44,7 @@
                     <td>
                         <div>
                             <a class="fw-bold text-dark text-decoration-none"
-                               th:href="@{|/topics/${category.name}/${category.id}|}">
+                               th:href="@{|/topics/${category.id}|}">
                                 <h3 th:text="${category.name}"></h3>
                             </a>
                             <a th:if="${canManage}"
@@ -58,13 +58,13 @@
                         <small class="mb-2 text-muted">
                             <span>
                                 <a class="fas fa-eye pr-3 text-decoration-none"
-                                   th:href="@{|/topics/${category.name}/${category.id}|}">
+                                   th:href="@{|/topics/${category.id}|}">
                                 </a>
                                 <span th:text="${': ' + category.total}"></span>
                             </span> |
                             <span>
                                 <a th:text="${'тем'}"
-                                   th:href="@{|/topics/${category.name}/${category.id}|}">
+                                   th:href="@{|/topics/${category.id}|}">
                                 </a>:
                                 <span th:text="${category.topicsSize}"></span>
                             </span>
