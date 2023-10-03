@@ -43,4 +43,10 @@ public class TopicControl {
         topicService.delete(topic.getId());
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/statistic")
+    public ResponseEntity<Void> updateStatistic(@RequestBody int categoryId) {
+        topicService.updateStatistic(categoryId);
+        return ResponseEntity.ok().build();
+    }
 }

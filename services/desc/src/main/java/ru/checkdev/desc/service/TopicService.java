@@ -48,4 +48,8 @@ public class TopicService {
         topicRepository.findAll().forEach(list::add);
         return list;
     }
+
+    public void updateStatistic(int id) {
+        topicRepository.updateStatistic(id);
+    }
 }

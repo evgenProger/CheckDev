@@ -34,6 +34,7 @@ public class TopicControl {
             model.addAttribute("userInfo", token);
             RequestResponseTools.addAttrCanManage(model, userInfo);
             topic = topicsService.getById(topicId, token);
+            topicsService.updateStatistic(token, topicId);
         }
         model.addAttribute("topic", topic);
         model.addAttribute("categoryName", categoryName);
