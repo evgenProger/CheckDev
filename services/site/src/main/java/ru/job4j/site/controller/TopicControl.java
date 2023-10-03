@@ -21,10 +21,8 @@ public class TopicControl {
     private final TopicsService topicsService;
     private final AuthService authService;
 
-    @GetMapping("/{categoryName}/{categoryId}/{topicId}")
-    public String details(@PathVariable String categoryName,
-                          @PathVariable int categoryId,
-                          @PathVariable int topicId,
+    @GetMapping("/{topicId}")
+    public String details(@PathVariable int topicId,
                           Model model,
                           HttpServletRequest req) throws JsonProcessingException {
         var token = getToken(req);
@@ -36,14 +34,14 @@ public class TopicControl {
             topic = topicsService.getById(topicId, token);
             topicsService.updateStatistic(token, topicId);
         }
+        String categoryName = topic.getCategory().getName();
+        int categoryId = topic.getCategory().getId();
         model.addAttribute("topic", topic);
-        model.addAttribute("categoryName", categoryName);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
-                String.format("%s. Темы", categoryName),
-                String.format("/topics/%s/%d", categoryName, categoryId),
-                topic.getName(), String.format("/topic/%s/%d/%d", categoryName, categoryId, topicId));
+                String.format("%s. Темы", categoryName), String.format("/topics/%d", categoryId),
+                topic.getName(), String.format("/topic/%d", topicId));
         return "/topic/details";
     }
 
@@ -72,11 +70,9 @@ public class TopicControl {
         return "redirect:/categories/";
     }
 
-    @GetMapping("/updateForm/{categoryName}/{categoryId}/{topicId}")
+    @GetMapping("/updateForm/{topicId}")
     public String updateForm(Model model,
                              HttpServletRequest req,
-                             @PathVariable String categoryName,
-                             @PathVariable int categoryId,
                              @PathVariable int topicId)
             throws JsonProcessingException {
         var topic = new TopicDTO();
@@ -89,12 +85,13 @@ public class TopicControl {
             model.addAttribute("userInfo", userInfo);
         }
         model.addAttribute("topic", topic);
+        int categoryId = topic.getCategory().getId();
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
-                "Темы", String.format("/topics/%s/%d", categoryName, categoryId),
-                "Редактировать тему",
-                String.format("/topic/updateForm/%s/%d/%d", categoryName, categoryId, topicId));
+                String.format("%s. Темы", topic.getCategory().getName()),
+                String.format("/topics/%d", categoryId),
+                "Редактировать тему", String.format("/topic/updateForm/%d", topicId));
         return "topic/updateForm";
     }
 

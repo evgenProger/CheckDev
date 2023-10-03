@@ -2,12 +2,9 @@
     <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
         <div class="container-fluid">
             <span>
-                <a th:href="@{/}">
-                    <img src="/img/icons/svg/check-double-solid.svg" width="24">
+                <a th:href="@{/}" class="logo">
+                    <img src="/img/icons/svg/check-double-solid.svg" alt="check-double-solid">
                 </a>
-            </span>
-            <span>
-                <a class="navbar-brand" th:href="@{/}">CheckDev</a>
             </span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
@@ -44,7 +41,7 @@
                         <span th:text="${userInfo.username != null} ? ${userInfo.username} : ${userInfo.email}">
                             Login/Email пользователя
                         </span>
-                    </a>
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" th:href="@{/logout}">Выйти</a></li>
@@ -52,7 +49,7 @@
             </div>
         </div>
     </nav>
-    <div class="container">
+    <div class="container pt-2">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li th:each="breadcrumb: ${breadcrumbs}" class="breadcrumb-item">
