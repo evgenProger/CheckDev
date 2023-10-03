@@ -18,7 +18,8 @@ public class InterviewController {
 
     private final InterviewService interviewService;
 
-    @PreAuthorize("isAuthenticated()")
+    /* Аннотация не работает
+    @PreAuthorize("isAuthenticated()")*/
     @PostMapping("/")
     public ResponseEntity<Interview> save(@Valid @RequestBody Interview interview) throws SQLException {
         Optional<Interview> rsl = interviewService.save(interview);

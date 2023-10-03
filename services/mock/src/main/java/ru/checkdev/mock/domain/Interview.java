@@ -32,7 +32,6 @@ public class Interview {
     @JoinColumn(name="title")
     private String title;
 
-    @NotBlank(message = "Title must be not empty")
     @JoinColumn(name="description")
     private String description;
 
