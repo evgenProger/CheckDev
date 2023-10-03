@@ -9,17 +9,19 @@
     <version>1.0.0</version>
 
     <modules>
-        <module>services/template-service</module>
         <module>services/auth</module>
+        <module>services/desc</module>
+        <module>services/mock</module>
+        <module>services/notification</module>
+        <module>services/site</module>
+        <!--
+        <module>services/template-service</module>
         <module>services/exam</module>
         <module>services/hr</module>
         <module>services/images</module>
-        <module>services/notification</module>
         <module>services/train</module>
         <module>services/video</module>
-        <module>services/desc</module>
-        <module>services/site</module>
-        <module>services/mock</module>
+        -->
     </modules>
 
     <build>
