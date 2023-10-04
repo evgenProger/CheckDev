@@ -13,7 +13,6 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class CategoryService {
-    private final static int MOST_POPULAR = 5;
     private final CategoryRepository categoryRepository;
 
     public Optional<Category> findById(int categoryId) {
