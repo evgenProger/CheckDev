@@ -37,6 +37,8 @@ public class InterviewController {
         }
         String categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();
+        model.addAttribute("category", topic.getCategory());
+        model.addAttribute("topic", topic);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
