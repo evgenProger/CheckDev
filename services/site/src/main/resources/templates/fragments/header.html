@@ -1,9 +1,9 @@
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
         <div class="container-fluid">
-            <span>
+            <span class="ps-5 pe-4">
                 <a th:href="@{/}" class="logo">
-                    <img src="/img/icons/svg/check-double-solid.svg" alt="check-double-solid">
+                    <img src="/img/icons/svg/check-double-solid.svg" width="20" alt="check-double-solid">
                 </a>
             </span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -14,7 +14,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" th:classappend="${'categories' == current_page ? 'active' : ''}"
                            aria-current="page" th:href="@{/categories/}">Категории</a>
