@@ -13,4 +13,5 @@ public class TopicDTO {
     private Calendar updated;
     private int total;
     private CategoryDTO category;
+    private int position;
 }

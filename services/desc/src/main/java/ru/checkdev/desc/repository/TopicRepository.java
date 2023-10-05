@@ -10,7 +10,9 @@ import ru.checkdev.desc.domain.Topic;
 import java.util.List;
 
 public interface TopicRepository extends CrudRepository<Topic, Integer> {
-    List<Topic> findTopicsByCategoryId(Integer id);
+    List<Topic> findAllByOrderByPositionAsc();
+
+    List<Topic> findByCategoryIdOrderByPositionAsc(Integer categoryId);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Modifying

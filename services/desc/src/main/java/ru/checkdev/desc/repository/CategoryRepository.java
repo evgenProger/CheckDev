@@ -9,7 +9,7 @@ import ru.checkdev.desc.domain.Category;
 import ru.checkdev.desc.utility.Utility;
 
 public interface CategoryRepository extends CrudRepository<Category, Integer> {
-    Iterable<Category> findAllByOrderByTotalDesc();
+    Iterable<Category> findAllByOrderByPositionAsc();
 
     @Query(value = "SELECT * FROM cd_category ORDER BY total DESC LIMIT "
             + Utility.LIMIT_MOST_POPULAR, nativeQuery = true)

@@ -41,9 +41,11 @@ public class TopicControlTest {
         topic.setText("Some text");
         topic.setCreated(Calendar.getInstance());
         topic.setUpdated(Calendar.getInstance());
+        topic.setPosition(33);
         CategoryDTO category = new CategoryDTO();
         category.setId(1);
         category.setName("Some category");
+        category.setPosition(55);
         topic.setCategory(category);
         var userInfo = new UserInfoDTO();
         var role = new Role();
@@ -89,6 +91,7 @@ public class TopicControlTest {
     public void whenTopicCreated() throws Exception {
         var topic = new TopicLiteDTO();
         topic.setName("Some topic");
+        topic.setPosition(33);
         topic.setText("Some text");
         mockMvc.perform(post("/topic/create")
                 .requestAttr("topic", topic))
@@ -111,6 +114,7 @@ public class TopicControlTest {
         topic.setText("Some text");
         topic.setCreated(Calendar.getInstance());
         topic.setUpdated(Calendar.getInstance());
+        topic.setPosition(33);
         CategoryDTO category = new CategoryDTO();
         category.setId(1);
         category.setName("Some category");
@@ -134,6 +138,7 @@ public class TopicControlTest {
         var topic = new TopicDTO();
         topic.setId(1);
         topic.setName("Some topic");
+        topic.setPosition(33);
         topic.setText("Some text");
         topic.setCreated(Calendar.getInstance());
         topic.setUpdated(Calendar.getInstance());

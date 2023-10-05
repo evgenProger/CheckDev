@@ -32,6 +32,7 @@ public class TopicsService {
         var mapper = new ObjectMapper();
         var topic = new TopicDTO();
         topic.setName(topicLite.getName());
+        topic.setPosition(topicLite.getPosition());
         topic.setText(topicLite.getText());
         var category = new CategoryDTO();
         category.setId(topicLite.getCategoryId());

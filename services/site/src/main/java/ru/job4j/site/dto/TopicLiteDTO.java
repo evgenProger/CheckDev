@@ -7,4 +7,5 @@ public class TopicLiteDTO {
     private String name;
     private String text;
     private int categoryId;
+    private int position;
 }
