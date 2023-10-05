@@ -6,11 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @Slf4j
-public class SiteApplication {
+public class SiteSrv {
     private static final String SITE = "http://localhost:8080";
 
     public static void main(String[] args) {
-        SpringApplication.run(SiteApplication.class, args);
+        SpringApplication.run(SiteSrv.class, args);
         log.info("Go to -> :{}", SITE);
     }
 }

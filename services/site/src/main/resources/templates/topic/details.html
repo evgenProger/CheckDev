@@ -37,16 +37,18 @@
     </form>
     <div>
         <div class="cell">
-            <div class="text-center">
-                <h1 class="fw-bold" th:text="${topic.name}"></h1>
-            </div>
-            <div class="row">
-                <div class="col d-flex justify-content-center mt-4">
-                    <div>
-                        <p th:text="${topic.text}"></p>
-                    </div>
-                </div>
-            </div>
+            <a th:href="@{|/interview/createForm?topicId=${topic.id}|}" class="btn btn-success mb-2"
+               role="button" aria-pressed="true">
+                Создать собеседование
+            </a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <span class="fw-bold" th:text="${topic.name}"></span>
+        </div>
+        <div class="card-body">
+            <pre th:text="${topic.text}"></pre>
         </div>
     </div>
 </div>

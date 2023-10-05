@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.ConcurrentModel;
-import ru.job4j.site.SiteApplication;
+import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.dto.TopicDTO;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Dmitry Stepanov
  * @version 24.09.2023 21:50
  */
-@SpringBootTest(classes = SiteApplication.class)
+@SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
 class IndexControllerTest {
     @Autowired

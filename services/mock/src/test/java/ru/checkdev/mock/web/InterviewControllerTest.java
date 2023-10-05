@@ -1,9 +1,7 @@
 package ru.checkdev.mock.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.checkdev.mock.Application;
+import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.service.InterviewService;
 import java.util.Optional;
@@ -29,7 +27,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(classes = MockSrv.class)
 @AutoConfigureMockMvc
 class InterviewControllerTest {
 
