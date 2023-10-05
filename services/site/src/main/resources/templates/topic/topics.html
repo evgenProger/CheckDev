@@ -33,7 +33,7 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <div class="row pt-3">
+    <div>
         <div class="col-md-12 pull-right">
             <a th:if="${canManage}"
                th:href="@{/topic/createForm/{id}(id=${categoryId})}" class="btn btn-secondary
@@ -42,7 +42,7 @@
 			</a>
 		</div>
 	</div>
-	<div class="row pt-3">
+	<div>
 		<div class="cell>">
 			<table class="table table-hover">
 				<tbody>
