@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.job4j.site.SiteApplication;
+import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.CredentialDTO;
 import ru.job4j.site.service.AuthService;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Dmitry Stepanov
  * @version 24.09.2023 22:44
  */
-@SpringBootTest(classes = SiteApplication.class)
+@SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
 class LoginControlTest {
     @Autowired
