@@ -58,13 +58,14 @@ class CategoryControlAnonymousTest {
         category.setId(1);
         category.setName("test");
         category.setTotal(10);
+        category.setPosition(33);
         when(categoryService.findById(1)).thenReturn(Optional.of(category));
         mockMvc.perform(get("/category/1"))
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        content().string("{\"id\":1,\"name\":\"test\",\"total\":10}")
+                        content().string("{\"id\":1,\"name\":\"test\",\"total\":10,\"position\":33}")
                 );
     }
 
