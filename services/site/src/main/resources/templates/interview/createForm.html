@@ -26,31 +26,27 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <div class="row pt-3" th:if="${canManage}">
-        <div class="col-sm">
+    <div class="card mb-5">
+        <div class="card-header">
+            Создать собеседование по теме: <span class="fw-bold" th:text="${category.name}"></span>
+            / <span class="fw-bold" th:text="${topic.name}"></span>
         </div>
-        <div class="col-sm">
+        <div class="card-body">
             <form th:action="@{/interview/create}" method="post">
                 <div class="form-group">
                     <p>
-                    <label class="fw-bold" for="title" th:text="${category.name + ' : ' + topic.name}">Тема</label>
-
-                    <input type="hidden" class="form-control mb-3 mt-2" id="title"
-                           name="title" th:value="${topic.name}">
+                        <label for="approximateDate">Удобное время для собеседования</label>
+                        <input type="text" class="form-control mb-3 mt-2" id="approximateDate"
+                               name="approximateDate"
+                               placeholder="Введите удобное время для собеседования">
+                        <small class="mb-2 text-muted"><span>Например, Могу в любой день после 18.00 по Москве.</span>
+                        </small>
                     </p>
                     <p>
-                    <label class="fw-bold" for="approximateDate">Удобное время для собеседования</label>
-                    <input type="text" class="form-control mb-3 mt-2" id="approximateDate"
-                              name="approximateDate"
-                              placeholder="Введите удобное время для собеседования">
-                    <small class="mb-2 text-muted"><span>Например, Могу в любой день после 18.00 по Москве.</span>
-                    </small>
-                    </p>
-                    <p>
-                    <label class="fw-bold" for="contactBy">Связаться со мной по telegram</label>
-                    <input type="text" class="form-control mb-3 mt-2" id="contactBy"
-                           name="contactBy"
-                           placeholder="Способ связи">
+                        <label for="contactBy">Связаться со мной по telegram</label>
+                        <input type="text" class="form-control mb-3 mt-2" id="contactBy"
+                               name="contactBy"
+                               placeholder="Способ связи">
                     </p>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="typeInterview" id="1" value="1">
@@ -71,11 +67,8 @@
                 </div>
             </form>
         </div>
-        <div class="col-sm">
-        </div>
     </div>
 </div>
-<br>
 <div th:insert="fragments/footer :: footer"></div>
 </body>
 </html>

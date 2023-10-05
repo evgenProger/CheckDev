@@ -7,13 +7,13 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class ApplicationTest extends TestCase {
+public class NtfSrvTest extends TestCase {
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public ApplicationTest(String testName) {
+    public NtfSrvTest(String testName) {
         super(testName);
     }
 
@@ -21,7 +21,7 @@ public class ApplicationTest extends TestCase {
      * @return the suite of tests being tested
      */
     public static Test suite() {
-        return new TestSuite(ApplicationTest.class);
+        return new TestSuite(NtfSrvTest.class);
     }
 
     /**
