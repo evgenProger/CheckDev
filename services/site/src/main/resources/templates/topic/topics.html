@@ -34,53 +34,51 @@
             <a th:if="${canManage}"
                th:href="@{/topic/createForm/{id}(id=${categoryId})}" class="btn btn-secondary
 				active mb-2" role="button" aria-pressed="true">
-                Создать тему
-            </a>
-        </div>
-    </div>
-    <div class="row pt-3">
-        <div class="cell>">
-            <table class="table table-hover">
-                <tbody>
-                <tr th:each="topic: ${topics}">
-                    <td>
-                        <a class="fw-bold text-dark text-decoration-none"
-                           th:href="@{|/topic/${categoryName}/${categoryId}/${topic.id}|}">
-                            <h3 th:text="${topic.name}"></h3>
-                        </a>
-                        <small class="mb-2 text-muted">
+				Создать тему
+			</a>
+		</div>
+	</div>
+	<div class="row pt-3">
+		<div class="cell>">
+			<table class="table table-hover">
+				<tbody>
+				<tr th:each="topic: ${topics}">
+					<td>
+						<a class="fw-bold text-dark text-decoration-none"
+						   th:href="@{|/topic/${topic.id}|}">
+							<h3 th:text="${topic.name}"></h3>
+						</a>
+            <small class="mb-2 text-muted">
                             <span><i class="fas fa-eye pr-3"></i> : </span>
                             <span class="fw-bold" th:text="${topic.total}"></span>
-                        </small>
-                        <div th:if="${canManage}">
-                            <form class="mt-3"
-                                  th:action="@{|/topic/updateForm/${categoryName}/${categoryId}/${topic.id}|}"
-                                  method="get">
-                                <label>
-                                    <input name="id" type="number"
-                                           th:value="${topic.id}" hidden="hidden">
-                                </label>
-                                <button class="btn btn-primary btn-sm"
-                                        type="submit">обновить
-                                </button>
-                            </form>
-                            <form class="mt-3"
-                                  th:action="@{/topic/delete}" method="post">
-                                <label>
-                                    <input name="id" type="number"
-                                           th:value="${topic.id}" hidden="hidden">
-                                </label>
-                                <button class="btn btn-danger btn-sm"
-                                        type="submit">удалить
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+            </small>
+						<div th:if="${canManage}">
+							<form class="mt-3"
+								  th:action="@{|/topic/updateForm/${topic.id}|}"
+								  method="get">
+								<label>
+									<input name="id" type="number"
+										   th:value="${topic.id}" hidden="hidden">
+								</label>
+								<button class="btn btn-primary btn-sm"
+										type="submit">обновить</button>
+							</form>
+							<form class="mt-3"
+								  th:action="@{/topic/delete}" method="post">
+								<label>
+									<input name="id" type="number"
+										   th:value="${topic.id}" hidden="hidden">
+								</label>
+								<button class="btn btn-danger btn-sm"
+										type="submit">удалить</button>
+							</form>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
 <br>
 <div th:insert="fragments/footer :: footer"></div>

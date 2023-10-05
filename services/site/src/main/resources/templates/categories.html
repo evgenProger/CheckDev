@@ -29,7 +29,7 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <div class="row pt-3">
+    <div class="row">
         <div th:if="${canManage}" class="col-md-12 pull-right">
             <a th:href="@{/category/createForm}"
                class="btn btn-secondary active mb-2" role="button" aria-pressed="true">
@@ -37,15 +37,15 @@
             </a>
         </div>
     </div>
-    <div class="row pt-3">
+    <div class="row">
         <div class="cell">
             <table class="table table-hover">
                 <tr th:each="category: ${categories}">
                     <td>
                         <div>
                             <a class="fw-bold text-dark text-decoration-none"
-                               th:href="@{|/topics/${category.name}/${category.id}|}">
-                                <h3 th:text="${category.name}"></h3>
+                               th:href="@{|/topics/${category.id}|}">
+                                <h5 th:text="${category.name}"></h5>
                             </a>
                             <a th:if="${canManage}"
                                th:href="@{|/category/editForm/${category.id}/${category.name}|}">
@@ -56,19 +56,18 @@
                             </a>
                         </div>
                         <small class="mb-2 text-muted">
-                            <span>
-                                <a class="fas fa-eye pr-3 text-decoration-none"
-                                   th:href="@{|/topics/${category.name}/${category.id}|}">
-                                </a>
-                                <span th:text="${': ' + category.total}"></span>
-                            </span> |
-                            <span>
-                                <a th:text="${'тем'}"
-                                   th:href="@{|/topics/${category.name}/${category.id}|}">
-                                </a>:
-                                <span th:text="${category.topicsSize}"></span>
-                            </span>
+                            <span><i class="fas fa-eye pr-3"></i> : </span>
+                            <span class="fw-bold" th:text="${category.total}"></span> |
+                            <span class="mr-3">Тем : </span>
+                            <span class="fw-bold" th:text="${category.topicsSize}"></span>
                         </small>
+                    </td>
+                    <td>
+                        <div>
+                            <span>Новых: 1</span> |
+                            <span>Проведено: 100500</span>
+                        </div>
+                    </td>
                 </tr>
             </table>
         </div>
