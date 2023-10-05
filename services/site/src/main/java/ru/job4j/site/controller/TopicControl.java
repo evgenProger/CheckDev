@@ -26,12 +26,11 @@ public class TopicControl {
                           Model model,
                           HttpServletRequest req) throws JsonProcessingException {
         var token = getToken(req);
-        var topic = new TopicDTO();
+        var topic = topicsService.getById(topicId);
         if (token != null) {
             var userInfo = authService.userInfo(token);
             model.addAttribute("userInfo", token);
             RequestResponseTools.addAttrCanManage(model, userInfo);
-            topic = topicsService.getById(topicId, token);
         }
         String categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();
@@ -79,7 +78,7 @@ public class TopicControl {
         var token = getToken(req);
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            topic = topicsService.getById(topicId, token);
+            topic = topicsService.getById(topicId);
             RequestResponseTools.addAttrCanManage(model, userInfo);
             model.addAttribute("userInfo", userInfo);
         }

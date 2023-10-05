@@ -33,7 +33,7 @@ public class InterviewController {
             var userInfo = authService.userInfo(token);
             model.addAttribute("userInfo", token);
             RequestResponseTools.addAttrCanManage(model, userInfo);
-            topic = topicsService.getById(topicId, token);
+            topic = topicsService.getById(topicId);
         }
         String categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();

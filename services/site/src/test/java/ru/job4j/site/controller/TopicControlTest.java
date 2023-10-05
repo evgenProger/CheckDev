@@ -51,7 +51,7 @@ public class TopicControlTest {
         role.setValue("ROLE_USER");
         userInfo.setRoles(List.of(role));
         when(authService.userInfo(token)).thenReturn(userInfo);
-        when(topicsService.getById(1, token)).thenReturn(topic);
+        when(topicsService.getById(1)).thenReturn(topic);
         mockMvc.perform(get("/topic/1").sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -116,7 +116,7 @@ public class TopicControlTest {
         category.setName("Some category");
         topic.setCategory(category);
         when(authService.userInfo(token)).thenReturn(userInfo);
-        when(topicsService.getById(1, token)).thenReturn(topic);
+        when(topicsService.getById(1)).thenReturn(topic);
         mockMvc.perform(get("/topic/updateForm/1").sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(status().isOk())
