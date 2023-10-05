@@ -49,7 +49,7 @@ public class TopicService {
         return list;
     }
 
-    public void updateStatistic(int id) {
-        topicRepository.updateStatistic(id);
+    public void incrementTotal(int id) {
+        topicRepository.incrementTotal(id);
     }
 }

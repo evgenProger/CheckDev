@@ -15,5 +15,5 @@ public interface TopicRepository extends CrudRepository<Topic, Integer> {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Modifying
     @Query("UPDATE cd_topic t SET total = total + 1 WHERE t.id = :id")
-    void updateStatistic(int id);
+    void incrementTotal(int id);
 }

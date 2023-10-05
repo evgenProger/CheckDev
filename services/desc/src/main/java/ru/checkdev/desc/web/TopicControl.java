@@ -17,6 +17,7 @@ public class TopicControl {
     @GetMapping("/{id}")
     public ResponseEntity<Topic> findById(@PathVariable int id) {
         var topic = topicService.findById(id);
+        topicService.incrementTotal(id);
         return topic.map(
                 value -> new ResponseEntity<>(value, HttpStatus.OK)
         ).orElseGet(
@@ -41,12 +42,6 @@ public class TopicControl {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@RequestBody Topic topic) {
         topicService.delete(topic.getId());
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/statistic")
-    public ResponseEntity<Void> updateStatistic(@RequestBody int categoryId) {
-        topicService.updateStatistic(categoryId);
         return ResponseEntity.ok().build();
     }
 }

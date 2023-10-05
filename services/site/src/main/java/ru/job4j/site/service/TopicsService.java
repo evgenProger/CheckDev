@@ -62,10 +62,4 @@ public class TopicsService {
                 mapper.writeValueAsString(topic)
         );
     }
-
-    public void updateStatistic(String token, int topicId) throws JsonProcessingException {
-        var mapper = new ObjectMapper();
-        new RestAuthCall("http://localhost:9902/topic/statistic").put(
-                token, mapper.writeValueAsString(topicId));
-    }
 }
