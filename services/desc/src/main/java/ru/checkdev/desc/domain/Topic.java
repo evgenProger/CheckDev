@@ -19,6 +19,7 @@ public class Topic {
     private Calendar created;
     private Calendar updated;
     private int total;
+    private int position;
     @ManyToOne(fetch = FetchType.EAGER)
     private Category category;
 }

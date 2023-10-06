@@ -33,7 +33,7 @@ public class CategoryService {
 
     public List<Category> getAll() {
         var list = new ArrayList<Category>();
-        categoryRepository.findAllByOrderByTotalDesc().forEach(list::add);
+        categoryRepository.findAllByOrderByPositionAsc().forEach(list::add);
         return list;
     }
 

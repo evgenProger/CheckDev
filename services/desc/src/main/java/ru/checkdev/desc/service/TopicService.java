@@ -33,6 +33,7 @@ public class TopicService {
         if (proxyOpt.isPresent()) {
             var proxy = proxyOpt.get();
             proxy.setName(topic.getName());
+            proxy.setPosition(topic.getPosition());
             proxy.setText(topic.getText());
             proxy.setUpdated(Calendar.getInstance());
             topicRepository.save(proxy);
@@ -40,12 +41,12 @@ public class TopicService {
     }
 
     public List<Topic> findByCategory(int id) {
-        return new ArrayList<>(topicRepository.findTopicsByCategoryId(id));
+        return new ArrayList<>(topicRepository.findByCategoryIdOrderByPositionAsc(id));
     }
 
     public List<Topic> getAll() {
         var list = new ArrayList<Topic>();
-        topicRepository.findAll().forEach(list::add);
+        topicRepository.findAllByOrderByPositionAsc().forEach(list::add);
         return list;
     }
 
