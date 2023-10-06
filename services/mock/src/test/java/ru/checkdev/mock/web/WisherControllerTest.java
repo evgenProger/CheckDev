@@ -17,6 +17,8 @@ import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
 import ru.checkdev.mock.service.InterviewService;
 import ru.checkdev.mock.service.WisherService;
+
+import java.sql.Timestamp;
 import java.util.Optional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -46,7 +48,7 @@ class WisherControllerTest {
             .description("test_description")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
-            .createDate("test_create_date")
+            .createDate(null)
             .build();
 
     private Wisher wisher = Wisher.of()
@@ -57,9 +59,9 @@ class WisherControllerTest {
             .approve(true)
             .build();
 
-    private String interviewString = new GsonBuilder().create().toJson(interview);
+    private String interviewString = new GsonBuilder().serializeNulls().create().toJson(interview);
 
-    private String wisherString = new GsonBuilder().create().toJson(wisher);
+    private String wisherString = new GsonBuilder().serializeNulls().create().toJson(wisher);
 
     private Wisher emptyWisher = Wisher.of()
             .id(1)

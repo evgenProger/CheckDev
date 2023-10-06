@@ -9,6 +9,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +38,7 @@ class WisherServiceTest {
             .description("test_description")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
+            .createDate(new Timestamp(System.currentTimeMillis()))
             .build();
 
     private Wisher wisher = Wisher.of()

@@ -39,7 +39,7 @@
                             <span>
                             <span th:text="${'Автор: ' + interview.submitterId}"></span>
                             </span> |
-                                <span th:text="${'Дата создания: ' + interview.createDate}"></span> |
+                                <span th:text="${'Дата создания: ' + #strings.substring(interview.createDate, 0, 10)}"></span> |
                                 <span th:text="${'Тип: ' + interview.typeInterview}"></span>
                             </span>
                             </small>

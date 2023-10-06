@@ -9,6 +9,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.repository.InterviewRepository;
+
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +37,7 @@ class InterviewServiceTest {
             .description("test_description")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
-            .createDate("test_create_date")
+            .createDate(new Timestamp(System.currentTimeMillis()))
             .build();
 
     @Test
