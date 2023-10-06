@@ -110,7 +110,7 @@ class PersonControllerTest {
                         .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
+                .andExpect(view().name("redirect:/persons/"));
     }
 
     @Test
