@@ -26,15 +26,6 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <form th:if="${canManage}"
-          th:action="@{/interview/createForm}" method="get">
-        <label>
-            <input name="topicId" type="number"
-                   th:value="${topic.id}" hidden="hidden">
-        </label>
-        <button class="btn btn-secondary"
-                type="submit">Создать собеседование</button>
-    </form>
     <div>
         <div class="cell">
             <a th:href="@{|/interview/createForm?topicId=${topic.id}|}" class="btn btn-success mb-2"

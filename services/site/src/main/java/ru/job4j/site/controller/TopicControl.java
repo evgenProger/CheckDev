@@ -23,15 +23,8 @@ public class TopicControl {
 
     @GetMapping("/{topicId}")
     public String details(@PathVariable int topicId,
-                          Model model,
-                          HttpServletRequest req) throws JsonProcessingException {
-        var token = getToken(req);
+                          Model model) throws JsonProcessingException {
         var topic = topicsService.getById(topicId);
-        if (token != null) {
-            var userInfo = authService.userInfo(token);
-            model.addAttribute("userInfo", token);
-            RequestResponseTools.addAttrCanManage(model, userInfo);
-        }
         String categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();
         model.addAttribute("topic", topic);
@@ -44,14 +37,8 @@ public class TopicControl {
     }
 
     @GetMapping("/createForm/{categoryId}")
-    public String createForm(@PathVariable int categoryId, Model model, HttpServletRequest req)
+    public String createForm(@PathVariable int categoryId, Model model)
             throws JsonProcessingException {
-        var token = getToken(req);
-        if (token != null) {
-            var userInfo = authService.userInfo(token);
-            model.addAttribute("userInfo", token);
-            RequestResponseTools.addAttrCanManage(model, userInfo);
-        }
         model.addAttribute("categoryId", categoryId);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
