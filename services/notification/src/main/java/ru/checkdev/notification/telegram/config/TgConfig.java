@@ -17,8 +17,13 @@ import java.util.regex.Pattern;
 public class TgConfig {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final Pattern EMAIL_PATTERN = Pattern.compile("\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*\\.\\w{2,4}");
-    private final String prefix = "tg/";
-    private final int passSize = 8;
+    private final String prefix;
+    private final int passSize;
+
+    public TgConfig(String prefix, int passSize) {
+        this.prefix = prefix;
+        this.passSize = passSize;
+    }
 
     /**
      * Метод проверяет входящую строку на соответствие формату email

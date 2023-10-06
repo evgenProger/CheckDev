@@ -1,7 +1,7 @@
 package ru.checkdev.notification.telegram.action;
 
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 /**
  * 3. Мидл
@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
  * @since 12.09.2023
  */
 public interface Action {
-    BotApiMethod handle(Update update);
+    BotApiMethod<Message> handle(Message message);
 
-    BotApiMethod callback(Update update);
+    BotApiMethod<Message> callback(Message message);
 }
