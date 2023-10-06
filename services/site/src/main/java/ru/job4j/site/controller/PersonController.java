@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.site.dto.PersonDTO;
-import ru.job4j.site.service.ImageCompressorService;
+import ru.job4j.site.service.ImageCompress;
 import ru.job4j.site.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,15 +29,15 @@ public class PersonController {
     private final String maxSizeFile;
     private final String contentTypeFile;
     private final PersonService personService;
-    private final ImageCompressorService compressorService;
+    private final ImageCompress imageCompress;
 
     public PersonController(@Value("${server.site.maxSizeLoadFile}") String maxSizeFile,
                             @Value("${server.site.contentTypeFile}") String contentTypeFile,
-                            PersonService personService, ImageCompressorService imageCompressorService) {
+                            PersonService personService, ImageCompress imageCompress) {
         this.maxSizeFile = maxSizeFile;
         this.contentTypeFile = contentTypeFile;
         this.personService = personService;
-        this.compressorService = imageCompressorService;
+        this.imageCompress = imageCompress;
     }
 
     /**
@@ -104,14 +104,14 @@ public class PersonController {
         var compressFile = file;
         try {
             if (!isValidFile(file)) {
-                compressFile = compressorService.compressImage(file);
+                compressFile = imageCompress.compressImage(file);
             }
             personService.postUpdatePerson(token, personDTO, compressFile);
         } catch (Exception e) {
             log.error("API post {} method error: {}", getClass().getName(), e.getMessage());
             return "redirect:/persons/edit?error=true";
         }
-        return "redirect:/";
+        return "redirect:/persons/";
     }
 
     /**

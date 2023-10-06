@@ -6,11 +6,14 @@ import ru.job4j.site.dto.UserInfoDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RequestResponseTools {
+    private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String TOKEN_ATTR = "token";
 
     public static String getToken(HttpServletRequest request) {
-        return (String) request.getSession().getAttribute("token");
+        return (String) request.getSession().getAttribute(TOKEN_ATTR);
     }
 
     public static void addAttrBreadcrumbs(Model model, String... args) {
@@ -22,9 +25,12 @@ public class RequestResponseTools {
     }
 
     public static void addAttrCanManage(Model model, UserInfoDTO userInfo) {
-        model.addAttribute("userInfo", userInfo);
-        var canManage = userInfo.getRoles().stream()
-                .anyMatch(role -> role.getValue().equals("ROLE_ADMIN"));
+        var roles = userInfo.getRoles();
+        boolean canManage = false;
+        if (Objects.nonNull(roles)) {
+            canManage = roles.stream()
+                    .anyMatch(role -> role.getValue().equals(ROLE_ADMIN));
+        }
         model.addAttribute("canManage", canManage);
     }
 }

@@ -6,10 +6,12 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.checkdev.notification.domain.PersonDTO;
+import ru.checkdev.notification.domain.RoleDTO;
 import ru.checkdev.notification.telegram.config.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * 3. Мидл
@@ -26,6 +28,7 @@ public class RegAction implements Action {
     private final TgAuthCallWebClint authCallWebClint;
     private final String urlSiteAuth;
     private final String urlAuthRegistration = "/registration";
+    private static final int ROLE_ADMIN = 1;
 
     @Override
     public BotApiMethod handle(Update update) {
@@ -58,21 +61,22 @@ public class RegAction implements Action {
 
         if (!tgConfig.isEmail(email)) {
             text = "Email: " + email + " не корректный." + sl
-                    + "попробуйте снова." + sl
-                    + "/new";
+                   + "попробуйте снова." + sl
+                   + "/new";
             return new SendMessage(chatId, text);
         }
 
         var password = tgConfig.getPassword();
-        var person = new PersonDTO(email, password, true, Calendar.getInstance());
+        var person = new PersonDTO(email, password, true,
+                List.of(new RoleDTO(ROLE_ADMIN)),
+                Calendar.getInstance());
         Object result;
-
         try {
             result = authCallWebClint.doPost(urlAuthRegistration, person).block();
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             text = "Сервис не доступен попробуйте позже" + sl
-                    + "/start";
+                   + "/start";
             return new SendMessage(chatId, text);
         }
 
@@ -84,9 +88,9 @@ public class RegAction implements Action {
         }
 
         text = "Вы зарегистрированы: " + sl
-                + "Логин: " + email + sl
-                + "Пароль: " + password + sl
-                + urlSiteAuth;
+               + "Логин: " + email + sl
+               + "Пароль: " + password + sl
+               + urlSiteAuth;
         return new SendMessage(chatId, text);
     }
 }
