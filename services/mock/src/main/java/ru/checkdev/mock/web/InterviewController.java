@@ -32,7 +32,8 @@ public class InterviewController {
         );
     }
 
-    @PreAuthorize("isAuthenticated()")
+    /* Аннотация не работает
+    @PreAuthorize("isAuthenticated()")*/
     @GetMapping("/{id}")
     public ResponseEntity<Interview> getById(@Valid @PathVariable int id) throws SQLException {
         Optional<Interview> rsl = interviewService.findById(id);

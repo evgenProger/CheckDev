@@ -43,8 +43,7 @@ public class InterviewController {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
-                String.format("%s. Темы", categoryName),
-                String.format("/topics/%s/%d", categoryName, categoryId),
+                categoryName, String.format("/topics/%s/%d", categoryName, categoryId),
                 topic.getName(), String.format("/topic/%s/%d/%d", categoryName, categoryId, topicId));
         return "interview/createForm";
     }
@@ -67,5 +66,24 @@ public class InterviewController {
         }
         interviewService.create(getToken(req), interviewDTO);
         return "redirect:/interviews/";
+    }
+
+    @GetMapping("/{id}")
+    public String details(@PathVariable("id") int interviewId,
+                          Model model,
+                          HttpServletRequest req) throws JsonProcessingException {
+        var token = getToken(req);
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            model.addAttribute("userInfo", token);
+            RequestResponseTools.addAttrCanManage(model, userInfo);
+        }
+        var interview = interviewService.getById(token, interviewId);
+        model.addAttribute("interview", interview);
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/index",
+                "Собеседования", "/interviews/",
+                interview.getTitle(), String.format("/interview/%d", interviewId));
+        return "/interview/details";
     }
 }
