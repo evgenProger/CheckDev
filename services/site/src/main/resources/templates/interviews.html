@@ -33,7 +33,10 @@
                     <td>
                         <div>
                             <span class="fw-bold">
-                                    <h3 th:text="${interview.title}"></h3>
+                                    <a class="text-decoration-none text-dark"
+                                       th:href="@{|/interview/${interview.id}|}">
+                                        <h3 th:text="${interview.title}"></h3>
+                                    </a>
                             </span>
                             <small class="mb-2 text-muted">
                             <span>
