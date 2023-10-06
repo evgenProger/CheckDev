@@ -45,11 +45,11 @@ public class BotMenu extends TelegramLongPollingBot {
             var key = update.getMessage().getText();
             var chatId = update.getMessage().getChatId().toString();
             if (actions.containsKey(key)) {
-                var msg = actions.get(key).handle(update);
+                var msg = actions.get(key).handle(update.getMessage());
                 bindingBy.put(chatId, key);
                 send(msg);
             } else if (bindingBy.containsKey(chatId)) {
-                var msg = actions.get(bindingBy.get(chatId)).callback(update);
+                var msg = actions.get(bindingBy.get(chatId)).callback(update.getMessage());
                 bindingBy.remove(chatId);
                 send(msg);
             }

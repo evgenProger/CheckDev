@@ -2,7 +2,7 @@ package ru.checkdev.notification.telegram.action;
 
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.List;
 
@@ -21,9 +21,8 @@ public class InfoAction implements Action {
     }
 
     @Override
-    public BotApiMethod handle(Update update) {
-        var msg = update.getMessage();
-        var chatId = msg.getChatId().toString();
+    public BotApiMethod<Message> handle(Message message) {
+        var chatId = message.getChatId().toString();
         String sl = System.lineSeparator();
         var out = new StringBuilder();
         out.append("Выберите действие:").append(sl);
@@ -34,7 +33,7 @@ public class InfoAction implements Action {
     }
 
     @Override
-    public BotApiMethod callback(Update update) {
-        return handle(update);
+    public BotApiMethod<Message> callback(Message message) {
+        return handle(message);
     }
 }
