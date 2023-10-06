@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.checkdev.notification.domain.PersonDTO;
-import ru.checkdev.notification.domain.RoleDTO;
 import ru.checkdev.notification.telegram.config.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * 3. Мидл
@@ -24,16 +22,14 @@ import java.util.List;
 @Slf4j
 public class RegAction implements Action {
     private static final String ERROR_OBJECT = "error";
-    private final TgConfig tgConfig = new TgConfig();
+    private static final String URL_AUTH_REGISTRATION = "/registration";
+    private final TgConfig tgConfig = new TgConfig("tg/", 8);
     private final TgAuthCallWebClint authCallWebClint;
     private final String urlSiteAuth;
-    private final String urlAuthRegistration = "/registration";
-    private static final int ROLE_ADMIN = 1;
 
     @Override
-    public BotApiMethod handle(Update update) {
-        var msg = update.getMessage();
-        var chatId = msg.getChatId().toString();
+    public BotApiMethod<Message> handle(Message message) {
+        var chatId = message.getChatId().toString();
         var text = "Введите email для регистрации:";
         return new SendMessage(chatId, text);
     }
@@ -47,15 +43,13 @@ public class RegAction implements Action {
      * 3.1 ответ при ошибке регистрации
      * 3.2 ответ при успешной регистрации.
      *
-     * @param update Update
+     * @param message Message
      * @return BotApiMethod<Message>
      */
     @Override
-    public BotApiMethod callback(Update update) {
-
-        var msg = update.getMessage();
-        var chatId = msg.getChatId().toString();
-        var email = msg.getText();
+    public BotApiMethod<Message> callback(Message message) {
+        var chatId = message.getChatId().toString();
+        var email = message.getText();
         var text = "";
         var sl = System.lineSeparator();
 
@@ -67,12 +61,11 @@ public class RegAction implements Action {
         }
 
         var password = tgConfig.getPassword();
-        var person = new PersonDTO(email, password, true,
-                List.of(new RoleDTO(ROLE_ADMIN)),
+        var person = new PersonDTO(email, password, true, null,
                 Calendar.getInstance());
         Object result;
         try {
-            result = authCallWebClint.doPost(urlAuthRegistration, person).block();
+            result = authCallWebClint.doPost(URL_AUTH_REGISTRATION, person).block();
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             text = "Сервис не доступен попробуйте позже" + sl
