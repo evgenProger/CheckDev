@@ -15,10 +15,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.service.InterviewService;
-import java.util.Optional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import java.sql.Timestamp;
+import java.util.Optional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,10 +44,10 @@ class InterviewControllerTest {
             .description("test_description")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
-            .createDate("test_create_date")
+            .createDate(null)
             .build();
 
-    private String string = new GsonBuilder().create().toJson(interview);
+    private String string = new GsonBuilder().serializeNulls().create().toJson(interview);
 
     private Interview emptyInterview = Interview.of()
             .id(1)

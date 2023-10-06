@@ -7,6 +7,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.repository.InterviewRepository;
+
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,7 @@ public class InterviewService {
 
     public Optional<Interview> save(Interview interview) {
         Optional<Interview> rsl = Optional.empty();
+        interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
         try {
             rsl = Optional.of(interviewRepository.save(interview));
         } catch (DataIntegrityViolationException e) {
