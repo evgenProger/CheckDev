@@ -32,6 +32,7 @@ public class InterviewsController {
                 "Собеседования", "/interviews/"
         );
         model.addAttribute("interviews", interviewsService.getAll(token));
+        model.addAttribute("current_page", "interviews");
         return "interviews";
     }
 }
