@@ -47,12 +47,6 @@ public class TopicControlTest {
         category.setName("Some category");
         category.setPosition(55);
         topic.setCategory(category);
-        var userInfo = new UserInfoDTO();
-        var role = new Role();
-        role .setId(1);
-        role.setValue("ROLE_USER");
-        userInfo.setRoles(List.of(role));
-        when(authService.userInfo(token)).thenReturn(userInfo);
         when(topicsService.getById(1)).thenReturn(topic);
         mockMvc.perform(get("/topic/1").sessionAttr("token", token))
                 .andDo(print())
@@ -68,23 +62,23 @@ public class TopicControlTest {
 
     @Test
     public void whenOpenCreateForm() throws Exception {
+        var breadcrumbs = List.of(
+                new Breadcrumb("Главная", "/index"),
+                new Breadcrumb("Категории", "/categories/"),
+                new Breadcrumb("Темы", "/topics/1"),
+                new Breadcrumb("Создание темы", "/topic/createForm/1"));
         var token = "1410";
         var userInfo = new UserInfoDTO();
-        var role = new Role();
-        role .setId(1);
-        role.setValue("ROLE_USER");
-        userInfo.setRoles(List.of(role));
+        userInfo.setEmail("email");
+        userInfo.setUsername("name");
         when(authService.userInfo(token)).thenReturn(userInfo);
-        mockMvc.perform(get("/topic/createForm/1").sessionAttr("token", token))
+        mockMvc.perform(get("/topic/createForm/1")
+                        .sessionAttr("token", token))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("topic/createForm"))
                 .andExpect(model().attribute("categoryId", 1))
-                .andExpect(model().attribute("breadcrumbs", List.of(
-                        new Breadcrumb("Главная", "/index"),
-                        new Breadcrumb("Категории", "/categories/"),
-                        new Breadcrumb("Темы", "/topics/1"),
-                        new Breadcrumb("Создание темы", "/topic/createForm/1"))));
+                .andExpect(model().attribute("breadcrumbs", breadcrumbs))
+                .andExpect(status().isOk())
+                .andExpect(view().name("topic/createForm"));
     }
 
     @Test
@@ -94,7 +88,7 @@ public class TopicControlTest {
         topic.setPosition(33);
         topic.setText("Some text");
         mockMvc.perform(post("/topic/create")
-                .requestAttr("topic", topic))
+                        .requestAttr("topic", topic))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/categories/"));
@@ -105,7 +99,7 @@ public class TopicControlTest {
         var token = "1410";
         var userInfo = new UserInfoDTO();
         var role = new Role();
-        role .setId(1);
+        role.setId(1);
         role.setValue("ROLE_USER");
         userInfo.setRoles(List.of(role));
         var topic = new TopicDTO();
