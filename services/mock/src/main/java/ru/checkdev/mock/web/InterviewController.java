@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.service.InterviewService;
 import javax.validation.Valid;
@@ -18,31 +19,23 @@ public class InterviewController {
 
     private final InterviewService interviewService;
 
-    /* Аннотация не работает
-    @PreAuthorize("isAuthenticated()")*/
     @PostMapping("/")
     public ResponseEntity<Interview> save(@Valid @RequestBody Interview interview) throws SQLException {
-        Optional<Interview> rsl = interviewService.save(interview);
-        if (rsl.isEmpty()) {
-            throw new SQLException("An error occurred while saving data");
-        }
-        return new ResponseEntity<Interview>(
-                rsl.orElse(new Interview()),
-                rsl.isPresent() ? HttpStatus.CREATED : HttpStatus.CONFLICT
+        return new ResponseEntity<>(
+                interviewService
+                        .save(interview)
+                        .orElseThrow(() -> new SQLException("An error occurred while saving data")),
+                HttpStatus.CREATED
         );
     }
 
-    /* Аннотация не работает
-    @PreAuthorize("isAuthenticated()")*/
     @GetMapping("/{id}")
-    public ResponseEntity<Interview> getById(@Valid @PathVariable int id) throws SQLException {
-        Optional<Interview> rsl = interviewService.findById(id);
-        if (rsl.isEmpty()) {
-            throw new SQLException("There is no interview with this number");
-        }
-        return new ResponseEntity<Interview>(
-                rsl.orElse(new Interview()),
-                rsl.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
+    public ResponseEntity<Interview> getById(@Valid @PathVariable int id) {
+        return new ResponseEntity<>(
+                interviewService
+                        .findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)),
+                HttpStatus.OK
         );
     }
 

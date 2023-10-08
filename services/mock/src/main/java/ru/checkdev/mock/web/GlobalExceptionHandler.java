@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -57,6 +59,20 @@ public class GlobalExceptionHandler {
         response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
             put("message", "Error when saving or retrieving data");
             put("details", e.getMessage());
+        }}));
+        LOGGER.error(e.getMessage());
+    }
+
+    @ExceptionHandler(value = ResponseStatusException.class)
+    public void responseStatusException(Exception e,
+                                        HttpServletRequest request,
+                                        HttpServletResponse response) throws IOException {
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        response.setContentType("application/json");
+        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
+            put("message", "Not found");
+            put("details", e.getMessage());
+            put("request URI", request.getRequestURI());
         }}));
         LOGGER.error(e.getMessage());
     }
