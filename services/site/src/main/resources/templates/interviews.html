@@ -42,16 +42,23 @@
                             <span>
                             <span th:text="${'Автор: ' + interview.submitterId}"></span>
                             </span> |
-                                <span th:text="${'Дата создания: ' + #strings.substring(interview.createDate, 0, 10)}"></span> |
-                                <span th:text="${'Тип: ' + interview.typeInterview}"></span>
-                            </span>
+                                <span th:text="${'Дата создания: ' + #strings.substring(interview.createDate, 0, 10)}"></span>
+                                |
+                                <!--Из переданного набора ENUM выбираем статус по его ID-->
+                                <span>Статус: </span>
+                                <span th:each="type: ${statuses}">
+                                    <span th:if="${interview.typeInterview == type.getId()}">
+                                        <span th:text="${type.getInfo()}">
+                                    </span>
+                                </span>
+                                </span>
                             </small>
-                            </div>
+                        </div>
                     </td>
                     <td>
                         <div>
                             <small class="mb-2 text-muted">
-                            <span> Дата проведения собеседования: </span>
+                                <span> Дата проведения собеседования: </span>
                             </small>
                             <span class="mb-2 text-muted">
                                     <h5 th:text="${interview.approximateDate}"></h5>

@@ -6,12 +6,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
-import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.InterviewService;
 import ru.job4j.site.service.TopicsService;
+
 import javax.servlet.http.HttpServletRequest;
+
 import static ru.job4j.site.controller.RequestResponseTools.getToken;
 
 @Controller
@@ -27,16 +29,10 @@ public class InterviewController {
 
     @GetMapping("/createForm")
     public String createForm(@ModelAttribute("topicId") int topicId,
-                             Model model, HttpServletRequest req)
+                             Model model)
             throws JsonProcessingException {
-        var token = getToken(req);
-        var topic = new TopicDTO();
-        if (token != null) {
-            var userInfo = authService.userInfo(token);
-            model.addAttribute("userInfo", token);
-            topic = topicsService.getById(topicId);
-        }
-        String categoryName = topic.getCategory().getName();
+        var topic = topicsService.getById(topicId);
+        var categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();
         model.addAttribute("category", topic.getCategory());
         model.addAttribute("topic", topic);
@@ -51,7 +47,7 @@ public class InterviewController {
     @PostMapping("/create")
     public String createInterview(@ModelAttribute InterviewDTO interviewDTO,
                                   @ModelAttribute("topicId") int topicId,
-                                  Model model, HttpServletRequest req, RedirectAttributes redirectAttributes)
+                                  HttpServletRequest req, RedirectAttributes redirectAttributes)
             throws JsonProcessingException {
         if (interviewDTO.getApproximateDate().isEmpty()
                 || interviewDTO.getContactBy().isEmpty()) {
@@ -73,12 +69,11 @@ public class InterviewController {
                           Model model,
                           HttpServletRequest req) throws JsonProcessingException {
         var token = getToken(req);
-        if (token != null) {
-            var userInfo = authService.userInfo(token);
-            model.addAttribute("userInfo", token);
-            RequestResponseTools.addAttrCanManage(model, userInfo);
-        }
         var interview = interviewService.getById(token, interviewId);
+        var statuses = StatusInterview.values();
+        if (interview.getTypeInterview() < statuses.length) {
+            model.addAttribute("status", statuses[interview.getTypeInterview()].getInfo());
+        }
         model.addAttribute("interview", interview);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",

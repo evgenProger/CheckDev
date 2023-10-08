@@ -1,4 +1,4 @@
-package ru.job4j.site.controller.interview;
+package ru.job4j.site.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +8,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
+import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.InterviewsService;
+
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -35,9 +37,9 @@ public class InterviewsControllerTest {
     public void whenShowAllInterviews() throws Exception {
         var token = "1410";
         var userInfo = new UserInfoDTO();
-        var role = new Role();
-        role .setId(1);
-        role.setValue("ROLE_USER");
+        var breadcrumbs = List.of(
+                new Breadcrumb("Главная", "/index"),
+                new Breadcrumb("Собеседования", "/interviews/"));
         List<InterviewDTO> interviews = IntStream.range(0, 3).mapToObj(i -> {
             var interview = new InterviewDTO();
             interview.setId(i);
@@ -49,17 +51,16 @@ public class InterviewsControllerTest {
             interview.setCreateDate("06.10.2023");
             return interview;
         }).toList();
-        userInfo.setRoles(List.of(role));
         when(interviewsService.getAll(token)).thenReturn(interviews);
         when(authService.userInfo(token)).thenReturn(userInfo);
         mockMvc.perform(get("/interviews/").sessionAttr("token", token))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("interviews"))
                 .andExpect(model().attribute("interviews", interviews))
+                .andExpect(model().attribute("statuses", StatusInterview.values()))
                 .andExpect(model().attribute("current_page", "interviews"))
-                .andExpect(model().attribute("breadcrumbs", List.of(
-                        new Breadcrumb("Главная", "/index"),
-                        new Breadcrumb("Собеседования", "/interviews/"))));
+                .andExpect(model().attribute("userInfo", userInfo))
+                .andExpect(model().attribute("breadcrumbs", breadcrumbs))
+                .andExpect(status().isOk())
+                .andExpect(view().name("interviews"));
     }
 }
