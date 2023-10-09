@@ -28,7 +28,7 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <div class="row" th:if="${canManage}">
+    <div class="row" th:if="${userInfo != null}">
         <div class="cell">
             <a aria-pressed="true" class="btn mb-2"
                role="button"
