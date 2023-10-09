@@ -1,5 +1,6 @@
 package ru.job4j.site.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,12 +18,12 @@ import ru.job4j.site.service.TopicsService;
 import java.util.Calendar;
 import java.util.List;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
@@ -119,4 +120,107 @@ public class InterviewControllerTest {
                 .andExpect(view().name("redirect:/interviews/"));
     }
 
+    @Test
+    void wenGetEditViewThenReturnEditView() throws Exception {
+        var token = "123456";
+        var userInfo = new UserInfoDTO();
+        userInfo.setId(99);
+        userInfo.setEmail("email");
+        userInfo.setUsername("name");
+        var interview = new InterviewDTO();
+        interview.setId(1);
+        interview.setTitle("title");
+        interview.setSubmitterId(userInfo.getId());
+        var breadcrumbs = List.of(
+                new Breadcrumb("Главная", "/index"),
+                new Breadcrumb("Собеседования", "/interviews/"),
+                new Breadcrumb(interview.getTitle(), String.format("/interview/edit/%d", interview.getId())));
+        when(authService.userInfo(token)).thenReturn(userInfo);
+        when(interviewService.getById(token, interview.getId())).thenReturn(interview);
+        mockMvc.perform(get("/interview/edit/{id}", interview.getId())
+                        .sessionAttr("token", token))
+                .andDo(print())
+                .andExpect(model().attribute("userInfo", userInfo))
+                .andExpect(model().attribute("interview", interview))
+                .andExpect(model().attribute("breadcrumbs", breadcrumbs))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/interview/interviewEdit"));
+    }
+
+    @Test
+    void wenGetEditViewUserNotCreatedInterviewThenReturnRedirectInterviews() throws Exception {
+        var token = "123456";
+        var userInfo = new UserInfoDTO();
+        userInfo.setId(99);
+        userInfo.setEmail("email");
+        userInfo.setUsername("name");
+        var interview = new InterviewDTO();
+        interview.setId(1);
+        interview.setSubmitterId(22);
+        when(authService.userInfo(token)).thenReturn(userInfo);
+        when(interviewService.getById(token, interview.getId())).thenReturn(interview);
+        mockMvc.perform(get("/interview/edit/{id}", interview.getId())
+                        .sessionAttr("token", token))
+                .andDo(print())
+                .andExpect(model().attribute("userInfo", userInfo))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/interview/" + interview.getId()));
+    }
+
+    @Test
+    void wenGetEditViewUserThrowsExceptionThenReturnRedirectInterviews() throws Exception {
+        var token = "123456";
+        var userInfo = new UserInfoDTO();
+        userInfo.setId(99);
+        userInfo.setEmail("email");
+        userInfo.setUsername("name");
+        var interview = new InterviewDTO();
+        interview.setId(1);
+        interview.setSubmitterId(userInfo.getId());
+        when(authService.userInfo(token)).thenReturn(userInfo);
+        when(interviewService.getById(token, interview.getId())).thenThrow(JsonProcessingException.class);
+        mockMvc.perform(get("/interview/edit/{id}", interview.getId())
+                        .sessionAttr("token", token))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/interviews/"));
+    }
+
+
+    @Test
+    void whenPostUpdateInterviewThenRedirectUpdateInterview() throws Exception {
+        var token = "123456";
+        var userInfo = new UserInfoDTO();
+        userInfo.setId(99);
+        var interview = new InterviewDTO();
+        interview.setId(1);
+        interview.setSubmitterId(userInfo.getId());
+        mockMvc.perform(post("/interview/update")
+                        .sessionAttr("token", token)
+                        .param("id", String.valueOf(interview.getId()))
+                        .param("submitterId", String.valueOf(interview.getSubmitterId()))
+                )
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/interview/" + interview.getId()));
+    }
+
+    @Test
+    void whenPostUpdateInterviewThrowsThenRedirectEditInterview() throws Exception {
+        var token = "123456";
+        var userInfo = new UserInfoDTO();
+        userInfo.setId(99);
+        var interview = new InterviewDTO();
+        interview.setId(1);
+        interview.setSubmitterId(userInfo.getId());
+        doThrow(JsonProcessingException.class).when(interviewService).update(token, interview);
+        mockMvc.perform(post("/interview/update")
+                        .sessionAttr("token", token)
+                        .param("id", String.valueOf(interview.getId()))
+                        .param("submitterId", String.valueOf(interview.getSubmitterId()))
+                )
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/interview/edit/" + interview.getId()));
+    }
 }

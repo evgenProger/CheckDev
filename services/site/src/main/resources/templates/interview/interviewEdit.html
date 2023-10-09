@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- favicon -->
+    <link rel="icon" type="image/svg+xml" href="/img/icons/svg/check-double-solid.svg">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <meta name="description" content="CheckDev - пробные собеседования в IT.">
+    <title>interview/createForm</title>
+
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700,400i,900|Open+Sans:300,400,600,700,800&amp;subset=cyrillic"
+          rel="stylesheet">
+    <!-- Bootstrap 5.1.3 CSS -->
+    <link th:href="@{/css_bootstrap_5_3_2/bootstrap.min.css}" rel="stylesheet">
+    <script th:href="@{/js_bootstrap_5_3_2/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js_bootstrap_5_3_2/popper.min.js}"></script>
+    <script th:src="@{/js_bootstrap_5_3_2/bootstrap.min.js}"></script>
+    <script th:src="@{/js_bootstrap_5_3_2/code.jquery.com_jquery-3.7.0.min.js}"></script>
+</head>
+<body>
+<div th:insert="fragments/header :: header"></div>
+<div class="container">
+    <div class="row pt-3">
+        <div class="col-sm">
+        </div>
+        <div class="col-sm">
+            <form class="was-validated" th:action="@{/interview/update}" method="post" th:object="${interview}">
+                <input type="hidden" name="id" th:field="*{id}">
+                <input type="hidden" name="submitterId" th:field="*{submitterId}">
+                <input type="hidden" name="title" th:field="*{title}">
+                <div class="mb-3">
+                    <div class="mb-3" th:if="${error}">
+                        <span class="text-danger" th:text="${error}"/>
+                    </div>
+                    <h3 th:text="${interview.title}">Тема</h3>
+                    <!--Поле approximateDate-->
+                    <div class="mb-3">
+                        <label class="form-label" for="approximateDate">Удобное время для собеседования</label>
+                        <input type="text" class="form-control" id="approximateDate"
+                               name="approximateDate"
+                               th:field="*{approximateDate}" required>
+                        <small> </small>
+                        <div class="invalid-feedback">
+                            Пожалуйста введите удобное время. Например: могу в любой день после 18.00 по Москве.
+                        </div>
+                    </div>
+                    <!--Поля contactBy -->
+                    <div class="mb-3">
+                        <label class="form-label" for="contactBy">Связаться со мной по telegram</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="inputGroupPrepend3">@</span>
+                            <input type="text" class="form-control" id="contactBy"
+                                   name="contactBy"
+                                   th:field="*{contactBy}" required>
+                            <div class="invalid-feedback">
+                                Пожалуйста введите контакт для связи.
+                            </div>
+                        </div>
+                    </div>
+                    <!--Заполнение поля description-->
+                    <div class="mb-3">
+                        <label class="form-label" for="description">Описание</label>
+                        <textarea class="form-control" rows="3"
+                                  id="description"
+                                  name="description"
+                                  th:field="*{description}" required></textarea>
+                        <div class="invalid-feedback">
+                            Пожалуйста введите описание.
+                        </div>
+                    </div>
+                    <!--Выбор типа собеседования поел typeInterview-->
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="typeInterview" id="1" value="1"
+                               th:checked="${interview.typeInterview==1}">
+                        <label class="form-check-label" for="1">
+                            Буду проводить собеседование (задавать вопросы)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="typeInterview" id="2" value="2"
+                               th:checked="${interview.typeInterview==2}">
+                        <label class="form-check-label" for="2">
+                            Буду проходить собеседование (отвечать на вопросы)
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm">
+        </div>
+    </div>
+</div>
+<br>
+<div th:insert="fragments/footer :: footer"></div>
+</body>
+</html>

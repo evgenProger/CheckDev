@@ -39,8 +39,10 @@
                                     </a>
                             </span>
                             <small class="mb-2 text-muted">
-                            <span>
-                            <span th:text="${'Автор: ' + interview.submitterId}"></span>
+                            <span th:each="user: ${users}">
+                                <span th:if="${interview.submitterId == user.getId()}">
+                                    <span th:text="${'Автор: ' + user.getUsername()}"></span>
+                                </span>
                             </span> |
                                 <span th:text="${'Дата создания: ' + #strings.substring(interview.createDate, 0, 10)}"></span>
                                 |

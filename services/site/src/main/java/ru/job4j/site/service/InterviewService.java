@@ -8,10 +8,11 @@ import ru.job4j.site.dto.InterviewDTO;
 
 @Service
 public class InterviewService {
+    private static final String URL_MOCK = "http://localhost:9912/interview/";
 
     public InterviewDTO create(String token, InterviewDTO interviewDTO) throws JsonProcessingException {
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall("http://localhost:9912/interview/").post(
+        var out = new RestAuthCall(URL_MOCK).post(
                 token,
                 mapper.writeValueAsString(interviewDTO)
         );
@@ -19,9 +20,16 @@ public class InterviewService {
     }
 
     public InterviewDTO getById(String token, int id) throws JsonProcessingException {
-        var text = new RestAuthCall(String.format("http://localhost:9912/interview/%d", id))
+        var text = new RestAuthCall(String.format("%s%d", URL_MOCK, id))
                 .get(token);
         return new ObjectMapper().readValue(text, new TypeReference<>() {
         });
+    }
+
+    public void update(String token, InterviewDTO interviewDTO) throws JsonProcessingException {
+        var mapper = new ObjectMapper();
+        new RestAuthCall(URL_MOCK).update(
+                token,
+                mapper.writeValueAsString(interviewDTO));
     }
 }

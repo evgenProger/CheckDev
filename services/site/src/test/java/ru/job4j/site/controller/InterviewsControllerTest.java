@@ -2,6 +2,7 @@ package ru.job4j.site.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -12,10 +13,12 @@ import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.InterviewsService;
-
+import ru.job4j.site.service.ProfilesService;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.IntStream;
-
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -33,9 +36,18 @@ public class InterviewsControllerTest {
     @MockBean
     private AuthService authService;
 
+    @MockBean
+    private ProfilesService profilesService;
+
+    @Value("${server.auth.access.key}")
+    private String key;
+
     @Test
     public void whenShowAllInterviews() throws Exception {
         var token = "1410";
+        var id = 1;
+        var profile = new ProfileDTO(id, "username", "experience", 1,
+                Calendar.getInstance(), Calendar.getInstance());
         var userInfo = new UserInfoDTO();
         var breadcrumbs = List.of(
                 new Breadcrumb("Главная", "/index"),
@@ -44,6 +56,7 @@ public class InterviewsControllerTest {
             var interview = new InterviewDTO();
             interview.setId(i);
             interview.setTypeInterview(1);
+            interview.setSubmitterId(1);
             interview.setTitle(String.format("Interview_%d", i));
             interview.setDescription("Some text");
             interview.setContactBy("Some contact");
@@ -53,6 +66,7 @@ public class InterviewsControllerTest {
         }).toList();
         when(interviewsService.getAll(token)).thenReturn(interviews);
         when(authService.userInfo(token)).thenReturn(userInfo);
+        when(this.profilesService.getProfileById(id, key)).thenReturn(Optional.of(profile));
         mockMvc.perform(get("/interviews/").sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(model().attribute("interviews", interviews))
@@ -60,6 +74,7 @@ public class InterviewsControllerTest {
                 .andExpect(model().attribute("current_page", "interviews"))
                 .andExpect(model().attribute("userInfo", userInfo))
                 .andExpect(model().attribute("breadcrumbs", breadcrumbs))
+                .andExpect(model().attribute("users", Set.of(profile)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("interviews"));
     }

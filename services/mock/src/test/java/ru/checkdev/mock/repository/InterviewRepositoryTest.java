@@ -1,6 +1,7 @@
 package ru.checkdev.mock.repository;
 
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -26,11 +27,6 @@ class InterviewRepositoryTest {
     @Autowired
     private InterviewRepository interviewRepository;
 
-    @Before
-    public void clearTable() {
-        entityManager.createQuery("delete from interview").executeUpdate();
-    }
-
     @Test
     public void injectedComponentAreNotNull() {
         assertNotNull(entityManager);
@@ -45,6 +41,7 @@ class InterviewRepositoryTest {
 
     @Test
     public void whenFindAllInterview() {
+        entityManager.createQuery("delete from interview").executeUpdate();
         var listInterview = interviewRepository.findAll();
         assertThat(listInterview, is(Collections.emptyList()));
     }
