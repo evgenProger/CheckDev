@@ -39,6 +39,10 @@ public class InterviewService {
         return interviewRepository.findById(id);
     }
 
+    public List<Interview> findByType(int type) {
+        return interviewRepository.findByTypeInterview(type);
+    }
+
     public boolean update(Interview interview) {
         interviewRepository.save(interview);
         return true;

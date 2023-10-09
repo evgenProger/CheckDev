@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.InterviewsService;
 import ru.job4j.site.service.TopicsService;
 
 @Controller
@@ -14,6 +15,7 @@ import ru.job4j.site.service.TopicsService;
 @Slf4j
 public class IndexController {
     private final CategoriesService categoriesService;
+    private final InterviewsService interviewsService;
 
     @GetMapping({"/", "index"})
     public String getIndexPage(Model model) throws JsonProcessingException {
@@ -21,6 +23,7 @@ public class IndexController {
                 "Главная", "/"
         );
         model.addAttribute("categories", categoriesService.getMostPopular());
+        model.addAttribute("new_interviews", interviewsService.getByType(1));
         return "index";
     }
 }
