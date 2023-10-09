@@ -26,7 +26,7 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <div th:if="${canManage}">
+    <div th:if="${userInfo != null}">
         <div class="col-sm">
         </div>
         <div class="col-sm">
@@ -34,12 +34,12 @@
                 <div class="form-group">
                     <label for="name">Имя</label>
                     <input type="text" class="form-control" id="name"
-                           name="name"
-                           aria-describedby="emailHelp" placeholder="Введите название">
-                    <label for="name">Позиция</label>
-                    <input type="text" class="form-control" id="position"
-                           name="position"
-                           aria-describedby="emailHelp" placeholder="Введите позицию">
+                           name="name" placeholder="Введите название">
+                </div>
+                <div class="form-group pb-3">
+                    <label for="position">Позиция</label>
+                    <input type="number" class="form-control" id="position"
+                           name="position" value="1" min="1">
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Сохранить</button>

@@ -11,7 +11,6 @@ import ru.job4j.site.service.CategoriesService;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static ru.job4j.site.controller.RequestResponseTools.addAttrCanManage;
 import static ru.job4j.site.controller.RequestResponseTools.getToken;
 
 @Controller
@@ -59,12 +58,10 @@ public class CategoryControl {
     }
 
     @PostMapping("/update")
-    public String updateCategory(Model model, @ModelAttribute CategoryDTO category,
+    public String updateCategory(@ModelAttribute CategoryDTO category,
                                  HttpServletRequest req) throws JsonProcessingException {
         var token = getToken(req);
         categoriesService.update(token, category);
-        var userInfo = authService.userInfo(token);
-        addAttrCanManage(model, userInfo);
         return "redirect:/categories/";
     }
 }
