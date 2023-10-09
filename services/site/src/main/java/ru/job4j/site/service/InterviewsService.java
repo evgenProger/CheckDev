@@ -16,4 +16,12 @@ public class InterviewsService {
         return mapper.readValue(text, new TypeReference<>() {
         });
     }
+
+    public List<InterviewDTO> getByType(int type) throws JsonProcessingException {
+        var text = new RestAuthCall(String.format("http://localhost:9912/interviews/%d", type))
+                .get();
+        var mapper = new ObjectMapper();
+        return mapper.readValue(text, new TypeReference<>() {
+        });
+    }
 }

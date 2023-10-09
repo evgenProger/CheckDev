@@ -12,8 +12,10 @@ import org.springframework.ui.ConcurrentModel;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.CategoryDTO;
+import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.InterviewsService;
 import ru.job4j.site.service.TopicsService;
 
 import java.util.List;
@@ -42,12 +44,14 @@ class IndexControllerTest {
     private CategoriesService categoriesService;
     @MockBean
     private TopicsService topicsService;
+    @MockBean
+    private InterviewsService interviewsService;
 
     private IndexController indexController;
 
     @BeforeEach
     void initTest() {
-        this.indexController = new IndexController(categoriesService);
+        this.indexController = new IndexController(categoriesService, interviewsService);
     }
 
     @Test
@@ -69,9 +73,17 @@ class IndexControllerTest {
         var cat1 = new CategoryDTO(1, "name1");
         var cat2 = new CategoryDTO(2, "name2");
         var listCat = List.of(cat1, cat2);
+        var firstInterview = new InterviewDTO(1, 1, 1,
+                "interview1", "description1", "contact1",
+                "30.02.2024", "09.10.2023");
+        var secondInterview = new InterviewDTO(2, 1, 2,
+                "interview2", "description2", "contact2",
+                "30.02.2024", "09.10.2023");
+        var listInterviews = List.of(firstInterview, secondInterview);
         when(topicsService.getByCategory(cat1.getId())).thenReturn(List.of(topicDTO1));
         when(topicsService.getByCategory(cat2.getId())).thenReturn(List.of(topicDTO2));
         when(categoriesService.getMostPopular()).thenReturn(listCat);
+        when(interviewsService.getByType(1)).thenReturn(listInterviews);
         var listBread = List.of(new Breadcrumb("Главная", "/"));
         var model = new ConcurrentModel();
 
@@ -79,10 +91,12 @@ class IndexControllerTest {
         var actualCategories = model.getAttribute("categories");
         var actualBreadCrumbs = model.getAttribute("breadcrumbs");
         var actualUserInfo = model.getAttribute("userInfo");
+        var actualInterviews = model.getAttribute("new_interviews");
 
         assertThat(view).isEqualTo("index");
         assertThat(actualCategories).usingRecursiveComparison().isEqualTo(listCat);
         assertThat(actualBreadCrumbs).usingRecursiveComparison().isEqualTo(listBread);
         assertThat(actualUserInfo).isNull();
+        assertThat(actualInterviews).usingRecursiveComparison().isEqualTo(listInterviews);
     }
 }
