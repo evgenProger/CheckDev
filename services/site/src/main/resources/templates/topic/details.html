@@ -28,10 +28,18 @@
 <div class="container">
     <div>
         <div class="cell">
-            <a th:href="@{|/interview/createForm?topicId=${topic.id}|}" class="btn btn-success mb-2"
-               role="button" aria-pressed="true">
-                Создать собеседование
-            </a>
+            <span th:if="${userInfo != null}">
+                <a th:href="@{|/interview/createForm?topicId=${topic.id}|}" class="btn btn-success mb-2"
+                   role="button" aria-pressed="true">
+                    Создать собеседование
+                </a>
+            </span>
+            <span th:if="${userInfo == null}">
+                <a th:href="@{|/login?redirectUri=/interview/createForm&topicId=${topic.id}|}" class="btn btn-success mb-2"
+                   role="button" aria-pressed="true">
+                    Создать собеседование
+                </a>
+            </span>
         </div>
     </div>
     <div class="card">

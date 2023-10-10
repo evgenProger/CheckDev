@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.job4j.site.dto.CredentialDTO;
 import ru.job4j.site.service.AuthService;
 
@@ -22,7 +23,9 @@ public class LoginControl {
     private final AuthService authService;
 
     @GetMapping("/login")
-    public String loginPage(@RequestParam(value = "error", required = false) String error,
+    public String loginPage(@ModelAttribute("redirectUri") String redirectUri,
+                            @ModelAttribute("topicId") String topicId,
+                            @RequestParam(value = "error", required = false) String error,
                             Model model) {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
@@ -34,11 +37,16 @@ public class LoginControl {
         }
         model.addAttribute("authPing", authService.getPing());
         model.addAttribute("errorMessage", errorMessage);
+        model.addAttribute("redirectUri", redirectUri);
+        model.addAttribute("topicId", topicId);
         return "login";
     }
 
     @PostMapping("/signIn")
     public String signIn(@ModelAttribute CredentialDTO credentialDTO,
+                         @ModelAttribute("redirectUri") String redirectUri,
+                         @ModelAttribute("topicId") String topicId,
+                         RedirectAttributes redirectAttributes,
                          HttpServletRequest req) throws JsonProcessingException {
         var isLogin = authService.token(
                 Map.of("username", credentialDTO.getEmail(),
@@ -47,6 +55,11 @@ public class LoginControl {
             return "redirect:/login?error=true";
         }
         req.getSession().setAttribute("token", isLogin);
+        if (!redirectUri.isEmpty()
+        && !topicId.isEmpty()) {
+            redirectAttributes.addFlashAttribute("topicId", topicId);
+            return "redirect:" + redirectUri;
+        }
         return "redirect:/";
     }
 
