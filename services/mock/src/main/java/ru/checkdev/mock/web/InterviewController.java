@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.service.InterviewService;
+
 import javax.validation.Valid;
 import java.sql.SQLException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/interview")
@@ -39,7 +39,6 @@ public class InterviewController {
         );
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @PutMapping("/")
     public ResponseEntity<Interview> update(@Valid @RequestBody Interview interview) {
         return new ResponseEntity<Interview>(interview,

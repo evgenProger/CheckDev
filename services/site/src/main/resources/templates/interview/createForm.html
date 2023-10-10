@@ -36,7 +36,7 @@
                     <h3><label class="fw-bold" for="title" th:text="${category.name + ' : ' + topic.name}">Тема</label>
                     </h3>
                     <input type="hidden" class="form-control mb-3 mt-2" id="title"
-                           name="title" th:value="${topic.name}">
+                           name="title" th:value="${category.name + ' : ' + topic.name}">
                     <input type="hidden" class="form-control mb-3 mt-2" id="topicId"
                            name="topicId" th:value="${topic.id}">
                     </p>

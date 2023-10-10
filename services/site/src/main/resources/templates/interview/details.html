@@ -37,6 +37,11 @@
             <pre th:text="${'Статус: ' + status}"></pre>
             <pre th:text="${interview.createDate}"></pre>
         </div>
+        <!--Кнопка редактировать видна интервью создал текущий пользователь -->
+        <div class="form-group">
+            <a th:if="${userInfo != null and interview.submitterId == userInfo.id}" class="btn btn-success mt-3"
+               th:href="@{|/interview/edit/${interview.id}|}">Редактировать</a>
+        </div>
     </div>
 </div>
 <br>
