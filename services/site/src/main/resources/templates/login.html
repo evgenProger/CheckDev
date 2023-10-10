@@ -37,6 +37,10 @@
                 <span th:text="${errorMessage}"></span>
             </div>
             <form th:action="@{/signIn}" method="post">
+                <input type="hidden" class="form-control mb-3 mt-2" id="redirectUri"
+                       name="redirectUri" th:value="${redirectUri}">
+                <input type="hidden" class="form-control mb-3 mt-2" id="topicId"
+                       name="topicId" th:value="${topicId}">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" class="form-control" id="email"
