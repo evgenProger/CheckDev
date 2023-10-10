@@ -8,4 +8,5 @@
     <include file="changelog/001_ddl_create_table_interview.sql" relativeToChangelogFile="true"/>
     <include file="changelog/002_ddl_create_table_wisher.sql" relativeToChangelogFile="true"/>
     <include file="changelog/003_ddl_update_table_interview.sql" relativeToChangelogFile="true"/>
+    <include file="changelog/004_dml_insert_table_interview.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
