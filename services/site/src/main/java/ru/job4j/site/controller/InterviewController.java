@@ -13,6 +13,7 @@ import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.InterviewService;
 import ru.job4j.site.service.TopicsService;
+import ru.job4j.site.service.WisherService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +30,8 @@ public class InterviewController {
     private final TopicsService topicsService;
 
     private final InterviewService interviewService;
+
+    private final WisherService wisherService;
 
     @GetMapping("/createForm")
     public String createForm(@ModelAttribute("topicId") int topicId,
@@ -53,7 +56,7 @@ public class InterviewController {
                                   HttpServletRequest req, RedirectAttributes redirectAttributes)
             throws JsonProcessingException {
         if (interviewDTO.getApproximateDate().isEmpty()
-            || interviewDTO.getContactBy().isEmpty()) {
+                || interviewDTO.getContactBy().isEmpty()) {
             redirectAttributes.addFlashAttribute("topicId", topicId);
             redirectAttributes.addFlashAttribute("error", "Заполните поле!");
             return "redirect:/interview/createForm";
@@ -73,11 +76,19 @@ public class InterviewController {
                           HttpServletRequest req) throws JsonProcessingException {
         var token = getToken(req);
         var interview = interviewService.getById(token, interviewId);
+        var userInfo = authService.userInfo(token);
+        var isAuthor = interviewService.isAuthor(userInfo, interview);
+        var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
+        var isWisher = wisherService.isWisher(userInfo.getId(), interview.getId(), wishers);
+        var statusMap = wisherService.getInterviewStatistic(wishers);
         var statuses = StatusInterview.values();
         if (interview.getTypeInterview() < statuses.length) {
             model.addAttribute("status", statuses[interview.getTypeInterview()].getInfo());
         }
         model.addAttribute("interview", interview);
+        model.addAttribute("isAuthor", isAuthor);
+        model.addAttribute("isWisher", isWisher);
+        model.addAttribute("statisticMap", statusMap);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Собеседования", "/interviews/",

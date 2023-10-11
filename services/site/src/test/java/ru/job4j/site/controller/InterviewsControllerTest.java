@@ -14,11 +14,11 @@ import ru.job4j.site.dto.*;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.InterviewsService;
 import ru.job4j.site.service.ProfilesService;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import ru.job4j.site.service.WisherService;
+
+import java.util.*;
 import java.util.stream.IntStream;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -38,6 +38,9 @@ public class InterviewsControllerTest {
 
     @MockBean
     private ProfilesService profilesService;
+
+    @MockBean
+    private WisherService wisherService;
 
     @Value("${server.auth.access.key}")
     private String key;
@@ -64,11 +67,14 @@ public class InterviewsControllerTest {
             interview.setCreateDate("06.10.2023");
             return interview;
         }).toList();
+        when(wisherService.getAllWisherDtoByInterviewId(token, "")).thenReturn(new ArrayList<>());
+        when(wisherService.getInterviewStatistic(new ArrayList<>())).thenReturn(new HashMap<>());
         when(interviewsService.getAll(token)).thenReturn(interviews);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(this.profilesService.getProfileById(id, key)).thenReturn(Optional.of(profile));
         mockMvc.perform(get("/interviews/").sessionAttr("token", token))
                 .andDo(print())
+                .andExpect(model().attribute("statisticMap", new HashMap<>()))
                 .andExpect(model().attribute("interviews", interviews))
                 .andExpect(model().attribute("statuses", StatusInterview.values()))
                 .andExpect(model().attribute("current_page", "interviews"))
