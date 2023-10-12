@@ -14,8 +14,11 @@ import ru.job4j.site.dto.*;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.InterviewService;
 import ru.job4j.site.service.TopicsService;
+import ru.job4j.site.service.WisherService;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.doThrow;
@@ -37,6 +40,8 @@ public class InterviewControllerTest {
     private TopicsService topicsService;
     @MockBean
     private AuthService authService;
+    @MockBean
+    private WisherService wisherService;
 
     @Test
     public void whenShowDetails() throws Exception {
@@ -52,14 +57,24 @@ public class InterviewControllerTest {
         interview.setDescription("Some description");
         interview.setTypeInterview(4);
         var status = StatusInterview.values()[interview.getTypeInterview()].getInfo();
+        List<WisherDto> wisherDtos = new ArrayList<>();
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(interviewService.getById(token, 1)).thenReturn(interview);
-        mockMvc.perform(get("/interview/1").sessionAttr("token", token))
+        when(interviewService.isAuthor(userInfo, interview)).thenReturn(false);
+        when(wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId())))
+                .thenReturn(wisherDtos);
+        when(wisherService.getInterviewStatistic(wisherDtos)).thenReturn(new HashMap<>());
+        when(wisherService.isWisher(userInfo.getId(), interview.getId(), wisherDtos)).thenReturn(false);
+        mockMvc.perform(get("/interview/{id}", interview.getId())
+                        .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(model().attribute("interview", interview))
                 .andExpect(model().attribute("breadcrumbs", breadcrumbs))
                 .andExpect(model().attribute("userInfo", userInfo))
                 .andExpect(model().attribute("status", status))
+                .andExpect(model().attribute("isAuthor", false))
+                .andExpect(model().attribute("isWisher", false))
+                .andExpect(model().attribute("statisticMap", new HashMap<>()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/interview/details"));
     }

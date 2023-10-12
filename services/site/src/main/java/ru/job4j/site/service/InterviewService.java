@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.dto.UserInfoDTO;
 
 @Service
 public class InterviewService {
@@ -31,5 +32,16 @@ public class InterviewService {
         new RestAuthCall(URL_MOCK).update(
                 token,
                 mapper.writeValueAsString(interviewDTO));
+    }
+
+    /**
+     * Метод проверяет являться пользователь автором собеседования.
+     *
+     * @param userInfoDTO  UserInfoDto
+     * @param interviewDTO InterviewDTO
+     * @return boolean userId == submitterId
+     */
+    public boolean isAuthor(UserInfoDTO userInfoDTO, InterviewDTO interviewDTO) {
+        return userInfoDTO.getId() == interviewDTO.getSubmitterId();
     }
 }

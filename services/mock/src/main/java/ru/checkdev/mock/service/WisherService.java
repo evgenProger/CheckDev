@@ -7,7 +7,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.dto.WisherDto;
 import ru.checkdev.mock.repository.WisherRepository;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -33,9 +35,10 @@ public class WisherService {
         return wisherRepository.findByInterview(interview);
     }
 
-   public List<Wisher> findAll() {
+    public List<Wisher> findAll() {
         return wisherRepository.findAll();
-   }
+    }
+
     public Optional<Wisher> findById(int id) {
         return wisherRepository.findById(id);
     }
@@ -52,5 +55,24 @@ public class WisherService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Метод получает список всех DTO моделей WisherDto
+     *
+     * @return List<WisherDto>
+     */
+    public List<WisherDto> findAllWisherDto() {
+        return wisherRepository.findAllWiserDto();
+    }
+
+    /**
+     * Метод получает список DTO моделей Wisher по ID interview
+     *
+     * @param interviewId ID Interview ID
+     * @return List<WisherDTO>
+     */
+    public List<WisherDto> findWisherByInterviewId(int interviewId) {
+        return wisherRepository.findWisherDTOByInterviewId(interviewId);
     }
 }
