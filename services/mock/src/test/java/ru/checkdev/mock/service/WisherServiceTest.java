@@ -35,7 +35,7 @@ class WisherServiceTest {
             .typeInterview(2)
             .submitterId(3)
             .title("test_title")
-            .description("test_description")
+            .additional("test_additional")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
             .createDate(new Timestamp(System.currentTimeMillis()))

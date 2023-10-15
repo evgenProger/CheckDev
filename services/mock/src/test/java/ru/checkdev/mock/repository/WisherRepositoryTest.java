@@ -37,7 +37,7 @@ class WisherRepositoryTest {
         interview.setTypeInterview(1);
         interview.setSubmitterId(1);
         interview.setTitle("title");
-        interview.setDescription("desc");
+        interview.setAdditional("additional");
         interview.setContactBy("mail@mail");
         interview.setApproximateDate("approximate");
         interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
