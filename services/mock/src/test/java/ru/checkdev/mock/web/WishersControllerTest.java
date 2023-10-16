@@ -16,7 +16,6 @@ import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
 import ru.checkdev.mock.service.WisherService;
 
-import java.sql.Timestamp;
 import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,7 +39,7 @@ class WishersControllerTest {
             .typeInterview(2)
             .submitterId(3)
             .title("test_title")
-            .description("test_description")
+            .additional("test_additional")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
             .createDate(null)

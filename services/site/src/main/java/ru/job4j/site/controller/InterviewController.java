@@ -66,6 +66,7 @@ public class InterviewController {
             var userInfo = authService.userInfo(token);
             interviewDTO.setSubmitterId(userInfo.getId());
         }
+        interviewDTO.setTopicId(topicId);
         interviewService.create(getToken(req), interviewDTO);
         return "redirect:/interviews/";
     }

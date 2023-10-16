@@ -54,8 +54,9 @@ public class InterviewControllerTest {
         InterviewDTO interview = new InterviewDTO();
         interview.setId(1);
         interview.setTitle("Some interview");
-        interview.setDescription("Some description");
+        interview.setAdditional("Some description");
         interview.setTypeInterview(4);
+        interview.setTopicId(1);
         var status = StatusInterview.values()[interview.getTypeInterview()].getInfo();
         List<WisherDto> wisherDtos = new ArrayList<>();
         when(authService.userInfo(token)).thenReturn(userInfo);
@@ -122,10 +123,11 @@ public class InterviewControllerTest {
         InterviewDTO interview = new InterviewDTO();
         interview.setId(1);
         interview.setTitle("Some interview");
-        interview.setDescription("Some description");
+        interview.setAdditional("Some description");
         interview.setContactBy("Some contact");
         interview.setApproximateDate("30.02.2024");
         interview.setCreateDate("06.10.2023");
+        interview.setTopicId(1);
         when(authService.userInfo(token)).thenReturn(userInfo);
         mockMvc.perform(post("/interview/create")
                         .flashAttr("interviewDTO", interview)
@@ -146,6 +148,7 @@ public class InterviewControllerTest {
         interview.setId(1);
         interview.setTitle("title");
         interview.setSubmitterId(userInfo.getId());
+        interview.setTopicId(1);
         var breadcrumbs = List.of(
                 new Breadcrumb("Главная", "/index"),
                 new Breadcrumb("Собеседования", "/interviews/"),
@@ -172,6 +175,7 @@ public class InterviewControllerTest {
         var interview = new InterviewDTO();
         interview.setId(1);
         interview.setSubmitterId(22);
+        interview.setTopicId(1);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(interviewService.getById(token, interview.getId())).thenReturn(interview);
         mockMvc.perform(get("/interview/edit/{id}", interview.getId())
@@ -192,6 +196,7 @@ public class InterviewControllerTest {
         var interview = new InterviewDTO();
         interview.setId(1);
         interview.setSubmitterId(userInfo.getId());
+        interview.setTopicId(1);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(interviewService.getById(token, interview.getId())).thenThrow(JsonProcessingException.class);
         mockMvc.perform(get("/interview/edit/{id}", interview.getId())
@@ -210,6 +215,7 @@ public class InterviewControllerTest {
         var interview = new InterviewDTO();
         interview.setId(1);
         interview.setSubmitterId(userInfo.getId());
+        interview.setTopicId(1);
         mockMvc.perform(post("/interview/update")
                         .sessionAttr("token", token)
                         .param("id", String.valueOf(interview.getId()))
