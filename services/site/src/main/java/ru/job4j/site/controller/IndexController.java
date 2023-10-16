@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.job4j.site.service.CategoriesService;
 import ru.job4j.site.service.InterviewsService;
-import ru.job4j.site.service.TopicsService;
 
 @Controller
 @AllArgsConstructor
@@ -22,7 +21,11 @@ public class IndexController {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/"
         );
-        model.addAttribute("categories", categoriesService.getMostPopular());
+        try {
+            model.addAttribute("categories", categoriesService.getMostPopular());
+        } catch (Exception e) {
+            log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
+        }
         model.addAttribute("new_interviews", interviewsService.getByType(1));
         return "index";
     }

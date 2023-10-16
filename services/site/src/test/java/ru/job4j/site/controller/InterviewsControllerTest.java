@@ -12,6 +12,7 @@ import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.AuthService;
+import ru.job4j.site.service.CategoriesService;
 import ru.job4j.site.service.InterviewsService;
 import ru.job4j.site.service.ProfilesService;
 import ru.job4j.site.service.WisherService;
@@ -35,10 +36,10 @@ public class InterviewsControllerTest {
     private InterviewsService interviewsService;
     @MockBean
     private AuthService authService;
-
     @MockBean
     private ProfilesService profilesService;
-
+    @MockBean
+    private CategoriesService categoriesService;
     @MockBean
     private WisherService wisherService;
 
@@ -61,17 +62,27 @@ public class InterviewsControllerTest {
             interview.setTypeInterview(1);
             interview.setSubmitterId(1);
             interview.setTitle(String.format("Interview_%d", i));
-            interview.setDescription("Some text");
+            interview.setAdditional("Some text");
             interview.setContactBy("Some contact");
             interview.setApproximateDate("30.02.2024");
             interview.setCreateDate("06.10.2023");
             return interview;
         }).toList();
+        List<CategoryDTO> categories = IntStream.range(0, 3).mapToObj(i -> {
+            var category = new CategoryDTO();
+            category.setId(i);
+            category.setName(String.format("category_%d", i));
+            category.setPosition(1);
+            category.setTotal(100);
+            category.setTopicsSize(14);
+            return category;
+        }).toList();
         when(wisherService.getAllWisherDtoByInterviewId(token, "")).thenReturn(new ArrayList<>());
         when(wisherService.getInterviewStatistic(new ArrayList<>())).thenReturn(new HashMap<>());
         when(interviewsService.getAll(token)).thenReturn(interviews);
         when(authService.userInfo(token)).thenReturn(userInfo);
-        when(this.profilesService.getProfileById(id, key)).thenReturn(Optional.of(profile));
+        when(profilesService.getProfileById(id, key)).thenReturn(Optional.of(profile));
+        when(categoriesService.getAll()).thenReturn(categories);
         mockMvc.perform(get("/interviews/").sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(model().attribute("statisticMap", new HashMap<>()))

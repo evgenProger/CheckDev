@@ -34,6 +34,7 @@
                 <input type="hidden" name="id" th:field="*{id}">
                 <input type="hidden" name="submitterId" th:field="*{submitterId}">
                 <input type="hidden" name="title" th:field="*{title}">
+                <input type="hidden" name="topicId" th:field="*{topicId}">
                 <div class="mb-3">
                     <div class="mb-3" th:if="${error}">
                         <span class="text-danger" th:text="${error}"/>
@@ -65,11 +66,11 @@
                     </div>
                     <!--Заполнение поля description-->
                     <div class="mb-3">
-                        <label class="form-label" for="description">Описание</label>
+                        <label class="form-label" for="additional">Описание</label>
                         <textarea class="form-control" rows="3"
-                                  id="description"
-                                  name="description"
-                                  th:field="*{description}" required></textarea>
+                                  id="additional"
+                                  name="additional"
+                                  th:field="*{additional}" required></textarea>
                         <div class="invalid-feedback">
                             Пожалуйста введите описание.
                         </div>
