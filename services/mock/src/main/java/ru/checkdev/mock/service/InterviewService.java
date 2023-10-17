@@ -11,6 +11,7 @@ import ru.checkdev.mock.repository.InterviewRepository;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -32,7 +33,13 @@ public class InterviewService {
     }
 
     public List<Interview> findAll() {
-        return interviewRepository.findAll();
+        return interviewRepository.findAll().stream()
+                .peek(interview -> {
+                    if (interview.getTopicId() == null) {
+                        interview.setTopicId(1);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     public Optional<Interview> findById(Integer id) {
@@ -40,7 +47,13 @@ public class InterviewService {
     }
 
     public List<Interview> findByType(int type) {
-        return interviewRepository.findByTypeInterview(type);
+        return interviewRepository.findByTypeInterview(type).stream()
+                .peek(interview -> {
+                    if (interview.getTopicId() == null) {
+                        interview.setTopicId(1);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     public boolean update(Interview interview) {
@@ -55,6 +68,4 @@ public class InterviewService {
         }
         return false;
     }
-
-
 }

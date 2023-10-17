@@ -95,4 +95,23 @@ class InterviewServiceTest {
         var actual = interviewService.delete(interview);
         assertThat(actual, is(false));
     }
+
+    @Test
+    public void whenGetAllWithTopicIdIsNull() {
+        Interview interviewWithTopicId = interview;
+        interviewWithTopicId.setTopicId(1);
+        when(interviewRepository.findAll()).thenReturn(List.of(interviewWithTopicId));
+        var actual = interviewService.findAll();
+        assertThat(actual, is(List.of(interviewWithTopicId)));
+    }
+
+    @Test
+    public void whenFindByTypeAllWithTopicIdIsNull() {
+        Interview interviewWithTopicId = interview;
+        interviewWithTopicId.setTopicId(1);
+        interviewWithTopicId.setTypeInterview(1);
+        when(interviewRepository.findByTypeInterview(1)).thenReturn(List.of(interviewWithTopicId));
+        var actual = interviewService.findByType(1);
+        assertThat(actual, is(List.of(interviewWithTopicId)));
+    }
 }
