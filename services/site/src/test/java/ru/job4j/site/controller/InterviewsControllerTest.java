@@ -1,5 +1,6 @@
 package ru.job4j.site.controller;
 
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,11 +12,7 @@ import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.*;
-import ru.job4j.site.service.AuthService;
-import ru.job4j.site.service.CategoriesService;
-import ru.job4j.site.service.InterviewsService;
-import ru.job4j.site.service.ProfilesService;
-import ru.job4j.site.service.WisherService;
+import ru.job4j.site.service.*;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -32,6 +29,7 @@ public class InterviewsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private InterviewsService interviewsService;
     @MockBean
@@ -42,6 +40,10 @@ public class InterviewsControllerTest {
     private CategoriesService categoriesService;
     @MockBean
     private WisherService wisherService;
+    @MockBean
+    private FilterService filterService;
+    @MockBean
+    private TopicsService topicsService;
 
     @Value("${server.auth.access.key}")
     private String key;
@@ -53,6 +55,7 @@ public class InterviewsControllerTest {
         var profile = new ProfileDTO(id, "username", "experience", 1,
                 Calendar.getInstance(), Calendar.getInstance());
         var userInfo = new UserInfoDTO();
+        userInfo.setId(1);
         var breadcrumbs = List.of(
                 new Breadcrumb("Главная", "/index"),
                 new Breadcrumb("Собеседования", "/interviews/"));
@@ -77,12 +80,17 @@ public class InterviewsControllerTest {
             category.setTopicsSize(14);
             return category;
         }).toList();
+        var filter = new FilterDTO(1, 1, 1);
         when(wisherService.getAllWisherDtoByInterviewId(token, "")).thenReturn(new ArrayList<>());
         when(wisherService.getInterviewStatistic(new ArrayList<>())).thenReturn(new HashMap<>());
         when(interviewsService.getAll(token)).thenReturn(interviews);
+        when(interviewsService.getByTopicId(filter.getTopicId())).thenReturn(interviews);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(profilesService.getProfileById(id, key)).thenReturn(Optional.of(profile));
         when(categoriesService.getAll()).thenReturn(categories);
+        when(filterService.getByUserId(token, userInfo.getId())).thenReturn(filter);
+        when(categoriesService.getNameById(categories, 1)).thenReturn(categories.get(1).getName());
+        when(topicsService.getNameById(filter.getTopicId())).thenReturn("SOME TOPIC NAME");
         mockMvc.perform(get("/interviews/").sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(model().attribute("statisticMap", new HashMap<>()))
@@ -92,6 +100,10 @@ public class InterviewsControllerTest {
                 .andExpect(model().attribute("userInfo", userInfo))
                 .andExpect(model().attribute("breadcrumbs", breadcrumbs))
                 .andExpect(model().attribute("users", Set.of(profile)))
+                .andExpect(model().attribute("categories", categories))
+                .andExpect(model().attribute("categoryName", "category_1"))
+                .andExpect(model().attribute("topicName", "SOME TOPIC NAME"))
+                .andExpect(model().attribute("filter", filter))
                 .andExpect(status().isOk())
                 .andExpect(view().name("interviews"));
     }

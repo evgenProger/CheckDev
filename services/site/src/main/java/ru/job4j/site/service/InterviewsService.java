@@ -24,4 +24,14 @@ public class InterviewsService {
         return mapper.readValue(text, new TypeReference<>() {
         });
     }
+
+    public List<InterviewDTO> getByTopicId(int topicId) throws JsonProcessingException {
+        var text =
+                new RestAuthCall(String
+                        .format("http://localhost:9912/interviews/findByTopicId/%d", topicId))
+                .get();
+        var mapper = new ObjectMapper();
+        return mapper.readValue(text, new TypeReference<>() {
+        });
+    }
 }

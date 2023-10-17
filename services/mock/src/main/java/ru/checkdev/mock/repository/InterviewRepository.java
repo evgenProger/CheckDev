@@ -1,6 +1,5 @@
 package ru.checkdev.mock.repository;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import ru.checkdev.mock.domain.Interview;
 
@@ -14,4 +13,6 @@ public interface InterviewRepository extends CrudRepository<Interview, Integer> 
     Optional<Interview> findById(int id);
 
     List<Interview> findByTypeInterview(int type);
+
+    List<Interview> findByTopicId(int topicId);
 }

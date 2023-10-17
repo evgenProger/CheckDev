@@ -35,4 +35,11 @@ public class InterviewsController {
                 .status(HttpStatus.OK)
                 .body(interviewService.findByType(type));
     }
+
+    @GetMapping("/findByTopicId/{topicId}")
+    public ResponseEntity<List<Interview>> findByTopicId(@PathVariable int topicId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(interviewService.findByTopicId(topicId));
+    }
 }
