@@ -27,7 +27,7 @@ import java.util.Map;
 @Component
 @Slf4j
 public class TgRun {
- /*   private final TgAuthCallWebClint tgAuthCallWebClint;
+    private final TgAuthCallWebClint tgAuthCallWebClint;
     @Value("${tg.username}")
     private String username;
     @Value("${tg.token}")
@@ -54,5 +54,5 @@ public class TgRun {
         } catch (TelegramApiException e) {
             log.error("Telegram bot: {}, ERROR {}", username, e.getMessage());
         }
-    } */
+    }
 }
