@@ -65,6 +65,16 @@
                             <span class="mb-2 text-muted">
                                     <h5 th:text="${interview.approximateDate}"></h5>
                             </span>
+                            <span th:if="${statisticMap.get(interview.id) != null}">
+                                <small class="text-muted" th:text="'Участвуют: ' + ${statisticMap.get(interview.id).participate}">Участников: </small>
+                                <small class="text-muted" th:text="'Ожидают: ' + ${statisticMap.get(interview.id).expect}">Ожидают: </small>
+                                <small class="text-muted" th:text="'Сдали: ' + ${statisticMap.get(interview.id).passed}">Сдано: </small>
+                            </span>
+                            <span th:unless="${statisticMap.get(interview.id) != null}">
+                                <small class="text-muted" th:text="'Участвуют: 0'">Участников: </small>
+                                <small class="text-muted" th:text="'Ожидают: 0'">Ожидают: </small>
+                                <small class="text-muted" th:text="'Сдали: 0'">Сдано: </small>
+                            </span>
                         </div>
                     </td>
                 </tr>

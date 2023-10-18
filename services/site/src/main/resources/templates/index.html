@@ -28,42 +28,44 @@
 <body>
 
 <div th:insert="fragments/header :: header"></div>
+<div th:if="${categories != null}">
+    <div class="container">
+        <div class="row">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Популярные категории</th>
+                </tr>
+                </thead>
+                <tbody class="table-hover">
 
-<div class="container">
-    <div class="row">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Популярные категории</th>
-            </tr>
-            </thead>
-            <tbody class="table-hover">
-            <tr th:each="category: ${categories}" style="cursor: pointer;">
-                <td>
-                    <div>
-                        <a class="fw-bold text-dark text-decoration-none"
-                           th:href="@{|/topics/${category.id}|}">
-                            <h5 th:text="${category.name}"></h5>
-                        </a>
-                    </div>
-                    <small class="mb-2 text-muted">
-                        <span><i class="fas fa-eye pr-3"></i> : </span>
-                        <span class="fw-bold" th:text="${category.total}"></span> |
-                        <span class="mr-3">Тем : </span>
-                        <span class="fw-bold" th:text="${category.topicsSize}"></span> |
-                        <span class="mr-3">Позиция : </span>
-                        <span class="fw-bold" th:text="${category.position}"></span>
-                    </small>
-                </td>
-                <td>
-                    <div>
-                        <span>Новых: 1</span> |
-                        <span>Проведено: 100500</span>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                <tr th:each="category: ${categories}" style="cursor: pointer;">
+                    <td>
+                        <div>
+                            <a class="fw-bold text-dark text-decoration-none"
+                               th:href="@{|/topics/${category.id}|}">
+                                <h5 th:text="${category.name}"></h5>
+                            </a>
+                        </div>
+                        <small class="mb-2 text-muted">
+                            <span><i class="fas fa-eye pr-3"></i> : </span>
+                            <span class="fw-bold" th:text="${category.total}"></span> |
+                            <span class="mr-3">Тем : </span>
+                            <span class="fw-bold" th:text="${category.topicsSize}"></span> |
+                            <span class="mr-3">Позиция : </span>
+                            <span class="fw-bold" th:text="${category.position}"></span>
+                        </small>
+                    </td>
+                    <td>
+                        <div>
+                            <span>Новых: 1</span> |
+                            <span>Проведено: 100500</span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="row pt-3">
         <table class="table">

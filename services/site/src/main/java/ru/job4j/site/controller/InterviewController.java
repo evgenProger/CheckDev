@@ -2,15 +2,18 @@ package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.InterviewService;
 import ru.job4j.site.service.TopicsService;
+import ru.job4j.site.service.WisherService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +22,7 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 @Controller
 @RequestMapping("/interview")
 @AllArgsConstructor
+@Slf4j
 public class InterviewController {
 
     private final AuthService authService;
@@ -26,6 +30,8 @@ public class InterviewController {
     private final TopicsService topicsService;
 
     private final InterviewService interviewService;
+
+    private final WisherService wisherService;
 
     @GetMapping("/createForm")
     public String createForm(@ModelAttribute("topicId") int topicId,
@@ -60,6 +66,7 @@ public class InterviewController {
             var userInfo = authService.userInfo(token);
             interviewDTO.setSubmitterId(userInfo.getId());
         }
+        interviewDTO.setTopicId(topicId);
         interviewService.create(getToken(req), interviewDTO);
         return "redirect:/interviews/";
     }
@@ -70,15 +77,79 @@ public class InterviewController {
                           HttpServletRequest req) throws JsonProcessingException {
         var token = getToken(req);
         var interview = interviewService.getById(token, interviewId);
+        var userInfo = authService.userInfo(token);
+        var isAuthor = interviewService.isAuthor(userInfo, interview);
+        var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
+        var isWisher = wisherService.isWisher(userInfo.getId(), interview.getId(), wishers);
+        var statusMap = wisherService.getInterviewStatistic(wishers);
         var statuses = StatusInterview.values();
         if (interview.getTypeInterview() < statuses.length) {
             model.addAttribute("status", statuses[interview.getTypeInterview()].getInfo());
         }
         model.addAttribute("interview", interview);
+        model.addAttribute("isAuthor", isAuthor);
+        model.addAttribute("isWisher", isWisher);
+        model.addAttribute("statisticMap", statusMap);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Собеседования", "/interviews/",
                 interview.getTitle(), String.format("/interview/%d", interviewId));
         return "/interview/details";
+    }
+
+    /**
+     * Метод отображает страницу редактирования интервью (собеседования).
+     * Для редактирования собеседования авторизованный пользователь должен быть создателем интервью(собеседования)
+     *
+     * @param interviewId int
+     * @param model       Model
+     * @param request     HttpServletRequest
+     * @return String view page
+     */
+    @GetMapping("/edit/{id}")
+    public String getEditView(@PathVariable("id") int interviewId,
+                              Model model,
+                              HttpServletRequest request) {
+        var token = getToken(request);
+        InterviewDTO interview;
+        UserInfoDTO userInfoDTO;
+        try {
+            userInfoDTO = authService.userInfo(token);
+            interview = interviewService.getById(token, interviewId);
+            if (interview.getSubmitterId() != userInfoDTO.getId()) {
+                return "redirect:/interview/" + interviewId;
+            }
+        } catch (Exception e) {
+            log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
+            return "redirect:/interviews/";
+        }
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/index",
+                "Собеседования", "/interviews/",
+                interview.getTitle(), String.format("/interview/edit/%d", interviewId));
+        model.addAttribute("interview", interview);
+        return "/interview/interviewEdit";
+    }
+
+    /**
+     * Метод обновления собеседования
+     *
+     * @param interview InterviewDTO.class
+     * @param request   HttpServletRequest
+     * @return String redirect page
+     */
+    @PostMapping("/update")
+    public String postUpdateInterview(@ModelAttribute InterviewDTO interview,
+                                      HttpServletRequest request,
+                                      RedirectAttributes redirectAttributes) {
+        var token = getToken(request);
+        try {
+            interviewService.update(token, interview);
+        } catch (Exception e) {
+            log.error("Remote application not responding. Error, {}. {}, ", e.getCause(), e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Собеседование не обновлено");
+            return "redirect:/interview/edit/" + interview.getId();
+        }
+        return "redirect:/interview/" + interview.getId();
     }
 }

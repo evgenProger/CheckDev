@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.dto.WisherDto;
 import ru.checkdev.mock.service.InterviewService;
 import ru.checkdev.mock.service.WisherService;
+
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.List;
@@ -42,5 +44,19 @@ public class WishersController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(wisherService.findByInterview(interviewOptional.get()));
+    }
+
+    @GetMapping("/dto/")
+    public ResponseEntity<List<WisherDto>> findAllWisherDto() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(wisherService.findAllWisherDto());
+    }
+
+    @GetMapping("/dto/{id}")
+    public ResponseEntity<List<WisherDto>> findDtoByInterview(@Valid @PathVariable int id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(wisherService.findWisherByInterviewId(id));
     }
 }

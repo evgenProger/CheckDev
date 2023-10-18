@@ -31,11 +31,49 @@
             <span class="fw-bold" th:text="${interview.title}"></span>
         </div>
         <div class="card-body">
-            <pre th:text="${interview.description}"></pre>
+            <pre th:text="${interview.additional}"></pre>
             <pre th:text="${'Ориентировочная дата: ' + interview.approximateDate}"></pre>
             <pre th:text="${'Контакт: ' + interview.contactBy}"></pre>
             <pre th:text="${'Статус: ' + status}"></pre>
             <pre th:text="${interview.createDate}"></pre>
+            <span th:if="${statisticMap.get(interview.id) != null}">
+                <small class="text-muted" th:text="'Участвуют: ' + ${statisticMap.get(interview.id).participate}">Участников: </small>
+                <small class="text-muted" th:text="'Ожидают: ' + ${statisticMap.get(interview.id).expect}">Ожидают: </small>
+                <small class="text-muted" th:text="'Сдали: ' + ${statisticMap.get(interview.id).passed}">Сдано: </small>
+            </span>
+            <span th:unless="${statisticMap.get(interview.id) != null}">
+                <small class="text-muted" th:text="'Участвуют: 0'">Участников: </small>
+                <small class="text-muted" th:text="'Ожидают: 0'">Ожидают: </small>
+                <small class="text-muted" th:text="'Сдали: 0'">Сдано: </small>
+            </span>
+        </div>
+        <div th:if="${userInfo != null}">
+            <!--Кнопка редактировать видна интервью создал текущий пользователь -->
+            <div class="form-group">
+                <a th:if="${isAuthor}" class="btn btn-success mt-3"
+                   th:href="@{|/interview/edit/${interview.id}|}">Редактировать</a>
+            </div>
+            <!--Форма для стать участником собеседования-->
+            <div th:if="${!isAuthor and !isWisher}" class="form-group">
+                <form class="was-validated" th:action="@{/wisher/create}" method="post">
+                    <input type="hidden" th:id="interviewId" th:name="interviewId" th:value="${interview.id}">
+                    <input type="hidden" th:id="userId" th:name="userId" th:value="${userInfo.id}">
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Введите контакт для связи</label>
+                        <input type="text" class="form-control"
+                               id="email"
+                               name="email"
+                               th:field="${userInfo.email}"
+                               placeholder="контакт не должен быть пустым">
+                        <div class="invalid-feedback">
+                            Пожалуйста введите контакт для связи.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mt-3">Участвовать</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

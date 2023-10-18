@@ -18,14 +18,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * @since 04.10.2023
  */
 class ImageCompressorServiceTest {
-    private final String testFile = "src/test/resources/testfiles/olafAva.jpg";
+    private final Path testFile = Path.of("src", "test", "resources", "testfiles", "olafAva.jpg");
 
 
     @Test
     void whenCompressImageThenReturnNotNullResource() throws IOException {
-        Path file = Path.of(testFile);
-        byte[] bytes = Files.readAllBytes(file);
-        MultipartFile multiFile = new MockMultipartFile(file.getFileName().toString(),
+        byte[] bytes = Files.readAllBytes(testFile);
+        MultipartFile multiFile = new MockMultipartFile(testFile.getFileName().toString(),
                 bytes);
         var compressor = new ImageCompressorService("100");
         MultipartFile resource = compressor.compressImage(multiFile);
@@ -34,11 +33,10 @@ class ImageCompressorServiceTest {
 
     @Test
     void whenCompressorImageThenExpectSizeTrue() throws IOException {
-        Path file = Path.of(testFile);
-        byte[] bytes = Files.readAllBytes(file);
-        MultipartFile multiFile = new MockMultipartFile(file.getFileName().toString(), bytes);
+        byte[] bytes = Files.readAllBytes(testFile);
+        MultipartFile multiFile = new MockMultipartFile(testFile.getFileName().toString(), bytes);
         var compressor = new ImageCompressorService("500");
-        BufferedImage originImage = ImageIO.read(file.toFile());
+        BufferedImage originImage = ImageIO.read(testFile.toFile());
         int[] expectSize = compressor.getResizeImage(originImage.getWidth(), originImage.getHeight());
         MultipartFile resultFile = compressor.compressImage(multiFile);
         BufferedImage resultImage = ImageIO.read(resultFile.getInputStream());
@@ -48,10 +46,9 @@ class ImageCompressorServiceTest {
 
     @Test
     void whenCompressorImageFileNullThenException() {
-        Path file = Path.of(testFile);
         MultipartFile multiFile = new MockMultipartFile(
-                file.getFileName().toString(),
-                file.getFileName().toString(),
+                testFile.getFileName().toString(),
+                testFile.getFileName().toString(),
                 "image/jpeg",
                 new byte[]{0});
         var compressor = new ImageCompressorService("500");

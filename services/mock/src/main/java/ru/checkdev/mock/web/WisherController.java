@@ -23,7 +23,6 @@ public class WisherController {
     private final InterviewService interviewService;
     private final WisherService wisherService;
 
-    @PreAuthorize("isAuthenticated()")
     @PostMapping("/")
     public ResponseEntity<Wisher> save(@Valid @RequestBody WisherDto wisherDto) throws SQLException {
         Optional<Interview> interviewOptional = interviewService.findById(wisherDto.getInterviewId());
