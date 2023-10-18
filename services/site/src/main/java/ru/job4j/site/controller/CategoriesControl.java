@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.NotificationService;
+
 import javax.servlet.http.HttpServletRequest;
 import static ru.job4j.site.controller.RequestResponseTools.getToken;
 
