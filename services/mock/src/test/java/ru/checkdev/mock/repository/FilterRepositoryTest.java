@@ -10,12 +10,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.domain.Filter;
 
 import javax.persistence.EntityManager;
-
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringRunner.class)

@@ -3,17 +3,16 @@ package ru.checkdev.mock.repository;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.junit.runner.RunWith;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.domain.Interview;
-import javax.persistence.EntityManager;
 
+import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 

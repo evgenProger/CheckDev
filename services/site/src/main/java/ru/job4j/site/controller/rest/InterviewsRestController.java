@@ -10,7 +10,6 @@ import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.service.InterviewsService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 import static ru.job4j.site.controller.RequestResponseTools.getToken;
 
