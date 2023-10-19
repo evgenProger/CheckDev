@@ -2,10 +2,12 @@ package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.ProfileDTO;
@@ -44,14 +46,18 @@ public class InterviewsController {
     }
 
     @GetMapping("/")
-    public String getAllInterviews(Model model, HttpServletRequest req) throws JsonProcessingException {
+    public String getAllInterviews(Model model,
+                                   HttpServletRequest req,
+                                   @RequestParam(required = false, defaultValue = "0") int page,
+                                   @RequestParam(required = false, defaultValue = "20") int size)
+            throws JsonProcessingException {
         var token = getToken(req);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
-                "Собеседования", "/interviews/"
+                "Собеседования", String.format("/interviews/?page=%d&?size=%d", page, size)
         );
-        List<InterviewDTO> interviewDTOList = interviewsService.getAll(token);
-        Set<ProfileDTO> userList = interviewDTOList.stream()
+        Page<InterviewDTO> interviewsPage = interviewsService.getAll(token, page, size);
+        Set<ProfileDTO> userList = interviewsPage.stream()
                 .map(x -> profilesService.getProfileById(x.getSubmitterId(), key))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -59,7 +65,7 @@ public class InterviewsController {
         var wishers = wisherService.getAllWisherDtoByInterviewId(token, "");
         var interviewStatistic = wisherService.getInterviewStatistic(wishers);
         model.addAttribute("statisticMap", interviewStatistic);
-        model.addAttribute("interviews", interviewDTOList);
+        model.addAttribute("interviewsPage", interviewsPage);
         model.addAttribute("statuses", StatusInterview.values());
         model.addAttribute("current_page", "interviews");
         model.addAttribute("users", userList);
