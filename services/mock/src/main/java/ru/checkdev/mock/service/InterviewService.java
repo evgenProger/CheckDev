@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.repository.InterviewRepository;
@@ -31,8 +33,8 @@ public class InterviewService {
         return rsl;
     }
 
-    public List<Interview> findAll() {
-        return interviewRepository.findAll();
+    public Page<Interview> findPaging(int page, int size) {
+        return interviewRepository.findAll(PageRequest.of(page, size));
     }
 
     public Optional<Interview> findById(Integer id) {

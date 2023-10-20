@@ -1,12 +1,12 @@
 package ru.job4j.site.controller;
 
-import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
@@ -81,9 +81,10 @@ public class InterviewsControllerTest {
             return category;
         }).toList();
         var filter = new FilterDTO(1, 1, 1);
+        var page = new PageImpl<>(interviews);
         when(wisherService.getAllWisherDtoByInterviewId(token, "")).thenReturn(new ArrayList<>());
         when(wisherService.getInterviewStatistic(new ArrayList<>())).thenReturn(new HashMap<>());
-        when(interviewsService.getAll(token)).thenReturn(interviews);
+        when(interviewsService.getAll(token, 1, 5)).thenReturn(page);
         when(interviewsService.getByTopicId(filter.getTopicId())).thenReturn(interviews);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(profilesService.getProfileById(id, key)).thenReturn(Optional.of(profile));
@@ -91,10 +92,13 @@ public class InterviewsControllerTest {
         when(filterService.getByUserId(token, userInfo.getId())).thenReturn(filter);
         when(categoriesService.getNameById(categories, 1)).thenReturn(categories.get(1).getName());
         when(topicsService.getNameById(filter.getTopicId())).thenReturn("SOME TOPIC NAME");
-        mockMvc.perform(get("/interviews/").sessionAttr("token", token))
+        mockMvc.perform(get("/interviews/")
+                        .sessionAttr("token", token)
+                        .param("page", "1")
+                        .param("size", "5"))
                 .andDo(print())
                 .andExpect(model().attribute("statisticMap", new HashMap<>()))
-                .andExpect(model().attribute("interviews", interviews))
+                .andExpect(model().attribute("interviewsPage", page))
                 .andExpect(model().attribute("statuses", StatusInterview.values()))
                 .andExpect(model().attribute("current_page", "interviews"))
                 .andExpect(model().attribute("userInfo", userInfo))
