@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
@@ -77,16 +78,20 @@ public class InterviewsControllerTest {
             category.setTopicsSize(14);
             return category;
         }).toList();
+        var page = new PageImpl<>(interviews);
         when(wisherService.getAllWisherDtoByInterviewId(token, "")).thenReturn(new ArrayList<>());
         when(wisherService.getInterviewStatistic(new ArrayList<>())).thenReturn(new HashMap<>());
-        when(interviewsService.getAll(token)).thenReturn(interviews);
+        when(interviewsService.getAll(token, 1, 5)).thenReturn(page);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(profilesService.getProfileById(id, key)).thenReturn(Optional.of(profile));
         when(categoriesService.getAll()).thenReturn(categories);
-        mockMvc.perform(get("/interviews/").sessionAttr("token", token))
+        mockMvc.perform(get("/interviews/")
+                        .sessionAttr("token", token)
+                        .param("page", "1")
+                        .param("size", "5"))
                 .andDo(print())
                 .andExpect(model().attribute("statisticMap", new HashMap<>()))
-                .andExpect(model().attribute("interviews", interviews))
+                .andExpect(model().attribute("interviewsPage", page))
                 .andExpect(model().attribute("statuses", StatusInterview.values()))
                 .andExpect(model().attribute("current_page", "interviews"))
                 .andExpect(model().attribute("userInfo", userInfo))
