@@ -22,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
                 "/template/queue",
-                "/template/ping", "/user/**"
+                "/template/ping", "/subscribeCategory/**"
         );
     }
 }

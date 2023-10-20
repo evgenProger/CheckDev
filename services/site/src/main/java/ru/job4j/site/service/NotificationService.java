@@ -4,29 +4,32 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import ru.job4j.site.dto.SubscribeCategory;
 import ru.job4j.site.dto.UserDTO;
+
+import java.util.List;
 
 @Service
 public class NotificationService {
-    public void addSubscribeCategory(String token, UserDTO user, int categoryId) throws JsonProcessingException {
-        user.getSubscribeCategoryIds().add(categoryId);
+    public void addSubscribeCategory(String token, int userId, int categoryId) throws JsonProcessingException {
+        SubscribeCategory subscribeCategory = new SubscribeCategory(userId, categoryId);
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall("http://localhost:9920/user/subscribeCategoryAdd").post(
-                token, mapper.writeValueAsString(user));
+        var out = new RestAuthCall("http://localhost:9920/subscribeCategory/add").post(
+                token, mapper.writeValueAsString(subscribeCategory));
     }
 
-    public void deleteSubscribeCategory(String token, UserDTO user, int categoryId) throws JsonProcessingException {
-        user.getSubscribeCategoryIds().add(categoryId);
+    public void deleteSubscribeCategory(String token, int userId, int categoryId) throws JsonProcessingException {
+        SubscribeCategory subscribeCategory = new SubscribeCategory(userId, categoryId);
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall("http://localhost:9920/user/subscribeCategoryDelete").post(
-                token, mapper.writeValueAsString(user));
+        var out = new RestAuthCall("http://localhost:9920/subscribeCategory/delete").post(
+                token, mapper.writeValueAsString(subscribeCategory));
     }
 
-    public UserDTO findUserById(int id) throws JsonProcessingException {
-        var text = new RestAuthCall("http://localhost:9920/user/" + id).get();
+    public UserDTO findCategoriesByUserId(int id) throws JsonProcessingException {
+        var text = new RestAuthCall("http://localhost:9920/subscribeCategory/" + id).get();
         var mapper = new ObjectMapper();
-        UserDTO user = mapper.readValue(text, new TypeReference<>() {
+        List<Integer> list = mapper.readValue(text, new TypeReference<>() {
         });
-        return user;
+        return new UserDTO(id, list);
     }
 }

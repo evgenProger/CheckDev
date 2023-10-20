@@ -27,18 +27,18 @@ public class CategoriesControl {
     public String categories(Model model, HttpServletRequest req) throws JsonProcessingException {
         try {
             model.addAttribute("categories", categoriesService.getAllWithTopics());
-        var token = getToken(req);
-        if (token != null) {
-            var userInfo = authService.userInfo(token);
-            model.addAttribute("userInfo", userInfo);
-            model.addAttribute("userDTO", notifications.findUserById(userInfo.getId()));
-            RequestResponseTools.addAttrCanManage(model, userInfo);
-        }
-        RequestResponseTools.addAttrBreadcrumbs(model,
-                "Главная", "/index",
-                "Категории", "/categories/"
-        );
-        model.addAttribute("current_page", "categories");
+            var token = getToken(req);
+            if (token != null) {
+                var userInfo = authService.userInfo(token);
+                model.addAttribute("userInfo", userInfo);
+                model.addAttribute("userDTO", notifications.findCategoriesByUserId(userInfo.getId()));
+                RequestResponseTools.addAttrCanManage(model, userInfo);
+            }
+            RequestResponseTools.addAttrBreadcrumbs(model,
+                    "Главная", "/index",
+                    "Категории", "/categories/"
+            );
+            model.addAttribute("current_page", "categories");
         } catch (Exception e) {
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index"

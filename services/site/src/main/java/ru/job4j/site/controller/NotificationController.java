@@ -22,7 +22,7 @@ public class NotificationController {
                                             @ModelAttribute("categoryId")int categoryId,
                                             HttpServletRequest req)
             throws JsonProcessingException {
-        notificationService.addSubscribeCategory(getToken(req), user, categoryId);
+        notificationService.addSubscribeCategory(getToken(req), user.getId(), categoryId);
         return "redirect:/categories/";
     }
 
@@ -31,7 +31,25 @@ public class NotificationController {
                                           @ModelAttribute("categoryId")int categoryId,
                                           HttpServletRequest req)
             throws JsonProcessingException {
-        notificationService.deleteSubscribeCategory(getToken(req), user, categoryId);
+        notificationService.deleteSubscribeCategory(getToken(req), user.getId(), categoryId);
         return "redirect:/categories/";
+    }
+
+    @PostMapping("/subscribeCategoryFromIndex")
+    public String createSubscribeCategoryFromIndex(@ModelAttribute("userDTO")UserDTO user,
+                                          @ModelAttribute("categoryId")int categoryId,
+                                          HttpServletRequest req)
+            throws JsonProcessingException {
+        notificationService.addSubscribeCategory(getToken(req), user.getId(), categoryId);
+        return "redirect:/index/";
+    }
+
+    @PostMapping("/unSubscribeCategoryFromIndex")
+    public String deleteSubscribeCategoryFromIndex(@ModelAttribute("userInfo")UserDTO user,
+                                          @ModelAttribute("categoryId")int categoryId,
+                                          HttpServletRequest req)
+            throws JsonProcessingException {
+        notificationService.deleteSubscribeCategory(getToken(req), user.getId(), categoryId);
+        return "redirect:/index/";
     }
 }
