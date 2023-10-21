@@ -45,6 +45,10 @@ public class InterviewService {
         return interviewRepository.findByTypeInterview(type);
     }
 
+    public Page<Interview> findByTopicId(int topicId, int page, int size) {
+        return interviewRepository.findByTopicId(topicId, PageRequest.of(page, size));
+    }
+
     public boolean update(Interview interview) {
         interviewRepository.save(interview);
         return true;
@@ -57,6 +61,4 @@ public class InterviewService {
         }
         return false;
     }
-
-
 }

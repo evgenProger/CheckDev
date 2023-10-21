@@ -11,12 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.ProfileDTO;
-import ru.job4j.site.service.InterviewsService;
-import ru.job4j.site.service.ProfilesService;
-import ru.job4j.site.service.WisherService;
+import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,16 +28,29 @@ public class InterviewsController {
 
     private final ProfilesService profilesService;
 
+    private final CategoriesService categoriesService;
+
+    private final TopicsService topicsService;
+
+    private final AuthService authService;
+
+    private final FilterService filterService;
+
     private final WisherService wisherService;
 
     private final String key;
 
-    public InterviewsController(InterviewsService interviewsService,
-                                ProfilesService profilesService,
+    public InterviewsController(InterviewsService interviewsService, ProfilesService profilesService,
+                                CategoriesService categoriesService, TopicsService topicsService,
+                                AuthService authService, FilterService filterService,
                                 WisherService wisherService,
                                 @Value("${server.auth.access.key}") String key) {
         this.interviewsService = interviewsService;
         this.profilesService = profilesService;
+        this.categoriesService = categoriesService;
+        this.topicsService = topicsService;
+        this.authService = authService;
+        this.filterService = filterService;
         this.wisherService = wisherService;
         this.key = key;
     }
@@ -56,8 +66,22 @@ public class InterviewsController {
                 "Главная", "/index",
                 "Собеседования", String.format("/interviews/?page=%d&?size=%d", page, size)
         );
-        Page<InterviewDTO> interviewsPage = interviewsService.getAll(token, page, size);
-        Set<ProfileDTO> userList = interviewsPage.stream()
+        var user = authService.userInfo(token);
+        var userId = user != null ? user.getId() : 0;
+        var filter = userId > 0
+                ? filterService.getByUserId(token, userId) : null;
+        var isFiltered = filter != null && filter.getTopicId() > 0;
+        Page<InterviewDTO> interviewsPage = isFiltered
+                ? interviewsService.getByTopicId(filter.getTopicId(), page, size)
+                : interviewsService.getAll(token, page, size);
+        var categories = categoriesService.getAll();
+        var categoryName = "";
+        var topicName = "";
+        if (isFiltered) {
+            categoryName = categoriesService.getNameById(categories, filter.getCategoryId());
+            topicName = topicsService.getNameById(filter.getTopicId());
+        }
+        Set<ProfileDTO> userList = interviewsPage.toList().stream()
                 .map(x -> profilesService.getProfileById(x.getSubmitterId(), key))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -69,6 +93,11 @@ public class InterviewsController {
         model.addAttribute("statuses", StatusInterview.values());
         model.addAttribute("current_page", "interviews");
         model.addAttribute("users", userList);
+        model.addAttribute("categories", categories);
+        model.addAttribute("filter", filter);
+        model.addAttribute("userId", userId);
+        model.addAttribute("categoryName", categoryName);
+        model.addAttribute("topicName", topicName);
         return "interviews";
     }
 }

@@ -14,7 +14,8 @@ import java.util.List;
 @Service
 public class InterviewsService {
 
-    public Page<InterviewDTO> getAll(String token, int page, int size) throws JsonProcessingException {
+    public Page<InterviewDTO> getAll(String token, int page, int size)
+            throws JsonProcessingException {
         var text = new RestAuthCall(String
                 .format("http://localhost:9912/interviews/?page=%d&?size=%d", page, size))
                 .get(token);
@@ -31,5 +32,18 @@ public class InterviewsService {
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>() {
         });
+    }
+
+    public Page<InterviewDTO> getByTopicId(int topicId, int page, int size)
+            throws JsonProcessingException {
+        var text =
+                new RestAuthCall(String
+                        .format("http://localhost:9912/interviews/findByTopicId/%d?page=%d&?size=%d",
+                                topicId, page, size)).get();
+        var mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        var pageType = mapper.getTypeFactory()
+                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
+        return mapper.readValue(text, pageType);
     }
 }
