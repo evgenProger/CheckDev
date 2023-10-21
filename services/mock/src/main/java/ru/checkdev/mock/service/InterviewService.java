@@ -45,8 +45,8 @@ public class InterviewService {
         return interviewRepository.findByTypeInterview(type);
     }
 
-    public List<Interview> findByTopicId(int topicId) {
-        return interviewRepository.findByTopicId(topicId);
+    public Page<Interview> findByTopicId(int topicId, int page, int size) {
+        return interviewRepository.findByTopicId(topicId, PageRequest.of(page, size));
     }
 
     public boolean update(Interview interview) {

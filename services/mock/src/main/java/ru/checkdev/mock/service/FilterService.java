@@ -21,7 +21,7 @@ public class FilterService {
         return filterRepository.getByUserId(userId);
     }
 
-    public Optional<Filter> deleteByUserId(int userId) {
+    public int deleteByUserId(int userId) {
         return filterRepository.deleteByUserId(userId);
     }
 }

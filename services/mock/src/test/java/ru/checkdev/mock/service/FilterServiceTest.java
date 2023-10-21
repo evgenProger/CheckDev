@@ -48,7 +48,7 @@ public class FilterServiceTest {
     @Test
     public void whenFilterDeletedByUserId() {
         var filter = new Filter(1, 1, 1);
-        when(filterRepository.deleteByUserId(1)).thenReturn(Optional.of(filter));
-        assertThat(filterService.deleteByUserId(1), is(Optional.of(filter)));
+        when(filterRepository.deleteByUserId(1)).thenReturn(1);
+        assertThat(filterService.deleteByUserId(1), is(1));
     }
 }

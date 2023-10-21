@@ -35,8 +35,11 @@ public class FilterController {
 
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<Boolean> deleteByUserId(@PathVariable int userId) {
-        return filterService.deleteByUserId(userId).map(
-                value -> new ResponseEntity<>(true, HttpStatus.OK)
-        ).orElseGet(() -> new ResponseEntity<>(false, HttpStatus.NOT_FOUND));
+        int result = filterService.deleteByUserId(userId);
+        if (result > 0) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        }
     }
 }

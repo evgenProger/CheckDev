@@ -12,5 +12,5 @@ public interface FilterRepository extends CrudRepository<Filter, Integer> {
     Optional<Filter> getByUserId(int userId);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    Optional<Filter> deleteByUserId(int userId);
+    int deleteByUserId(int userId);
 }

@@ -14,7 +14,6 @@ import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -72,9 +71,9 @@ public class InterviewsController {
         var filter = userId > 0
                 ? filterService.getByUserId(token, userId) : null;
         var isFiltered = filter != null && filter.getTopicId() > 0;
-        List<InterviewDTO> interviewDTOList = isFiltered
-                ? interviewsService.getByTopicId(filter.getTopicId())
-                : interviewsService.getAll(token);
+        Page<InterviewDTO> interviewsPage = isFiltered
+                ? interviewsService.getByTopicId(filter.getTopicId(), page, size)
+                : interviewsService.getAll(token, page, size);
         var categories = categoriesService.getAll();
         var categoryName = "";
         var topicName = "";
@@ -82,8 +81,7 @@ public class InterviewsController {
             categoryName = categoriesService.getNameById(categories, filter.getCategoryId());
             topicName = topicsService.getNameById(filter.getTopicId());
         }
-        Page<InterviewDTO> interviewsPage = interviewsService.getAll(token, page, size);
-        Set<ProfileDTO> userList = interviewsPage.stream()
+        Set<ProfileDTO> userList = interviewsPage.toList().stream()
                 .map(x -> profilesService.getProfileById(x.getSubmitterId(), key))
                 .filter(Optional::isPresent)
                 .map(Optional::get)

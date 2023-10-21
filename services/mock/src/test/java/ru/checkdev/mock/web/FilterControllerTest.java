@@ -77,7 +77,7 @@ public class FilterControllerTest {
     @Test
     public void whenFilterDeleted() throws Exception {
         var filter = new Filter(1, 1, 1);
-        when(filterService.deleteByUserId(1)).thenReturn(Optional.of(filter));
+        when(filterService.deleteByUserId(1)).thenReturn(1);
         mockMvc.perform(delete("/filter/delete/1"))
                 .andDo(print())
                 .andExpectAll(status().isOk(),
@@ -86,7 +86,7 @@ public class FilterControllerTest {
 
     @Test
     public void whenFilterCanNotBeDeleted() throws Exception {
-        when(filterService.deleteByUserId(1)).thenReturn(Optional.empty());
+        when(filterService.deleteByUserId(1)).thenReturn(0);
         mockMvc.perform(delete("/filter/delete/1"))
                 .andDo(print())
                 .andExpectAll(status().isNotFound(),
