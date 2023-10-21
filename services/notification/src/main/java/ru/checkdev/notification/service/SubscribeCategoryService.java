@@ -13,12 +13,15 @@ import java.util.List;
 public class SubscribeCategoryService {
     private final SubscribeCategoryRepository repository;
 
+    public List<SubscribeCategory> findAll() {
+        return repository.findAll();
+    }
+
     public SubscribeCategory save(SubscribeCategory subscribeCategory) {
         return repository.save(subscribeCategory);
     }
 
     public List<Integer> findCategoriesByUserId(int userId) {
-        System.out.println("вызывается в сервисе метод findCategoriesByUserId");
         List<Integer> rsl = new ArrayList<>();
         List<SubscribeCategory> list = repository.findByUserId(userId);
         for (SubscribeCategory subscribeCategory : list) {
