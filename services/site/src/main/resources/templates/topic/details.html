@@ -45,8 +45,10 @@
     <div class="card">
         <div class="card-header">
             <span class="fw-bold" th:text="${topic.name}"></span>
-            <span class="mr-3">Позиция : </span>
-            <span class="fw-bold" th:text="${topic.position}"></span>
+            <span th:if="${canManage}">
+                <span class="mr-3">Позиция : </span>
+                <span class="fw-bold" th:text="${topic.position}"></span>
+            </span>
         </div>
         <div class="card-body">
             <pre th:utext="${topic.text}"></pre>
