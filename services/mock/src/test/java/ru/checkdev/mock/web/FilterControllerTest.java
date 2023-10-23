@@ -15,7 +15,6 @@ import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Filter;
 import ru.checkdev.mock.service.FilterService;
 
-import java.sql.SQLException;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
