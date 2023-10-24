@@ -89,6 +89,7 @@ class InterviewRepositoryTest {
         entityManager.persist(interview);
         var interviews =
                 interviewRepository.findByTopicId(1, PageRequest.of(0, 5));
+        Assertions.assertTrue(interviews.toList().size() > 0);
         assertTrue(interviews.toList().size() > 0);
         Assertions.assertEquals(interviews.toList().get(0), interview);
     }
