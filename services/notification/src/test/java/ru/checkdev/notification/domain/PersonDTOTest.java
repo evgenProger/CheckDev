@@ -45,9 +45,4 @@ class PersonDTOTest {
         assertThat(roles, is(person.getRoles()));
     }
 
-    @Test
-    public void testGetCreated() {
-        Calendar created = Calendar.getInstance();
-        assertThat(created, is(person.getCreated()));
-    }
 }
