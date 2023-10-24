@@ -55,4 +55,5 @@ class PersonDTOTest {
                 .build();
         assertThat(created, is(person.getCreated()));
     }
+
 }
