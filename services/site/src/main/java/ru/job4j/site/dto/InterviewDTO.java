@@ -11,17 +11,21 @@ public class InterviewDTO {
 
     private int id;
 
-    private int typeInterview;
+    private int mode;
+
+    private int status;
 
     private int submitterId;
 
     private String title;
 
-    private String description;
+    private String additional;
 
     private String contactBy;
 
     private String approximateDate;
 
     private String createDate;
+
+    private int topicId;
 }

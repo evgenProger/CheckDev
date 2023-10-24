@@ -32,10 +32,10 @@ class WisherServiceTest {
 
     private Interview interview = Interview.of()
             .id(1)
-            .typeInterview(2)
+            .mode(2)
             .submitterId(3)
             .title("test_title")
-            .description("test_description")
+            .additional("test_additional")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
             .createDate(new Timestamp(System.currentTimeMillis()))
@@ -104,5 +104,4 @@ class WisherServiceTest {
         var actual = wisherService.delete(wisher);
         assertThat(actual, is(false));
     }
-
 }

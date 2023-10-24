@@ -18,7 +18,6 @@ import ru.checkdev.mock.domain.Wisher;
 import ru.checkdev.mock.service.InterviewService;
 import ru.checkdev.mock.service.WisherService;
 
-import java.sql.Timestamp;
 import java.util.Optional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -42,10 +41,10 @@ class WisherControllerTest {
 
     private Interview interview = Interview.of()
             .id(1)
-            .typeInterview(2)
+            .mode(2)
             .submitterId(3)
             .title("test_title")
-            .description("test_description")
+            .additional("test_additional")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
             .createDate(null)

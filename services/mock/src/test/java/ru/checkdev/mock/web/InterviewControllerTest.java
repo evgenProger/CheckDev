@@ -16,8 +16,9 @@ import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.service.InterviewService;
 
-import java.sql.Timestamp;
 import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,10 +39,10 @@ class InterviewControllerTest {
 
     private Interview interview = Interview.of()
             .id(1)
-            .typeInterview(2)
+            .mode(2)
             .submitterId(3)
             .title("test_title")
-            .description("test_description")
+            .additional("test_additional")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
             .createDate(null)
@@ -51,16 +52,17 @@ class InterviewControllerTest {
 
     private Interview emptyInterview = Interview.of()
             .id(1)
-            .typeInterview(0)
+            .mode(0)
             .submitterId(0)
             .title(null)
-            .description(null)
+            .additional(null)
             .contactBy(null)
             .approximateDate(null)
             .createDate(null)
             .build();
 
     private String emptyString = new GsonBuilder().serializeNulls().create().toJson(emptyInterview);
+
     @Test
     @WithMockUser
     public void whenSaveAndGetTheSame() throws Exception {
@@ -102,8 +104,8 @@ class InterviewControllerTest {
     public void whenTryToUpdateIsCorrect() throws Exception {
         when(service.update(any(Interview.class))).thenReturn(true);
         this.mockMvc.perform(put("/interview/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(interview)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(interview)))
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
@@ -147,5 +149,26 @@ class InterviewControllerTest {
                         status().isNoContent(),
                         content().contentType(MediaType.APPLICATION_JSON),
                         content().string(emptyString));
+    }
+
+    @Test
+    @WithMockUser
+    public void whenUpdateStatusThenReturnStatusOk() throws Exception {
+        when(service.updateStatus(anyInt(), anyInt())).thenReturn(true);
+        this.mockMvc.perform(put("/interview/status/")
+                        .param("id", "1")
+                        .param("newStatus", "2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void whenUpdateStatusThenReturnStatusNotFound() throws Exception {
+        when(service.updateStatus(anyInt(), anyInt())).thenReturn(false);
+        this.mockMvc.perform(put("/interview/status/")
+                        .param("id", "1")
+                        .param("newStatus", "2"))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
     }
 }
