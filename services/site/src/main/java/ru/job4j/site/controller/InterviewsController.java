@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.ProfileDTO;
+import ru.job4j.site.dto.TopicIdNameDTO;
 import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -62,24 +65,27 @@ public class InterviewsController {
                                    @RequestParam(required = false, defaultValue = "20") int size)
             throws JsonProcessingException {
         var token = getToken(req);
-        RequestResponseTools.addAttrBreadcrumbs(model,
-                "Главная", "/index",
-                "Собеседования", String.format("/interviews/?page=%d&?size=%d", page, size)
-        );
+
         var user = authService.userInfo(token);
         var userId = user != null ? user.getId() : 0;
         var filter = userId > 0
                 ? filterService.getByUserId(token, userId) : null;
-        var isFiltered = filter != null && filter.getTopicId() > 0;
-        Page<InterviewDTO> interviewsPage = isFiltered
-                ? interviewsService.getByTopicId(filter.getTopicId(), page, size)
-                : interviewsService.getAll(token, page, size);
-        var categories = categoriesService.getAll();
+        var isFiltered = filter != null && filter.getCategoryId() > 0;
+        Page<InterviewDTO> interviewsPage;
+        List<TopicIdNameDTO> topicIdNameDTOS = new ArrayList<>();
         var categoryName = "";
         var topicName = "";
+        var categories = categoriesService.getAll();
         if (isFiltered) {
+            topicIdNameDTOS = topicsService.getTopicIdNameDtoByCategory(filter.getCategoryId());
+            interviewsPage = filter.getTopicId() > 0
+                    ? interviewsService.getByTopicId(filter.getTopicId(), page, size)
+                    : interviewsService.getByTopicsIds(
+                    topicIdNameDTOS.stream().map(TopicIdNameDTO::getId).toList(), page, size);
             categoryName = categoriesService.getNameById(categories, filter.getCategoryId());
-            topicName = topicsService.getNameById(filter.getTopicId());
+            topicName = filter.getTopicId() > 0 ? topicsService.getNameById(filter.getTopicId()) : "";
+        } else {
+            interviewsPage =  interviewsService.getAll(token, page, size);
         }
         Set<ProfileDTO> userList = interviewsPage.toList().stream()
                 .map(x -> profilesService.getProfileById(x.getSubmitterId(), key))
@@ -88,6 +94,10 @@ public class InterviewsController {
                 .collect(Collectors.toSet());
         var wishers = wisherService.getAllWisherDtoByInterviewId(token, "");
         var interviewStatistic = wisherService.getInterviewStatistic(wishers);
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/index",
+                "Собеседования", String.format("/interviews/?page=%d&?size=%d", page, size)
+        );
         model.addAttribute("statisticMap", interviewStatistic);
         model.addAttribute("interviewsPage", interviewsPage);
         model.addAttribute("statuses", StatusInterview.values());
@@ -98,6 +108,7 @@ public class InterviewsController {
         model.addAttribute("userId", userId);
         model.addAttribute("categoryName", categoryName);
         model.addAttribute("topicName", topicName);
+        model.addAttribute("topics", topicIdNameDTOS);
         return "interviews";
     }
 }
