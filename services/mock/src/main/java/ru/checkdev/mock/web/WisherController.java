@@ -34,10 +34,9 @@ public class WisherController {
         if (rsl.isEmpty()) {
             throw new SQLException("An error occurred while saving data");
         }
-        return new ResponseEntity<Wisher>(
-                rsl.orElse(new Wisher()),
-                rsl.isPresent() ? HttpStatus.CREATED : HttpStatus.CONFLICT
-        );
+        return  rsl
+                .map(wisher -> new ResponseEntity<>(wisher, HttpStatus.CREATED))
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @PreAuthorize("isAuthenticated()")
