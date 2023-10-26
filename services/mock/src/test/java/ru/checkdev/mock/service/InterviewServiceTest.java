@@ -8,6 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
@@ -20,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.in;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -76,8 +79,8 @@ class InterviewServiceTest {
             return interview;
         }).toList();
         var page = new PageImpl<>(interviews);
-        when(interviewRepository.findAll(PageRequest.of(0, 5)))
-                .thenReturn(page);
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createDate"));
+        when(interviewRepository.findAll(pageable)).thenReturn(page);
         var actual = interviewService.findPaging(0, 5);
         assertThat(actual, is(page));
     }
