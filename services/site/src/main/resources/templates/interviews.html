@@ -30,120 +30,120 @@
 
     <script th:inline="javascript" type="text/javascript">
 
-    var filter = /*[[${filter}]]*/ null;
+        var filter = /*[[${filter}]]*/ null;
 
-    var topics = /*[[${topics}]]*/ null;
+        var topics = /*[[${topics}]]*/ null;
 
-    var userId = /*[[${userId}]]*/ 0;
+        var userId = /*[[${userId}]]*/ 0;
 
-    var currentCategoryId;
+        var currentCategoryId;
 
-    function init() {
-        document.getElementById('category_patch_div').style.display =
-        filter != null && filter.categoryId > 0 ? 'block' : 'none';
-        document.getElementById('topic_patch_div').style.display =
-        filter != null && filter.topicId > 0 ? 'block' : 'none';
-        currentCategoryId = filter != null ? filter.categoryId : 0;
-        if (filter != null && currentCategoryId > 0) {
-             inflateTopicList(topics);
-        }
-    }
-
-    window.onload = init;
-
-    function onCategoryItemClick(element) {
-        var id = element.getAttribute('data-id');
-        var categoryName = element.getAttribute('data-name');
-        userId = element.getAttribute('data-user_id');
-        currentCategoryId = id;
-        createFilter(0);
-    }
-
-    function inflateTopicList(response) {
-        var s = '';
-		    for(var i = 0; i < response.length; i++) {
-                s += '<ul value="' + response[i].id + '" ' +
-                'data-id="' + response[i].id + '" ' +
-                'data-name="' + response[i].name + '" ' +
-                'onclick="onTopicItemClick(this)">' +
-                response[i].name + '</ul>';
-            }
-     	$('#topics_select').html(s);
-    }
-
-    function onTopicItemClick(element) {
-        var topicId = element.getAttribute('data-id');
-        var topicName = element.getAttribute('data-name');
-        showPatch('topic_patch_div', 'topicPatchTextSpan', topicName);
-        createFilter(topicId);
-    }
-
-    function onCategoryPatchCancelClick(element) {
-        var container = element.parentNode
-        hideElement(container.id);
-        hideElement('topic_patch_div');
-        var userId = element.getAttribute('data-user_id');
-        $('#topics_select').html('');
-        deleteFilter(userId)
-    }
-
-    function onTopicPatchCancelClick(element) {
-        var container = element.parentNode
-        hideElement(container.id);
-        var userId = element.getAttribute('data-user_id');
-        createFilter(0);
-    }
-
-    function showPatch(elementId, textSpanId, text) {
-    var element = document.getElementById(elementId);
-        if (element) {
-            element.style.display = "block";
-            var textSpan = document.getElementById(textSpanId);
-            if (textSpan) {
-                textSpan.textContent = text;
+        function init() {
+            document.getElementById('category_patch_div').style.display =
+            filter != null && filter.categoryId > 0 ? 'block' : 'none';
+            document.getElementById('topic_patch_div').style.display =
+            filter != null && filter.topicId > 0 ? 'block' : 'none';
+            currentCategoryId = filter != null ? filter.categoryId : 0;
+            if (filter != null && currentCategoryId > 0) {
+                 inflateTopicList(topics);
             }
         }
-    }
 
-    function hideElement(elementId) {
-        var element = document.getElementById(elementId);
-        if (element) {
-            element.style.display = "none";
+        window.onload = init;
+
+        function onCategoryItemClick(element) {
+            var id = element.getAttribute('data-id');
+            var categoryName = element.getAttribute('data-name');
+            userId = element.getAttribute('data-user_id');
+            currentCategoryId = id;
+            createFilter(0);
         }
-    }
 
-    function createFilter(topicId) {
-        if (userId > 0) {
-            var filter = {
-                userId: userId,
-                categoryId: currentCategoryId,
-                topicId: topicId
-            };
-            $.ajax({
-                type: "POST",
-                url: "/filter/create",
-                data: JSON.stringify(filter),
-                contentType: "application/json",
-                success: function(response) {
-                    console.log("filter saved.");
-                    location.reload();
+        function inflateTopicList(response) {
+            var s = '';
+                for(var i = 0; i < response.length; i++) {
+                    s += '<ul value="' + response[i].id + '" ' +
+                    'data-id="' + response[i].id + '" ' +
+                    'data-name="' + response[i].name + '" ' +
+                    'onclick="onTopicItemClick(this)">' +
+                    response[i].name + '</ul>';
                 }
-            });
+             $('#topics_select').html(s);
         }
-    }
 
-    function deleteFilter(userId) {
-        if (userId > 0) {
-            $.ajax({
-	        	type: 'DELETE',
-	        	url: '/filter/delete/' + userId,
-	        	success: function(result) {
-	        	    console.log('filter with id ' + userId + ' was deleted')
-	        	    location.reload();
-	        	}
-	        });
-	    }
-    }
+        function onTopicItemClick(element) {
+            var topicId = element.getAttribute('data-id');
+            var topicName = element.getAttribute('data-name');
+            showPatch('topic_patch_div', 'topicPatchTextSpan', topicName);
+            createFilter(topicId);
+        }
+
+        function onCategoryPatchCancelClick(element) {
+            var container = element.parentNode
+            hideElement(container.id);
+            hideElement('topic_patch_div');
+            var userId = element.getAttribute('data-user_id');
+            $('#topics_select').html('');
+            deleteFilter(userId)
+        }
+
+        function onTopicPatchCancelClick(element) {
+            var container = element.parentNode
+            hideElement(container.id);
+            var userId = element.getAttribute('data-user_id');
+            createFilter(0);
+        }
+
+        function showPatch(elementId, textSpanId, text) {
+        var element = document.getElementById(elementId);
+            if (element) {
+                element.style.display = "block";
+                var textSpan = document.getElementById(textSpanId);
+                if (textSpan) {
+                    textSpan.textContent = text;
+                }
+            }
+        }
+
+        function hideElement(elementId) {
+            var element = document.getElementById(elementId);
+            if (element) {
+                element.style.display = "none";
+            }
+        }
+
+        function createFilter(topicId) {
+            if (userId > 0) {
+                var filter = {
+                    userId: userId,
+                    categoryId: currentCategoryId,
+                    topicId: topicId
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/filter/create",
+                    data: JSON.stringify(filter),
+                    contentType: "application/json",
+                    success: function(response) {
+                        console.log("filter saved.");
+                        location.reload();
+                    }
+                });
+            }
+        }
+
+        function deleteFilter(userId) {
+            if (userId > 0) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/filter/delete/' + userId,
+                    success: function(result) {
+                        console.log('filter with id ' + userId + ' was deleted')
+                        location.reload();
+                    }
+                });
+            }
+        }
 
     </script>
 
@@ -151,57 +151,66 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <div class="btn-group">
-        <div class="dropdown me-1" id="categories_select">
-            <button class="btn btn-light btn-sm dropdown-toggle"
-                    type="button" id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                Категории
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" >
-                <li class="dropdown-item" th:each="category: ${categories}">
-                    <ul onclick="onCategoryItemClick(this)"
-                        th:text="${category.name}"
-                        th:data-id="${category.id}"
-                        th:data-name="${category.name}"
-                        th:data-user_id="${userInfo != null ? userInfo.getId() : 0}">
+    <div class="row">
+        <div class="cell">
+            <div class="btn-group">
+                <div class="dropdown me-1" id="categories_select">
+                    <button class="btn btn-light btn-sm dropdown-toggle"
+                            type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Категории
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" >
+                        <li class="dropdown-item" th:each="category: ${categories}">
+                            <ul onclick="onCategoryItemClick(this)"
+                                th:text="${category.name}"
+                                th:data-id="${category.id}"
+                                th:data-name="${category.name}"
+                                th:data-user_id="${userInfo != null ? userInfo.getId() : 0}">
+                            </ul>
+                        </li>
                     </ul>
-                </li>
-            </ul>
-        </div>
+                </div>
 
-        <div id="category_patch_div" class="me-1">
-            <button class="btn btn-light btn-sm" onclick="onCategoryPatchCancelClick(this)"
-                    th:data-user_id="${userId}">
-                <span id="categoryPatchTextSpan" th:text="${categoryName}"></span>
-                <span class="fas fa-times"></span>
-            </button>
-        </div>
+                <div id="category_patch_div" class="me-1">
+                    <button class="btn btn-light btn-sm" onclick="onCategoryPatchCancelClick(this)"
+                            th:data-user_id="${userId}">
+                        <span id="categoryPatchTextSpan" th:text="${categoryName}"></span>
+                        <span class="fas fa-times"></span>
+                    </button>
+                </div>
 
-        <div class="dropdown me-1">
-            <button class="btn btn-light btn-sm dropdown-toggle"
-                    type="button" id="dropdownMenuButton2"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                Темы
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                <li class="dropdown-item" id="topics_select">
-                </li>
-            </ul>
-        </div>
+                <div class="dropdown me-1">
+                    <button class="btn btn-light btn-sm dropdown-toggle"
+                            type="button" id="dropdownMenuButton2"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Темы
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                        <li class="dropdown-item" id="topics_select">
+                        </li>
+                    </ul>
+                </div>
 
-        <div id="topic_patch_div" class="me-1">
-            <button class="btn btn-light btn-sm" onclick="onTopicPatchCancelClick(this)"
-                    th:data-user_id="${userId}">
-                <span id="topicPatchTextSpan" th:text="${topicName}"></span>
-                <span class="fas fa-times"></span>
-            </button>
+                <div id="topic_patch_div" class="me-1">
+                    <button class="btn btn-light btn-sm" onclick="onTopicPatchCancelClick(this)"
+                            th:data-user_id="${userId}">
+                        <span id="topicPatchTextSpan" th:text="${topicName}"></span>
+                        <span class="fas fa-times"></span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div>
+    <div class="row">
         <div id="interviews" class="cell">
             <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Собеседованиe</th>
+                    <th scope="col">Дата проведения</th>
+                </tr>
+                </thead>
                 <tbody>
                 <tr th:each="interview: ${interviewsPage.toList()}">
                     <td>
@@ -209,47 +218,32 @@
                             <span class="fw-bold">
                                     <a class="text-decoration-none text-dark"
                                        th:href="@{|/interview/${interview.id}|}">
-                                        <h3 th:text="${interview.title}"></h3>
+                                        <h5 th:text="${interview.title}"></h5>
                                     </a>
                             </span>
                             <small class="mb-2 text-muted">
-                            <span th:each="user: ${users}">
-                                <span th:if="${interview.submitterId == user.getId()}">
-                                    <span th:text="${'Автор: ' + user.getUsername()}"></span>
-                                </span>
-                            </span> |
-                                <span th:text="${'Дата создания: ' + #strings.substring(interview.createDate, 0, 10)}"></span>
-                                |
-                                <!--Из переданного набора ENUM выбираем статус по его ID-->
-                                <span>Статус: </span>
-                                <span th:each="status: ${statuses}">
-                                    <span th:if="${interview.status == status.getId()}">
-                                        <span th:text="${status.getInfo()}">
+                                <span class="badge bg-success">Новое</span>
+                                <i class="far fa-clock"></i>
+                                <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
+                                <span th:each="user: ${users}">
+                                    <span th:if="${interview.submitterId == user.getId()}">
+                                        <i class="far fa-user"></i>
+                                        <span th:text="${user.getUsername()}"></span>
                                     </span>
                                 </span>
+                                <!--Из переданного набора ENUM выбираем статус по его ID-->
+                                <!--                                <span>Статус: </span>-->
+                                <!--                                <span th:each="status: ${statuses}">-->
+                                <!--                                    <span th:if="${interview.status == status.getId()}">-->
+                                <!--                                        <span th:text="${status.getInfo()}">-->
+                                <!--                                    </span>-->
+                                <!--                                </span>-->
                                 </span>
                             </small>
                         </div>
                     </td>
                     <td>
-                        <div>
-                            <small class="mb-2 text-muted">
-                                <span> Дата проведения собеседования: </span>
-                            </small>
-                            <span class="mb-2 text-muted">
-                                    <h5 th:text="${interview.approximateDate}"></h5>
-                            </span>
-                            <span th:if="${statisticMap.get(interview.id) != null}">
-                                <small class="text-muted" th:text="'Участвуют: ' + ${statisticMap.get(interview.id).participate}">Участников: </small>
-                                <small class="text-muted" th:text="'Ожидают: ' + ${statisticMap.get(interview.id).expect}">Ожидают: </small>
-                                <small class="text-muted" th:text="'Сдали: ' + ${statisticMap.get(interview.id).passed}">Сдано: </small>
-                            </span>
-                            <span th:unless="${statisticMap.get(interview.id) != null}">
-                                <small class="text-muted" th:text="'Участвуют: 0'">Участников: </small>
-                                <small class="text-muted" th:text="'Ожидают: 0'">Ожидают: </small>
-                                <small class="text-muted" th:text="'Сдали: 0'">Сдано: </small>
-                            </span>
-                        </div>
+                        <span th:text="${interview.approximateDate}"></span>
                     </td>
                 </tr>
                 </tbody>
