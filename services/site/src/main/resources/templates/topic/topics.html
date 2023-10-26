@@ -30,10 +30,9 @@
 <div class="container">
     <div class="row" th:if="${userInfo != null}">
         <div class="cell">
-            <div th:if="${canManage}" class="col-md-12 pull-right">
-                <a aria-pressed="true" class="btn mb-2"
+            <div th:if="${canManage}" class="col-md-12">
+                <a aria-pressed="true" class="btn mb-2 btn-primary"
                    role="button"
-                   style="background-color: lavender; border-color: lavender;"
                    th:href="@{/topic/createForm/{id}(id=${categoryId})}">
                     Создать тему
                 </a>
@@ -43,6 +42,14 @@
     <div class="row">
         <div class="cell">
             <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Тема</th>
+                    <th scope="col">Собеседования</th>
+                    <th scope="col">Подписаться</th>
+                </tr>
+                </thead>
+                <tbody>
                 <tr th:each="topic: ${topics}">
                     <td>
                         <div>
@@ -71,16 +78,16 @@
                                 </small>
                             </small>
                             <div th:if="${userInfo != null}">
-                                <a class="nav-item nav-link" th:if="${!userTopicDTO.subscribeTopicIds.contains(topic.id)}">
-                                    <form th:action="@{/notification/subscribeTopic}" method="POST">
-                                        <div class="form-group">
-                                            <input type="hidden" name="id" th:value="${userInfo.id}"/>
-                                            <input type="hidden" name="categoryId" th:value="${categoryId}"/>
-                                            <input type="hidden" name="topicId" th:value="${topic.id}"/>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Подписаться</button>
-                                    </form>
-                                </a>
+<!--                                <a class="nav-item nav-link" th:if="${!userTopicDTO.subscribeTopicIds.contains(topic.id)}">-->
+<!--                                    <form th:action="@{/notification/subscribeTopic}" method="POST">-->
+<!--                                        <div class="form-group">-->
+<!--                                            <input type="hidden" name="id" th:value="${userInfo.id}"/>-->
+<!--                                            <input type="hidden" name="categoryId" th:value="${categoryId}"/>-->
+<!--                                            <input type="hidden" name="topicId" th:value="${topic.id}"/>-->
+<!--                                        </div>-->
+<!--                                        <button type="submit" class="btn btn-primary">Подписаться</button>-->
+<!--                                    </form>-->
+<!--                                </a>-->
                                 <a class="nav-item nav-link" th:if="${userTopicDTO.subscribeTopicIds.contains(topic.id)}">
                                     <form th:action="@{/notification/unSubscribeTopic}" method="POST">
                                         <div class="form-group">
@@ -95,12 +102,13 @@
                         </div>
                     </td>
                     <td>
-                        <div>
-                            <span>Новых: 1</span> |
-                            <span>Проведено: 100500</span>
-                        </div>
+                        <span class="badge bg-success">Новых: 100</span>
+                    </td>
+                    <td>
+                        <i class="far fa-bell"></i>
                     </td>
                 </tr>
+                </tbody>
             </table>
         </div>
     </div>

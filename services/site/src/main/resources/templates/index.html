@@ -41,8 +41,14 @@
             <div class="card">
                 <h5 class="card-header">Популярные категории</h5>
                 <div class="card-body">
-                    <table class="table">
-                        <tbody class="table-hover">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Категория</th>
+                            <th scope="col">Собеседования</th>
+                        </tr>
+                        </thead>
+                        <tbody>
                         <tr th:each="category: ${categories}" style="cursor: pointer;">
                             <td>
                                 <div>
@@ -60,10 +66,7 @@
                                 </small>
                             </td>
                             <td>
-                                <div>
-                                    <span>Новых: 1</span> |
-                                    <span>Проведено: 100500</span>
-                                </div>
+                                <span class="badge bg-success">Новых: 100</span>
                             </td>
                         </tr>
                         </tbody>

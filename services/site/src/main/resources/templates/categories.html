@@ -32,8 +32,7 @@
         <div class="cell">
             <div th:if="${canManage}" class="col-md-12 pull-right">
                 <a th:href="@{/category/createForm}"
-                   class="btn mb-2" role="button" aria-pressed="true"
-                   style="background-color: lavender; border-color: lavender;">
+                   class="btn mb-2 btn-primary" role="button" aria-pressed="true">
                     Создать категорию
                 </a>
             </div>
@@ -42,6 +41,14 @@
     <div class="row">
         <div class="cell">
             <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Категория</th>
+                    <th scope="col">Собеседования</th>
+                    <th scope="col">Подписаться</th>
+                </tr>
+                </thead>
+                <tbody>
                 <tr th:each="category: ${categories}">
                     <td>
                         <div>
@@ -70,7 +77,7 @@
                             </span>
                         </small>
                         <div th:if="${userInfo != null}">
-                            <a class="nav-item nav-link" th:if="${!userDTO.subscribeCategoryIds.contains(category.id)}">
+                           <!-- <a class="nav-item nav-link" th:if="${!userDTO.subscribeCategoryIds.contains(category.id)}">
                                 <form th:action="@{/notification/subscribeCategory}"  method="POST">
                                     <div class="form-group">
                                         <input type="hidden" name="id" th:value="${userInfo.id}"/>
@@ -78,7 +85,7 @@
                                     </div>
                                     <button type="submit" class="btn btn-primary">Подписаться</button>
                                 </form>
-                            </a>
+                            </a>-->
                             <a class="nav-item nav-link" th:if="${userDTO.subscribeCategoryIds.contains(category.id)}">
                                 <form th:action="@{/notification/unSubscribeCategory}"  method="POST">
                                     <div class="form-group">
@@ -91,12 +98,13 @@
                         </div>
                     </td>
                     <td>
-                        <div>
-                            <span>Новых: 1</span> |
-                            <span>Проведено: 100500</span>
-                        </div>
+                        <span class="badge bg-success">Новых: 100</span>
+                    </td>
+                    <td>
+                        <i class="far fa-bell"></i>
                     </td>
                 </tr>
+                </tbody>
             </table>
         </div>
     </div>
