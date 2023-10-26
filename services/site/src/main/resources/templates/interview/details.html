@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta name="description" content="CheckDev - пробные собеседования в IT.">
-    <title>topic/{topicId}</title>
+    <title>/interview/{id}</title>
 
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -125,26 +125,10 @@
                         </tbody>
                     </table>
                 </div>
-                <!--Форма для стать участником собеседования-->
                 <div th:if="${!isAuthor and !isWisher}" class="form-group">
-                    <form class="was-validated" th:action="@{/wisher/create}" method="post">
-                        <input type="hidden" th:id="interviewId" th:name="interviewId" th:value="${interview.id}">
-                        <input type="hidden" th:id="userId" th:name="userId" th:value="${userInfo.id}">
-                        <div class="mb-3">
-                            <label class="form-label" for="email">Введите контакт для связи</label>
-                            <input type="text" class="form-control"
-                                   id="email"
-                                   name="email"
-                                   th:field="${userInfo.email}"
-                                   placeholder="контакт не должен быть пустым">
-                            <div class="invalid-feedback">
-                                Пожалуйста введите контакт для связи.
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary mt-3">Участвовать</button>
-                        </div>
-                    </form>
+                    <a class="nav-item nav-link" th:href="@{|/interview/${interview.id}/participate|}">
+                        <button type="submit" class="btn btn-primary mt-3">Участвовать</button>
+                    </a>
                 </div>
                 <!--Кнопки оставить отзыв. Доступна если статус IN_PROGRESS-->
                 <div class="m-3" th:if="${STATUS_IN_PROGRESS_ID==interview.status}">
