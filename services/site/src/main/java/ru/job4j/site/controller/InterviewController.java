@@ -79,6 +79,7 @@ public class InterviewController {
         model.addAttribute("isWisher", isWisher);
         model.addAttribute("statisticMap", statisticMap);
         model.addAttribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId());
+        model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
         if (interview.getMode() < statuses.length) {
             model.addAttribute("status", statuses[interview.getStatus()].getInfo());
         }

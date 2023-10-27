@@ -72,4 +72,21 @@ class FeedbackRepositoryTest {
         var actualList = repository.findAllByInterviewId(interview.getId());
         assertThat(actualList).isEmpty();
     }
+
+    @Test
+    void thenFindByInterviewIdAndUserIdThenReturnFeedbackDTO() {
+        var feedback1 = new Feedback(0, interview, 1, 2, "text1", 4);
+        entityManager.persist(feedback1);
+        entityManager.clear();
+        var feedbackDto1 = FeedbackMapper.getFeedbackDTO(feedback1);
+        var actual = repository.findByInterviewIdAndUserId(feedbackDto1.getInterviewId(), feedbackDto1.getUserId());
+        assertThat(actual).isEqualTo(List.of(feedbackDto1));
+    }
+
+    @Test
+    void thenFindByInterviewIdAndUserIdThenReturnNull() {
+        var feedback1 = new Feedback(0, interview, 1, 2, "text1", 4);
+        var actual = repository.findByInterviewIdAndUserId(feedback1.getInterview().getId(), feedback1.getUserId());
+        assertThat(actual).isEmpty();
+    }
 }

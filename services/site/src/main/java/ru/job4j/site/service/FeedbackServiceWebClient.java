@@ -7,7 +7,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.FeedbackDTO;
+import ru.job4j.site.dto.InterviewDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +29,17 @@ public class FeedbackServiceWebClient implements FeedbackService {
     private WebClient webClientFeedback;
     private static final String URL_FEEDBACK = "/feedback/";
 
-    public FeedbackServiceWebClient(@Value("${service.mock}") String urlMock) {
+    private InterviewService interviewService;
+
+    public FeedbackServiceWebClient(@Value("${service.mock}") String urlMock, InterviewService interviewService) {
         this.urlMock = urlMock;
         this.webClientFeedback = WebClient.create(this.urlMock);
+        this.interviewService = interviewService;
     }
 
     /**
      * Метод сохраняет отзыв о собеседовании FeedbackDTO
+     * Если статус сохранен успешно то обновляется статус собеседования.
      *
      * @param token       Authorization token
      * @param feedbackDTO FeedbackDTO
@@ -41,6 +47,15 @@ public class FeedbackServiceWebClient implements FeedbackService {
      */
     @Override
     public boolean save(String token, FeedbackDTO feedbackDTO) {
+        var interview = new InterviewDTO();
+        try {
+            interview = interviewService.getById(token, feedbackDTO.getInterviewId());
+            var roleInInterview = gerRoleInInterview(feedbackDTO.getUserId(), interview);
+            feedbackDTO.setRoleInInterview(roleInInterview);
+        } catch (Exception e) {
+            log.error("InterviewService.class method getById FROM API MOCK service error: {}", e.getMessage());
+            return false;
+        }
         var responseEntityMono = this.webClientFeedback
                 .post()
                 .uri(URL_FEEDBACK)
@@ -51,9 +66,13 @@ public class FeedbackServiceWebClient implements FeedbackService {
                 .toEntity(FeedbackDTO.class)
                 .doOnError(err -> log.error("API MOCK not found: {}", err.getMessage()))
                 .blockOptional();
-        return responseEntityMono
+        var result = responseEntityMono
                 .map(re -> re.getStatusCode().is2xxSuccessful())
                 .orElse(false);
+        if (result) {
+            updateStatusInterview(token, interview, feedbackDTO.getUserId());
+        }
+        return result;
     }
 
     /**
@@ -75,6 +94,66 @@ public class FeedbackServiceWebClient implements FeedbackService {
         return listResponseEntity
                 .map(HttpEntity::getBody)
                 .orElse(new ArrayList<>());
+    }
+
+    /**
+     * Метод проверяет, оставил пользователь отзыв на собеседование.
+     *
+     * @param interviewId int ID Interview
+     * @param userID      int ID User
+     * @return boolean true/false
+     */
+    @Override
+    public List<FeedbackDTO> findByInterviewIdAndUserId(int interviewId, int userID) {
+        var uri = String.format("%s?iId=%d&uId=%d", URL_FEEDBACK, interviewId, userID);
+        Optional<ResponseEntity<List<FeedbackDTO>>> listResponseEntity = this.webClientFeedback
+                .get()
+                .uri(uri)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .toEntityList(FeedbackDTO.class)
+                .doOnError(err -> log.error("API MOCK not found: {}", err.getMessage()))
+                .blockOptional();
+        return listResponseEntity
+                .map(HttpEntity::getBody)
+                .orElse(new ArrayList<>());
+    }
+
+    /**
+     * Метод возвращает роль участника в собеседовании,
+     * в зависимости от статуса собеседования.
+     *
+     * @param userId       int ID User
+     * @param interviewDTO InterviewDto
+     * @return roleInInterview.
+     */
+    public int gerRoleInInterview(int userId, InterviewDTO interviewDTO) {
+        var roleInInterview = interviewDTO.getMode();
+        if (userId != interviewDTO.getSubmitterId()) {
+            roleInInterview = interviewDTO.getMode() == 1 ? 2 : 1;
+        }
+        return roleInInterview;
+    }
+
+    /**
+     * Метод меняет статус интервью в зависимости от текущего статуса.
+     * Если текущий статус IN_PROGRESS устанавливается статус IS_FEEDBACK
+     * Если текущий статус IN_FEEDBACK устанавливается статус IS_COMPLETED
+     *
+     * @param token     String User security token
+     * @param interview InterviewDTO
+     * @return boolean true false
+     */
+    public boolean updateStatusInterview(String token, InterviewDTO interview, int feedbackUser) {
+        var aReview = findByInterviewIdAndUserId(interview.getId(), feedbackUser).isEmpty();
+        if (aReview && StatusInterview.IS_FEEDBACK.getId() == interview.getStatus()) {
+            interviewService.updateStatus(token, interview.getId(), StatusInterview.IS_COMPLETED.getId());
+            return true;
+        } else if (StatusInterview.IN_PROGRESS.getId() == interview.getStatus()) {
+            interviewService.updateStatus(token, interview.getId(), StatusInterview.IS_FEEDBACK.getId());
+            return true;
+        }
+        return false;
     }
 
     public void setWebClientFeedback(WebClient webClient) {

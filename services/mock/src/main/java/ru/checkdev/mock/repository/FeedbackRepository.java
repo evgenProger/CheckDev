@@ -32,4 +32,20 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
             WHERE fe.interview.id=:interviewId
             """)
     List<FeedbackDTO> findAllByInterviewId(@Param("interviewId") int interviewId);
+
+    /**
+     * Метод возвращает отзыв по пользователю и интервью
+     *
+     * @param interviewId int ID Interview
+     * @param userId      int ID user
+     * @return FeedbackDTO
+     */
+    @Query("""
+            SELECT 
+            new ru.checkdev.mock.dto.FeedbackDTO(fe.id, fe.interview.id, fe.userId, fe.roleInInterview, fe.textFeedback, fe.scope) 
+            FROM cd_feedback fe 
+            WHERE fe.interview.id=:interviewId AND fe.userId=:userId
+            """)
+    List<FeedbackDTO> findByInterviewIdAndUserId(@Param("interviewId") int interviewId,
+                                           @Param("userId") int userId);
 }

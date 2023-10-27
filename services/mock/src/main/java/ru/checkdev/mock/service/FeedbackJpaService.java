@@ -43,4 +43,9 @@ public class FeedbackJpaService implements FeedbackService {
     public List<FeedbackDTO> findByInterviewId(int interviewId) {
         return repository.findAllByInterviewId(interviewId);
     }
+
+    @Override
+    public List<FeedbackDTO> findByInterviewIdAndUserId(int interviewId, int userId) {
+        return repository.findByInterviewIdAndUserId(interviewId, userId);
+    }
 }

@@ -17,4 +17,6 @@ public interface FeedbackService {
     Optional<FeedbackDTO> save(FeedbackDTO feedbackDTO);
 
     List<FeedbackDTO> findByInterviewId(int interviewId);
+
+    List<FeedbackDTO> findByInterviewIdAndUserId(int interviewId, int userId);
 }

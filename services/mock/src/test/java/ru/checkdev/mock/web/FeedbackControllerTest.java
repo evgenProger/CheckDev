@@ -102,4 +102,33 @@ class FeedbackControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", Matchers.is(0)));
     }
+
+    @Test
+    @WithMockUser
+    void whenFindByInterviewIdAndUserIdThenReturnStatusOkFeedbackDTO() throws Exception {
+        var feedbackDTO = new FeedbackDTO(1, 1, 1,
+                2, "text", 5);
+        when(service.findByInterviewIdAndUserId(feedbackDTO.getInterviewId(), feedbackDTO.getUserId())).thenReturn(List.of(feedbackDTO));
+        mockMvc.perform(get("/feedback/")
+                        .param("iId", String.valueOf(feedbackDTO.getInterviewId()))
+                        .param("uId", String.valueOf(feedbackDTO.getUserId())))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", Matchers.is(feedbackDTO.getId())))
+                .andExpect(jsonPath("$[0].interviewId", Matchers.is(feedbackDTO.getInterviewId())))
+                .andExpect(jsonPath("$[0].userId", Matchers.is(feedbackDTO.getUserId())));
+    }
+
+    @Test
+    @WithMockUser
+    void whenFindByInterviewIdAndUserIdThenReturnStatusNotFound() throws Exception {
+        var feedbackDTO = new FeedbackDTO(1, 1, 1,
+                2, "text", 5);
+        when(service.findByInterviewIdAndUserId(feedbackDTO.getInterviewId(), feedbackDTO.getUserId())).thenReturn(Collections.emptyList());
+        mockMvc.perform(get("/feedback/")
+                        .param("iId", String.valueOf(feedbackDTO.getInterviewId()))
+                        .param("uId", String.valueOf(feedbackDTO.getUserId())))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }

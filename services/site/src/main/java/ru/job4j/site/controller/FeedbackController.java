@@ -1,14 +1,16 @@
 package ru.job4j.site.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.dto.FeedbackDTO;
+import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.service.FeedbackService;
+import ru.job4j.site.service.InterviewService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * FeedbackController контроллер обработки отзывов
@@ -19,32 +21,37 @@ import java.util.Map;
 @Controller
 @RequestMapping("/interview")
 @AllArgsConstructor
+@Slf4j
 public class FeedbackController {
 
     private FeedbackService feedbackService;
 
+    private InterviewService interviewService;
+
     /**
      * Отображение формы для сохранения отзыв на собеседование.
      *
-     * @param param Map<String, String>
-     * @param model Model
-     * @return String page.
+     * @param id int ID Interview
+     * @return String FeedbackForm page
      */
-    @GetMapping("/feedback/")
-    public String getFeedbackForm(@RequestParam Map<String, String> param, Model model) {
-        var interviewId = Integer.parseInt(param.get("interviewId"));
-        var submitterId = Integer.parseInt(param.get("submitterId"));
-        var userId = Integer.parseInt(param.get("userId"));
-        var mode = Integer.parseInt(param.get("mode"));
-        int roleInInterview = mode;
-        if (userId != submitterId) {
-            roleInInterview = (mode == 1) ? 2 : 1;
+    @GetMapping("/feedback/{id}")
+    public String getFeedbackForm(@PathVariable int id,
+                                  Model model,
+                                  HttpServletRequest request) {
+        var token = RequestResponseTools.getToken(request);
+        var interviewDTO = new InterviewDTO();
+        try {
+            interviewDTO = interviewService.getById(token, id);
+        } catch (Exception e) {
+            log.error("InterviewService.class method getById error: {}", e.getMessage());
+            return "redirect:/";
         }
-        var feedback = new FeedbackDTO();
-        feedback.setInterviewId(interviewId);
-        feedback.setUserId(userId);
-        feedback.setRoleInInterview(roleInInterview);
-        model.addAttribute("feedback", feedback);
+        model.addAttribute("interview", interviewDTO);
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/index",
+                "Собеседования", "/interviews/",
+                interviewDTO.getTitle(), String.format("/interview/%d", id),
+                "Отзыв", String.format("/interview/feedback/%d", id));
         return "/interview/feedbackForm";
     }
 
