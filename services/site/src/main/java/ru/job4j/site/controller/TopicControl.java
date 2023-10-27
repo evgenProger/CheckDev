@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.dto.TopicLiteDTO;
@@ -18,6 +19,7 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 @Controller
 @RequestMapping("/topic")
 @AllArgsConstructor
+@Slf4j
 public class TopicControl {
     private final TopicsService topicsService;
     private final AuthService authService;
@@ -31,16 +33,24 @@ public class TopicControl {
         String categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();
         model.addAttribute("topic", topic);
-        var token = getToken(req);
-        if (token != null) {
-            var userInfo = authService.userInfo(token);
-            model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()));
-        }
+        try {
+            var token = getToken(req);
+            if (token != null) {
+                var userInfo = authService.userInfo(token);
+                model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()));
+            }
+            RequestResponseTools.addAttrBreadcrumbs(model,
+                    "Главная", "/index",
+                    "Категории", "/categories/",
+                    categoryName, String.format("/topics/%d", categoryId),
+                    topic.getName(), String.format("/topic/%d", topicId));
+        }  catch (Exception e) {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
-                categoryName, String.format("/topics/%d", categoryId),
-                topic.getName(), String.format("/topic/%d", topicId));
+                categoryName, String.format("/topics/%d", categoryId));
+        log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
+    }
         return "/topic/details";
     }
 
