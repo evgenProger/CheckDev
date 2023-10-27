@@ -40,6 +40,7 @@ class WisherRepositoryTest {
         interview.setContactBy("mail@mail");
         interview.setApproximateDate("approximate");
         interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
+        interview.setTopicId(1);
         entityManager.createQuery("delete from wisher").executeUpdate();
         entityManager.createQuery("delete from interview").executeUpdate();
         entityManager.persist(interview);
