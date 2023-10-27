@@ -22,6 +22,27 @@
     <script th:src="@{/webjars/popper.js/2.11.7/umd/popper.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
     <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+
+    <style>
+         .form-group .mock {
+              visibility: hidden;
+         }
+
+         .form-group .message {
+              transform: translateY(20px);
+              transition: opacity 0.4s, visibility 0.4s, transform 0.4s;
+              opacity: 0;
+              visibility: hidden;
+         }
+
+         .form-group:hover .message {
+              background: #11EE66;
+              opacity: 1;
+              visibility: visible;
+              transform: translateY(0);
+         }
+    </style>
+
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
@@ -47,14 +68,14 @@
                 <small class="text-muted" th:text="'Ожидают: 0'">Ожидают: </small>
                 <small class="text-muted" th:text="'Сдали: 0'">Сдано: </small>
             </span>
-            <div th:if="${userInfo != null}">
+            <div>
                 <!--Кнопка редактировать видна интервью создал текущий пользователь -->
-                <div class="form-group">
+                <div th:if="${userInfo != null}" class="form-group">
                     <a th:if="${isAuthor and !isDismissed}" class="btn btn-success mt-3"
                        th:href="@{|/interview/edit/${interview.id}|}">Редактировать</a>
                 </div>
                 <!-- Отображение списка участников собеседования -->
-                <div th:if="${isAuthor}">
+                <div th:if="${userInfo != null && isAuthor}">
                     <table class="table">
                         <thead>
                         <tr>
@@ -125,13 +146,19 @@
                         </tbody>
                     </table>
                 </div>
-                <div th:if="${!isAuthor and !isWisher}" class="form-group">
-                    <a class="nav-item nav-link" th:href="@{|/interview/${interview.id}/participate|}">
-                        <button type="submit" class="btn btn-primary mt-3">Участвовать</button>
+                <div th:if="${!isAuthor || userInfo == null}" class="form-group">
+                    <div th:class="${isWisher} ? 'message p-1 rounded-2 col-1' : 'mock p-1 col-1'">
+                        Вы участник
+                    </div>
+                    <a class="nav-item nav-link" th:href="${userInfo != null}
+                    ? (${isWisher} ? @{#} : @{|/interview/${interview.id}/participate|})
+                    : @{|/login|}">
+                        <button type="submit" class="btn btn-primary mt-1"
+                                th:disabled="${isWisher}">Участвовать</button>
                     </a>
                 </div>
                 <!--Кнопки оставить отзыв. Доступна если статус IN_PROGRESS-->
-                <div class="m-3" th:if="${STATUS_IN_PROGRESS_ID==interview.status}">
+                <div class="m-3" th:if="${userInfo != null && STATUS_IN_PROGRESS_ID==interview.status}">
                     <!--Кнопка оставляет отзыв АВТОР собеседования. Доступна если isAuthor=true-->
                     <form th:action="@{/interview/feedback/}" method="get">
                         <input type="hidden" id="interviewId" name="interviewId" th:value="${interview.id}">
