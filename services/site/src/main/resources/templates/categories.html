@@ -20,6 +20,7 @@
           integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" rel="stylesheet">
     <!-- Bootstrap 5.3.2 CSS -->
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script th:href="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/webjars/popper.js/2.11.7/umd/popper.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.min.js}"></script>
@@ -76,32 +77,21 @@
                                 <span class="fw-bold" th:text="${category.position}"></span>
                             </span>
                         </small>
-                        <div th:if="${userInfo != null}">
-                           <!-- <a class="nav-item nav-link" th:if="${!userDTO.subscribeCategoryIds.contains(category.id)}">
-                                <form th:action="@{/notification/subscribeCategory}"  method="POST">
-                                    <div class="form-group">
-                                        <input type="hidden" name="id" th:value="${userInfo.id}"/>
-                                        <input type="hidden" name="categoryId" th:value="${category.id}" />
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Подписаться</button>
-                                </form>
-                            </a>-->
-                            <a class="nav-item nav-link" th:if="${userDTO.subscribeCategoryIds.contains(category.id)}">
-                                <form th:action="@{/notification/unSubscribeCategory}"  method="POST">
-                                    <div class="form-group">
-                                        <input type="hidden" name="id" th:value="${userInfo.id}"/>
-                                        <input type="hidden" name="categoryId" th:value="${category.id}" />
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Отписаться</button>
-                                </form>
-                            </a>
-                        </div>
                     </td>
                     <td>
                         <span class="badge bg-success">Новых: 100</span>
                     </td>
                     <td>
-                        <i class="far fa-bell"></i>
+                        <div th:if="${userInfo != null}">
+                            <a class="nav-item nav-link" th:if="${!userDTO.subscribeCategoryIds.contains(category.id)}"
+                               th:href="@{|/notification/subscribeCategory/${userInfo.id}/${category.id}|}">
+                                <i class="far fa-bell"></i>
+                            </a>
+                            <a class="nav-item nav-link" th:if="${userDTO.subscribeCategoryIds.contains(category.id)}"
+                               th:href="@{|/notification/unSubscribeCategory/${userInfo.id}/${category.id}|}">
+                                <i class="fa fa-bell-slash-o"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 </tbody>

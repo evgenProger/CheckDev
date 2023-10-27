@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.site.dto.UserDTO;
-import ru.job4j.site.dto.UserTopicDTO;
 import ru.job4j.site.service.NotificationService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,77 +16,53 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @PostMapping("/subscribeCategory")
-    public String createSubscribeCategory(@ModelAttribute("userDTO")UserDTO user,
-                                            @ModelAttribute("categoryId")int categoryId,
-                                            HttpServletRequest req)
-            throws JsonProcessingException {
-        notificationService.addSubscribeCategory(getToken(req), user.getId(), categoryId);
+    @GetMapping("/subscribeCategory/{userId}/{categoryId}")
+    public String createSubscribeCategory(@PathVariable("userId")int userId,
+                                          @PathVariable("categoryId")int categoryId,
+                                          HttpServletRequest req) throws JsonProcessingException {
+        notificationService.addSubscribeCategory(getToken(req), userId, categoryId);
         return "redirect:/categories/";
     }
 
-    @PostMapping("/unSubscribeCategory")
-    public String deleteSubscribeCategory(@ModelAttribute("userInfo")UserDTO user,
-                                          @ModelAttribute("categoryId")int categoryId,
-                                          HttpServletRequest req)
-            throws JsonProcessingException {
-        notificationService.deleteSubscribeCategory(getToken(req), user.getId(), categoryId);
+    @GetMapping("/unSubscribeCategory/{userId}/{categoryId}")
+    public String deleteSubscribeCategory(@PathVariable("userId")int userId,
+                                          @PathVariable("categoryId")int categoryId,
+                                          HttpServletRequest req) throws JsonProcessingException {
+        notificationService.deleteSubscribeCategory(getToken(req), userId, categoryId);
         return "redirect:/categories/";
     }
 
-    @PostMapping("/subscribeCategoryFromIndex")
-    public String createSubscribeCategoryFromIndex(@ModelAttribute("userDTO")UserDTO user,
-                                          @ModelAttribute("categoryId")int categoryId,
-                                          HttpServletRequest req)
-            throws JsonProcessingException {
-        notificationService.addSubscribeCategory(getToken(req), user.getId(), categoryId);
-        return "redirect:/index/";
-    }
-
-    @PostMapping("/unSubscribeCategoryFromIndex")
-    public String deleteSubscribeCategoryFromIndex(@ModelAttribute("userInfo")UserDTO user,
-                                          @ModelAttribute("categoryId")int categoryId,
-                                          HttpServletRequest req)
-            throws JsonProcessingException {
-        notificationService.deleteSubscribeCategory(getToken(req), user.getId(), categoryId);
-        return "redirect:/index/";
-    }
-
-    @PostMapping("/subscribeTopic")
-    public String createSubscribeTopic(@ModelAttribute("id") UserTopicDTO user,
-                                       @ModelAttribute("categoryId")int categoryId,
-                                       @ModelAttribute("topicId")int topicId,
-                                       HttpServletRequest req)
-            throws JsonProcessingException {
-        notificationService.addSubscribeTopic(getToken(req), user.getId(), topicId);
+    @GetMapping("/subscribeTopic/{userId}/{categoryId}/{topicId}")
+    public String createSubscribeTopic(@PathVariable("userId")int userId,
+                                       @PathVariable("categoryId")int categoryId,
+                                       @PathVariable("topicId")int topicId,
+                                       HttpServletRequest req) throws JsonProcessingException {
+        notificationService.addSubscribeTopic(getToken(req), userId, topicId);
         return "redirect:/topics/" + categoryId;
     }
 
-    @PostMapping("/unSubscribeTopic")
-    public String deleteSubscribeTopic(@ModelAttribute("id")UserTopicDTO user,
-                                          @ModelAttribute("categoryId")int categoryId,
-                                          @ModelAttribute("topicId")int topicId,
-                                          HttpServletRequest req)
-            throws JsonProcessingException {
-        notificationService.deleteSubscribeTopic(getToken(req), user.getId(), topicId);
+    @GetMapping("/unSubscribeTopic/{userId}/{categoryId}/{topicId}")
+    public String deleteSubscribeTopic(@PathVariable("userId")int userId,
+                                       @PathVariable("categoryId")int categoryId,
+                                       @PathVariable("topicId")int topicId,
+                                       HttpServletRequest req) throws JsonProcessingException {
+        notificationService.deleteSubscribeTopic(getToken(req), userId, topicId);
         return "redirect:/topics/" + categoryId;
     }
 
-    @PostMapping("/subscribeTopicFromDetails")
-    public String createSubscribeTopicFromDetails(@ModelAttribute("id")UserTopicDTO user,
-                                                   @ModelAttribute("topicId")int topicId,
-                                                   HttpServletRequest req)
-            throws JsonProcessingException {
-        notificationService.addSubscribeTopic(getToken(req), user.getId(), topicId);
+    @GetMapping("/subscribeTopicFromDetails/{userId}/{topicId}")
+    public String createSubscribeTopicFromDetails(@PathVariable("userId")int userId,
+                                                  @PathVariable("topicId")int topicId,
+                                                  HttpServletRequest req) throws JsonProcessingException {
+        notificationService.addSubscribeTopic(getToken(req), userId, topicId);
         return "redirect:/topic/" + topicId;
     }
 
-    @PostMapping("/unSubscribeTopicFromDetails")
-    public String deleteSubscribeTopicFromDetails(@ModelAttribute("id")UserTopicDTO user,
-                                                   @ModelAttribute("topicId")int topicId,
-                                                   HttpServletRequest req)
-            throws JsonProcessingException {
-        notificationService.deleteSubscribeTopic(getToken(req), user.getId(), topicId);
+    @GetMapping("/unSubscribeTopicFromDetails/{userId}/{topicId}")
+    public String deleteSubscribeTopicFromDetails(@PathVariable("userId")int userId,
+                                                  @PathVariable("topicId")int topicId,
+                                                  HttpServletRequest req) throws JsonProcessingException {
+        notificationService.deleteSubscribeTopic(getToken(req), userId, topicId);
         return "redirect:/topic/" + topicId;
     }
 }
