@@ -45,7 +45,7 @@
             </span>
         </div>
         <div class="cell">
-            <div th:if="${userInfo != null}">
+            <div th:if="${userTopicDTO != null}">
                 <a class="nav-item nav-link" th:if="${!userTopicDTO.subscribeTopicIds.contains(topic.id)}"
                    th:href="@{|/notification/subscribeTopicFromDetails/${userInfo.id}/${topic.id}|}">
                     Подписаться:

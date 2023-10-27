@@ -2,6 +2,7 @@ package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 @Controller
 @RequestMapping("/topics")
 @AllArgsConstructor
+@Slf4j
 public class TopicsControl {
     private final TopicsService topicsService;
     private final AuthService authService;
@@ -38,13 +40,21 @@ public class TopicsControl {
                 "Главная", "/index",
                 "Категории", "/categories/",
                 categoryName, String.format("/topics/%d", categoryId));
-        var token = getToken(req);
-        if (token != null) {
-            var userInfo = authService.userInfo(token);
-            model.addAttribute("userInfo", userInfo);
-            RequestResponseTools.addAttrCanManage(model, userInfo);
-            categoriesService.updateStatistic(token, categoryId);
-            model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()));
+        try {
+            var token = getToken(req);
+            if (token != null) {
+                var userInfo = authService.userInfo(token);
+                model.addAttribute("userInfo", userInfo);
+                RequestResponseTools.addAttrCanManage(model, userInfo);
+                categoriesService.updateStatistic(token, categoryId);
+                model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()));
+            }
+        } catch (Exception e) {
+            RequestResponseTools.addAttrBreadcrumbs(model,
+                    "Главная", "/index",
+                    "Категории", "/categories/",
+                    categoryName, String.format("/topics/%d", categoryId));
+            log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
         }
         return "topic/topics";
     }
