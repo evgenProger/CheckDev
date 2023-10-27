@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.repository.InterviewRepository;
@@ -46,7 +47,8 @@ public class InterviewService {
     }
 
     public Page<Interview> findPaging(int page, int size) {
-        return interviewRepository.findAll(PageRequest.of(page, size));
+        return interviewRepository.findAll(
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createDate")));
     }
 
     public Optional<Interview> findById(Integer id) {
