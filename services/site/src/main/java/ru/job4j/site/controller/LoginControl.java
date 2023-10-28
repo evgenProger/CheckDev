@@ -26,6 +26,7 @@ public class LoginControl {
     public String loginPage(@ModelAttribute("redirectUri") String redirectUri,
                             @ModelAttribute("topicId") String topicId,
                             @RequestParam(value = "error", required = false) String error,
+                            @RequestParam(value = "interviewId", required = false) String interviewId,
                             Model model) {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
@@ -39,6 +40,7 @@ public class LoginControl {
         model.addAttribute("errorMessage", errorMessage);
         model.addAttribute("redirectUri", redirectUri);
         model.addAttribute("topicId", topicId);
+        model.addAttribute("interviewId", interviewId);
         return "login";
     }
 
@@ -46,6 +48,7 @@ public class LoginControl {
     public String signIn(@ModelAttribute CredentialDTO credentialDTO,
                          @ModelAttribute("redirectUri") String redirectUri,
                          @ModelAttribute("topicId") String topicId,
+                         @ModelAttribute("interviewId") String interviewId,
                          RedirectAttributes redirectAttributes,
                          HttpServletRequest req) throws JsonProcessingException {
         var isLogin = authService.token(
@@ -55,9 +58,12 @@ public class LoginControl {
             return "redirect:/login?error=true";
         }
         req.getSession().setAttribute("token", isLogin);
-        if (!redirectUri.isEmpty()
-        && !topicId.isEmpty()) {
-            redirectAttributes.addFlashAttribute("topicId", topicId);
+        if (!redirectUri.isEmpty()) {
+            if (!topicId.isEmpty()) {
+                redirectAttributes.addFlashAttribute("topicId", topicId);
+            } else if (!interviewId.isEmpty()) {
+                redirectAttributes.addFlashAttribute("interviewId", interviewId);
+            }
             return "redirect:" + redirectUri;
         }
         return "redirect:/";

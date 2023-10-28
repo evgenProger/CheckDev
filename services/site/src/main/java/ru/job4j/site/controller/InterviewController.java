@@ -62,8 +62,8 @@ public class InterviewController {
         return "redirect:/interview/" + createInterview.getId();
     }
 
-    @GetMapping("/{id}")
-    public String details(@PathVariable("id") int interviewId,
+    @GetMapping("/{interviewId}")
+    public String details(@PathVariable("interviewId") int interviewId,
                           Model model,
                           HttpServletRequest req) throws JsonProcessingException {
         var token = getToken(req);
