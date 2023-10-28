@@ -100,7 +100,7 @@ public class TopicControl {
     @PostMapping("/update")
     public String updateTopic(TopicDTO topic, HttpServletRequest req) throws JsonProcessingException {
         topicsService.update(getToken(req), topic);
-        return "redirect:/categories/";
+        return "redirect:/topic/" + topic.getId();
     }
 
     @PostMapping("/delete")
