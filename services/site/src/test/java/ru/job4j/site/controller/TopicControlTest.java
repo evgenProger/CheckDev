@@ -66,7 +66,7 @@ public class TopicControlTest {
                         .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("/topic/details"))
+                .andExpect(view().name("topic/details"))
                 .andExpect(model().attribute("topic", topic))
                 .andExpect(model().attribute("userTopicDTO", userTopicDto))
                 .andExpect(model().attribute("breadcrumbs", List.of(
