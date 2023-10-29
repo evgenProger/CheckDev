@@ -57,10 +57,13 @@
                                     </a>
                                 </div>
                                 <div class="pb-2">
-                                    <a class="text-dark text-decoration-none"
-                                       th:href="@{|/interview/${interview.id}|}"
-                                       th:text="${'Ориентировочная дата: ' + interview.approximateDate}">
-                                    </a>
+                                    <span class="mb-2 text-muted">
+                                        <span class="badge bg-success">Новое</span>
+                                        <i class="far fa-clock"></i>
+                                        <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
+                                        <i class="far fa-user"></i>
+                                        <span>ФИО пользователя</span>
+                                    </span>
                                 </div>
                             </td>
                         </tr>
