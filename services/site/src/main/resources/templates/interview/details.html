@@ -149,7 +149,7 @@
                     </div>
                     <a class="nav-item nav-link" th:href="${userInfo != null}
                     ? (${isWisher} ? @{#} : @{|/interview/${interview.id}/participate|})
-                    : @{|/login|}">
+                    : @{|/login?redirectUri=/interview/${interview.id}&interviewId=${interview.id}|}">
                         <button type="submit" class="btn btn-success mt-1"
                                 th:disabled="${isWisher}">Участвовать</button>
                     </a>
