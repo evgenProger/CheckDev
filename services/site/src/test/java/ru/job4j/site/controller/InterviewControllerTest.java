@@ -79,7 +79,7 @@ public class InterviewControllerTest {
                 .andExpect(model().attribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId()))
                 .andExpect(model().attribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/interview/details"));
+                .andExpect(view().name("interview/details"));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class InterviewControllerTest {
                 .andExpect(model().attribute("interview", interview))
                 .andExpect(model().attribute("breadcrumbs", breadcrumbs))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/interview/interviewEdit"));
+                .andExpect(view().name("interview/interviewEdit"));
     }
 
     @Test

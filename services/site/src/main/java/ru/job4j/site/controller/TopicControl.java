@@ -51,7 +51,7 @@ public class TopicControl {
                 categoryName, String.format("/topics/%d", categoryId));
         log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
     }
-        return "/topic/details";
+        return "topic/details";
     }
 
     @GetMapping("/createForm/{categoryId}")
