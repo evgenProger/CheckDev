@@ -93,7 +93,7 @@ public class InterviewController {
                 "Главная", "/index",
                 "Собеседования", "/interviews/",
                 interview.getTitle(), String.format("/interview/%d", interviewId));
-        return "/interview/details";
+        return "interview/details";
     }
 
     /**
@@ -127,7 +127,7 @@ public class InterviewController {
                 "Собеседования", "/interviews/",
                 interview.getTitle(), String.format("/interview/edit/%d", interviewId));
         model.addAttribute("interview", interview);
-        return "/interview/interviewEdit";
+        return "interview/interviewEdit";
     }
 
     /**
@@ -167,6 +167,6 @@ public class InterviewController {
                 "Собеседования", "/interviews/",
                 interview.getTitle(), String.format("/interview/%d", interviewId),
                 "принять участие в собеседовании", "/participate");
-        return "/interview/participate";
+        return "interview/participate";
     }
 }
