@@ -28,7 +28,7 @@
 <div class="container">
     <div class="row pt-3">
         <div class="cell">
-            <form class="was-validated" th:action="@{/interview/update}" method="post" th:object="${interview}">
+            <form class="needs-validation" th:action="@{/interview/update}" method="post" th:object="${interview}">
                 <input type="hidden" name="id" th:field="*{id}">
                 <input type="hidden" name="status" th:field="*{status}">
                 <input type="hidden" name="submitterId" th:field="*{submitterId}">
@@ -46,9 +46,6 @@
                                name="approximateDate"
                                th:field="*{approximateDate}" required>
                         <small> </small>
-                        <div class="invalid-feedback">
-                            Пожалуйста введите удобное время. Например: могу в любой день после 18.00 по Москве.
-                        </div>
                     </div>
                     <!--Поля contactBy -->
                     <div class="mb-3">
@@ -58,9 +55,6 @@
                             <input type="text" class="form-control" id="contactBy"
                                    name="contactBy"
                                    th:field="*{contactBy}" required>
-                            <div class="invalid-feedback">
-                                Пожалуйста введите контакт для связи.
-                            </div>
                         </div>
                     </div>
                     <!--Заполнение поля additional-->
@@ -70,9 +64,6 @@
                                   id="additional"
                                   name="additional"
                                   th:field="*{additional}" required></textarea>
-                        <div class="invalid-feedback">
-                            Пожалуйста введите описание.
-                        </div>
                     </div>
                     <!--Выбор типа собеседования поел typeInterview-->
                     <div class="form-check">
