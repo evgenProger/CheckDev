@@ -6,6 +6,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import ru.checkdev.auth.domain.Profile;
 import ru.checkdev.auth.repository.PersonRepository;
@@ -24,7 +25,7 @@ public class UserDetailsDefinition implements org.springframework.security.core.
     }
 
     @Override
-    public UserDetails loadUserByUsername(final String email) {
+    public UserDetails loadUserByUsername(final String email) throws DisabledException {
         Profile profile = this.persons.findByEmail(email);
         if (profile != null) {
             if (profile.isActive()) {
@@ -43,7 +44,7 @@ public class UserDetailsDefinition implements org.springframework.security.core.
                 throw new DisabledException(String.format("Пользователь с почтой %s не активирован.", email));
             }
         } else {
-            throw new DisabledException("Логин или пароль не совпадают.");
+            throw new UsernameNotFoundException(email);
         }
     }
 }
