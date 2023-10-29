@@ -6,8 +6,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.FeedbackDTO;
+import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.service.FeedbackService;
+import ru.job4j.site.service.InterviewService;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -28,54 +33,48 @@ class FeedbackControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
+    InterviewService interviewService;
+    @MockBean
     FeedbackService feedbackService;
 
     @Test
     void injectedIsNotNull() {
         assertThat(mockMvc).isNotNull();
+        assertThat(interviewService).isNotNull();
         assertThat(feedbackService).isNotNull();
     }
 
     @Test
     void whenGetFeedbackFormThenReturnFeedbackPage() throws Exception {
-        var interviewId = "1";
-        var submitterId = "2";
-        var userId = "2";
-        var mode = "1";
-        var feedbackDto = new FeedbackDTO(0, Integer.parseInt(interviewId),
-                Integer.parseInt(userId),
-                Integer.parseInt(mode),
-                null, 0);
-        this.mockMvc.perform(get("/interview/feedback/")
-                        .param("interviewId", interviewId)
-                        .param("submitterId", submitterId)
-                        .param("userId", userId)
-                        .param("mode", mode))
+        var interviewDTO = new InterviewDTO(1, 1, 2, 2,
+                "title", "additional", "contactBy",
+                null, null, 0);
+        var token = "1234";
+        when(interviewService.getById(token, interviewDTO.getId())).thenReturn(interviewDTO);
+        var breadcrumbs = List.of(
+                new Breadcrumb("Главная", "/index"),
+                new Breadcrumb("Собеседования", "/interviews/"),
+                new Breadcrumb(interviewDTO.getTitle(), "/interview/" + interviewDTO.getId()),
+                new Breadcrumb("Отзыв", "/interview/feedback/" + interviewDTO.getId()));
+        this.mockMvc.perform(get("/interview/feedback/{id}", interviewDTO.getId())
+                        .sessionAttr("token", token))
                 .andDo(print())
-                .andExpect(model().attribute("feedback", feedbackDto))
+                .andExpect(model().attribute("interview", interviewDTO))
+                .andExpect(model().attribute("breadcrumbs", breadcrumbs))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/interview/feedbackForm"));
     }
 
     @Test
-    void whenGetFeedbackFormThenReturnFeedbackPageNewRoleInInterview() throws Exception {
-        var interviewId = "1";
-        var submitterId = "2";
-        var userId = "1";
-        var mode = "1";
-        var feedbackDto = new FeedbackDTO(0, Integer.parseInt(interviewId),
-                Integer.parseInt(userId),
-                2,
-                null, 0);
-        this.mockMvc.perform(get("/interview/feedback/")
-                        .param("interviewId", interviewId)
-                        .param("submitterId", submitterId)
-                        .param("userId", userId)
-                        .param("mode", mode))
+    void whenGetFeedbackFormOfInterviewGetExceptionThenRedirectStartPage() throws Exception {
+        var interviewId = 1;
+        var token = "1234";
+        when(interviewService.getById(token, interviewId)).thenThrow(new RuntimeException("error"));
+        this.mockMvc.perform(get("/interview/feedback/{id}", interviewId)
+                        .sessionAttr("token", token))
                 .andDo(print())
-                .andExpect(model().attribute("feedback", feedbackDto))
-                .andExpect(status().isOk())
-                .andExpect(view().name("/interview/feedbackForm"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
     }
 
     @Test

@@ -40,8 +40,17 @@ class StatusInterviewTest {
     }
 
     @Test
+    void whenFeedbackGetID3GetInfoThenTrue() {
+        var progressId = 3;
+        var progressInfo = "Ожидает отзыв";
+        var inProgress = StatusInterview.IS_FEEDBACK;
+        assertThat(inProgress.getId()).isEqualTo(progressId);
+        assertThat(inProgress.getInfo()).isEqualTo(progressInfo);
+    }
+
+    @Test
     void whenCompletedGetID3GetInfoThenTrue() {
-        var completedId = 3;
+        var completedId = 4;
         var completedInfo = "Завершено";
         var isCompleted = StatusInterview.IS_COMPLETED;
         assertThat(isCompleted.getId()).isEqualTo(completedId);
@@ -50,7 +59,7 @@ class StatusInterviewTest {
 
     @Test
     void whenCanceledGetID4GetInfoThenTrue() {
-        var canceledId = 4;
+        var canceledId = 5;
         var canceledInfo = "Отменено";
         var isCanceled = StatusInterview.IS_CANCELED;
         assertThat(isCanceled.getId()).isEqualTo(canceledId);

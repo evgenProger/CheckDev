@@ -47,6 +47,13 @@ public class InterviewService {
                 mapper.writeValueAsString(interviewDTO));
     }
 
+    /**
+     * Метод обновляет статус собеседования
+     *
+     * @param token     User security token
+     * @param id        int ID Interview
+     * @param newStatus int New status
+     */
     public void updateStatus(String token, int id, int newStatus) {
         new RestAuthCall(String.format("%sstatus/?id=%d&newStatus=%d", URL_MOCK, id, newStatus))
                 .put(token, "");

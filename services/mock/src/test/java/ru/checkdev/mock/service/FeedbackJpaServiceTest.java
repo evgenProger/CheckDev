@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.domain.Feedback;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.dto.FeedbackDTO;
 import ru.checkdev.mock.mapper.FeedbackMapper;
 import ru.checkdev.mock.repository.FeedbackRepository;
 
@@ -85,4 +86,23 @@ class FeedbackJpaServiceTest {
         var actual = service.findByInterviewId(interview.getId());
         assertThat(actual).isEmpty();
     }
+
+    @Test
+    void whenFindByInterviewIdAndUserIdThenReturnOptionalFeedbackDTO() {
+        var feedback1 = new FeedbackDTO(1, interview.getId(), 1, 2, "text1", 4);
+        when(repository.findByInterviewIdAndUserId(feedback1.getInterviewId(), feedback1.getUserId()))
+                .thenReturn(List.of(feedback1));
+        var actual = service.findByInterviewIdAndUserId(feedback1.getInterviewId(), feedback1.getUserId());
+        assertThat(actual).isEqualTo(List.of(feedback1));
+    }
+
+    @Test
+    void whenFindByInterviewIdAndUserIdThenReturnOptionalEmpty() {
+        var feedback1 = new FeedbackDTO(1, interview.getId(), 1, 2, "text1", 4);
+        when(repository.findByInterviewIdAndUserId(feedback1.getInterviewId(), feedback1.getUserId()))
+                .thenReturn(Collections.emptyList());
+        var actual = service.findByInterviewIdAndUserId(feedback1.getInterviewId(), feedback1.getUserId());
+        assertThat(actual).isEmpty();
+    }
+
 }

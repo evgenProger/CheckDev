@@ -36,4 +36,20 @@ public class FeedbackController {
         var result = service.findByInterviewId(interviewId);
         return ResponseEntity.ok(result);
     }
+
+    /**
+     * Метод возвращает отзыв по ID Interview и ID User
+     *
+     * @param interviewId int ID Interview
+     * @param userId      int ID User
+     * @return ResponseEntity
+     */
+    @GetMapping("/")
+    public ResponseEntity<List<FeedbackDTO>> findByInterviewIdUserId(@RequestParam("iId") int interviewId,
+                                                                     @RequestParam("uId") int userId) {
+        var result = service.findByInterviewIdAndUserId(interviewId, userId);
+        return new ResponseEntity<>(
+                result,
+                result.isEmpty() ? HttpStatus.NOT_FOUND : HttpStatus.OK);
+    }
 }

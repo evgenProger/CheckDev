@@ -31,22 +31,17 @@
 <div class="container">
     <div class="row pt-3">
         <div class="cell">
-            <form class="was-validated" th:action="@{/interview/createFeedback}" method="post" th:object="${feedback}">
+            <form class="needs-validation" th:action="@{/interview/createFeedback}" method="post">
                 <!--ID собеседования-->
-                <input type="hidden" id="interviewId" name="interviewId" th:field="*{interviewId}">
+                <input type="hidden" id="interviewId" name="interviewId" th:value="*{interview.id}">
                 <!--ID авторизованного пользователя-->
-                <input type="hidden" id="userId" name="userId" th:field="*{userId}">
-                <!--Статус участника. Если задавал вопросы scope=1. Если отвечал на вопросы scope=2 -->
-                <input type="hidden" id="roleInInterview" , name="scope" th:field="*{roleInInterview}">
+                <input type="hidden" id="userId" name="userId" th:value="*{userInfo.id}">
                 <!--Форма ввода текста отзыва собеседования textFeedback-->
                 <div class="mb-3">
                     <label class="form-label h3" for="textFeedback">Отзыв собеседования</label>
                     <textarea class="form-control" rows="3"
                               id="textFeedback"
                               name="textFeedback" required></textarea>
-                    <div class="invalid-feedback">
-                        Введите текст отзыва
-                    </div>
                 </div>
                 <!--Check бокс выбора оценки собеседования поле scope значение от 0 до 5-->
                 <div class="h4">
@@ -75,9 +70,6 @@
                 <div class="form-check mb-3">
                     <input class="form-check-input" type="radio" id="scope5" name="scope" value="5" required>
                     <label class="form-check-label" for="scope5">5</label>
-                    <div class="invalid-feedback">
-                        Поставьте оценку
-                    </div>
                 </div>
                 <div class="form-group m3">
                     <button type="submit" class="btn btn-primary">Отправить отзыв</button>

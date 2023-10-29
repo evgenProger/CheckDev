@@ -27,21 +27,21 @@
 
     <style>
         .form-group .mock {
-             visibility: hidden;
+            visibility: hidden;
         }
 
         .form-group .message {
-             transform: translateY(20px);
-             transition: opacity 0.4s, visibility 0.4s, transform 0.4s;
-             opacity: 0;
-             visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.4s, visibility 0.4s, transform 0.4s;
+            opacity: 0;
+            visibility: hidden;
         }
 
         .form-group:hover .message {
-             background: #11EE66;
-             opacity: 1;
-             visibility: visible;
-             transform: translateY(0);
+            background: #11EE66;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
     </style>
 
@@ -151,17 +151,15 @@
                     ? (${isWisher} ? @{#} : @{|/interview/${interview.id}/participate|})
                     : @{|/login?redirectUri=/interview/${interview.id}&interviewId=${interview.id}|}">
                         <button type="submit" class="btn btn-success mt-1"
-                                th:disabled="${isWisher}">Участвовать</button>
+                                th:disabled="${isWisher}">Участвовать
+                        </button>
                     </a>
                 </div>
                 <!--Кнопки оставить отзыв. Доступна если статус IN_PROGRESS-->
-                <div class="m-3" th:if="${userInfo != null && STATUS_IN_PROGRESS_ID==interview.status}">
+                <div class="m-3"
+                     th:if="${userInfo != null && (STATUS_IN_PROGRESS_ID==interview.status || STATUS_IS_FEEDBACK_ID==interview.status)}">
                     <!--Кнопка оставляет отзыв АВТОР собеседования. Доступна если isAuthor=true-->
-                    <form th:action="@{/interview/feedback/}" method="get">
-                        <input type="hidden" id="interviewId" name="interviewId" th:value="${interview.id}">
-                        <input type="hidden" id="submitterId" name="submitterId" th:value="${interview.submitterId}">
-                        <input type="hidden" id="userId" name="userId" th:value="${userInfo.id}">
-                        <input type="hidden" id="mode" name="mode" th:value="${interview.mode}">
+                    <form th:action="@{|/interview/feedback/${interview.id}|}" method="get">
                         <div th:if="${isAuthor}">
                             <button type="submit" class="btn btn-primary">Оставить отзыв участнику</button>
                         </div>

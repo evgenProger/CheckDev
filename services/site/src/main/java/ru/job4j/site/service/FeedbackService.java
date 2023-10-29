@@ -14,4 +14,6 @@ public interface FeedbackService {
     boolean save(String token, FeedbackDTO feedbackDTO);
 
     List<FeedbackDTO> findByInterviewId(int interviewId);
+
+    List<FeedbackDTO> findByInterviewIdAndUserId(int interviewId, int userID);
 }
