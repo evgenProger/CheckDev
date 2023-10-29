@@ -41,7 +41,7 @@
                     <div class="collapse" id="collapseExample">
                         <span th:text="${topic.text}"></span>
                     </div>
-                    <form class="was-validated" th:action="@{/interview/create}" method="post">
+                    <form class="needs-validation" th:action="@{/interview/create}" method="post">
                         <input type="hidden" class="form-control mb-3 mt-2" id="title"
                                name="title" th:value="${category.name + ' : ' + topic.name}">
                         <input type="hidden" class="form-control mb-3 mt-2" id="topicId"
@@ -54,9 +54,6 @@
                                        placeholder="Введите удобное время для собеседования" required>
                                 <small class="text-muted"><span>Например, Могу в любой день после 18.00 по Москве.</span>
                                 </small>
-                                <div class="invalid-feedback">
-                                    Пожалуйста введите удобное время. Например: могу в любой день после 18.00 по Москве.
-                                </div>
                             </div>
                             <!--Поля contactBy -->
                             <div class="mb-3">
@@ -66,9 +63,6 @@
                                     <input type="text" class="form-control" id="contactBy"
                                            name="contactBy"
                                            placeholder="Способ связи" required>
-                                    <div class="invalid-feedback">
-                                        Пожалуйста введите контакт для связи.
-                                    </div>
                                 </div>
                             </div>
                             <!--Заполнение поля description-->
@@ -78,9 +72,6 @@
                                           id="additional"
                                           name="additional"
                                           placeholder="Введите дополнительную информацию" required></textarea>
-                                <div class="invalid-feedback">
-                                    Пожалуйста введите описание.
-                                </div>
                             </div>
                             <!--Выбор типа собеседования поел typeInterview-->
                             <div class="form-check">
