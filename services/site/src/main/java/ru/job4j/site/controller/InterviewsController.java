@@ -107,6 +107,6 @@ public class InterviewsController {
         );
         log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
     }
-        return "interviews";
+        return "interview/interviews";
     }
 }
