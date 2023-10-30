@@ -39,7 +39,7 @@
                         Подробно
                     </button>
                     <div class="collapse" id="collapseExample">
-                        <span th:text="${topic.text}"></span>
+                        <pre th:utext="${topic.text}"></pre>
                     </div>
                     <form class="needs-validation" th:action="@{/interview/create}" method="post">
                         <input type="hidden" class="form-control mb-3 mt-2" id="title"
