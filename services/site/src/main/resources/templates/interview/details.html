@@ -152,7 +152,7 @@
                    th:disabled="${isWisher || isAuthor}"
                    th:href="${userInfo != null}
                     ? (${isWisher} ? @{#} : @{|/interview/${interview.id}/participate|})
-                    : @{|/login?redirectUri=/interview/${interview.id}&interviewId=${interview.id}|}">
+                    : @{|/login?redirectUri=/interview/${interview.id}/participate&interviewId=${interview.id}|}">
                     Участвовать
                 </a>
                 <!--Кнопки оставить отзыв. Доступна если статус IN_PROGRESS-->

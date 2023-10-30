@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -247,5 +248,65 @@ public class InterviewControllerTest {
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/interview/edit/" + interview.getId()));
+    }
+
+    @Test
+    void whenParticipateSuccessful() throws Exception {
+        var token = "123456";
+        var userInfo = new UserInfoDTO();
+        var userId = 99;
+        userInfo.setId(userId);
+        var interviewId = 7;
+        var interview = new InterviewDTO();
+        interview.setId(interviewId);
+        interview.setSubmitterId(14375842);
+        interview.setTitle("Some title");
+        var wishers = IntStream.range(1, 3).mapToObj(i -> {
+                    var wisher = new WisherDto();
+                    wisher.setId(i);
+                    wisher.setInterviewId(interviewId);
+                    wisher.setUserId(userId + i);
+                    wisher.setContactBy(String.format("user_%d@mail.cd", i));
+                    wisher.setApprove(i % 2 == 0);
+                    wisher.setStatus(1);
+                    return wisher;
+                }).toList();
+        var interviewStatistics = new HashMap<Integer, InterviewStatistic>();
+        IntStream.range(1, 3).forEach(i ->
+                interviewStatistics.put(i, new InterviewStatistic(i + 1, i, i - 1)));
+        when(interviewService.getById(token, interviewId)).thenReturn(interview);
+        when(wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interviewId)))
+                .thenReturn(wishers);
+        when(wisherService.getInterviewStatistic(wishers)).thenReturn(interviewStatistics);
+        when(authService.userInfo(token)).thenReturn(userInfo);
+        mockMvc.perform(get(String.format("/interview/%d/participate", interviewId))
+                        .sessionAttr("token", token)
+                )
+                .andDo(print()).andExpectAll(status().isOk(),
+                        model().attribute("breadcrumbs", List.of(
+                                new Breadcrumb("Главная", "/index"),
+                                new Breadcrumb("Собеседования", "/interviews/"),
+                                new Breadcrumb(interview.getTitle(),
+                                        String.format("/interview/%d", interviewId)),
+                                new Breadcrumb("принять участие в собеседовании",
+                                        "/participate"))),
+                        view().name("interview/participate"));
+    }
+
+    @Test
+    void whenTryToParticipateWithSubmitterThenRedirectToInterviewPage() throws Exception {
+        var token = "123456";
+        var userInfo = new UserInfoDTO();
+        var userId = 99;
+        userInfo.setId(userId);
+        var interviewId = 7;
+        var interview = new InterviewDTO();
+        interview.setId(interviewId);
+        interview.setSubmitterId(userInfo.getId());
+        when(interviewService.getById(token, interviewId)).thenReturn(interview);
+        mockMvc.perform(get(String.format("/interview/%d/participate", interviewId))
+                )
+                .andDo(print()).andExpectAll(status().is3xxRedirection(),
+                        view().name(String.format("redirect:/interview/%d", interviewId)));
     }
 }

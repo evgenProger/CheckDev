@@ -158,16 +158,22 @@ public class InterviewController {
                               Model model,
                               HttpServletRequest req) throws JsonProcessingException {
         var token = getToken(req);
+        var userInfoDTO = authService.userInfo(token);
         var interview = interviewService.getById(token, interviewId);
-        var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
-        var statisticMap = wisherService.getInterviewStatistic(wishers);
-        model.addAttribute("interview", interview);
-        model.addAttribute("statisticMap", statisticMap);
-        RequestResponseTools.addAttrBreadcrumbs(model,
-                "Главная", "/index",
-                "Собеседования", "/interviews/",
-                interview.getTitle(), String.format("/interview/%d", interviewId),
-                "принять участие в собеседовании", "/participate");
-        return "interview/participate";
+        var result = "interview/participate";
+        if (userInfoDTO != null && interview.getSubmitterId() != userInfoDTO.getId()) {
+            var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
+            var statisticMap = wisherService.getInterviewStatistic(wishers);
+            model.addAttribute("interview", interview);
+            model.addAttribute("statisticMap", statisticMap);
+            RequestResponseTools.addAttrBreadcrumbs(model,
+                    "Главная", "/index",
+                    "Собеседования", "/interviews/",
+                    interview.getTitle(), String.format("/interview/%d", interviewId),
+                    "принять участие в собеседовании", "/participate");
+        } else {
+            result = String.format("redirect:/interview/%d", interviewId);
+        }
+        return result;
     }
 }
