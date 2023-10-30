@@ -209,4 +209,120 @@ class FeedbackServiceWebClientTest {
         var actual = feedbackService.gerRoleInInterview(userId, interview);
         assertThat(actual).isEqualTo(expected);
     }
+
+    @Test
+    void whenUpdateStatusInterviewThenReturnIDStatusIsFeedback() {
+        var token = "1234";
+        var interviewDto = new InterviewDTO();
+        interviewDto.setId(1);
+        interviewDto.setSubmitterId(1);
+        interviewDto.setStatus(StatusInterview.IN_PROGRESS.getId());
+        var feedbackDto1 = new FeedbackDTO(1, 1, 1, 1, "text", 5);
+        doNothing().when(interviewService)
+                .updateStatus(token, interviewDto.getId(), StatusInterview.IS_FEEDBACK.getId());
+        when(webClientMock.get()).thenReturn(requestHeadersUriMock);
+        when(requestHeadersUriMock
+                .uri(
+                        String.format("%s?iId=%d&uId=%d",
+                                urlFeedback, feedbackDto1.getInterviewId(), feedbackDto1.getUserId())))
+                .thenReturn(requestBodyMock);
+        when(requestBodyMock.accept(MediaType.APPLICATION_JSON)).thenReturn(requestBodyMock);
+        when(requestBodyMock.retrieve()).thenReturn(responseMock);
+        when(responseMock.toEntityList(FeedbackDTO.class)).thenReturn(Mono.empty());
+        var actual = feedbackService.updateStatusInterview(token, interviewDto, feedbackDto1.getUserId());
+        assertThat(actual).isEqualTo(StatusInterview.IS_FEEDBACK.getId());
+    }
+
+    @Test
+    void whenUpdateStatusInterviewThenReturnIdOldStatus() {
+        var token = "1234";
+        var interviewDto = new InterviewDTO();
+        interviewDto.setId(1);
+        interviewDto.setSubmitterId(1);
+        interviewDto.setStatus(StatusInterview.IS_NEW.getId());
+        var feedbackDto1 = new FeedbackDTO(1, 1, 1, 1, "text", 5);
+        doNothing().when(interviewService)
+                .updateStatus(token, interviewDto.getId(), StatusInterview.IS_FEEDBACK.getId());
+        when(webClientMock.get()).thenReturn(requestHeadersUriMock);
+        when(requestHeadersUriMock
+                .uri(
+                        String.format("%s?iId=%d&uId=%d",
+                                urlFeedback, feedbackDto1.getInterviewId(), feedbackDto1.getUserId())))
+                .thenReturn(requestBodyMock);
+        when(requestBodyMock.accept(MediaType.APPLICATION_JSON)).thenReturn(requestBodyMock);
+        when(requestBodyMock.retrieve()).thenReturn(responseMock);
+        when(responseMock.toEntityList(FeedbackDTO.class)).thenReturn(Mono.empty());
+        var actual = feedbackService.updateStatusInterview(token, interviewDto, feedbackDto1.getUserId());
+        assertThat(actual).isEqualTo(interviewDto.getStatus());
+    }
+
+    @Test
+    void whenUpdateStatusInterviewIsFeedbackThenReturnIdStatusFeedback() {
+        var token = "1234";
+        var interviewDto = new InterviewDTO();
+        interviewDto.setId(1);
+        interviewDto.setSubmitterId(1);
+        interviewDto.setStatus(StatusInterview.IS_FEEDBACK.getId());
+        var feedbackDto1 = new FeedbackDTO(1, 1, 1, 1, "text", 5);
+        doNothing().when(interviewService)
+                .updateStatus(token, interviewDto.getId(), StatusInterview.IS_FEEDBACK.getId());
+        when(webClientMock.get()).thenReturn(requestHeadersUriMock);
+        when(requestHeadersUriMock
+                .uri(
+                        String.format("%s?iId=%d&uId=%d",
+                                urlFeedback, feedbackDto1.getInterviewId(), feedbackDto1.getUserId())))
+                .thenReturn(requestBodyMock);
+        when(requestBodyMock.accept(MediaType.APPLICATION_JSON)).thenReturn(requestBodyMock);
+        when(requestBodyMock.retrieve()).thenReturn(responseMock);
+        when(responseMock.toEntityList(FeedbackDTO.class)).thenReturn(Mono.empty());
+        var actual = feedbackService.updateStatusInterview(token, interviewDto, feedbackDto1.getUserId());
+        assertThat(actual).isEqualTo(StatusInterview.IS_FEEDBACK.getId());
+    }
+
+    @Test
+    void whenUpdateStatusInterviewIsFeedbackAndFeedbackTwoThenReturnIdStatusFeedback() {
+        var token = "1234";
+        var interviewDto = new InterviewDTO();
+        interviewDto.setId(1);
+        interviewDto.setSubmitterId(1);
+        interviewDto.setStatus(StatusInterview.IS_FEEDBACK.getId());
+        var feedbackDto1 = new FeedbackDTO(1, 1, 1, 1, "text", 5);
+        var feedbackDto2 = new FeedbackDTO(2, 1, 1, 2, "text2", 5);
+        var feedbacks = List.of(feedbackDto1, feedbackDto2);
+        when(webClientMock.get()).thenReturn(requestHeadersUriMock);
+        when(requestHeadersUriMock
+                .uri(
+                        String.format("%s?iId=%d&uId=%d",
+                                urlFeedback, feedbackDto1.getInterviewId(), feedbackDto1.getUserId())))
+                .thenReturn(requestBodyMock);
+        when(requestBodyMock.accept(MediaType.APPLICATION_JSON)).thenReturn(requestBodyMock);
+        when(requestBodyMock.retrieve()).thenReturn(responseMock);
+        when(responseMock.toEntityList(FeedbackDTO.class)).thenReturn(Mono.just(new ResponseEntity<>(feedbacks, HttpStatus.OK)));
+        var actual = feedbackService.updateStatusInterview(token, interviewDto, feedbackDto1.getUserId());
+        assertThat(actual).isEqualTo(StatusInterview.IS_FEEDBACK.getId());
+    }
+
+    @Test
+    void whenUpdateStatusInterviewIsFeedbackThenReturnIdStatusCompleted() {
+        var token = "1234";
+        var interviewDto = new InterviewDTO();
+        interviewDto.setId(1);
+        interviewDto.setSubmitterId(1);
+        interviewDto.setStatus(StatusInterview.IS_FEEDBACK.getId());
+        var feedbackDto1 = new FeedbackDTO(1, 1, 1, 1, "text", 5);
+        var feedbacks = List.of(feedbackDto1);
+        doNothing().when(interviewService)
+                .updateStatus(token, interviewDto.getId(), StatusInterview.IS_COMPLETED.getId());
+        when(webClientMock.get()).thenReturn(requestHeadersUriMock);
+        when(requestHeadersUriMock
+                .uri(
+                        String.format("%s?iId=%d&uId=%d",
+                                urlFeedback, feedbackDto1.getInterviewId(), feedbackDto1.getUserId())))
+                .thenReturn(requestBodyMock);
+        when(requestBodyMock.accept(MediaType.APPLICATION_JSON)).thenReturn(requestBodyMock);
+        when(requestBodyMock.retrieve()).thenReturn(responseMock);
+        when(responseMock.toEntityList(FeedbackDTO.class)).thenReturn(Mono.just(new ResponseEntity<>(feedbacks, HttpStatus.OK)));
+        var actual = feedbackService.updateStatusInterview(token, interviewDto, feedbackDto1.getUserId());
+        assertThat(actual).isEqualTo(StatusInterview.IS_COMPLETED.getId());
+    }
 }

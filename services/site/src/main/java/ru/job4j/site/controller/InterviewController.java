@@ -73,16 +73,13 @@ public class InterviewController {
         var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
         var isWisher = wisherService.isWisher(userInfo.getId(), interview.getId(), wishers);
         var statisticMap = wisherService.getInterviewStatistic(wishers);
-        var statuses = StatusInterview.values();
         model.addAttribute("interview", interview);
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("isWisher", isWisher);
         model.addAttribute("statisticMap", statisticMap);
+        model.addAttribute("statuses", StatusInterview.values());
         model.addAttribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId());
         model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
-        if (interview.getMode() < statuses.length) {
-            model.addAttribute("status", statuses[interview.getStatus()].getInfo());
-        }
         if (isAuthor) {
             var wishersDetail = interviewService.getAllWisherDetail(wishers);
             boolean isDismissed = wisherService.isDismissed(interviewId, wishers);
