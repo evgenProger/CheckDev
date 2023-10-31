@@ -46,6 +46,9 @@
             visibility: visible;
             transform: translateY(0);
         }
+
+
+
     </style>
 
 </head>
@@ -70,8 +73,11 @@
                  <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
                  <i class="far fa-user"></i>
                  <span>ФИО Автора</span>
+                <span th:if="${userInfo != null}">
+                 <span class="fw-bold" th:text=${userInfo.username}></span>
+                </span>
                  <span th:text="${'Ориентировочная дата: ' + interview.approximateDate}"></span>
-            </span>
+                </span>
         </div>
         <div class="card-body">
             <div>
@@ -147,9 +153,9 @@
                         </tbody>
                     </table>
                 </div>
-              <!--  <div th:class="${isWisher} ? 'message p-1 rounded-2 col-1' : 'mock p-1 col-1'">
-                    Вы участник
-                </div>-->
+                <!--  <div th:class="${isWisher} ? 'message p-1 rounded-2 col-1' : 'mock p-1 col-1'">
+                      Вы участник
+                  </div>-->
                 <a th:if="${!isAuthor || userInfo == null}"
                    class="btn btn-success"
                    th:disabled="${isWisher || isAuthor}"
