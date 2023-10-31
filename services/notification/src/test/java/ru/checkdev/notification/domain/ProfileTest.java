@@ -10,9 +10,9 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-class PersonDTOTest {
+class ProfileTest {
 
-    private PersonDTO person;
+    private Profile profile;
 
     @BeforeEach
     public void setUp() {
@@ -22,29 +22,27 @@ class PersonDTOTest {
                 .setDate(2023, 10, 23)
                 .setTimeOfDay(20, 20, 20)
                 .build();
-        person = new PersonDTO("email", "password", true, roles, created);
+        profile = new Profile("username", "email", "password", true, created);
+    }
+
+    @Test
+    public void testGetUsername() {
+        assertThat("username", is(profile.getUsername()));
     }
 
     @Test
     public void testGetEmail() {
-        assertThat("email", is(person.getEmail()));
+        assertThat("email", is(profile.getEmail()));
     }
 
     @Test
     public void testGetPassword() {
-        assertThat("password", is(person.getPassword()));
+        assertThat("password", is(profile.getPassword()));
     }
 
     @Test
     public void testGetPrivacy() {
-        assertThat(true, is(person.isPrivacy()));
-    }
-
-    @Test
-    public void testGetRoles() {
-        List<RoleDTO> roles = new ArrayList<>();
-        roles.add(new RoleDTO(1));
-        assertThat(roles, is(person.getRoles()));
+        assertThat(true, is(profile.isPrivacy()));
     }
 
     @Test
@@ -53,7 +51,6 @@ class PersonDTOTest {
                 .setDate(2023, 10, 23)
                 .setTimeOfDay(20, 20, 20)
                 .build();
-        assertThat(created, is(person.getCreated()));
+        assertThat(created, is(profile.getCreated()));
     }
-
 }

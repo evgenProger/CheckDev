@@ -14,11 +14,10 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class PersonDTO {
+public class Profile {
+    private String username;
     private String email;
     private String password;
     private boolean privacy;
-    private List<RoleDTO> roles;
     private Calendar created;
-
 }
