@@ -11,7 +11,7 @@ package ru.job4j.site.domain;
  * Если автор и участник оставили отзывы, то статус завершено.
  * Если автор отметил собеседование, то статус отменено.
  * 0 - Неизвестен IS_UNKNOWN.
- * 1 - Новая IS_NEW.
+ * 1 - Новое IS_NEW.
  * 2 - В процессе IN_PROGRESS.
  * 3 - Завершено IS_COMPLETED.
  * 4 - Отменено IS_CANCELED.
@@ -22,7 +22,7 @@ package ru.job4j.site.domain;
 public enum StatusInterview {
     IS_UNKNOWN(0, "Неизвестен"),
 
-    IS_NEW(1, "Новая"),
+    IS_NEW(1, "Новое"),
 
     IN_PROGRESS(2, "В процессе"),
 
