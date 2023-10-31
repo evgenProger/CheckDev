@@ -127,4 +127,32 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
             @Param("userId") int userId,
             @Param("topicsIds") Collection<Integer> topicsIds,
             Pageable pageable);
+
+    /**
+     * Возвращает все собеседования на который пользователь должен оставить отзыв.
+     * nativeQuery = true;
+     * Описание построения запроса:
+     * Через внутренние объединения получаем список всех собеседований,
+     * которые присутствуют в таблице wisher с признаком approve=true,
+     * а также которые принадлежат указанному пользователю.
+     * Конечная выборка получает все ID собеседований которых нет в таблице cd_feedback.
+     * Ожидаемое поведение: пользователь не владелец собеседования,
+     * но он одобренный участник и не оставил отзыв, метод вернет список с ID этого собеседования.
+     * Пользователь является автором собеседования и он одобрил участника и не оставил отзыв,
+     * метод вернет список с ID этого собеседования.
+     * Так же если пользователь уже оставил отзыв на собеседование с ID то это собеседование не попадает в выборку.
+     *
+     * @param userId ID User
+     * @return List<Interview>
+     */
+    @Query(value = """
+            SELECT DISTINCT i.*
+            FROM interview i
+                     JOIN wisher w ON i.id = w.interview_id AND w.approve AND (i.submitter_id = :userId OR w.user_id = :userId)
+            WHERE NOT EXISTS(SELECT 1
+                             FROM cd_feedback cf
+                             WHERE cf.interview_id = i.id
+                               AND cf.user_id = :userId)
+            """, nativeQuery = true)
+    List<Interview> findAllByUserIdWisherIsApproveAndNoFeedback(@Param("userId") int userId);
 }

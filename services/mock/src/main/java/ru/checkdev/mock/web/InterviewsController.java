@@ -124,4 +124,13 @@ public class InterviewsController {
                 .body(!not ? interviewService.findByUserIdAsWisher(userId, page, size)
                         : interviewService.findByUserIdAsNotWisher(userId, page, size));
     }
+
+    @GetMapping("/noFeedback/{uId}")
+    public ResponseEntity<List<Interview>> getAllNoFeedback(@PathVariable("uId") int uId) {
+        List<Interview> interviews = interviewService.findAllIdByNoFeedback(uId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(interviews);
+    }
 }

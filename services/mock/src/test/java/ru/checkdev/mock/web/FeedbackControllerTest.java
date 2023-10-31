@@ -124,7 +124,8 @@ class FeedbackControllerTest {
     void whenFindByInterviewIdAndUserIdThenReturnStatusNotFound() throws Exception {
         var feedbackDTO = new FeedbackDTO(1, 1, 1,
                 2, "text", 5);
-        when(service.findByInterviewIdAndUserId(feedbackDTO.getInterviewId(), feedbackDTO.getUserId())).thenReturn(Collections.emptyList());
+        when(service.findByInterviewIdAndUserId(feedbackDTO.getInterviewId(), feedbackDTO.getUserId()))
+                .thenReturn(Collections.emptyList());
         mockMvc.perform(get("/feedback/")
                         .param("iId", String.valueOf(feedbackDTO.getInterviewId()))
                         .param("uId", String.valueOf(feedbackDTO.getUserId())))

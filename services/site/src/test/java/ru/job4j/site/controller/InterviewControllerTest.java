@@ -13,14 +13,10 @@ import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.*;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,6 +30,8 @@ public class InterviewControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private InterviewService interviewService;
+    @MockBean
+    private InterviewsService interviewsService;
     @MockBean
     private TopicsService topicsService;
     @MockBean
@@ -102,10 +100,12 @@ public class InterviewControllerTest {
         topic.setCategory(category);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(topicsService.getById(1)).thenReturn(topic);
+        when(interviewsService.findAllIdByNoFeedback(1)).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/interview/createForm")
                         .sessionAttr("token", token)
                         .param("topicId", "1"))
                 .andDo(print())
+                .andExpect(model().attribute("noFeedback", Collections.emptyList()))
                 .andExpect(model().attribute("category", topic.getCategory()))
                 .andExpect(model().attribute("topic", topic))
                 .andExpect(model().attribute("breadcrumbs", breadcrumbs))
@@ -260,15 +260,15 @@ public class InterviewControllerTest {
         interview.setSubmitterId(14375842);
         interview.setTitle("Some title");
         var wishers = IntStream.range(1, 3).mapToObj(i -> {
-                    var wisher = new WisherDto();
-                    wisher.setId(i);
-                    wisher.setInterviewId(interviewId);
-                    wisher.setUserId(userId + i);
-                    wisher.setContactBy(String.format("user_%d@mail.cd", i));
-                    wisher.setApprove(i % 2 == 0);
-                    wisher.setStatus(1);
-                    return wisher;
-                }).toList();
+            var wisher = new WisherDto();
+            wisher.setId(i);
+            wisher.setInterviewId(interviewId);
+            wisher.setUserId(userId + i);
+            wisher.setContactBy(String.format("user_%d@mail.cd", i));
+            wisher.setApprove(i % 2 == 0);
+            wisher.setStatus(1);
+            return wisher;
+        }).toList();
         var interviewStatistics = new HashMap<Integer, InterviewStatistic>();
         IntStream.range(1, 3).forEach(i ->
                 interviewStatistics.put(i, new InterviewStatistic(i + 1, i, i - 1)));

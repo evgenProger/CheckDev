@@ -1,6 +1,7 @@
 package ru.checkdev.mock.web;
 
 import com.google.gson.GsonBuilder;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -20,14 +21,14 @@ import ru.checkdev.mock.repository.InterviewRepository;
 import ru.checkdev.mock.service.InterviewService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -54,8 +55,6 @@ class InterviewsControllerTest {
             .approximateDate("test_approximate_date")
             .createDate(null)
             .build();
-
-    private String string = new GsonBuilder().serializeNulls().create().toJson(interview);
 
     @Test
     @WithMockUser
@@ -97,5 +96,33 @@ class InterviewsControllerTest {
                 .andDo(print())
                 .andExpectAll(status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void whenGetAllByNoFeedbackThenReturnResponseList() throws Exception {
+        int submitterId = 1;
+        int userWiserId = 2;
+        Interview interview = Interview.of()
+                .id(1)
+                .submitterId(submitterId)
+                .build();
+        List<Interview> expect = List.of(interview);
+        doReturn(expect).when(service).findAllIdByNoFeedback(userWiserId);
+        mockMvc.perform(get("/interviews/noFeedback/{uID}", userWiserId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id", Matchers.is(expect.get(0).getId())));
+    }
+
+    @Test
+    void whenGetAllByNoFeedbackThenReturnResponseEmptyList() throws Exception {
+        int userWiserId = 2;
+        doReturn(Collections.emptyList()).when(service).findAllIdByNoFeedback(userWiserId);
+        mockMvc.perform(get("/interviews/noFeedback/{uID}", userWiserId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()", Matchers.is(0)));
     }
 }

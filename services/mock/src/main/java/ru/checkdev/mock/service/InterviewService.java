@@ -179,4 +179,14 @@ public class InterviewService {
                 .findInterviewByUserIdNotAndByTopicIdIn(userId, topicsIds,
                         PageRequest.of(page, size));
     }
+
+    /**
+     * Метод возвращает все Interview на которые пользователь должен оставить отзыв
+     *
+     * @param userId ID User
+     * @return List<Interview>
+     */
+    public List<Interview> findAllIdByNoFeedback(int userId) {
+        return interviewRepository.findAllByUserIdWisherIsApproveAndNoFeedback(userId);
+    }
 }
