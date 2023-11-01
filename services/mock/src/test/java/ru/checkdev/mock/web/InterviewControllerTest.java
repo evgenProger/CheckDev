@@ -46,6 +46,7 @@ class InterviewControllerTest {
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
             .createDate(null)
+            .author("author")
             .build();
 
     private String string = new GsonBuilder().serializeNulls().create().toJson(interview);

@@ -41,6 +41,7 @@ class WisherRepositoryTest {
         interview.setApproximateDate("approximate");
         interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
         interview.setTopicId(1);
+        interview.setAuthor("author");
         entityManager.createQuery("delete from wisher").executeUpdate();
         entityManager.createQuery("delete from interview").executeUpdate();
         entityManager.persist(interview);

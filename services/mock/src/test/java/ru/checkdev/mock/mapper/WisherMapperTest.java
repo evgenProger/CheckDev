@@ -17,7 +17,7 @@ public class WisherMapperTest {
         var interview = new Interview(1, 1, 1, 1,
                 "title", "additional",
                 "contact", "30.02.2070",
-                new Timestamp(System.currentTimeMillis()), 1);
+                new Timestamp(System.currentTimeMillis()), 1, "author");
         var wisherDTO = new WisherDto(1, 1, 1,
                 "contact", true, 1);
         var expected = new Wisher(0, interview, 1, "contact", true, 1);
