@@ -28,4 +28,9 @@ public class InterviewDTO {
     private String createDate;
 
     private int topicId;
+
+    /**
+     * поле автор(то кто создал)собеседование
+     */
+    private String author;
 }

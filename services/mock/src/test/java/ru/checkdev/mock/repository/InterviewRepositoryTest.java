@@ -55,6 +55,7 @@ class InterviewRepositoryTest {
         interview.setApproximateDate("30.02.2070");
         interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
         interview.setTopicId(1);
+        interview.setAuthor("author");
         entityManager.createQuery("delete from interview").executeUpdate();
         entityManager.persist(interview);
         var interviews = interviewRepository.findByMode(1);
@@ -87,6 +88,7 @@ class InterviewRepositoryTest {
         interview.setApproximateDate("30.02.2070");
         interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
         interview.setTopicId(1);
+        interview.setAuthor("author");
         entityManager.createQuery("delete from interview").executeUpdate();
         entityManager.persist(interview);
         var interviews =
@@ -110,6 +112,7 @@ class InterviewRepositoryTest {
                     interview.setApproximateDate("30.02.2024");
                     interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
                     interview.setTopicId(1);
+                    interview.setAuthor("author");
                     entityManager.persist(interview);
                     return interview;
                 }).toList();
@@ -152,6 +155,7 @@ class InterviewRepositoryTest {
         interview.setApproximateDate("30.02.2070");
         interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
         interview.setTopicId(1);
+        interview.setAuthor("author");
         entityManager.persist(interview);
         entityManager.clear();
         interviewRepository.updateStatus(interview.getId(), newStatus);
@@ -174,6 +178,7 @@ class InterviewRepositoryTest {
         interview.setApproximateDate("30.02.2070");
         interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
         interview.setTopicId(1);
+        interview.setAuthor("author");
         entityManager.persist(interview);
         entityManager.clear();
         interviewRepository.updateStatus(interview.getId() + 99, newStatus);
@@ -196,6 +201,7 @@ class InterviewRepositoryTest {
             interview.setApproximateDate("30.02.2024");
             interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
             interview.setTopicId(i + 1);
+            interview.setAuthor("author");
             entityManager.persist(interview);
             if (interview.getTopicId() % 2 == 0) {
                 evenTopicIdsInterviewList.add(interview);
