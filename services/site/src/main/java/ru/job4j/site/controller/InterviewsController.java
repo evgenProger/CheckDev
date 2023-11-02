@@ -1,10 +1,9 @@
 package ru.job4j.site.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,8 +54,7 @@ public class InterviewsController {
     public String getAllInterviews(Model model,
                                    HttpServletRequest req,
                                    @RequestParam(required = false, defaultValue = "0") int page,
-                                   @RequestParam(required = false, defaultValue = "20") int size)
-            throws JsonProcessingException {
+                                   @RequestParam(required = false, defaultValue = "20") int size) {
         try {
             var token = getToken(req);
             var user = authService.userInfo(token);
@@ -78,7 +76,7 @@ public class InterviewsController {
                 categoryName = categoriesService.getNameById(categories, filter.getCategoryId());
                 topicName = filter.getTopicId() > 0 ? topicsService.getNameById(filter.getTopicId()) : "";
             } else {
-                interviewsPage =  interviewsService.getAll(token, page, size);
+                interviewsPage = interviewsService.getAll(token, page, size);
             }
             Set<ProfileDTO> userList = interviewsPage.toList().stream()
                     .map(x -> profilesService.getProfileById(x.getSubmitterId()))
@@ -104,12 +102,12 @@ public class InterviewsController {
             model.addAttribute("topics", topicIdNameDTOS);
             model.addAttribute("botMessages", notifications.findBotMessageByUserId(userId));
         } catch (Exception e) {
-        RequestResponseTools.addAttrBreadcrumbs(model,
-                "Главная", "/index",
-                "Собеседования", String.format("/interviews/?page=%d&?size=%d", page, size)
-        );
-        log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
-    }
+            RequestResponseTools.addAttrBreadcrumbs(model,
+                    "Главная", "/index",
+                    "Собеседования", String.format("/interviews/?page=%d&?size=%d", page, size)
+            );
+            log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
+        }
         return "interview/interviews";
     }
 }

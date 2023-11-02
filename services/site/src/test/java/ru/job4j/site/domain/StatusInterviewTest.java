@@ -24,7 +24,7 @@ class StatusInterviewTest {
     @Test
     void whenNewGetID1GetInfoThenTrue() {
         var newId = 1;
-        var newInfo = "Новая";
+        var newInfo = "Новое";
         var isNew = StatusInterview.IS_NEW;
         assertThat(isNew.getId()).isEqualTo(newId);
         assertThat(isNew.getInfo()).isEqualTo(newInfo);
