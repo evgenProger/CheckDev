@@ -29,6 +29,11 @@
                         </span>
                         </a>
                     </li>
+                    <li class="nav-item" th:if="${userInfo != null && botMessages != null}">
+                    <a href="" class="text-white">
+                        <span class="badge rounded-pill badge-notification bg-danger" th:text="${#lists.size(botMessages) < 100} ? ${#lists.size(botMessages)} : '99+'">99+</span>
+                    </a>
+                    </li>
                     <li class="nav-item" th:if="${userInfo != null}">
                         <a class="nav-link" th:href="@{/logout}">Выйти</a></li>
                     <li class="nav-item" th:if="${userInfo == null}">

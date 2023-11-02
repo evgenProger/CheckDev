@@ -38,6 +38,7 @@ public class TopicControl {
             if (token != null) {
                 var userInfo = authService.userInfo(token);
                 model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()));
+                model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
             }
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index",
@@ -58,6 +59,7 @@ public class TopicControl {
     public String createForm(@PathVariable int categoryId, Model model)
             throws JsonProcessingException {
         model.addAttribute("categoryId", categoryId);
+
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",

@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import ru.job4j.site.dto.SubscribeCategory;
-import ru.job4j.site.dto.SubscribeTopicDTO;
-import ru.job4j.site.dto.UserDTO;
-import ru.job4j.site.dto.UserTopicDTO;
+import ru.job4j.site.dto.*;
 
 import java.util.List;
 
@@ -55,5 +52,12 @@ public class NotificationService {
         List<Integer> list = mapper.readValue(text, new TypeReference<>() {
         });
         return new UserTopicDTO(id, list);
+    }
+
+    public List<BotMessageDTO> findBotMessageByUserId(int id) throws JsonProcessingException {
+        var text = new RestAuthCall("http://localhost:9920/messages/" + id).get();
+        var mapper = new ObjectMapper();
+        return mapper.readValue(text, new TypeReference<>() {
+        });
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.NotificationService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,12 +20,14 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 public class CategoryControl {
     private final CategoriesService categoriesService;
     private final AuthService authService;
+    private final NotificationService notifications;
 
     @GetMapping("/createForm")
     public String createForm(Model model, HttpServletRequest req) throws JsonProcessingException {
         var userInfo = authService.userInfo(getToken(req));
         model.addAttribute("userInfo", userInfo);
         RequestResponseTools.addAttrCanManage(model, userInfo);
+        model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
@@ -47,6 +50,7 @@ public class CategoryControl {
         var token = getToken(req);
         if (token != null) {
             var userInfo = authService.userInfo(token);
+            model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
             RequestResponseTools.addAttrCanManage(model, userInfo);
         }
         RequestResponseTools.addAttrBreadcrumbs(model,

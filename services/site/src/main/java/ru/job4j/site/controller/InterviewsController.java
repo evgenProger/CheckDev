@@ -35,11 +35,12 @@ public class InterviewsController {
     private final AuthService authService;
     private final FilterService filterService;
     private final WisherService wisherService;
+    private final NotificationService notifications;
 
     public InterviewsController(InterviewsService interviewsService, ProfilesService profilesService,
                                 CategoriesService categoriesService, TopicsService topicsService,
                                 AuthService authService, FilterService filterService,
-                                WisherService wisherService) {
+                                WisherService wisherService, NotificationService notifications) {
         this.interviewsService = interviewsService;
         this.profilesService = profilesService;
         this.categoriesService = categoriesService;
@@ -47,6 +48,7 @@ public class InterviewsController {
         this.authService = authService;
         this.filterService = filterService;
         this.wisherService = wisherService;
+        this.notifications = notifications;
     }
 
     @GetMapping("/")
@@ -100,6 +102,7 @@ public class InterviewsController {
             model.addAttribute("categoryName", categoryName);
             model.addAttribute("topicName", topicName);
             model.addAttribute("topics", topicIdNameDTOS);
+            model.addAttribute("botMessages", notifications.findBotMessageByUserId(userId));
         } catch (Exception e) {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",

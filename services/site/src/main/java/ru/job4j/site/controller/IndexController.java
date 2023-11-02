@@ -36,6 +36,7 @@ public class IndexController {
                 var userInfo = authService.userInfo(token);
                 model.addAttribute("userInfo", userInfo);
                 model.addAttribute("userDTO", notifications.findCategoriesByUserId(userInfo.getId()));
+                model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
                 RequestResponseTools.addAttrCanManage(model, userInfo);
             }
         } catch (Exception e) {

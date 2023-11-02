@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers(
                 "/template/queue",
                 "/template/ping", "/subscribeCategory/**",
-                "/subscribeTopic/**"
+                "/subscribeTopic/**", "/messages/**"
         );
     }
 }
