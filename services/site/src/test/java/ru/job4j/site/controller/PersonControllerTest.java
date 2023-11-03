@@ -10,7 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.dto.PersonDTO;
+import ru.job4j.site.dto.UserInfoDTO;
+import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.ImageCompressorService;
+import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.PersonService;
 
 import java.io.IOException;
@@ -38,6 +41,10 @@ class PersonControllerTest {
     private ImageCompressorService compressorService;
     @Value("${server.site.maxSizeLoadFile}")
     private String maxSizeFile;
+    @MockBean
+    private AuthService authService;
+    @MockBean
+    private NotificationService notificationService;
 
     @Test
     void whenGetViewPersonThenReturnPersonViewPage() throws Exception {
@@ -46,7 +53,10 @@ class PersonControllerTest {
         person.setId(1);
         person.setUsername("username");
         person.setEmail("email");
+        var userInfo = new UserInfoDTO();
+        userInfo.setId(1);
         when(personService.getPerson(token)).thenReturn(person);
+        when(authService.userInfo(token)).thenReturn(userInfo);
         this.mockMvc.perform(get("/persons/")
                         .sessionAttr("token", token))
                 .andDo(print())
@@ -70,7 +80,10 @@ class PersonControllerTest {
         person.setId(1);
         person.setUsername("username");
         person.setEmail("email");
+        var userInfo = new UserInfoDTO();
+        userInfo.setId(1);
         when(personService.getPerson(token)).thenReturn(person);
+        when(authService.userInfo(token)).thenReturn(userInfo);
         this.mockMvc.perform(get("/persons/edit")
                         .sessionAttr("token", token))
                 .andDo(print())
