@@ -10,7 +10,6 @@ import reactor.core.publisher.Mono;
 import ru.checkdev.notification.domain.Profile;
 
 import java.util.Calendar;
-import java.util.Collections;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -23,7 +22,7 @@ import static org.mockito.Mockito.when;
  * @since 06.10.2023
  */
 @ExtendWith(MockitoExtension.class)
-class TgAuthCallWebClintTest {
+class TgAuthCallWebClientTest {
     private static final String URL = "http://tetsurl:15000";
     @Mock
     private WebClient webClientMock;

@@ -1,14 +1,12 @@
 package ru.checkdev.notification.domain;
 
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 class ProfileTest {
 
@@ -16,8 +14,6 @@ class ProfileTest {
 
     @BeforeEach
     public void setUp() {
-        List<RoleDTO> roles = new ArrayList<>();
-        roles.add(new RoleDTO(1));
         Calendar created = new Calendar.Builder()
                 .setDate(2023, 10, 23)
                 .setTimeOfDay(20, 20, 20)
@@ -27,22 +23,22 @@ class ProfileTest {
 
     @Test
     public void testGetUsername() {
-        assertThat("username", is(profile.getUsername()));
+        MatcherAssert.assertThat("username", is(profile.getUsername()));
     }
 
     @Test
     public void testGetEmail() {
-        assertThat("email", is(profile.getEmail()));
+        MatcherAssert.assertThat("email", is(profile.getEmail()));
     }
 
     @Test
     public void testGetPassword() {
-        assertThat("password", is(profile.getPassword()));
+        MatcherAssert.assertThat("password", is(profile.getPassword()));
     }
 
     @Test
     public void testGetPrivacy() {
-        assertThat(true, is(profile.isPrivacy()));
+        MatcherAssert.assertThat(true, is(profile.isPrivacy()));
     }
 
     @Test
@@ -51,6 +47,6 @@ class ProfileTest {
                 .setDate(2023, 10, 23)
                 .setTimeOfDay(20, 20, 20)
                 .build();
-        assertThat(created, is(profile.getCreated()));
+        MatcherAssert.assertThat(created, is(profile.getCreated()));
     }
 }

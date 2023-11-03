@@ -11,6 +11,10 @@ import java.util.List;
  *
  * @author parsentev
  * @since 25.09.2016
+ *
+ * переделал в Profile
+ * @author Arcady555
+ * @since 01.11.2023
  */
 @Data
 @AllArgsConstructor
