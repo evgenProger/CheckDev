@@ -1,5 +1,6 @@
 package ru.checkdev.mock.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Tag(name = "InterviewsController", description = "Interviews REST API")
 @RestController
 @RequestMapping("/interviews")
 @AllArgsConstructor

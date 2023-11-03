@@ -1,5 +1,6 @@
 package ru.checkdev.auth.web.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ import java.util.Optional;
  * @author parsentev
  * @since 26.09.2016
  */
+
+@Tag(name = "AuthController", description = "Authentication REST API")
 @RestController
 public class AuthController {
     private final PersonService persons;

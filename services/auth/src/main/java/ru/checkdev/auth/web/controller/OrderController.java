@@ -1,5 +1,6 @@
 package ru.checkdev.auth.web.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.auth.domain.Order;
@@ -12,6 +13,8 @@ import java.util.List;
  * 25 August 2017
  * mail: mikhail.epatko@gmail.com
  */
+
+@Tag(name = "OrderController", description = "Order REST API")
 @RestController
 @RequestMapping("/order")
 public class OrderController {

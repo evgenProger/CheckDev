@@ -1,5 +1,6 @@
 package ru.checkdev.auth.web.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import java.util.List;
  * @author Dmitry Stepanov
  * @version 22.09.2023T23:49
  */
+
+@Tag(name = "ProfileController", description = "Profile REST API")
 @RestController
 @RequestMapping("/profiles")
 @Slf4j

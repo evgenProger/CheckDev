@@ -1,6 +1,7 @@
 package ru.job4j.site.controller.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static ru.job4j.site.controller.RequestResponseTools.getToken;
 
+@Tag(name = "InterviewsRestController", description = "Interviews REST API")
 @RestController
 @RequestMapping("/interviews_rest")
 @AllArgsConstructor
