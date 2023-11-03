@@ -1,14 +1,11 @@
 package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.job4j.site.dto.CredentialDTO;
 import ru.job4j.site.service.AuthService;
@@ -17,10 +14,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Controller
-@AllArgsConstructor
 @Slf4j
 public class LoginControl {
     private final AuthService authService;
+
+    @Value("${botUserName}")
+    private String botUserName;
+
+    public LoginControl(AuthService authService) {
+        this.authService = authService;
+    }
 
     @GetMapping("/login")
     public String loginPage(@ModelAttribute("redirectUri") String redirectUri,
@@ -81,7 +84,9 @@ public class LoginControl {
                 "Главная", "/",
                 "Регистрация", "/registration"
         );
+        model.addAttribute("botUserName", botUserName);
         return "registration";
+
     }
 
     /**
