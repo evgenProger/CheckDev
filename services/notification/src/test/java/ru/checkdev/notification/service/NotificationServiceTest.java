@@ -3,16 +3,11 @@
  */
 package ru.checkdev.notification.service;
 
-import org.junit.Ignore;
-import org.junit.Test;
 import ru.checkdev.notification.domain.Notify;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-
-/**
- * @author olegbelov
- *
- */
-@Ignore
+@Disabled
 public class NotificationServiceTest {
 
     @Test
