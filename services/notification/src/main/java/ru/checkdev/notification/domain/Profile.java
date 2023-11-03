@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * DTO модель класса Person сервиса Auth.
