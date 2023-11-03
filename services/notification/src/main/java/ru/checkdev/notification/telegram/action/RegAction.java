@@ -6,7 +6,6 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.checkdev.notification.domain.InnerMessage;
-import ru.checkdev.notification.domain.PersonDTO;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.domain.Profile;
 import ru.checkdev.notification.telegram.config.TgConfig;

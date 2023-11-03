@@ -37,6 +37,9 @@ public class TgRun {
     @Value("${server.site.url.login}")
     private String urlSiteAuth;
 
+    @Value("${server.auth}")
+    private String authUrl;
+
     public TgRun(TgAuthCallWebClint tgAuthCallWebClint, InnerMessageService messageService) {
         this.tgAuthCallWebClint = tgAuthCallWebClint;
         this.messageService = messageService;

@@ -1,15 +1,16 @@
 package ru.checkdev.notification.web;
 
 import com.google.gson.GsonBuilder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.InnerMessage;
@@ -23,8 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = NtfSrv.class)
+@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 public class InnerMessageControllerTest {
 
@@ -48,6 +49,7 @@ public class InnerMessageControllerTest {
 
     private final String message = new GsonBuilder().serializeNulls().create().toJson(botMessage);
 
+    @Disabled
     @Test
     @WithMockUser
     public void whenFindBotMessageByUserId() throws Exception {

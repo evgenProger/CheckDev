@@ -1,12 +1,9 @@
 package ru.checkdev.notification.domain;
 
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.Calendar;
-
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ProfileTest {
 
@@ -23,22 +20,22 @@ class ProfileTest {
 
     @Test
     public void testGetUsername() {
-        MatcherAssert.assertThat("username", is(profile.getUsername()));
+        assertThat("username").isEqualTo(profile.getUsername());
     }
 
     @Test
     public void testGetEmail() {
-        MatcherAssert.assertThat("email", is(profile.getEmail()));
+        assertThat("email").isEqualTo(profile.getEmail());
     }
 
     @Test
     public void testGetPassword() {
-        MatcherAssert.assertThat("password", is(profile.getPassword()));
+        assertThat("password").isEqualTo(profile.getPassword());
     }
 
     @Test
     public void testGetPrivacy() {
-        MatcherAssert.assertThat(true, is(profile.isPrivacy()));
+        assertThat(true).isEqualTo(profile.isPrivacy());
     }
 
     @Test
@@ -47,6 +44,6 @@ class ProfileTest {
                 .setDate(2023, 10, 23)
                 .setTimeOfDay(20, 20, 20)
                 .build();
-        MatcherAssert.assertThat(created, is(profile.getCreated()));
+        assertThat(created).isEqualTo(profile.getCreated());
     }
 }

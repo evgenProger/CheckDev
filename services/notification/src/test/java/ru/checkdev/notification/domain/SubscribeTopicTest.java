@@ -1,12 +1,12 @@
 package ru.checkdev.notification.domain;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubscribeTopicTest {
     private SubscribeTopic subscribeTopic;
+
     @BeforeEach
     public void setUp() {
         subscribeTopic = new SubscribeTopic(0, 1, 2);
@@ -14,34 +14,53 @@ public class SubscribeTopicTest {
 
     @Test
     public void testGetId() {
-        MatcherAssert.assertThat(0, Matchers.is(subscribeTopic.getId()));
+        assertThat(0).isEqualTo(subscribeTopic.getId());
+    }
+
+    @Test
+    public void whenDefaultConstructorNotNull() {
+        SubscribeTopic subscribeTopic = new SubscribeTopic();
+        assertThat(subscribeTopic).isNotNull();
     }
 
     @Test
     public void testGetUserId() {
-        MatcherAssert.assertThat(1, Matchers.is(subscribeTopic.getUserId()));
+        assertThat(subscribeTopic.getUserId()).isEqualTo(1);
+    }
+
+    @Test
+    public void whenFieldsConstructorNotNull() {
+        SubscribeTopic subscribeTopic = new SubscribeTopic(0, 1, 1);
+        assertThat(subscribeTopic).isNotNull();
     }
 
     @Test
     public void testGetCategoryId() {
-        MatcherAssert.assertThat(2, Matchers.is(subscribeTopic.getTopicId()));
+        assertThat(subscribeTopic.getTopicId()).isEqualTo(2);
+    }
+
+    @Test
+    public void whenIDSetAndGetEquals() {
+        SubscribeTopic subscribeTopic = new SubscribeTopic(0, 1, 1);
+        subscribeTopic.setId(1);
+        assertThat(subscribeTopic.getId()).isEqualTo(1);
     }
 
     @Test
     public void testSetId() {
         subscribeTopic.setId(10);
-        MatcherAssert.assertThat(10, Matchers.is(subscribeTopic.getId()));
+        assertThat(subscribeTopic.getId()).isEqualTo(10);
     }
 
     @Test
     public void testSetUserId() {
         subscribeTopic.setUserId(11);
-        MatcherAssert.assertThat(11, Matchers.is(subscribeTopic.getUserId()));
+        assertThat(subscribeTopic.getUserId()).isEqualTo(11);
     }
 
     @Test
     public void testSetCategoryId() {
         subscribeTopic.setTopicId(12);
-        MatcherAssert.assertThat(12, Matchers.is(subscribeTopic.getTopicId()));
+        assertThat(subscribeTopic.getTopicId()).isEqualTo(12);
     }
 }

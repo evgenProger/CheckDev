@@ -1,10 +1,13 @@
 package ru.checkdev.notification.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.SubscribeCategory;
 import ru.checkdev.notification.telegram.TgRun;
@@ -13,11 +16,13 @@ import ru.checkdev.notification.web.TemplateController;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-@SpringBootTest
+@TestPropertySource(locations="classpath:application.properties")
+@SpringBootTest(classes = NtfSrv.class)
+@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
-class SubscribeCategoryServiceTest {
+public class SubscribeCategoryServiceTest {
     @Autowired
     private SubscribeCategoryService service;
 

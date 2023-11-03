@@ -1,13 +1,14 @@
 package ru.checkdev.notification.config;
 
-import org.junit.Ignore;
-import org.junit.Test;
 import ru.checkdev.notification.domain.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Ignore
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+@Disabled
 public class MailConfigurationTest {
     @Test
     public void send() throws Exception {

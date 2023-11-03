@@ -3,20 +3,8 @@
  */
 package ru.checkdev.notification.domain;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
-import ru.checkdev.notification.NtfSrv;
-import ru.checkdev.notification.telegram.TgRun;
-import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
-import ru.checkdev.notification.web.TemplateController;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author olegbelov
@@ -24,36 +12,26 @@ import static org.junit.Assert.assertThat;
  * Arcady555
  * @since 01.11.2023
  */
-@SpringBootTest(classes = NtfSrv.class)
-@RunWith(SpringRunner.class)
-@AutoConfigureMockMvc
 public class TemplateTest {
-    @MockBean
-    private TgRun tgRun;
 
-    @MockBean
-    private TgAuthCallWebClint tgAuthCallWebClint;
-
-    @MockBean
-    private TemplateController templateController;
 
     @Test
     public void whenDefaultConstructorNotNull() {
         Template template = new Template();
-        assertNotNull(template);
+        assertThat(template).isNotNull();
     }
 
     @Test
     public void whenFieldsConstructorNotNull() {
         Template template = new Template("TestSubject", "TestBody");
-        assertNotNull(template);
+        assertThat(template).isNotNull();
     }
 
     @Test
     public void whenIDSetandGetEquals() {
         Template template = new Template("TestSubject", "TestBody");
         template.setId(1);
-        assertThat(1, is(template.getId()));
+        assertThat(template.getId()).isEqualTo(1);
     }
 
 
@@ -61,13 +39,13 @@ public class TemplateTest {
     public void whenSubjectTypeSetandGetEquals() {
         Template template = new Template("TestSubject", "TestBody");
         template.setSubject("NewSubject");
-        assertThat("NewSubject", is(template.getSubject()));
+        assertThat(template.getSubject()).isEqualTo("NewSubject");
     }
 
     @Test
     public void whenBodyTypeSetandGetEquals() {
         Template template = new Template("TestSubject", "TestBody");
         template.setBody("NewBody");
-        assertThat("NewBody", is(template.getBody()));
+        assertThat("NewBody").isEqualTo(template.getBody());
     }
 }
