@@ -56,6 +56,7 @@ public class InterviewController {
         if (token != null) {
             var userInfo = authService.userInfo(token);
             interviewDTO.setSubmitterId(userInfo.getId());
+            interviewDTO.setAuthor(userInfo.getUsername());
         }
         interviewDTO.setTopicId(topicId);
         InterviewDTO createInterview = interviewService.create(getToken(req), interviewDTO);

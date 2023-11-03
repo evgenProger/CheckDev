@@ -1,12 +1,10 @@
 package ru.checkdev.notification.service;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.SubscribeCategory;
 import ru.checkdev.notification.telegram.TgRun;
@@ -15,12 +13,11 @@ import ru.checkdev.notification.web.TemplateController;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = NtfSrv.class)
-@RunWith(SpringRunner.class)
+@SpringBootTest
 @AutoConfigureMockMvc
-public class SubscribeCategoryServiceTest {
+class SubscribeCategoryServiceTest {
     @Autowired
     private SubscribeCategoryService service;
 
@@ -35,16 +32,10 @@ public class SubscribeCategoryServiceTest {
 
     @Test
     public void whenGetAllSubCatReturnContainsValue() {
-        SubscribeCategory subscribeCategory = this.service.save(new SubscribeCategory(0, 1, 1));
+        SubscribeCategory subscribeCategory1 = this.service.save(new SubscribeCategory(2, 1, 1));
+        SubscribeCategory subscribeCategory2 = this.service.save(new SubscribeCategory(1, 2, 2));
         List<SubscribeCategory> result = this.service.findAll();
-        assertTrue(result.contains(subscribeCategory));
-    }
-
-    @Test
-    public void requestByUserIdReturnCorrectValue() {
-        SubscribeCategory subscribeCategory = this.service.save(new SubscribeCategory(1, 2, 2));
-        List<Integer> result = this.service.findCategoriesByUserId(subscribeCategory.getUserId());
-        assertEquals(result, List.of(2));
+        assertArrayEquals(result.toArray(), List.of(subscribeCategory1, subscribeCategory2).toArray());
     }
 
     @Test
@@ -53,5 +44,13 @@ public class SubscribeCategoryServiceTest {
         subscribeCategory = this.service.delete(subscribeCategory);
         List<SubscribeCategory> result = this.service.findAll();
         assertFalse(result.contains(subscribeCategory));
+    }
+
+    @Test
+    public void requestByUserIdReturnCorrectValue() {
+        SubscribeCategory subscribeCategory = this.service.save(new SubscribeCategory(1, 2, 2));
+        List<Integer> result = this.service.findCategoriesByUserId(subscribeCategory.getUserId());
+        assertEquals(result, List.of(2));
+        this.service.delete(subscribeCategory);
     }
 }

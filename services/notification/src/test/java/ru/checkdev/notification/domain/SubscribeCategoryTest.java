@@ -1,35 +1,48 @@
 package ru.checkdev.notification.domain;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
 public class SubscribeCategoryTest {
+    private SubscribeCategory subscribeCategory;
 
-
-
-    @Test
-    public void whenDefaultConstructorNotNull() {
-        SubscribeCategory subscribeCategory = new SubscribeCategory();
-        assertNotNull(subscribeCategory);
+    @BeforeEach
+    public void setUp() {
+        subscribeCategory = new SubscribeCategory(0, 1, 2);
     }
 
     @Test
-    public void whenFieldsConstructorNotNull() {
-        SubscribeCategory subscribeCategory = new SubscribeCategory(0, 1, 1);
-        assertNotNull(subscribeCategory);
+    public void testGetId() {
+        MatcherAssert.assertThat(0, Matchers.is(subscribeCategory.getId()));
     }
 
     @Test
-    public void whenIDSetAndGetEquals() {
-        SubscribeCategory subscribeCategory = new SubscribeCategory(0, 1, 1);
-        subscribeCategory.setId(1);
-        assertThat(1, is(subscribeCategory.getId()));
+    public void testGetUserId() {
+        MatcherAssert.assertThat(1, Matchers.is(subscribeCategory.getUserId()));
+    }
+
+    @Test
+    public void testGetCategoryId() {
+        MatcherAssert.assertThat(2, Matchers.is(subscribeCategory.getCategoryId()));
+    }
+
+    @Test
+    public void testSetId() {
+        subscribeCategory.setId(10);
+        MatcherAssert.assertThat(10, Matchers.is(subscribeCategory.getId()));
+    }
+
+    @Test
+    public void testSetUserId() {
+        subscribeCategory.setUserId(11);
+        MatcherAssert.assertThat(11, Matchers.is(subscribeCategory.getUserId()));
+    }
+
+    @Test
+    public void testSetCategoryId() {
+        subscribeCategory.setCategoryId(12);
+        MatcherAssert.assertThat(12, Matchers.is(subscribeCategory.getCategoryId()));
     }
 }

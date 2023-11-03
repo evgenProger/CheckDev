@@ -43,6 +43,7 @@ class FeedbackRepositoryTest {
         interview.setApproximateDate("approximate");
         interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
         interview.setTopicId(1);
+        interview.setAuthor("author");
         entityManager.createQuery("DELETE FROM cd_feedback").executeUpdate();
         entityManager.persist(interview);
         entityManager.clear();
