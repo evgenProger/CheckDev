@@ -133,7 +133,8 @@ public class InterviewController {
                 interview.getTitle(), String.format("/interview/edit/%d", interviewId));
         model.addAttribute("interview", interview);
         if (token != null) {
-            model.addAttribute("botMessages", notifications.findBotMessageByUserId(token, userInfoDTO.getId()));
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token,
+                    userInfoDTO.getId()));
         }
         return "interview/interviewEdit";
     }
