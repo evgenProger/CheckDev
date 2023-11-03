@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.domain.PersonDTO;
 import ru.checkdev.notification.service.InnerMessageService;
+import ru.checkdev.notification.domain.Profile;
 import ru.checkdev.notification.telegram.config.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 
@@ -64,12 +65,12 @@ public class RegAction implements Action {
             return new SendMessage(chatId, text);
         }
 
+        var username = getNameFromEmail(email);
         var password = tgConfig.getPassword();
-        var person = new PersonDTO(email, password, true, null,
-                Calendar.getInstance());
+        var profile = new Profile(username, email, password, true, Calendar.getInstance());
         Object result;
         try {
-            result = authCallWebClint.doPost(URL_AUTH_REGISTRATION, person).block();
+            result = authCallWebClint.doPost(URL_AUTH_REGISTRATION, profile).block();
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             text = "Сервис не доступен попробуйте позже" + sl
@@ -93,5 +94,10 @@ public class RegAction implements Action {
         innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
         messageService.saveMessage(innerMessage);
         return new SendMessage(chatId, text);
+    }
+
+    private String getNameFromEmail(String email) {
+        String[] array = email.split("@");
+        return array[0];
     }
 }
