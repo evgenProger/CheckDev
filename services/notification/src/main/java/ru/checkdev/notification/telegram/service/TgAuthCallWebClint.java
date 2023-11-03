@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import ru.checkdev.notification.domain.PersonDTO;
+import ru.checkdev.notification.domain.Profile;
 
 /**
  * 3. Мидл
@@ -29,12 +29,12 @@ public class TgAuthCallWebClint {
      * @param url URL http
      * @return Mono<Person>
      */
-    public Mono<PersonDTO> doGet(String url) {
+    public Mono<Profile> doGet(String url) {
         return webClient
                 .get()
                 .uri(url)
                 .retrieve()
-                .bodyToMono(PersonDTO.class)
+                .bodyToMono(Profile.class)
                 .doOnError(err -> log.error("API not found: {}", err.getMessage()));
     }
 
@@ -42,14 +42,14 @@ public class TgAuthCallWebClint {
      * Метод POST
      *
      * @param url       URL http
-     * @param personDTO Body PersonDTO.class
+     * @param profile Body PersonDTO.class
      * @return Mono<Person>
      */
-    public Mono<Object> doPost(String url, PersonDTO personDTO) {
+    public Mono<Object> doPost(String url, Profile profile) {
         return webClient
                 .post()
                 .uri(url)
-                .bodyValue(personDTO)
+                .bodyValue(profile)
                 .retrieve()
                 .bodyToMono(Object.class)
                 .doOnError(err -> log.error("API not found: {}", err.getMessage()));
