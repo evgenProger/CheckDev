@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BotMessageDTO {
+public class InnerMessageDTO {
 
     private int id;
     private int userId;

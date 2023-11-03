@@ -97,20 +97,19 @@ public class InterviewsControllerTest {
                         .param("page", "1")
                         .param("size", "5"))
                 .andDo(print())
-                .andExpectAll(
-                        model().attribute("statisticMap", new HashMap<>()),
-                        model().attribute("interviewsPage", page),
-                        model().attribute("statuses", StatusInterview.values()),
-                        model().attribute("current_page", "interviews"),
-                        model().attribute("userInfo", userInfo),
-                        model().attribute("breadcrumbs", breadcrumbs),
-                        model().attribute("users", Set.of(profile)),
-                        model().attribute("categories", categories),
-                        model().attribute("categoryName", "category_1"),
-                        model().attribute("topicName", "SOME TOPIC NAME"),
-                        model().attribute("filter", filter),
-                        model().attribute("topics", topicIdNameDTOS),
-                        status().isOk(),
-                        view().name("interview/interviews"));
+                .andExpect(model().attribute("statisticMap", new HashMap<>()))
+                .andExpect(model().attribute("interviewsPage", page))
+                .andExpect(model().attribute("statuses", StatusInterview.values()))
+                .andExpect(model().attribute("current_page", "interviews"))
+                .andExpect(model().attribute("userInfo", userInfo))
+                .andExpect(model().attribute("breadcrumbs", breadcrumbs))
+                .andExpect(model().attribute("users", Set.of(profile)))
+                .andExpect(model().attribute("categories", categories))
+                .andExpect(model().attribute("categoryName", "category_1"))
+                .andExpect(model().attribute("topicName", "SOME TOPIC NAME"))
+                .andExpect(model().attribute("filter", filter))
+                .andExpect(model().attribute("topics", topicIdNameDTOS))
+                .andExpect(status().isOk())
+                .andExpect(view().name("interview/interviews"));
     }
 }

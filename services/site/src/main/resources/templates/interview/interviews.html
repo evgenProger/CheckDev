@@ -23,11 +23,13 @@
     <script th:src="@{/webjars/popper.js/2.11.7/umd/popper.js}"></script>
     <!-- Jquery.js 3.7.1 -->
     <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+
     <!-- Summernote 0.8.10 -->
     <link th:href="@{/webjars/summernote/0.8.10/summernote-lite.css}" rel="stylesheet">
     <script th:src="@{/webjars/summernote/0.8.10/summernote-lite.js}"></script>
     <script th:src="@{/webjars/summernote/0.8.10/lang/summernote-ru-RU.js}"></script>
   
+
     <script th:inline="javascript" type="text/javascript">
 
         var filter = /*[[${filter}]]*/ null;
@@ -40,12 +42,12 @@
 
         function init() {
             document.getElementById('category_patch_div').style.display =
-            filter != null && filter.categoryId > 0 ? 'block' : 'none';
+                filter != null && filter.categoryId > 0 ? 'block' : 'none';
             document.getElementById('topic_patch_div').style.display =
-            filter != null && filter.topicId > 0 ? 'block' : 'none';
+                filter != null && filter.topicId > 0 ? 'block' : 'none';
             currentCategoryId = filter != null ? filter.categoryId : 0;
             if (filter != null && currentCategoryId > 0) {
-                 inflateTopicList(topics);
+                inflateTopicList(topics);
             }
         }
 
@@ -61,14 +63,14 @@
 
         function inflateTopicList(response) {
             var s = '';
-                for(var i = 0; i < response.length; i++) {
-                    s += '<ul value="' + response[i].id + '" ' +
+            for (var i = 0; i < response.length; i++) {
+                s += '<ul value="' + response[i].id + '" ' +
                     'data-id="' + response[i].id + '" ' +
                     'data-name="' + response[i].name + '" ' +
                     'onclick="onTopicItemClick(this)">' +
                     response[i].name + '</ul>';
-                }
-             $('#topics_select').html(s);
+            }
+            $('#topics_select').html(s);
         }
 
         function onTopicItemClick(element) {
@@ -95,7 +97,7 @@
         }
 
         function showPatch(elementId, textSpanId, text) {
-        var element = document.getElementById(elementId);
+            var element = document.getElementById(elementId);
             if (element) {
                 element.style.display = "block";
                 var textSpan = document.getElementById(textSpanId);
@@ -124,7 +126,7 @@
                     url: "/filter/create",
                     data: JSON.stringify(filter),
                     contentType: "application/json",
-                    success: function(response) {
+                    success: function (response) {
                         console.log("filter saved.");
                         location.reload();
                     }
@@ -137,7 +139,7 @@
                 $.ajax({
                     type: 'DELETE',
                     url: '/filter/delete/' + userId,
-                    success: function(result) {
+                    success: function (result) {
                         console.log('filter with id ' + userId + ' was deleted')
                         location.reload();
                     }
@@ -160,7 +162,7 @@
                             data-bs-toggle="dropdown" aria-expanded="false">
                         Категории
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" >
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li class="dropdown-item" th:each="category: ${categories}">
                             <ul onclick="onCategoryItemClick(this)"
                                 th:text="${category.name}"
@@ -222,13 +224,15 @@
                                     </a>
                             </span>
                             <small class="mb-2 text-muted">
-                                <span class="badge bg-success">Новое</span>
+                                <span class="badge bg-success"
+                                      th:if="${interview.status < statuses.length}"
+                                      th:text="${statuses[interview.status].info}">Статус интервью</span>
+                                <span class="badge bg-danger"
+                                      th:if="${interview.status >= statuses.length}">Статус неизвестен</span>
                                 <i class="far fa-clock"></i>
                                 <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
-                                <span th:each="user: ${users}">
-                                    <span th:if="${interview.submitterId == user.getId()}">
                                         <i class="far fa-user"></i>
-                                        <span th:text="${user.getUsername()}"></span>
+                                        <span th:text="${interview.author}"></span>
                                     </span>
                                 </span>
                                 <!--Из переданного набора ENUM выбираем статус по его ID-->

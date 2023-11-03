@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.checkdev.notification.service.BotMessageService;
+import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.action.Action;
 import ru.checkdev.notification.telegram.action.InfoAction;
 import ru.checkdev.notification.telegram.action.RegAction;
@@ -29,7 +29,7 @@ import java.util.Map;
 @Slf4j
 public class TgRun {
     private final TgAuthCallWebClint tgAuthCallWebClint;
-    private final BotMessageService messageService;
+    private final InnerMessageService messageService;
     @Value("${tg.username}")
     private String username;
     @Value("${tg.token}")
@@ -37,7 +37,7 @@ public class TgRun {
     @Value("${server.site.url.login}")
     private String urlSiteAuth;
 
-    public TgRun(TgAuthCallWebClint tgAuthCallWebClint, BotMessageService messageService) {
+    public TgRun(TgAuthCallWebClint tgAuthCallWebClint, InnerMessageService messageService) {
         this.tgAuthCallWebClint = tgAuthCallWebClint;
         this.messageService = messageService;
     }

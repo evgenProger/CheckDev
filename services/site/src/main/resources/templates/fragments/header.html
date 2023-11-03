@@ -29,9 +29,9 @@
                         </span>
                         </a>
                     </li>
-                    <li class="nav-item" th:if="${userInfo != null && botMessages != null}">
+                    <li class="nav-item" th:if="${userInfo != null && innerMessages != null}">
                     <a href="" class="text-white">
-                        <span class="badge rounded-pill badge-notification bg-danger" th:text="${#lists.size(botMessages) < 100} ? ${#lists.size(botMessages)} : '99+'">99+</span>
+                        <span class="badge rounded-pill badge-notification bg-danger" th:text="${#lists.size(innerMessages) < 100} ? ${#lists.size(innerMessages)} : '99+'">99+</span>
                     </a>
                     </li>
                     <li class="nav-item" th:if="${userInfo != null}">

@@ -12,8 +12,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.notification.NtfSrv;
-import ru.checkdev.notification.domain.BotMessage;
-import ru.checkdev.notification.service.BotMessageService;
+import ru.checkdev.notification.domain.InnerMessage;
+import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.TgRun;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 import java.util.List;
@@ -26,13 +26,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = NtfSrv.class)
 @AutoConfigureMockMvc
-public class BotMessageControllerTest {
+public class InnerMessageControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private BotMessageService service;
+    private InnerMessageService service;
 
     @MockBean
     private TgRun tgRun;
@@ -43,7 +43,7 @@ public class BotMessageControllerTest {
     @MockBean
     private TemplateController templateController;
 
-    private final BotMessage botMessage = new BotMessage(1, 2, "text",
+    private final InnerMessage botMessage = new InnerMessage(1, 2, "text",
             null, false);
 
     private final String message = new GsonBuilder().serializeNulls().create().toJson(botMessage);

@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.checkdev.notification.domain.BotMessage;
+import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.domain.PersonDTO;
-import ru.checkdev.notification.service.BotMessageService;
+import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.config.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 
@@ -29,7 +29,7 @@ public class RegAction implements Action {
     private final TgConfig tgConfig = new TgConfig("tg/", 8);
     private final TgAuthCallWebClint authCallWebClint;
     private final String urlSiteAuth;
-    private final BotMessageService messageService;
+    private final InnerMessageService messageService;
 
     @Override
     public BotApiMethod<Message> handle(Message message) {
@@ -88,10 +88,10 @@ public class RegAction implements Action {
                + "Логин: " + email + sl
                + "Пароль: " + password + sl
                + urlSiteAuth;
-        BotMessage botMessage = new BotMessage();
-        botMessage.setText(text);
-        botMessage.setCreated(new Timestamp(System.currentTimeMillis()));
-        messageService.saveMessage(botMessage);
+        InnerMessage innerMessage = new InnerMessage();
+        innerMessage.setText(text);
+        innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
+        messageService.saveMessage(innerMessage);
         return new SendMessage(chatId, text);
     }
 }

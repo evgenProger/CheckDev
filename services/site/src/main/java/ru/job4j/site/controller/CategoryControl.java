@@ -24,10 +24,13 @@ public class CategoryControl {
 
     @GetMapping("/createForm")
     public String createForm(Model model, HttpServletRequest req) throws JsonProcessingException {
-        var userInfo = authService.userInfo(getToken(req));
+        var token = getToken(req);
+        var userInfo = authService.userInfo(token);
         model.addAttribute("userInfo", userInfo);
         RequestResponseTools.addAttrCanManage(model, userInfo);
-        model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
+        if (token != null) {
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+        }
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
@@ -50,7 +53,7 @@ public class CategoryControl {
         var token = getToken(req);
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
             RequestResponseTools.addAttrCanManage(model, userInfo);
         }
         RequestResponseTools.addAttrBreadcrumbs(model,

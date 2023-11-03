@@ -54,7 +54,7 @@ public class ProfilesController {
         var token = getToken(request);
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
@@ -82,7 +82,7 @@ public class ProfilesController {
         var token = getToken(request);
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
         return "profiles/profiles";
     }

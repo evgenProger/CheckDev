@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "cd_message")
-public class BotMessage {
+public class InnerMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

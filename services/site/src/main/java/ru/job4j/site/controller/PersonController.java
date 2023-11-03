@@ -67,7 +67,7 @@ public class PersonController {
         var token = getToken(request);
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
         model.addAttribute("personDto", personDTO);
         model.addAttribute("photoId", getPhotoIdByPersonDTO(personDTO));
@@ -104,7 +104,7 @@ public class PersonController {
         var token = getToken(request);
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
         return "/persons/personEdit";
     }

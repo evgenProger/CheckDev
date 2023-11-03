@@ -137,23 +137,28 @@ public class FeedbackServiceWebClient implements FeedbackService {
 
     /**
      * Метод меняет статус интервью в зависимости от текущего статуса.
-     * Если текущий статус IN_PROGRESS устанавливается статус IS_FEEDBACK
-     * Если текущий статус IN_FEEDBACK устанавливается статус IS_COMPLETED
+     * Если у пользователя только один отзыв (который был успешно сохранен перед этим методом),
+     * и текущий статус IN_FEEDBACK, то устанавливается статус IS_COMPLETED
+     * Если текущий статус IN_PROGRESS, то устанавливается статус IS_FEEDBACK
+     * <p>
+     * Примечание: в начале сохраняется отзыв метод SAVE,
+     * и если он был успешно сохранен то вызывается метод, изменения статуса updateStatusInterview.
      *
-     * @param token     String User security token
-     * @param interview InterviewDTO
-     * @return boolean true false
+     * @param token        security User token
+     * @param interview    InterviewDTO
+     * @param feedbackUser ID User author feedback
+     * @return int ID new Status OR ID old Status
      */
-    public boolean updateStatusInterview(String token, InterviewDTO interview, int feedbackUser) {
-        var aReview = findByInterviewIdAndUserId(interview.getId(), feedbackUser).isEmpty();
-        if (aReview && StatusInterview.IS_FEEDBACK.getId() == interview.getStatus()) {
+    public int updateStatusInterview(String token, InterviewDTO interview, int feedbackUser) {
+        var feedbacksByUser = findByInterviewIdAndUserId(interview.getId(), feedbackUser);
+        if (feedbacksByUser.size() == 1 && StatusInterview.IS_FEEDBACK.getId() == interview.getStatus()) {
             interviewService.updateStatus(token, interview.getId(), StatusInterview.IS_COMPLETED.getId());
-            return true;
+            return StatusInterview.IS_COMPLETED.getId();
         } else if (StatusInterview.IN_PROGRESS.getId() == interview.getStatus()) {
             interviewService.updateStatus(token, interview.getId(), StatusInterview.IS_FEEDBACK.getId());
-            return true;
+            return StatusInterview.IS_FEEDBACK.getId();
         }
-        return false;
+        return interview.getStatus();
     }
 
     public void setWebClientFeedback(WebClient webClient) {

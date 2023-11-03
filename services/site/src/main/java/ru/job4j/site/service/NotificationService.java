@@ -3,13 +3,17 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.*;
-
 import java.util.List;
 
 @Service
 public class NotificationService {
+
+    @Value("${service.notification}")
+    private String urlNtf;
+
     public void addSubscribeCategory(String token, int userId, int categoryId) throws JsonProcessingException {
         SubscribeCategory subscribeCategory = new SubscribeCategory(userId, categoryId);
         var mapper = new ObjectMapper();
@@ -54,8 +58,9 @@ public class NotificationService {
         return new UserTopicDTO(id, list);
     }
 
-    public List<BotMessageDTO> findBotMessageByUserId(int id) throws JsonProcessingException {
-        var text = new RestAuthCall("http://localhost:9920/messages/" + id).get();
+    public List<InnerMessageDTO> findBotMessageByUserId(String token, int id) throws JsonProcessingException {
+        String url = urlNtf + "/messages/" + id;
+        var text = new RestAuthCall(url).get(token);
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>() {
         });

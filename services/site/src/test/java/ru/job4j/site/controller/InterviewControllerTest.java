@@ -57,7 +57,6 @@ public class InterviewControllerTest {
         interview.setAdditional("Some description");
         interview.setMode(4);
         interview.setTopicId(1);
-        var status = StatusInterview.values()[interview.getStatus()].getInfo();
         List<WisherDto> wisherDtos = new ArrayList<>();
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(interviewService.getById(token, 1)).thenReturn(interview);
@@ -72,10 +71,10 @@ public class InterviewControllerTest {
                 .andExpect(model().attribute("interview", interview))
                 .andExpect(model().attribute("breadcrumbs", breadcrumbs))
                 .andExpect(model().attribute("userInfo", userInfo))
-                .andExpect(model().attribute("status", status))
                 .andExpect(model().attribute("isAuthor", false))
                 .andExpect(model().attribute("isWisher", false))
                 .andExpect(model().attribute("statisticMap", new HashMap<>()))
+                .andExpect(model().attribute("statuses", StatusInterview.values()))
                 .andExpect(model().attribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId()))
                 .andExpect(model().attribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId()))
                 .andExpect(status().isOk())

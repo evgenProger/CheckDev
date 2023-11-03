@@ -40,7 +40,7 @@ public class InterviewController {
         var token = getToken(req);
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
 
         RequestResponseTools.addAttrBreadcrumbs(model,
@@ -60,6 +60,7 @@ public class InterviewController {
         if (token != null) {
             var userInfo = authService.userInfo(token);
             interviewDTO.setSubmitterId(userInfo.getId());
+            interviewDTO.setAuthor(userInfo.getUsername());
         }
         interviewDTO.setTopicId(topicId);
         InterviewDTO createInterview = interviewService.create(getToken(req), interviewDTO);
@@ -77,24 +78,22 @@ public class InterviewController {
         var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
         var isWisher = wisherService.isWisher(userInfo.getId(), interview.getId(), wishers);
         var statisticMap = wisherService.getInterviewStatistic(wishers);
-        var statuses = StatusInterview.values();
         model.addAttribute("interview", interview);
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("isWisher", isWisher);
         model.addAttribute("statisticMap", statisticMap);
+        model.addAttribute("statuses", StatusInterview.values());
         model.addAttribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId());
         model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
-        model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfo.getId()));
-        if (interview.getMode() < statuses.length) {
-            model.addAttribute("status", statuses[interview.getStatus()].getInfo());
-        }
         if (isAuthor) {
             var wishersDetail = interviewService.getAllWisherDetail(wishers);
             boolean isDismissed = wisherService.isDismissed(interviewId, wishers);
             model.addAttribute("isDismissed", isDismissed);
             model.addAttribute("wishersDetail", wishersDetail);
         }
-
+        if (token != null) {
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+        }
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Собеседования", "/interviews/",
@@ -114,14 +113,13 @@ public class InterviewController {
     @GetMapping("/edit/{id}")
     public String getEditView(@PathVariable("id") int interviewId,
                               Model model,
-                              HttpServletRequest request) {
+                              HttpServletRequest request) throws JsonProcessingException {
         var token = getToken(request);
         InterviewDTO interview;
         UserInfoDTO userInfoDTO;
         try {
             userInfoDTO = authService.userInfo(token);
             interview = interviewService.getById(token, interviewId);
-            model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfoDTO.getId()));
             if (interview.getSubmitterId() != userInfoDTO.getId()) {
                 return "redirect:/interview/" + interviewId;
             }
@@ -134,6 +132,9 @@ public class InterviewController {
                 "Собеседования", "/interviews/",
                 interview.getTitle(), String.format("/interview/edit/%d", interviewId));
         model.addAttribute("interview", interview);
+        if (token != null) {
+            model.addAttribute("botMessages", notifications.findBotMessageByUserId(token, userInfoDTO.getId()));
+        }
         return "interview/interviewEdit";
     }
 
@@ -166,7 +167,9 @@ public class InterviewController {
         var token = getToken(req);
         var userInfoDTO = authService.userInfo(token);
         var interview = interviewService.getById(token, interviewId);
-        model.addAttribute("botMessages", notifications.findBotMessageByUserId(userInfoDTO.getId()));
+        if (token != null) {
+            model.addAttribute("botMessages", notifications.findBotMessageByUserId(token, userInfoDTO.getId()));
+        }
         var result = "interview/participate";
         if (userInfoDTO != null && interview.getSubmitterId() != userInfoDTO.getId()) {
             var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));

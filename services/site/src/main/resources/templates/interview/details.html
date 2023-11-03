@@ -46,6 +46,9 @@
             visibility: visible;
             transform: translateY(0);
         }
+
+
+
     </style>
 
 </head>
@@ -65,13 +68,18 @@
                 </span>
             </div>
             <span class="mb-2 text-muted">
-                 <span class="badge bg-success pr-3" th:text="${status}"></span>
+                 <span class="badge bg-success pr-3"
+                       th:if="${interview.status < statuses.length}"
+                       th:text="${statuses[interview.status].info}">Статус интервью</span>
+                <span class="badge bg-danger pr-3"
+                      th:if="${interview.status >= statuses.length}">Статус неизвестен</span>
                  <i class="far fa-clock"></i>
                  <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
                  <i class="far fa-user"></i>
-                 <span>ФИО Автора</span>
+                 <span>ФИО Автор:</span>
+                     <span th:text="${interview.author}"></span>
                  <span th:text="${'Ориентировочная дата: ' + interview.approximateDate}"></span>
-            </span>
+                </span>
         </div>
         <div class="card-body">
             <div>
@@ -147,9 +155,9 @@
                         </tbody>
                     </table>
                 </div>
-              <!--  <div th:class="${isWisher} ? 'message p-1 rounded-2 col-1' : 'mock p-1 col-1'">
-                    Вы участник
-                </div>-->
+                <!--  <div th:class="${isWisher} ? 'message p-1 rounded-2 col-1' : 'mock p-1 col-1'">
+                      Вы участник
+                  </div>-->
                 <a th:if="${!isAuthor || userInfo == null}"
                    class="btn btn-success"
                    th:disabled="${isWisher || isAuthor}"

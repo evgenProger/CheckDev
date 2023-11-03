@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class BotMessageTest {
+public class InnerMessageTest {
 
     @MockBean
     private TgRun tgRun;
@@ -31,20 +31,20 @@ public class BotMessageTest {
 
     @Test
     public void whenDefaultConstructorNotNull() {
-        BotMessage botMessage = new BotMessage();
+        InnerMessage botMessage = new InnerMessage();
         assertNotNull(botMessage);
     }
 
     @Test
     public void whenFieldsConstructorNotNull() {
-        BotMessage botMessage = new BotMessage(1, 1, "text",
+        InnerMessage botMessage = new InnerMessage(1, 1, "text",
                 new Timestamp(System.currentTimeMillis()), false);
         assertNotNull(botMessage);
     }
 
     @Test
     public void whenIDSetAndGetEquals() {
-        BotMessage botMessage = new BotMessage(0, 1, "text",
+        InnerMessage botMessage = new InnerMessage(0, 1, "text",
                 new Timestamp(System.currentTimeMillis()), false);
         botMessage.setId(1);
         assertThat(1, is(botMessage.getId()));
