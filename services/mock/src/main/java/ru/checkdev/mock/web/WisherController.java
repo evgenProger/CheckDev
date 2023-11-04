@@ -1,5 +1,6 @@
 package ru.checkdev.mock.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +12,12 @@ import ru.checkdev.mock.dto.WisherDto;
 import ru.checkdev.mock.mapper.WisherMapper;
 import ru.checkdev.mock.service.InterviewService;
 import ru.checkdev.mock.service.WisherService;
+
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.Optional;
 
+@Tag(name = "WisherController", description = "Wisher REST API")
 @RestController
 @RequestMapping("/wisher")
 @AllArgsConstructor
@@ -34,7 +37,7 @@ public class WisherController {
         if (rsl.isEmpty()) {
             throw new SQLException("An error occurred while saving data");
         }
-        return  rsl
+        return rsl
                 .map(wisher -> new ResponseEntity<>(wisher, HttpStatus.CREATED))
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
@@ -46,7 +49,7 @@ public class WisherController {
         if (rsl.isEmpty()) {
             throw new SQLException("There is no wisher with this number");
         }
-        return  rsl
+        return rsl
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

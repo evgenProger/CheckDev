@@ -1,6 +1,7 @@
 package ru.job4j.site.controller.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static ru.job4j.site.controller.RequestResponseTools.getToken;
 
+@Tag(name = "FilterRestController", description = "Filter REST API")
 @RestController
 @RequestMapping("/filter")
 @AllArgsConstructor

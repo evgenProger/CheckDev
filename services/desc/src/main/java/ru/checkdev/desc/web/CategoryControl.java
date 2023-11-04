@@ -1,5 +1,6 @@
 package ru.checkdev.desc.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.checkdev.desc.domain.Category;
 import ru.checkdev.desc.service.CategoryService;
 
+@Tag(name = "CategoryControl", description = "Category REST API")
 @RequestMapping("/category")
 @RestController
 @AllArgsConstructor

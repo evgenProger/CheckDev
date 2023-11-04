@@ -1,5 +1,6 @@
 package ru.job4j.site.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -17,6 +18,8 @@ import ru.job4j.site.service.PhotoServices;
  * @author Dmitry Stepanov, user Dmitry
  * @since 28.09.2023
  */
+
+@Tag(name = "PhotoController", description = "Photo REST API")
 @RestController
 @RequestMapping("/photo")
 @AllArgsConstructor

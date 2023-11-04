@@ -1,5 +1,6 @@
 package ru.checkdev.mock.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import ru.checkdev.mock.service.FilterService;
 
 import java.sql.SQLException;
 
+@Tag(name = "FilterController", description = "Filter REST API")
 @RestController
 @RequestMapping("/filter")
 @AllArgsConstructor

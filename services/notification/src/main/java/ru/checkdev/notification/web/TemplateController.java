@@ -1,5 +1,6 @@
 package ru.checkdev.notification.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,8 @@ import java.util.List;
  * @version $Id$
  * @since 0.1
  */
+
+@Tag(name = "TemplateController", description = "Template REST API")
 @RestController
 @RequestMapping("/template")
 public class TemplateController {
