@@ -5,10 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.checkdev.notification.domain.PersonDTO;
+import ru.checkdev.notification.domain.InnerMessage;
+import ru.checkdev.notification.service.InnerMessageService;
+import ru.checkdev.notification.domain.Profile;
 import ru.checkdev.notification.telegram.config.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 
+import java.sql.Timestamp;
 import java.util.Calendar;
 
 /**
@@ -26,6 +29,7 @@ public class RegAction implements Action {
     private final TgConfig tgConfig = new TgConfig("tg/", 8);
     private final TgAuthCallWebClint authCallWebClint;
     private final String urlSiteAuth;
+    private final InnerMessageService messageService;
 
     @Override
     public BotApiMethod<Message> handle(Message message) {
@@ -60,12 +64,12 @@ public class RegAction implements Action {
             return new SendMessage(chatId, text);
         }
 
+        var username = getNameFromEmail(email);
         var password = tgConfig.getPassword();
-        var person = new PersonDTO(email, password, true, null,
-                Calendar.getInstance());
+        var profile = new Profile(username, email, password, true, Calendar.getInstance());
         Object result;
         try {
-            result = authCallWebClint.doPost(URL_AUTH_REGISTRATION, person).block();
+            result = authCallWebClint.doPost(URL_AUTH_REGISTRATION, profile).block();
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             text = "Сервис не доступен попробуйте позже" + sl
@@ -84,6 +88,15 @@ public class RegAction implements Action {
                + "Логин: " + email + sl
                + "Пароль: " + password + sl
                + urlSiteAuth;
+        InnerMessage innerMessage = new InnerMessage();
+        innerMessage.setText(text);
+        innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
+        messageService.saveMessage(innerMessage);
         return new SendMessage(chatId, text);
+    }
+
+    private String getNameFromEmail(String email) {
+        String[] array = email.split("@");
+        return array[0];
     }
 }

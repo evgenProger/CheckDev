@@ -38,6 +38,7 @@ public class TopicControl {
             if (token != null) {
                 var userInfo = authService.userInfo(token);
                 model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()));
+                model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
             }
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index",
@@ -55,9 +56,14 @@ public class TopicControl {
     }
 
     @GetMapping("/createForm/{categoryId}")
-    public String createForm(@PathVariable int categoryId, Model model)
+    public String createForm(@PathVariable int categoryId, Model model, HttpServletRequest req)
             throws JsonProcessingException {
         model.addAttribute("categoryId", categoryId);
+        var token = getToken(req);
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+        }
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
@@ -86,6 +92,7 @@ public class TopicControl {
             topic = topicsService.getById(topicId);
             RequestResponseTools.addAttrCanManage(model, userInfo);
             model.addAttribute("userInfo", userInfo);
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
         model.addAttribute("topic", topic);
         int categoryId = topic.getCategory().getId();

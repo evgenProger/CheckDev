@@ -1,7 +1,7 @@
 package ru.checkdev.notification.telegram.config;
 
 import org.junit.jupiter.api.Test;
-import ru.checkdev.notification.domain.PersonDTO;
+import ru.checkdev.notification.domain.Profile;
 
 import java.util.Calendar;
 
@@ -46,10 +46,11 @@ class TgConfigTest {
 
     @Test
     void whenGetObjectToMapThenReturnObjectMap() {
-        var personDto = new PersonDTO("mail", "pass", true, null, Calendar.getInstance());
-        var map = tgConfig.getObjectToMap(personDto);
-        assertThat(map.get("email")).isEqualTo(personDto.getEmail());
-        assertThat(map.get("password")).isEqualTo(personDto.getPassword());
+        var profile = new Profile("username", "mail", "pass", true, Calendar.getInstance());
+        var map = tgConfig.getObjectToMap(profile);
+        assertThat(map.get("username")).isEqualTo(profile.getUsername());
+        assertThat(map.get("email")).isEqualTo(profile.getEmail());
+        assertThat(map.get("password")).isEqualTo(profile.getPassword());
         assertThat(String.valueOf(map.get("privacy"))).isEqualTo(String.valueOf(true));
     }
 }

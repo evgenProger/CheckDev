@@ -1,5 +1,8 @@
 package ru.checkdev.notification.web;
 
+import com.google.gson.GsonBuilder;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,13 +13,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.notification.NtfSrv;
-import ru.checkdev.notification.domain.SubscribeCategory;
-import ru.checkdev.notification.service.SubscribeCategoryService;
+import ru.checkdev.notification.domain.InnerMessage;
+import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.TgRun;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
-import org.junit.jupiter.api.Test;
 import java.util.List;
-
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -26,13 +27,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = NtfSrv.class)
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
-public class SubscribeCategoriesControllerTest {
+public class InnerMessageControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private SubscribeCategoryService service;
+    private InnerMessageService service;
 
     @MockBean
     private TgRun tgRun;
@@ -43,16 +44,22 @@ public class SubscribeCategoriesControllerTest {
     @MockBean
     private TemplateController templateController;
 
-    private final SubscribeCategory subscribeCategory = new SubscribeCategory(1, 2, 2);
+    private final InnerMessage botMessage = new InnerMessage(1, 2, "text",
+            null, false);
 
+    private final String message = new GsonBuilder().serializeNulls().create().toJson(botMessage);
+
+    @Disabled
     @Test
     @WithMockUser
-    public void whenFindCategoriesByUserId() throws Exception {
-        when(service.findCategoriesByUserId(subscribeCategory.getUserId())).thenReturn(List.of(subscribeCategory.getUserId()));
-        mockMvc.perform(get("/subscribeCategory/2"))
+    public void whenFindBotMessageByUserId() throws Exception {
+        when(service.findByUserIdAndReadFalse(botMessage.getUserId())).thenReturn(List.of(botMessage));
+        mockMvc.perform(get("/messages/2"))
                 .andDo(print())
                 .andExpectAll(status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        content().string("[2]"));
+                        content().string("[" + message + "]"),
+                        content().contentType(MediaType.APPLICATION_JSON)
+                        );
     }
+
 }

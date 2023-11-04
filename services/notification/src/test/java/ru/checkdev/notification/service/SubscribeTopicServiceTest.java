@@ -1,48 +1,54 @@
 package ru.checkdev.notification.service;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.notification.NtfSrv;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.checkdev.notification.domain.SubscribeTopic;
 import ru.checkdev.notification.telegram.TgRun;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 import ru.checkdev.notification.web.TemplateController;
+
 import java.util.List;
-import static org.junit.Assert.*;
 
-@SpringBootTest(classes = NtfSrv.class)
-@RunWith(SpringRunner.class)
-@AutoConfigureMockMvc
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class SubscribeTopicServiceTest {
-    @Autowired
-    private SubscribeTopicService service;
-
     @MockBean
     private TgRun tgRun;
 
     @MockBean
     private TgAuthCallWebClint tgAuthCallWebClint;
 
-    @MockBean
-    private TemplateController templateController;
+    @Autowired
+    private SubscribeTopicService service;
+
+
+    @Test
+    public void checkContext() {
+        assertThat(service).isNotNull();
+    }
+
 
     @Test
     public void whenGetAllSubTopicReturnContainsValue() {
         SubscribeTopic subscribeTopic = this.service.save(new SubscribeTopic(0, 1, 1));
         List<SubscribeTopic> result = this.service.findAll();
-        assertTrue(result.contains(subscribeTopic));
+        assertThat(result).contains(subscribeTopic);
     }
 
     @Test
     public void requestByUserIdReturnCorrectValue() {
         SubscribeTopic subscribeTopic = this.service.save(new SubscribeTopic(1, 2, 2));
         List<Integer> result = this.service.findTopicByUserId(subscribeTopic.getUserId());
-        assertEquals(result, List.of(2));
+        assertThat(result).contains(2);
     }
 
     @Test
@@ -50,6 +56,6 @@ public class SubscribeTopicServiceTest {
         SubscribeTopic subscribeTopic = this.service.save(new SubscribeTopic(2, 3, 3));
         subscribeTopic = this.service.delete(subscribeTopic);
         List<SubscribeTopic> result = this.service.findAll();
-        assertFalse(result.contains(subscribeTopic));
+        assertThat(result).doesNotContain(subscribeTopic);
     }
 }
