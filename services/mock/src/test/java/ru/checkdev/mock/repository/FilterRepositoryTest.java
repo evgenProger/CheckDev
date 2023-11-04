@@ -13,7 +13,7 @@ import javax.persistence.EntityManager;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @ExtendWith(SpringExtension.class)
 @RunWith(SpringRunner.class)
@@ -28,7 +28,7 @@ public class FilterRepositoryTest {
 
     @Test
     public void whenFilterSaved() {
-        var filter = new Filter(1, 1, 1);
+        var filter = new Filter(1, 1, 1, 0);
         entityManager.persist(filter);
         var saved = filterRepository.save(filter);
         assertThat(filter).isEqualTo(saved);
@@ -36,22 +36,22 @@ public class FilterRepositoryTest {
 
     @Test
     public void whenFilterFindByUserId() {
-        var filter = new Filter(1, 1, 1);
+        var filter = new Filter(1, 1, 1, 0);
         entityManager.persist(filter);
         var optionalFilter = filterRepository.getByUserId(1);
-        assertTrue(optionalFilter.isPresent());
-        assertThat(filter).isEqualTo(optionalFilter.get());
+        assertNotNull(optionalFilter);
+        assertThat(filter).isEqualTo(optionalFilter);
     }
 
     @Test
     public void whenFilterCanNotFindByUserId() {
         var optionalFilter = filterRepository.getByUserId(-1);
-        assertTrue(optionalFilter.isEmpty());
+        assertNull(optionalFilter);
     }
 
     @Test
     public void whenFilterSavedThenDeleteByUserId() {
-        var filter = new Filter(1, 1, 1);
+        var filter = new Filter(1, 1, 1, 0);
         entityManager.persist(filter);
         var optionalFilter = filterRepository.findById(1);
         assertTrue(optionalFilter.isPresent());
@@ -64,6 +64,6 @@ public class FilterRepositoryTest {
     @Test
     public void whenTryToDeleteFilterByIncorrectUserId() {
         entityManager.createQuery("delete from interview").executeUpdate();
-        assertThat(Optional.of(0)).isEqualTo(filterRepository.deleteByUserId(1));
+        assertThat(0).isEqualTo(filterRepository.deleteByUserId(1));
     }
 }
