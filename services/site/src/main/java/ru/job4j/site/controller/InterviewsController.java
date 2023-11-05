@@ -83,6 +83,7 @@ public class InterviewsController {
                     .collect(Collectors.toSet());
             var wishers = wisherService.getAllWisherDtoByInterviewId(token, "");
             var interviewStatistic = wisherService.getInterviewStatistic(wishers);
+            interviewsService.setCountWishers(interviewsPage, token, page, size);
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index",
                     "Собеседования", String.format("/interviews/?page=%d&?size=%d", page, size)

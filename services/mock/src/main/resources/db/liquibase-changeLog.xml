@@ -22,4 +22,7 @@
     <include file="changelog/015_ddl_add_constraint_table_interview.sql" relativeToChangelogFile="true"/>
     <include file="changelog/016_ddl_add_constraint_table_wisher.sql" relativeToChangelogFile="true"/>
     <include file="changelog/017_ddl_add_column_author_in_interview_table.sql" relativeToChangelogFile="true"/>
+    <include file="changelog/018_ddl_add_column_countWishers_in_interview_table.sql" relativeToChangelogFile="true"/>
+    <include file="changelog/019_ddl_alter_countWishers_in_interview_table.sql" relativeToChangelogFile="true"/>
+    <include file="changelog/020_ddl_drop_column_countWishers_in_interview_table.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

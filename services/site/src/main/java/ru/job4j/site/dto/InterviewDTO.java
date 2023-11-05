@@ -30,7 +30,12 @@ public class InterviewDTO {
     private int topicId;
 
     /**
-     * поле автор(то кто создал)собеседование
+     * поле автор собеседования (тот кто создал собеседование)
      */
     private String author;
+
+    /**
+     * поле количество откликов(желающих участвовать в интервью)
+     */
+    private Long countWishers;
 }

@@ -179,6 +179,21 @@ public class WisherServiceWebClient implements WisherService {
     }
 
     /**
+     * Метод выполняет подсчет количества откликов на участие в собеседовании
+     * @param wishers wishers
+     * @param interviewId interviewId
+     * @return количество откликов
+     */
+    @Override
+    public Long countWishers(List<WisherDto> wishers, int interviewId) {
+        return  wishers
+                .stream()
+                .map(wisherDto -> wisherDto.getInterviewId())
+                .filter(integer -> integer.equals(interviewId))
+                .count();
+    }
+
+    /**
      * Метод для установки своего WebClient
      *
      * @param webClientWisher WebClient

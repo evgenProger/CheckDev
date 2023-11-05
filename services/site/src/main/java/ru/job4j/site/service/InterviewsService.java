@@ -4,16 +4,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.util.RestPageImpl;
 
 import java.util.Collection;
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class InterviewsService {
+
+    private final WisherService wisherService;
 
     public Page<InterviewDTO> getAll(String token, int page, int size)
             throws JsonProcessingException {
@@ -71,5 +76,23 @@ public class InterviewsService {
             }
         }
         return builder.toString();
+    }
+
+    /**
+     * Метод выполняет set поля countWishers(количество откликов) модели Интервью
+     * @param interviewsDTO interviewsDTO
+     * @param token token
+     * @param page page
+     * @param size size
+     * @throws JsonProcessingException
+     */
+    public void setCountWishers(Page<InterviewDTO> interviewsDTO, String token, int page, int size)
+            throws JsonProcessingException {
+        for (var interviewDTO : interviewsDTO.toList()) {
+            var wishers = wisherService.getAllWisherDtoByInterviewId(
+                    token, String.valueOf(interviewDTO.getId()));
+            Long countWishers = wisherService.countWishers(wishers, interviewDTO.getId());
+            interviewDTO.setCountWishers(countWishers);
+        }
     }
 }
