@@ -1,5 +1,6 @@
 package ru.checkdev.notification.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.notification.domain.Setting;
@@ -12,6 +13,8 @@ import java.util.List;
  * @version $Id$
  * @since 0.1
  */
+
+@Tag(name = "SettingController", description = "Setting REST API")
 @RestController
 @RequestMapping("/setting")
 public class SettingController {

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import ru.checkdev.notification.domain.PersonDTO;
+import ru.checkdev.notification.domain.Profile;
 
 /**
  * 3. Мидл
@@ -17,11 +17,8 @@ import ru.checkdev.notification.domain.PersonDTO;
 @Service
 @Slf4j
 public class TgAuthCallWebClint {
-    private WebClient webClient;
-
-    public TgAuthCallWebClint(@Value("${server.auth}") String urlAuth) {
-        this.webClient = WebClient.create(urlAuth);
-    }
+    @Value("${server.auth}")
+    private String url;
 
     /**
      * Метод get
@@ -29,12 +26,12 @@ public class TgAuthCallWebClint {
      * @param url URL http
      * @return Mono<Person>
      */
-    public Mono<PersonDTO> doGet(String url) {
-        return webClient
+    public Mono<Profile> doGet(String url) {
+        return WebClient.create(url)
                 .get()
                 .uri(url)
                 .retrieve()
-                .bodyToMono(PersonDTO.class)
+                .bodyToMono(Profile.class)
                 .doOnError(err -> log.error("API not found: {}", err.getMessage()));
     }
 
@@ -42,20 +39,16 @@ public class TgAuthCallWebClint {
      * Метод POST
      *
      * @param url       URL http
-     * @param personDTO Body PersonDTO.class
+     * @param profile Body PersonDTO.class
      * @return Mono<Person>
      */
-    public Mono<Object> doPost(String url, PersonDTO personDTO) {
-        return webClient
+    public Mono<Object> doPost(String url, Profile profile) {
+        return WebClient.create(url)
                 .post()
                 .uri(url)
-                .bodyValue(personDTO)
+                .bodyValue(profile)
                 .retrieve()
                 .bodyToMono(Object.class)
                 .doOnError(err -> log.error("API not found: {}", err.getMessage()));
-    }
-
-    public void setWebClient(WebClient webClient) {
-        this.webClient = webClient;
     }
 }

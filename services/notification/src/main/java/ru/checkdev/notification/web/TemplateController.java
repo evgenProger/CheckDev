@@ -1,5 +1,6 @@
 package ru.checkdev.notification.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,8 @@ import java.util.List;
  * @version $Id$
  * @since 0.1
  */
+
+@Tag(name = "TemplateController", description = "Template REST API")
 @RestController
 @RequestMapping("/template")
 public class TemplateController {
@@ -24,13 +27,10 @@ public class TemplateController {
 
     private final NotificationService notifications;
 
-    private final String access;
-
     @Autowired
-    public TemplateController(@Value("${access.key}") String access, final TemplateService templates, NotificationService notifications) {
+    public TemplateController(final TemplateService templates, NotificationService notifications) {
         this.templates = templates;
         this.notifications = notifications;
-        this.access = access;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -65,9 +65,6 @@ public class TemplateController {
 
     @PostMapping("/queue")
     public Notify queue(@RequestParam("access") String access, @RequestBody Notify notify) {
-        if (this.access.equals(access)) {
-            this.notifications.put(notify);
-        }
         return notify;
     }
 

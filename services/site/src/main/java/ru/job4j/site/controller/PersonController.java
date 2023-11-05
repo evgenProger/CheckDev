@@ -1,5 +1,6 @@
 package ru.job4j.site.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -7,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.site.dto.PersonDTO;
+import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.ImageCompress;
+import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,14 +33,18 @@ public class PersonController {
     private final String contentTypeFile;
     private final PersonService personService;
     private final ImageCompress imageCompress;
+    private final AuthService authService;
+    private final NotificationService notifications;
 
     public PersonController(@Value("${server.site.maxSizeLoadFile}") String maxSizeFile,
                             @Value("${server.site.contentTypeFile}") String contentTypeFile,
-                            PersonService personService, ImageCompress imageCompress) {
+                            PersonService personService, ImageCompress imageCompress, AuthService authService, NotificationService notifications) {
         this.maxSizeFile = maxSizeFile;
         this.contentTypeFile = contentTypeFile;
         this.personService = personService;
         this.imageCompress = imageCompress;
+        this.authService = authService;
+        this.notifications = notifications;
     }
 
     /**
@@ -48,7 +55,7 @@ public class PersonController {
      * @return String
      */
     @GetMapping("/")
-    public String getViewPerson(HttpServletRequest request, Model model) {
+    public String getViewPerson(HttpServletRequest request, Model model) throws JsonProcessingException {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
                 "Профиль", "/persons/"
@@ -56,6 +63,11 @@ public class PersonController {
         var personDTO = getPersonDTO(request);
         if (personDTO == null) {
             return "redirect:/";
+        }
+        var token = getToken(request);
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
         model.addAttribute("personDto", personDTO);
         model.addAttribute("photoId", getPhotoIdByPersonDTO(personDTO));
@@ -72,7 +84,7 @@ public class PersonController {
     @GetMapping("/edit")
     public String getEditPerson(HttpServletRequest request,
                                 Model model,
-                                @RequestParam(value = "error", required = false) String error) {
+                                @RequestParam(value = "error", required = false) String error) throws JsonProcessingException {
         var personDTO = getPersonDTO(request);
         if (personDTO == null) {
             return "redirect:/";
@@ -89,6 +101,11 @@ public class PersonController {
         model.addAttribute("personDto", personDTO);
         model.addAttribute("photoId", getPhotoIdByPersonDTO(personDTO));
         model.addAttribute("errorMessage", errorMessage);
+        var token = getToken(request);
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+        }
         return "/persons/personEdit";
     }
 

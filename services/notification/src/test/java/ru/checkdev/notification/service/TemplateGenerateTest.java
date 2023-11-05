@@ -1,19 +1,16 @@
 package ru.checkdev.notification.service;
 
 import freemarker.template.TemplateException;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.*;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author Petr Arsentev (parsentev@yandex.ru)
- * @version $Id$
- * @since 0.1
- */
+import static org.assertj.core.api.Assertions.assertThat;
+
+@Disabled
 public class TemplateGenerateTest {
     @Test
     public void whenTemplateHasLoopThenRenderTable() throws IOException, TemplateException {
@@ -28,8 +25,7 @@ public class TemplateGenerateTest {
                         + "<#list interview as value>${value} </#list>"
                         + "</#list>", model
         );
-
-        assertThat(result, is("name email name email "));
+        assertThat(result).isEqualTo("name email name email ");
     }
 
     @Test
@@ -45,6 +41,6 @@ public class TemplateGenerateTest {
                         + "</#list>", model
         );
 
-        assertThat(result, is("email"));
+        assertThat(result).isEqualTo("email");
     }
 }

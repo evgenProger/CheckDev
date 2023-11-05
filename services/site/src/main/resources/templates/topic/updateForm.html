@@ -27,6 +27,12 @@
     <link th:href="@{/webjars/summernote/0.8.10/summernote-lite.css}" rel="stylesheet">
     <script th:src="@{/webjars/summernote/0.8.10/summernote-lite.js}"></script>
     <script th:src="@{/webjars/summernote/0.8.10/lang/summernote-ru-RU.js}"></script>
+    <script>
+    $(document).ready(function() {
+    $('.summernote').summernote();
+    });
+    </script>
+
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
@@ -47,7 +53,7 @@
                            name="position" th:value="${topic.position}"
                            aria-describedby="emailHelp" placeholder="Введите позицию">
                     <label class="fw-bold" for="text">Описание</label>
-                    <textarea type="text" class="form-control mb-3 mt-2" id="text"
+                    <textarea class="form-control mb-3 mt-2 summernote" id="text"
                               name="text" th:text="${topic.text}"
                               rows="15" style="height:100%;"
                               aria-describedby="text" placeholder="Введите описание"></textarea>

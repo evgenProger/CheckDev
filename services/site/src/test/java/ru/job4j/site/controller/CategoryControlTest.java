@@ -12,6 +12,7 @@ import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.NotificationService;
 
 import java.util.List;
 
@@ -37,6 +38,8 @@ class CategoryControlTest {
     private CategoriesService categoriesService;
     @MockBean
     private AuthService authService;
+    @MockBean
+    private NotificationService notificationService;
 
     @Test
     void whenGetCreateFormThenReturnViewCrateForm() throws Exception {

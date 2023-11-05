@@ -25,8 +25,14 @@
                     <li class="nav-item" th:if="${userInfo != null}">
                         <a class="nav-link" th:href="@{/persons/}">
                         <span th:text="${userInfo.username != null} ? ${userInfo.username} : ${userInfo.email}">
-                            Login/Email пользователя
                         </span>
+                        </a>
+                    </li>
+                    <li class="nav-item" th:if="${userInfo != null &&
+                    innerMessages != null && innerMessages.size > 0}">
+                        <a href="#" class="nav-link">
+                            <span class="badge rounded-pill bg-success"
+                                  th:text="${innerMessages.size}"></span>
                         </a>
                     </li>
                     <li class="nav-item" th:if="${userInfo != null}">

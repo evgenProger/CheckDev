@@ -4,21 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * DTO модель класса Person сервиса Auth.
  *
  * @author parsentev
  * @since 25.09.2016
+ *
+ * переделал в Profile
+ * @author Arcady555
+ * @since 01.11.2023
  */
 @Data
 @AllArgsConstructor
-public class PersonDTO {
+public class Profile {
+    private String username;
     private String email;
     private String password;
     private boolean privacy;
-    private List<RoleDTO> roles;
     private Calendar created;
-
 }

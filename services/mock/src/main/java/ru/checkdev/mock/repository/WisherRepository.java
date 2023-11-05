@@ -1,5 +1,7 @@
 package ru.checkdev.mock.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -9,6 +11,7 @@ import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
 import ru.checkdev.mock.dto.WisherDto;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface WisherRepository extends CrudRepository<Wisher, Integer> {
@@ -48,4 +51,41 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
     void setNotWisherStatus(@Param("interviewId") int interviewId,
                             @Param("notWisherId") int notWisherId,
                             @Param("newStatusId") int newStatusId);
+
+    /**
+     * @param userId int
+     * @param pageable Pageable
+     * @return интервью, в которых пользователь участвует
+     */
+    @Query("SELECT i FROM wisher w JOIN w.interview i WHERE w.userId = :userId")
+    Page<Interview> findInterviewByUserId(@Param("userId") int userId, Pageable pageable);
+
+    /**
+     * @param userId int
+     * @param topicId int
+     * @param pageable Pageable
+     * @return интервью определённой темы, в которых пользователь участвует
+     */
+    @Query("SELECT i FROM wisher w "
+            + "JOIN w.interview i "
+            + "WHERE w.userId = :userId"
+            + " AND i.topicId = :topicId")
+    Page<Interview> findInterviewByUserIdAndByTopicId(@Param("userId") int userId,
+                                                      @Param("topicId") int topicId,
+                                                      Pageable pageable);
+
+    /**
+     * @param userId int
+     * @param topicsIds Collection<Integer>
+     * @param pageable Pageable
+     * @return интервью определённой категории, в которых пользователь участвует
+     */
+    @Query("SELECT i FROM wisher w "
+            + "JOIN w.interview i "
+            + "WHERE w.userId = :userId "
+            + "AND i.topicId IN :topicsIds")
+    Page<Interview> findInterviewByUserIdAndByTopicIdIn(
+            @Param("userId") int userId,
+            @Param("topicsIds") Collection<Integer> topicsIds,
+            Pageable pageable);
 }
