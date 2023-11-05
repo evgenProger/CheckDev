@@ -79,7 +79,7 @@ public class InterviewsControllerTest {
         List<TopicIdNameDTO> topicIdNameDTOS = IntStream.range(1, 8).mapToObj(
                 i -> new TopicIdNameDTO(i, String.format("topic_id_name_%d", i))
         ).toList();
-        var filter = new FilterDTO(1, 1, 1);
+        var filter = new FilterDTO(1, 1, 1, 0);
         var page = new PageImpl<>(interviews);
         when(wisherService.getAllWisherDtoByInterviewId(token, "")).thenReturn(new ArrayList<>());
         when(wisherService.getInterviewStatistic(new ArrayList<>())).thenReturn(new HashMap<>());

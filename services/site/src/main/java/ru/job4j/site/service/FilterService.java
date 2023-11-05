@@ -4,7 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import ru.job4j.site.domain.FilterProfile;
 import ru.job4j.site.dto.FilterDTO;
+
+import java.util.Collection;
+import java.util.List;
 
 @Service
 public class FilterService {
@@ -33,5 +37,22 @@ public class FilterService {
                 token,
                 mapper.writeValueAsString(userId)
         );
+    }
+
+    public List<FilterProfile> getProfiles() throws JsonProcessingException {
+        var mapper = new ObjectMapper();
+        var text = new RestAuthCall(URL + "/profiles").get();
+        return mapper.readValue(text, new TypeReference<>() {});
+    }
+
+    public String getNameById(Collection<FilterProfile> filterProfiles, int id) {
+        String result = "";
+        for (var filterProfile : filterProfiles) {
+            if (filterProfile.getId() == id) {
+                result = filterProfile.getName();
+                break;
+            }
+        }
+        return result;
     }
 }

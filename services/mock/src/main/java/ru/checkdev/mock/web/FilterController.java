@@ -6,9 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.mock.domain.Filter;
+import ru.checkdev.mock.domain.FilterProfile;
+import ru.checkdev.mock.service.FilterProfileService;
 import ru.checkdev.mock.service.FilterService;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Tag(name = "FilterController", description = "Filter REST API")
 @RestController
@@ -17,6 +20,7 @@ import java.sql.SQLException;
 public class FilterController {
 
     private final FilterService filterService;
+    private final FilterProfileService filterProfileService;
 
     @PostMapping("/")
     public ResponseEntity<Filter> save(@RequestBody Filter filter) throws SQLException {
@@ -43,5 +47,10 @@ public class FilterController {
         } else {
             return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/profiles")
+    public ResponseEntity<List<FilterProfile>> getProfiles() {
+        return new ResponseEntity<>(filterProfileService.getAll(), HttpStatus.OK);
     }
 }

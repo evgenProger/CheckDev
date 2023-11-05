@@ -36,7 +36,7 @@ public class FilterControllerTest {
 
     @Test
     public void whenFilterSaved() throws Exception {
-        var filter = new Filter(1, 1, 1);
+        var filter = new Filter(1, 1, 1, 0);
         when(filterService.save(filter)).thenReturn(Optional.of(filter));
         String json = new GsonBuilder().serializeNulls().create().toJson(filter);
         mockMvc.perform(post("/filter/")
@@ -49,7 +49,7 @@ public class FilterControllerTest {
 
     @Test
     public void whenFilterFindByUserId() throws Exception {
-        var filter = new Filter(1, 1, 1);
+        var filter = new Filter(1, 1, 1, 0);
         when(filterService.findByUserId(1)).thenReturn(Optional.of(filter));
         String json = new GsonBuilder().serializeNulls().create().toJson(filter);
         mockMvc.perform(get("/filter/1"))
@@ -75,7 +75,7 @@ public class FilterControllerTest {
 
     @Test
     public void whenFilterDeleted() throws Exception {
-        var filter = new Filter(1, 1, 1);
+        var filter = new Filter(1, 1, 1, 0);
         when(filterService.deleteByUserId(1)).thenReturn(1);
         mockMvc.perform(delete("/filter/delete/1"))
                 .andDo(print())
