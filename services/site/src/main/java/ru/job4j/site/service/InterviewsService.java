@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.InterviewDTO;
@@ -11,8 +12,11 @@ import ru.job4j.site.util.RestPageImpl;
 
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class InterviewsService {
+
+    private final WisherService wisherService;
 
     private static final String URL = "http://localhost:9912/interviews/";
 
@@ -155,5 +159,21 @@ public class InterviewsService {
         var pageType = mapper.getTypeFactory()
                 .constructParametricType(RestPageImpl.class, InterviewDTO.class);
         return mapper.readValue(text, pageType);
+    }
+
+    /**
+     * Метод выполняет set поля countWishers(количество откликов) модели Интервью
+     * @param interviewsDTO interviewsDTO
+     * @param token token
+     * @throws JsonProcessingException
+     */
+    public void setCountWishers(Page<InterviewDTO> interviewsDTO, String token)
+            throws JsonProcessingException {
+        for (var interviewDTO : interviewsDTO.toList()) {
+            var wishers = wisherService.getAllWisherDtoByInterviewId(
+                    token, String.valueOf(interviewDTO.getId()));
+            Long countWishers = wisherService.countWishers(wishers, interviewDTO.getId());
+            interviewDTO.setCountWishers(countWishers);
+        }
     }
 }

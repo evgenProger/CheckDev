@@ -29,25 +29,25 @@ public class InterviewsRequestManagerTest {
             new InterviewDTO(0, 1, 1, i,
             "Title", "Text", "contact",
             "30.02.2024", "03.11.2023",
-            i, "Author")).toList();
+            i, "Author", 1L)).toList();
 
     private final List<InterviewDTO> singleTopicInterviews = IntStream.range(1, 4).mapToObj(i ->
             new InterviewDTO(0, 1, 1, i,
                     "Title", "Text", "contact",
                     "30.02.2024", "03.11.2023",
-                    2, "Author")).toList();
+                    2, "Author", 1L)).toList();
 
     private final List<InterviewDTO> singleSubmitterInterviews = IntStream.range(1, 4).mapToObj(i ->
             new InterviewDTO(0, 1, 1, 1,
                     "Title", "Text", "contact",
                     "30.02.2024", "03.11.2023",
-                    i, "Author")).toList();
+                    i, "Author", 1L)).toList();
 
     private final List<InterviewDTO> singleSubmitterAndTopicInterviews = IntStream.range(1, 4).mapToObj(i ->
             new InterviewDTO(0, 1, 1, 1,
                     "Title", "Text", "contact",
                     "30.02.2024", "03.11.2023",
-                    2, "Author")).toList();
+                    2, "Author", 1L)).toList();
 
     private final String token = "1234567";
 
