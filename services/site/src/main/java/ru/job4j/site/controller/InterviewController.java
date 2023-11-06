@@ -78,6 +78,8 @@ public class InterviewController {
         var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
         var isWisher = wisherService.isWisher(userInfo.getId(), interview.getId(), wishers);
         var statisticMap = wisherService.getInterviewStatistic(wishers);
+        var wishersDetail = interviewService.getAllWisherDetail(wishers);
+        boolean isDismissed = wisherService.isDismissed(interviewId, wishers);
         model.addAttribute("interview", interview);
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("isWisher", isWisher);
@@ -85,15 +87,12 @@ public class InterviewController {
         model.addAttribute("statuses", StatusInterview.values());
         model.addAttribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId());
         model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
-        if (isAuthor) {
-            var wishersDetail = interviewService.getAllWisherDetail(wishers);
-            boolean isDismissed = wisherService.isDismissed(interviewId, wishers);
-            model.addAttribute("isDismissed", isDismissed);
-            model.addAttribute("wishersDetail", wishersDetail);
-        }
+        model.addAttribute("wishersDetail", wishersDetail);
+        model.addAttribute("isDismissed", isDismissed);
         if (token != null) {
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
+
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Собеседования", "/interviews/",
