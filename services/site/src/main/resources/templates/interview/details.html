@@ -84,7 +84,7 @@
         <div class="card-body">
             <div>
                 <!-- Отображение списка участников собеседования -->
-                <div th:if="${userInfo != null && isAuthor}">
+                <div>
                     <table class="table">
                         <thead>
                         <tr>
@@ -94,6 +94,30 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr class="table-primary" th:each="wisher : ${wishersDetail}" th:if="${wisher.approve}">
+                            <td>
+                                <div class="card" style="width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${'Автор: ' + interview.author}">Автор:
+                                            имя</h5>
+                                        <h6 class="card-subtitle mb-2 text-body"
+                                            th:text="${'Контакт: ' + interview.contactBy}">Контакт</h6>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                                <div class="card" style="width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${'Участник: ' + wisher.username}">Участник:
+                                            имя</h5>
+                                        <h6 class="card-subtitle mb-2 text-body"
+                                            th:text="${'Контакт: ' + wisher.contactBy}">Контакт</h6>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                         <tr th:each="wisher : ${wishersDetail}" th:if="${!wisher.approve}">
                             <td>
                                 <div class="row h4" th:text="${wisher.username}">
@@ -113,7 +137,7 @@
                                            th:value="${wisher.interviewId}">
                                     <input type="hidden" th:id="wisherId" th:name="wisherId"
                                            th:value="${wisher.id}">
-                                    <button type="submit" class="btn btn-info mt-3">Одобрить</button>
+                                    <button th:if="${userInfo != null && isAuthor}" type="submit" class="btn btn-info mt-3">Одобрить</button>
                                 </form>
                             </td>
                         </tr>
@@ -126,30 +150,6 @@
                                 </div>
                             </td>
                             <td>
-                            </td>
-                        </tr>
-                        <tr class="table-primary" th:each="wisher : ${wishersDetail}" th:if="${wisher.approve}">
-                            <td>
-                                <div class="card" style="width: 18rem;">
-                                    <div class="card-body">
-                                        <h5 class="card-title" th:text="${'Автор: ' + userInfo.username}">Автор:
-                                            имя</h5>
-                                        <h6 class="card-subtitle mb-2 text-body"
-                                            th:text="${'Контакт: ' + userInfo.email}">Контакт</h6>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                                <div class="card" style="width: 18rem;">
-                                    <div class="card-body">
-                                        <h5 class="card-title" th:text="${'Участник: ' + wisher.username}">Участник:
-                                            имя</h5>
-                                        <h6 class="card-subtitle mb-2 text-body"
-                                            th:text="${'Контакт: ' + wisher.contactBy}">Контакт</h6>
-                                    </div>
-                                </div>
                             </td>
                         </tr>
                         </tbody>
