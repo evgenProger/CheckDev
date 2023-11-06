@@ -50,7 +50,7 @@ public class PersonService {
      */
     public ResponseEntity<String> postUpdatePerson(String token, PersonDTO personDTO, MultipartFile file) {
         var builder = new MultipartBodyBuilder();
-        builder.part("person", personDTO, MediaType.APPLICATION_JSON);
+        builder.part("profile", personDTO, MediaType.APPLICATION_JSON);
         builder.part("file", file.getResource(), MediaType.IMAGE_JPEG);
         return webClientAuthCall.doPostMultipart(URL_PERSON_UPDATE, token, builder)
                 .block();
