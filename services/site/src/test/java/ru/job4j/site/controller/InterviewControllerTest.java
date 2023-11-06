@@ -11,10 +11,7 @@ import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.*;
-import ru.job4j.site.service.AuthService;
-import ru.job4j.site.service.InterviewService;
-import ru.job4j.site.service.TopicsService;
-import ru.job4j.site.service.WisherService;
+import ru.job4j.site.service.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,6 +40,8 @@ public class InterviewControllerTest {
     private AuthService authService;
     @MockBean
     private WisherService wisherService;
+    @MockBean
+    private NotificationService notificationService;
 
     @Test
     public void whenShowDetails() throws Exception {
@@ -303,8 +302,9 @@ public class InterviewControllerTest {
         interview.setId(interviewId);
         interview.setSubmitterId(userInfo.getId());
         when(interviewService.getById(token, interviewId)).thenReturn(interview);
+        when(authService.userInfo(token)).thenReturn(userInfo);
         mockMvc.perform(get(String.format("/interview/%d/participate", interviewId))
-                )
+                .sessionAttr("token", token))
                 .andDo(print()).andExpectAll(status().is3xxRedirection(),
                         view().name(String.format("redirect:/interview/%d", interviewId)));
     }

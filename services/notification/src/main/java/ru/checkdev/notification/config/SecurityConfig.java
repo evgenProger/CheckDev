@@ -19,11 +19,14 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers(
                 "/template/queue",
-                "/template/ping", "/subscribeCategory/**",
-                "/subscribeTopic/**"
+                "/template/ping",
+                "/subscribeCategory/**",
+                "/subscribeTopic/**",
+                "/swagger-ui/**",
+                "/v3/**"
         );
     }
 }

@@ -10,10 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.UserInfoDTO;
-import ru.job4j.site.service.AuthService;
-import ru.job4j.site.service.InterviewService;
-import ru.job4j.site.service.TopicsService;
-import ru.job4j.site.service.WisherService;
+import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,16 +26,23 @@ public class InterviewController {
     private final TopicsService topicsService;
     private final InterviewService interviewService;
     private final WisherService wisherService;
+    private final NotificationService notifications;
 
     @GetMapping("/createForm")
     public String createForm(@ModelAttribute("topicId") int topicId,
-                             Model model)
+                             Model model, HttpServletRequest req)
             throws JsonProcessingException {
         var topic = topicsService.getById(topicId);
         var categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();
         model.addAttribute("category", topic.getCategory());
         model.addAttribute("topic", topic);
+        var token = getToken(req);
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+        }
+
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
@@ -85,6 +89,9 @@ public class InterviewController {
         model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
         model.addAttribute("wishersDetail", wishersDetail);
         model.addAttribute("isDismissed", isDismissed);
+        if (token != null) {
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+        }
 
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
@@ -105,7 +112,7 @@ public class InterviewController {
     @GetMapping("/edit/{id}")
     public String getEditView(@PathVariable("id") int interviewId,
                               Model model,
-                              HttpServletRequest request) {
+                              HttpServletRequest request) throws JsonProcessingException {
         var token = getToken(request);
         InterviewDTO interview;
         UserInfoDTO userInfoDTO;
@@ -124,6 +131,10 @@ public class InterviewController {
                 "Собеседования", "/interviews/",
                 interview.getTitle(), String.format("/interview/edit/%d", interviewId));
         model.addAttribute("interview", interview);
+        if (token != null) {
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token,
+                    userInfoDTO.getId()));
+        }
         return "interview/interviewEdit";
     }
 
@@ -156,6 +167,9 @@ public class InterviewController {
         var token = getToken(req);
         var userInfoDTO = authService.userInfo(token);
         var interview = interviewService.getById(token, interviewId);
+        if (token != null) {
+            model.addAttribute("botMessages", notifications.findBotMessageByUserId(token, userInfoDTO.getId()));
+        }
         var result = "interview/participate";
         if (userInfoDTO != null && interview.getSubmitterId() != userInfoDTO.getId()) {
             var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));

@@ -1,5 +1,6 @@
 package ru.checkdev.auth.web.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,8 @@ import java.util.Optional;
  * @author parsentev
  * @since 30.09.2016
  */
+
+@Tag(name = "PersonController", description = "Person REST API")
 @RestController
 @RequestMapping("/person")
 public class PersonController {

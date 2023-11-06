@@ -1,17 +1,18 @@
 package ru.checkdev.mock.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.service.InterviewService;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
 
+@Tag(name = "InterviewController", description = "Interview REST API")
 @RestController
 @RequestMapping("/interview")
 @AllArgsConstructor

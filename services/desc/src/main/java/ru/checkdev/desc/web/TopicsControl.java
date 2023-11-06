@@ -1,5 +1,6 @@
 package ru.checkdev.desc.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import ru.checkdev.desc.service.TopicService;
 
 import java.util.List;
 
+@Tag(name = "TopicsControl", description = "Topics REST API")
 @RequestMapping("/topics")
 @RestController
 @AllArgsConstructor
