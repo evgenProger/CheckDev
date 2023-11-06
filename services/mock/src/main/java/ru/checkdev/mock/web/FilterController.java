@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.mock.domain.Filter;
 import ru.checkdev.mock.domain.FilterProfile;
@@ -23,6 +24,7 @@ public class FilterController {
     private final FilterProfileService filterProfileService;
 
     @PostMapping("/")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Filter> save(@RequestBody Filter filter) throws SQLException {
         return new ResponseEntity<>(
                 filterService
@@ -40,6 +42,7 @@ public class FilterController {
     }
 
     @DeleteMapping("/delete/{userId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Boolean> deleteByUserId(@PathVariable int userId) {
         int result = filterService.deleteByUserId(userId);
         if (result > 0) {
