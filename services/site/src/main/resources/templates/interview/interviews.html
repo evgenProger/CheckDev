@@ -300,7 +300,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="interview: ${interviewsPage.toList()}">
+                <tr th:each="interview: ${#lists.toList(interviewsPage)}">
                     <td>
                         <div>
                             <span class="fw-bold">
