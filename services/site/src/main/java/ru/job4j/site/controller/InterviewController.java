@@ -177,7 +177,7 @@ public class InterviewController {
         if (userInfoDTO != null && interview.getSubmitterId() != userInfoDTO.getId()) {
             var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
             var statisticMap = wisherService.getInterviewStatistic(wishers);
-            var countWishers = wisherService.countWishers(wishers,interviewId);
+            var countWishers = wisherService.countWishers(wishers, interviewId);
             model.addAttribute("interview", interview);
             model.addAttribute("statisticMap", statisticMap);
             model.addAttribute("countWishers", countWishers);
