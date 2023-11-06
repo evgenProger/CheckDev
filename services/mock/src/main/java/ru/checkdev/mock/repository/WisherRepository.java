@@ -38,6 +38,13 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
     @Query("SELECT new ru.checkdev.mock.dto.WisherDto(w.id, w.interview.id, w.userId, w.contactBy, w.approve, w.status) FROM wisher w")
     List<WisherDto> findAllWiserDto();
 
+    /**
+     * Метод устанавливает одобренному участнику approved = true.
+     *
+     * @param interviewId ID interview
+     * @param wisherId    ID wisher
+     * @param newStatusId ID new Status
+     */
     @Transactional
     @Modifying
     @Query(value = "UPDATE wisher w SET w.approve = true, w.status=:newStatusId WHERE w.interview.id=:interviewId AND w.id=:wisherId ")
@@ -45,6 +52,13 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
                          @Param("wisherId") int wisherId,
                          @Param("newStatusId") int newStatusId);
 
+    /**
+     * Метод устанавливает всем участникам approved = false которых wisher.id != ID не равны.
+     *
+     * @param interviewId ID interview
+     * @param notWisherId ID Wisher exclude
+     * @param newStatusId ID new Status
+     */
     @Transactional
     @Modifying
     @Query(value = "UPDATE wisher w SET w.approve = false, w.status=:newStatusId WHERE w.interview.id=:interviewId AND w.id!=:notWisherId")

@@ -11,13 +11,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.repository.InterviewRepository;
 import ru.checkdev.mock.repository.WisherRepository;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -28,7 +28,7 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = MockSrv.class)
+@SpringBootTest(classes = InterviewService.class)
 @RunWith(SpringRunner.class)
 class InterviewServiceTest {
 
@@ -394,5 +394,27 @@ class InterviewServiceTest {
                 .thenReturn(page);
         assertThat(interviewService
                 .findByUserIdAsNotWisherByTopicList(1, List.of(1, 2), 0, 10), is(page));
+    }
+
+    @Test
+    void whenFindAllIdByNoFeedbackThenReturnListInterview() {
+        int submitterId = 1;
+        int wisherUser = 2;
+        Interview interview = Interview.of()
+                .id(1)
+                .submitterId(submitterId)
+                .build();
+        List<Interview> expected = List.of(interview);
+        doReturn(expected).when(interviewRepository).findAllByUserIdWisherIsApproveAndNoFeedback(wisherUser);
+        List<Interview> actual = interviewService.findAllIdByNoFeedback(wisherUser);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void whenFindAllIdByNoFeedbackThenReturnEmptyList() {
+        int wisherUser = 2;
+        doReturn(Collections.emptyList()).when(interviewRepository).findAllByUserIdWisherIsApproveAndNoFeedback(wisherUser);
+        List<Interview> actual = interviewService.findAllIdByNoFeedback(wisherUser);
+        assertThat(actual.isEmpty()).isTrue();
     }
 }

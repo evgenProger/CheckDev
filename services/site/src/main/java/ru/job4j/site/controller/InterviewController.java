@@ -25,24 +25,27 @@ public class InterviewController {
     private final AuthService authService;
     private final TopicsService topicsService;
     private final InterviewService interviewService;
+    private final InterviewsService interviewsService;
     private final WisherService wisherService;
     private final NotificationService notifications;
 
     @GetMapping("/createForm")
     public String createForm(@ModelAttribute("topicId") int topicId,
-                             Model model, HttpServletRequest req)
+                             Model model,
+                             HttpServletRequest request)
             throws JsonProcessingException {
+        var token = getToken(request);
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            var interviewsNoFeedback = interviewsService.findAllIdByNoFeedback(userInfo.getId());
+            model.addAttribute("noFeedback", interviewsNoFeedback);
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+        }
         var topic = topicsService.getById(topicId);
         var categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();
         model.addAttribute("category", topic.getCategory());
         model.addAttribute("topic", topic);
-        var token = getToken(req);
-        if (token != null) {
-            var userInfo = authService.userInfo(token);
-            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
-        }
-
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",

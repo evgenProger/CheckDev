@@ -5,15 +5,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.util.RestPageImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class InterviewsService {
 
     private final WisherService wisherService;
@@ -175,5 +178,26 @@ public class InterviewsService {
             Long countWishers = wisherService.countWishers(wishers, interviewDTO.getId());
             interviewDTO.setCountWishers(countWishers);
         }
+    }
+
+    /**
+     * Метод получает из REST сервиса MOCK все собеседования,
+     * на которые пользователь должен оставить отзыв
+     *
+     * @param userId ID User
+     * @return List<Interview>
+     */
+    public List<InterviewDTO> findAllIdByNoFeedback(int userId) {
+        List<InterviewDTO> result = new ArrayList<>();
+        String url = String.format("http://localhost:9912/interviews/noFeedback/%d", userId);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String jsonText = new RestAuthCall(url).get();
+            result = mapper.readValue(jsonText, new TypeReference<>() {
+            });
+        } catch (Exception e) {
+            log.error("MOCK API is not available, error: {}", e.getMessage());
+        }
+        return result;
     }
 }
