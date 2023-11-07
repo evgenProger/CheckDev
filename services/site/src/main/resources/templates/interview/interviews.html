@@ -107,7 +107,7 @@
             $('#topics_select').html('');
             currentTopicId = 0;
             currentCategoryId = 0;
-            if (currentFilterProfile == 0) {
+            if (currentFilterProfile == 0 && userId > 0) {
                 deleteFilter(userId);
             } else {
                 createFilter();
