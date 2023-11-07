@@ -170,9 +170,9 @@ public class InterviewsService {
      * @param token token
      * @throws JsonProcessingException
      */
-    public void setCountWishers(Page<InterviewDTO> interviewsDTO, String token)
+    public void setCountWishers(List<InterviewDTO> interviewsDTO, String token)
             throws JsonProcessingException {
-        for (var interviewDTO : interviewsDTO.toList()) {
+        for (var interviewDTO : interviewsDTO) {
             var wishers = wisherService.getAllWisherDtoByInterviewId(
                     token, String.valueOf(interviewDTO.getId()));
             Long countWishers = wisherService.countWishers(wishers, interviewDTO.getId());
