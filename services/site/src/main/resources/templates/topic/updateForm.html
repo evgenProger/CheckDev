@@ -30,6 +30,9 @@
     <script>
     $(document).ready(function() {
     $('.summernote').summernote();
+            height:300,
+        maxWidth:1600,
+        maxHeight:1800,
     });
     </script>
 
@@ -55,9 +58,8 @@
                     <label class="fw-bold" for="text">Описание</label>
                     <textarea class="form-control mb-3 mt-2 summernote" id="text"
                               name="text" th:text="${topic.text}"
-                              rows="15" style="height:100%;"
+                              rows="10" style="height:100%;"
                               aria-describedby="text" placeholder="Введите описание"></textarea>
-                </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Сохранить</button>
                 </div>
