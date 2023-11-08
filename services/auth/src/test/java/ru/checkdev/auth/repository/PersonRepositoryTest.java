@@ -1,17 +1,13 @@
 package ru.checkdev.auth.repository;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import ru.checkdev.auth.dto.ProfileDTO;
-
-import javax.persistence.EntityManager;
 import java.util.Collections;
-
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.Assert.*;
 
 /**
@@ -21,17 +17,16 @@ import static org.junit.Assert.*;
  * @author Dmitry Stepanov
  * @version 22.09.2023'T'21:14
  */
-@RunWith(SpringRunner.class)
 @DataJpaTest()
 public class PersonRepositoryTest {
     @Autowired
-    private EntityManager entityManager;
+    private TestEntityManager entityManager;
     @Autowired
     private PersonRepository personRepository;
 
-    @Before
+    @BeforeEach
     public void clearTable() {
-        entityManager.createQuery("delete from person").executeUpdate();
+        entityManager.getEntityManager().createQuery("delete from profile").executeUpdate();
     }
 
     @Test
@@ -49,6 +44,6 @@ public class PersonRepositoryTest {
     @Test
     public void whenFindProfileOrderByCreatedDescThenReturnEmptyList() {
         var listProfileDTO = personRepository.findProfileOrderByCreatedDesc();
-        assertThat(listProfileDTO, is(Collections.emptyList()));
+        assertThat(listProfileDTO).isEqualTo(Collections.emptyList());
     }
 }

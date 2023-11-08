@@ -1,41 +1,38 @@
 package ru.checkdev.auth.service;
 
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.auth.domain.Profile;
 import ru.checkdev.auth.repository.PersonRepository;
-
 import java.util.List;
 import java.util.Optional;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author parsentev
  * @since 21.09.2016
  */
-@RunWith(SpringRunner.class)
+
 @SpringBootTest
 public class PersonServiceTest {
-    @Autowired
+    @InjectMocks
     private PersonService service;
 
-    @Autowired
+    @Mock
     private PersonRepository persons;
 
-    @After
+    @AfterEach
     @Test
     public void whenRegDuplicatePersonThenResultEmpty() {
         Profile profile = new Profile("Петр Арсентьев", "parsentev@yandex.ru", "password");
         this.service.reg(profile);
         Optional<Profile> result = this.service.reg(profile);
-        assertThat(result, is(Optional.empty()));
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -47,6 +44,7 @@ public class PersonServiceTest {
 
     @Test
     public void whenSelectAllPersonsThenListContainTestRecord() {
+        when(persons.findAll()).thenReturn(List.of(new Profile()));
         List<Profile> profileList = this.service.getAll();
         assertTrue(profileList.size() > 0);
     }
