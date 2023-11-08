@@ -1,8 +1,8 @@
 package ru.checkdev.auth.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import ru.checkdev.auth.domain.Notify;
 
 /**
@@ -11,7 +11,7 @@ import ru.checkdev.auth.domain.Notify;
  * @since 0.1
  */
 public class OAuthCallTest {
-    @Ignore
+    @Disabled
     @Test
     public void call() throws Exception {
         new OAuthCall().doPost(

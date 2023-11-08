@@ -105,6 +105,26 @@
         <module name="EmptyBlock">
             <property name="tokens" value="LITERAL_CATCH"/>
         </module>
+
+        <module name="RegexpSinglelineJava">
+            <!-- . matches any character, so we need to
+                 escape it and use \. to match dots. -->
+            <property name="format" value="org\.junit\.Test"/>
+            <property name="ignoreComments" value="true"/>
+        </module>
+
+        <module name="RegexpSinglelineJava">
+            <!-- . matches any character, so we need to
+                 escape it and use \. to match dots. -->
+            <property name="format" value="org\.hamcrest"/>
+            <property name="ignoreComments" value="true"/>
+        </module>
+        <module name="RegexpSinglelineJava">
+            <!-- . matches any character, so we need to
+                 escape it and use \. to match dots. -->
+            <property name="format" value="junit4"/>
+            <property name="ignoreComments" value="true"/>
+        </module>
     </module>
 
 </module>
