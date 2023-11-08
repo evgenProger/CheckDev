@@ -87,48 +87,18 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th scope="col">Участник</th>
+                            <th scope="col">Откликнулись</th>
                             <th scope="col">Статус</th>
                             <th scope="col">Действия</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="table-primary" th:each="wisher : ${wishersDetail}" th:if="${wisher.approve}">
-                            <td>
-                                <div class="card" style="width: 18rem;">
-                                    <div class="card-body">
-                                        <h5 class="card-title" th:text="${'Автор: ' + interview.author}">Автор:
-                                            имя</h5>
-                                        <h6 class="card-subtitle mb-2 text-body"
-                                            th:text="${'Контакт: ' + interview.contactBy}">Контакт</h6>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                            </td>
-                            <td>
-                                <div class="card" style="width: 18rem;">
-                                    <div class="card-body">
-                                        <h5 class="card-title" th:text="${'Участник: ' + wisher.username}">Участник:
-                                            имя</h5>
-                                        <h6 class="card-subtitle mb-2 text-body"
-                                            th:text="${'Контакт: ' + wisher.contactBy}">Контакт</h6>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
                         <tr th:each="wisher : ${wishersDetail}" th:if="${!wisher.approve}">
                             <td>
-                                <div class="row h4" th:text="${wisher.username}">
-                                    Имя участника
-                                </div>
-                                <div class="row text-secondary" th:text="${wisher.contactBy}">
-                                    Контактные данные
-                                </div>
+                                <span class="text-dark" th:text="${wisher.username}"></span>
                             </td>
                             <td>
-                                <div class="row" th:text="${wisher.statusName}">Статус участника</div>
-                                <div class="row text-secondary">статистика участника</div>
+                                <span th:text="${wisher.statusName}"></span>
                             </td>
                             <td>
                                 <form th:if="${!isDismissed}" th:action="@{/wisher/dismissed}" method="post">
@@ -136,19 +106,9 @@
                                            th:value="${wisher.interviewId}">
                                     <input type="hidden" th:id="wisherId" th:name="wisherId"
                                            th:value="${wisher.id}">
-                                    <button th:if="${userInfo != null && isAuthor}" type="submit" class="btn btn-info mt-3">Одобрить</button>
+                                    <button th:if="${userInfo != null && isAuthor}"
+                                            type="submit" class="btn btn-primary">Одобрить</button>
                                 </form>
-                            </td>
-                        </tr>
-                        <tr class="table-primary" th:if="${isDismissed}">
-                            <td>
-                            </td>
-                            <td>
-                                <div class="row h3">
-                                    Согласованные участники
-                                </div>
-                            </td>
-                            <td>
                             </td>
                         </tr>
                         </tbody>
@@ -158,12 +118,12 @@
                       Вы участник
                   </div>-->
                 <a th:if="${!isWisher && (!isAuthor || userInfo == null)}"
-                   class="btn btn-success"
+                   class="btn btn-primary"
                    th:disabled="${isWisher || isAuthor}"
                    th:href="${userInfo != null}
                     ? (${isWisher} ? @{#} : @{|/interview/${interview.id}/participate|})
                     : @{|/login?redirectUri=/interview/${interview.id}/participate&interviewId=${interview.id}|}">
-                    Участвовать
+                    Откликнуться
                 </a>
                 <!--Кнопки оставить отзыв. Доступна если статус IN_PROGRESS-->
                 <div class="m-3"
