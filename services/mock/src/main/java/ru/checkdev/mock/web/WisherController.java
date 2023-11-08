@@ -25,8 +25,8 @@ public class WisherController {
 
     private final InterviewService interviewService;
     private final WisherService wisherService;
-
     @PostMapping("/")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Wisher> save(@Valid @RequestBody WisherDto wisherDto) throws SQLException {
         Optional<Interview> interviewOptional = interviewService.findById(wisherDto.getInterviewId());
         if (interviewOptional.isEmpty()) {
@@ -42,7 +42,6 @@ public class WisherController {
                 .orElseGet(() -> ResponseEntity.noContent().build());
     }
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<Wisher> getById(@Valid @PathVariable int id) throws SQLException {
         Optional<Wisher> rsl = wisherService.findById(id);
@@ -54,8 +53,8 @@ public class WisherController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @PutMapping("/")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Wisher> update(@Valid @RequestBody WisherDto wisherDto) throws SQLException {
         Optional<Wisher> optionalWisher = wisherService.findById(wisherDto.getId());
         if (optionalWisher.isEmpty()) {
@@ -72,14 +71,5 @@ public class WisherController {
         rsl.setApprove(wisherDto.isApprove());
         return new ResponseEntity<Wisher>(rsl,
                 wisherService.update(rsl) ? HttpStatus.OK : HttpStatus.NO_CONTENT);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Wisher> delete(@Valid @PathVariable int id) {
-        Wisher wisher = new Wisher();
-        wisher.setId(id);
-        return new ResponseEntity<Wisher>(wisher,
-                wisherService.delete(wisher) ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 }

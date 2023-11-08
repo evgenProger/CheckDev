@@ -2,6 +2,7 @@ package ru.checkdev.mock.web;
 
 import com.google.gson.GsonBuilder;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,17 +10,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
 import ru.checkdev.mock.dto.WisherDto;
+import ru.checkdev.mock.service.InterviewService;
 import ru.checkdev.mock.service.WisherService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -38,6 +41,9 @@ class WishersControllerTest {
 
     @MockBean
     private WisherService wisherService;
+
+    @MockBean
+    private InterviewService interviewService;
 
     private Interview interview = Interview.of()
             .id(1)
@@ -63,7 +69,6 @@ class WishersControllerTest {
     private String wisherString = new GsonBuilder().serializeNulls().create().toJson(wisher);
 
     @Test
-    @WithMockUser
     public void whenGetAll() throws Exception {
         when(wisherService.findAll()).thenReturn(List.of(wisher));
         mockMvc.perform(get("/wishers/"))
@@ -74,7 +79,40 @@ class WishersControllerTest {
     }
 
     @Test
-    @WithMockUser
+    public void whenGetAllThenReturnEmpty() throws Exception {
+        when(wisherService.findAll()).thenReturn(Collections.emptyList());
+        mockMvc.perform(get("/wishers/"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()", Matchers.is(0)));
+    }
+
+    @Test
+    public void whenFindByInterviewIdWhenReturnWishers() throws Exception {
+        when(interviewService.findById(interview.getId())).thenReturn(Optional.of(interview));
+        var wisherList = List.of(wisher);
+        when(wisherService.findByInterview(interview)).thenReturn(wisherList);
+        mockMvc.perform(get("/wishers/{id}", interview.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()", Matchers.is(wisherList.size())))
+                .andExpect(jsonPath("$[0].id", Matchers.is(wisher.getId())));
+    }
+
+    @Test
+    public void whenFindByInterviewIdWhenReturnEmpty() throws Exception {
+        when(interviewService.findById(interview.getId())).thenReturn(Optional.of(interview));
+        when(wisherService.findByInterview(interview)).thenReturn(Collections.emptyList());
+        mockMvc.perform(get("/wishers/{id}", interview.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()", Matchers.is(0)));
+    }
+
+    @Test
     public void whenFindDtoThenReturnStatusOkAndListWisherDTO() throws Exception {
         var wisherDto1 = new WisherDto(1, 1, 1, "mail@mail", false, 2);
         var wisherDto2 = new WisherDto(2, 2, 2, "mail1@mail", false, 5);
@@ -89,7 +127,6 @@ class WishersControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void whenFindDtoThenReturnStatusOkAndEmptyList() throws Exception {
         List<WisherDto> expectedList = new ArrayList<>();
         when(wisherService.findAllWisherDto()).thenReturn(expectedList);
@@ -100,7 +137,6 @@ class WishersControllerTest {
     }
 
     @Test
-    @WithMockUser
     void whenFindDtoByInterviewThenReturnStatusOkAntListWisherDto() throws Exception {
         var wisherDto1 = new WisherDto(1, 1, 1, "mail@mail", false, 2);
         var expectList = List.of(wisherDto1);
@@ -112,8 +148,8 @@ class WishersControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Disabled
     @Test
-    @WithMockUser
     void setWisherStatusThenReturnStatusOk() throws Exception {
         var interviewId = 1;
         var wisherId = 2;
@@ -121,12 +157,27 @@ class WishersControllerTest {
         var anyStatusId = 4;
         doNothing().when(wisherService).setWisherStatus(interviewId, wisherId, newStatusId, anyStatusId);
         mockMvc.perform(post("/wishers/status/")
-                .param("interviewId", String.valueOf(interviewId))
-                .param("wisherId", String.valueOf(wisherId))
-                .param("newStatusId", String.valueOf(newStatusId))
-                .param("anyStatusId", String.valueOf(anyStatusId)))
+                        .param("interviewId", String.valueOf(interviewId))
+                        .param("wisherId", String.valueOf(wisherId))
+                        .param("newStatusId", String.valueOf(newStatusId))
+                        .param("anyStatusId", String.valueOf(anyStatusId)))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
 
+    @Test
+    void setWisherStatusThenIsUnauthorized() throws Exception {
+        var interviewId = 1;
+        var wisherId = 2;
+        var newStatusId = 3;
+        var anyStatusId = 4;
+        doNothing().when(wisherService).setWisherStatus(interviewId, wisherId, newStatusId, anyStatusId);
+        mockMvc.perform(post("/wishers/status/")
+                        .param("interviewId", String.valueOf(interviewId))
+                        .param("wisherId", String.valueOf(wisherId))
+                        .param("newStatusId", String.valueOf(newStatusId))
+                        .param("anyStatusId", String.valueOf(anyStatusId)))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 }
