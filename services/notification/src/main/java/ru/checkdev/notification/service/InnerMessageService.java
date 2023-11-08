@@ -12,8 +12,8 @@ public class InnerMessageService {
 
     private final InnerMessageRepository messageRepository;
 
-    public List<InnerMessage> findByUserIdAndReadFalse(int id) {
-        return messageRepository.findByUserIdAndReadFalse(id);
+    public List<InnerMessage> findByChatIdAndReadFalse(int id) {
+        return messageRepository.findByChatIdAndReadFalse(id);
     }
 
     public InnerMessage saveMessage(InnerMessage message) {

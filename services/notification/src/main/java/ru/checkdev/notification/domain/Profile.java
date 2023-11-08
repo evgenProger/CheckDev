@@ -2,6 +2,7 @@ package ru.checkdev.notification.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Calendar;
 
@@ -16,6 +17,7 @@ import java.util.Calendar;
  * @since 01.11.2023
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class Profile {
     private String username;

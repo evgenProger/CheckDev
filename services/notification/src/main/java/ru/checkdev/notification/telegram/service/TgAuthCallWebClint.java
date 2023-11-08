@@ -17,8 +17,11 @@ import ru.checkdev.notification.domain.Profile;
 @Service
 @Slf4j
 public class TgAuthCallWebClint {
-    @Value("${server.auth}")
-    private String url;
+    private WebClient webClient;
+
+    public TgAuthCallWebClint(@Value("${server.auth}") String urlAuth) {
+        this.webClient = WebClient.create(urlAuth);
+    }
 
     /**
      * Метод get
@@ -27,7 +30,7 @@ public class TgAuthCallWebClint {
      * @return Mono<Person>
      */
     public Mono<Profile> doGet(String url) {
-        return WebClient.create(url)
+        return webClient
                 .get()
                 .uri(url)
                 .retrieve()
@@ -43,12 +46,16 @@ public class TgAuthCallWebClint {
      * @return Mono<Person>
      */
     public Mono<Object> doPost(String url, Profile profile) {
-        return WebClient.create(url)
+        return webClient
                 .post()
                 .uri(url)
                 .bodyValue(profile)
                 .retrieve()
                 .bodyToMono(Object.class)
                 .doOnError(err -> log.error("API not found: {}", err.getMessage()));
+    }
+
+    public void setWebClient(WebClient webClient) {
+        this.webClient = webClient;
     }
 }

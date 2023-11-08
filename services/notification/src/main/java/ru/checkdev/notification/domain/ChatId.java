@@ -8,19 +8,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "cd_message")
-public class InnerMessage {
-
+@Entity(name = "cd_chat_id")
+public class ChatId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int chatId;
-    private String text;
-    private Timestamp created;
-    private boolean read;
+    private String chatId;
+    private String email;
 }

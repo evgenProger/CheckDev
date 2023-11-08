@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface InnerMessageRepository extends CrudRepository<InnerMessage, Integer> {
 
-    List<InnerMessage> findByUserIdAndReadFalse(int id);
+    List<InnerMessage> findByChatIdAndReadFalse(int id);
 }

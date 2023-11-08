@@ -22,7 +22,7 @@ public class InnerMessageController {
 
     @GetMapping("/{id}")
     public ResponseEntity<List<InnerMessage>> findMessage(@PathVariable int id) {
-        List<InnerMessage> list = messageService.findByUserIdAndReadFalse(id);
+        List<InnerMessage> list = messageService.findByChatIdAndReadFalse(id);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }
