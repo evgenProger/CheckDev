@@ -56,6 +56,9 @@ public class InterviewControllerTest {
         interview.setMode(4);
         interview.setTopicId(1);
         List<WisherDto> wisherDtos = new ArrayList<>();
+        TopicDTO topicDTO = new TopicDTO();
+        topicDTO.setText("Some description");
+        when(topicsService.getById(interview.getTopicId())).thenReturn(topicDTO);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(interviewService.getById(token, 1)).thenReturn(interview);
         when(interviewService.isAuthor(userInfo, interview)).thenReturn(false);
@@ -76,6 +79,7 @@ public class InterviewControllerTest {
                 .andExpect(model().attribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId()))
                 .andExpect(model().attribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId()))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("topicDescription", topicDTO.getText()))
                 .andExpect(view().name("interview/details"));
     }
 
@@ -304,7 +308,7 @@ public class InterviewControllerTest {
         when(interviewService.getById(token, interviewId)).thenReturn(interview);
         when(authService.userInfo(token)).thenReturn(userInfo);
         mockMvc.perform(get(String.format("/interview/%d/participate", interviewId))
-                .sessionAttr("token", token))
+                        .sessionAttr("token", token))
                 .andDo(print()).andExpectAll(status().is3xxRedirection(),
                         view().name(String.format("redirect:/interview/%d", interviewId)));
     }
