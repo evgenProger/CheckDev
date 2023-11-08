@@ -81,6 +81,53 @@
                 </span>
         </div>
         <div class="card-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Участники собеседования</th>
+                    <th scope="col">Контакт</th>
+                    <th scope="col">Роль</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <span th:text="${interview.author}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${interview.contactBy}"></span>
+                    </td>
+                    <td>
+                        <span>Буду задавать вопросы</span>
+                    </td>
+                </tr>
+                <tr th:each="wisher : ${wishersDetail}" th:if="${wisher.approve}">
+                    <td>
+                        <span th:text="${wisher.username}"></span>
+                    </td>
+                    <td>
+                        <span th:text="${wisher.contactBy}"></span>
+                    </td>
+                    <td>
+                        <span>Буду задавать вопросы</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!--Кнопки оставить отзыв. Доступна если статус IN_PROGRESS-->
+            <div
+                 th:if="${userInfo != null && (STATUS_IN_PROGRESS_ID==interview.status || STATUS_IS_FEEDBACK_ID==interview.status)}">
+                <!--Кнопка оставляет отзыв АВТОР собеседования. Доступна если isAuthor=true-->
+                <form th:action="@{|/interview/feedback/${interview.id}|}" method="get">
+                    <div th:if="${isAuthor}">
+                        <button type="submit" class="btn btn-primary">Оставить отзыв участнику</button>
+                    </div>
+                    <!--Кнопка оставляет отзыв УЧАСТНИК собеседования. Доступна если isWisher=true-->
+                    <div th:if="${isWisher}">
+                        <button type="submit" class="btn btn-primary">Оставить отзыв автору</button>
+                    </div>
+                </form>
+            </div>
             <div>
                 <!-- Отображение списка участников собеседования -->
                 <div>
@@ -125,20 +172,6 @@
                     : @{|/login?redirectUri=/interview/${interview.id}/participate&interviewId=${interview.id}|}">
                     Откликнуться
                 </a>
-                <!--Кнопки оставить отзыв. Доступна если статус IN_PROGRESS-->
-                <div class="m-3"
-                     th:if="${userInfo != null && (STATUS_IN_PROGRESS_ID==interview.status || STATUS_IS_FEEDBACK_ID==interview.status)}">
-                    <!--Кнопка оставляет отзыв АВТОР собеседования. Доступна если isAuthor=true-->
-                    <form th:action="@{|/interview/feedback/${interview.id}|}" method="get">
-                        <div th:if="${isAuthor}">
-                            <button type="submit" class="btn btn-primary">Оставить отзыв участнику</button>
-                        </div>
-                        <!--Кнопка оставляет отзыв УЧАСТНИК собеседования. Доступна если isWisher=true-->
-                        <div th:if="${isWisher}">
-                            <button type="submit" class="btn btn-primary">Оставить отзыв автору</button>
-                        </div>
-                    </form>
-                </div>
             </div>
             <pre class="mt-3" th:text="${interview.additional}"></pre>
             <pre>Описание</pre>
