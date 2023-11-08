@@ -3,9 +3,11 @@ package ru.job4j.site.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
 import ru.job4j.site.service.InterviewsService;
@@ -42,7 +44,9 @@ public class IndexController {
         } catch (Exception e) {
             log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
         }
-        model.addAttribute("new_interviews", interviewsService.getByType(1));
+        var intDto = interviewsService.getByType(1);
+        interviewsService.setCountWishers(intDto, getToken(req));
+        model.addAttribute("new_interviews", intDto);
         return "index";
     }
 }
