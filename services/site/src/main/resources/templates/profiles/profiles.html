@@ -42,12 +42,15 @@
         <tr style="cursor: pointer;" th:each="profile: ${profiles}">
             <td>
                 <div>
-                    <i class="fas fa-image" style="font-size: 3em;"
-                       th:if="${#strings.isEmpty(profile.photoId)}"></i>
-                    <img alt="No image"
-                         class="w-25"
-                         th:if="${not #strings.isEmpty(profile.photoId)}"
-                         th:src="@{http://localhost:9900/img(id=*{profile.photoId})}">
+
+<!--                                Временно закомментировано-->
+
+<!--                    <i class="fas fa-image" style="font-size: 3em;"-->
+<!--                       th:if="${#strings.isEmpty(profile.photoId)}"></i>-->
+<!--                    <img alt="No image"-->
+<!--                         class="w-25"-->
+<!--                         th:if="${not #strings.isEmpty(profile.photoId)}"-->
+<!--                         th:src="@{http://localhost:9900/img(id=*{profile.photoId})}">-->
                 </div>
             </td>
             <td>
