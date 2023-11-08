@@ -68,17 +68,16 @@
                 </span>
             </div>
             <span class="mb-2 text-muted">
-                 <span class="badge bg-success pr-3"
+                 <span class="badge bg-success pr-3 me-2"
                        th:if="${interview.status < statuses.length}"
                        th:text="${statuses[interview.status].info}">Статус интервью</span>
-                <span class="badge bg-danger pr-3"
+                <span class="badge bg-danger pr-3 me-2"
                       th:if="${interview.status >= statuses.length}">Статус неизвестен</span>
                  <i class="far fa-clock"></i>
-                 <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
+                 <span class="me-2" th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
                  <i class="far fa-user"></i>
-                 <span>ФИО Автор:</span>
-                     <span th:text="${interview.author}"></span>
-                 <span th:text="${'Ориентировочная дата: ' + interview.approximateDate}"></span>
+                 <span class="me-2" th:text="${interview.author}"></span>
+                 <span class="me-2" th:text="${'Ориентировочная дата: ' + interview.approximateDate}"></span>
                 </span>
         </div>
         <div class="card-body">
