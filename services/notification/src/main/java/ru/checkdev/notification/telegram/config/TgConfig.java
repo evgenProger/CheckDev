@@ -55,4 +55,9 @@ public class TgConfig {
     public Map<String, String> getObjectToMap(Object object) {
         return MAPPER.convertValue(object, Map.class);
     }
+
+    public String getNameFromEmail(String email) {
+        String[] array = email.split("@");
+        return array[0];
+    }
 }

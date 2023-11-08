@@ -11,13 +11,12 @@ import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.action.Action;
 import ru.checkdev.notification.telegram.action.InfoAction;
 import ru.checkdev.notification.telegram.action.RegAction;
-import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
+import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * 3. Мидл
  * Инициализация телеграм бот,
  * username = берем из properties
  * token = берем из properties
@@ -28,20 +27,17 @@ import java.util.Map;
 @Component
 @Slf4j
 public class TgRun {
-    private final TgAuthCallWebClint tgAuthCallWebClint;
+    private final TgCall tgCall;
     private final InnerMessageService messageService;
     @Value("${tg.username}")
     private String username;
     @Value("${tg.token}")
     private String token;
     @Value("${server.site.url.login}")
-    private String urlSiteAuth;
+    private String urlLogin;
 
-    @Value("${server.auth}")
-    private String authUrl;
-
-    public TgRun(TgAuthCallWebClint tgAuthCallWebClint, InnerMessageService messageService) {
-        this.tgAuthCallWebClint = tgAuthCallWebClint;
+    public TgRun(TgCall tgCall, InnerMessageService messageService) {
+        this.tgCall = tgCall;
         this.messageService = messageService;
     }
 
@@ -50,7 +46,7 @@ public class TgRun {
         Map<String, Action> actionMap = Map.of(
                 "/start", new InfoAction(List.of(
                         "/start", "/new")),
-                "/new", new RegAction(tgAuthCallWebClint, urlSiteAuth, messageService)
+                "/new", new RegAction(tgCall, urlLogin, messageService)
         );
         try {
             BotMenu menu = new BotMenu(actionMap, username, token);

@@ -9,7 +9,7 @@ import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.domain.Profile;
 import ru.checkdev.notification.telegram.config.TgConfig;
-import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
+import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -26,8 +26,8 @@ import java.util.Calendar;
 public class RegAction implements Action {
     private static final String ERROR_OBJECT = "error";
     private static final String URL_AUTH_REGISTRATION = "/registration";
-    private final TgConfig tgConfig = new TgConfig("tg/", 8);
-    private final TgAuthCallWebClint authCallWebClint;
+    private final TgConfig tgConfig = new TgConfig("tg/", 12);
+    private final TgCall tgCall;
     private final String urlSiteAuth;
     private final InnerMessageService messageService;
 
@@ -64,12 +64,12 @@ public class RegAction implements Action {
             return new SendMessage(chatId, text);
         }
 
-        var username = getNameFromEmail(email);
+        var username = tgConfig.getNameFromEmail(email);
         var password = tgConfig.getPassword();
         var profile = new Profile(username, email, password, true, Calendar.getInstance());
         Object result;
         try {
-            result = authCallWebClint.doPost(URL_AUTH_REGISTRATION, profile).block();
+            result = tgCall.doPost(URL_AUTH_REGISTRATION, profile).block();
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             text = "Сервис не доступен попробуйте позже" + sl
@@ -93,10 +93,5 @@ public class RegAction implements Action {
         innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
         messageService.saveMessage(innerMessage);
         return new SendMessage(chatId, text);
-    }
-
-    private String getNameFromEmail(String email) {
-        String[] array = email.split("@");
-        return array[0];
     }
 }
