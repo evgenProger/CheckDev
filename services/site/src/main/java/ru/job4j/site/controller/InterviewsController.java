@@ -36,7 +36,6 @@ public class InterviewsController {
     private final TopicsService topicsService;
     private final AuthService authService;
     private final FilterService filterService;
-    private final WisherService wisherService;
     private final InterviewsRequestManager interviewsRequestManager;
     private final NotificationService notifications;
 
@@ -54,8 +53,8 @@ public class InterviewsController {
                     ? filterService.getByUserId(token, userId)
                     : (FilterDTO) session.getAttribute("filter");
             var isFiltered = filter != null
-                    && (filter.getCategoryId() > 0
-                    || filter.getFilterProfile() > 0);
+                             && (filter.getCategoryId() > 0
+                                 || filter.getFilterProfile() > 0);
             Page<InterviewDTO> interviewsPage;
             List<TopicIdNameDTO> topicIdNameDTOS = new ArrayList<>();
             var categoryName = "";
@@ -86,14 +85,14 @@ public class InterviewsController {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .collect(Collectors.toSet());
-            var wishers = wisherService.getAllWisherDtoByInterviewId(token, "");
-            var interviewStatistic = wisherService.getInterviewStatistic(wishers);
             interviewsService.setCountWishers(interviewsPage.toList(), token);
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index",
                     "Собеседования", String.format("/interviews/?page=%d&?size=%d", page, size)
             );
-            model.addAttribute("statisticMap", interviewStatistic);
+            var topicLiteDTOs = topicsService.getAllTopicLiteDTO();
+            var topicsLiteMap = topicsService.liteDTTOSToMap(topicLiteDTOs);
+            model.addAttribute("topicsLiteMap", topicsLiteMap);
             model.addAttribute("interviewsPage", interviewsPage);
             model.addAttribute("statuses", StatusInterview.values());
             model.addAttribute("current_page", "interviews");
@@ -123,11 +122,11 @@ public class InterviewsController {
     @PostMapping("/reload")
     @ResponseBody
     public void reload(@RequestBody FilterDTO filter,
-                             Model model,
-                             HttpServletRequest req,
-                             @RequestParam(required = false, defaultValue = "0") int page,
-                             @RequestParam(required = false, defaultValue = "20") int size,
-                             HttpSession session) {
+                       Model model,
+                       HttpServletRequest req,
+                       @RequestParam(required = false, defaultValue = "0") int page,
+                       @RequestParam(required = false, defaultValue = "20") int size,
+                       HttpSession session) {
         session.setAttribute("filter", filter);
         getAllInterviews(model, req, page, size, session);
     }

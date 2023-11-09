@@ -3,16 +3,22 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.dto.TopicLiteDTO;
 import ru.job4j.site.dto.TopicIdNameDTO;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class TopicsService {
 
     public List<TopicDTO> getByCategory(int id) throws JsonProcessingException {
@@ -77,5 +83,38 @@ public class TopicsService {
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>() {
         });
+    }
+
+    /**
+     * Метод возвращает все Topic в виде TopicLiteDTO из сервиса DESC
+     *
+     * @return List<TopicLiteDTO>
+     */
+    public List<TopicLiteDTO> getAllTopicLiteDTO() {
+        List<TopicLiteDTO> result = new ArrayList<>();
+        try {
+            var text = new RestAuthCall("http://localhost:9902/topics/dto/lite").get();
+            var mapper = new ObjectMapper();
+            result = mapper.readValue(text, new TypeReference<>() {
+            });
+        } catch (Exception e) {
+            log.error("Request to API DESC error: {}", e.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * Метод преобразовывает список TopicLiteDto в Map<Integer, TopicLiteDto>
+     * key = Topic.ID
+     * value = TopicLiteDTO
+     *
+     * @param liteDTOS List<TopicLiteDTO>
+     * @return Map<Integer, TopicLiteDTO>
+     */
+    public Map<Integer, TopicLiteDTO> liteDTTOSToMap(List<TopicLiteDTO> liteDTOS) {
+        return liteDTOS.stream()
+                .collect(Collectors
+                        .toMap(TopicLiteDTO::getId,
+                                Function.identity()));
     }
 }

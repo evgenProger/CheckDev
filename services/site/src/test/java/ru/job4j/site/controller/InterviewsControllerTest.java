@@ -37,8 +37,6 @@ public class InterviewsControllerTest {
     @MockBean
     private CategoriesService categoriesService;
     @MockBean
-    private WisherService wisherService;
-    @MockBean
     private FilterService filterService;
     @MockBean
     private TopicsService topicsService;
@@ -81,8 +79,6 @@ public class InterviewsControllerTest {
         ).toList();
         var filter = new FilterDTO(1, 1, 1, 0);
         var page = new PageImpl<>(interviews);
-        when(wisherService.getAllWisherDtoByInterviewId(token, "")).thenReturn(new ArrayList<>());
-        when(wisherService.getInterviewStatistic(new ArrayList<>())).thenReturn(new HashMap<>());
         when(interviewsService.getAll(token, 1, 5)).thenReturn(page);
         when(interviewsService.getByTopicId(filter.getTopicId(), 1, 5)).thenReturn(page);
         when(authService.userInfo(token)).thenReturn(userInfo);
@@ -92,12 +88,13 @@ public class InterviewsControllerTest {
         when(categoriesService.getNameById(categories, 1)).thenReturn(categories.get(1).getName());
         when(topicsService.getNameById(filter.getTopicId())).thenReturn("SOME TOPIC NAME");
         when(topicsService.getTopicIdNameDtoByCategory(id)).thenReturn(topicIdNameDTOS);
+        when(topicsService.getAllTopicLiteDTO()).thenReturn(Collections.emptyList());
+        when(topicsService.liteDTTOSToMap(Collections.emptyList())).thenReturn(Collections.emptyMap());
         mockMvc.perform(get("/interviews/")
                         .sessionAttr("token", token)
                         .param("page", "1")
                         .param("size", "5"))
                 .andDo(print())
-                .andExpect(model().attribute("statisticMap", new HashMap<>()))
                 .andExpect(model().attribute("interviewsPage", page))
                 .andExpect(model().attribute("statuses", StatusInterview.values()))
                 .andExpect(model().attribute("current_page", "interviews"))
