@@ -46,7 +46,7 @@
     <div class="row pb-3">
         <div class="cell">
             <div class="card">
-                <h5 class="card-header">Новые собеседования</h5>
+                <h5 class="card-header">Новые запросы на проведение собеседований</h5>
                 <div class="card-body">
                     <table class="table">
                         <tbody class="table-hover">
@@ -65,13 +65,16 @@
                                         <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
                                         <i class="far fa-user"></i>
                                         <span th:if="${userInfo != null && userInfo.getUsername() == interview.author}">
-                                     <span class="fw-bold" th:text="${interview.author}"></span>
-                                </span>
-                                <span th:text="${interview.author}"></span>
+                                            <span class="fw-bold" th:text="${interview.author}"></span>
+                                        </span>
+                                        <span th:text="${interview.author}"></span>
+                                        <i class="fa fa-comments" aria-hidden="true"></i>
                                         <span>Откликов:</span>
-                                    <span th:text="${interview.countWishers}"></span>
+                                        <span th:text="${interview.countWishers}"></span>
+                                        <i class="fa fa-calendar-check"></i>
+                                        <span>Дата и время проведения собеседования:</span>
+                                        <span  th:text="${interview.approximateDate}"></span>
                                     </span>
-
                                 </div>
                             </td>
                         </tr>
@@ -107,7 +110,6 @@
                                     <span class="fw-bold" th:text="${category.total}"></span>
                                     <span class="mr-3">Тем : </span>
                                     <span class="fw-bold" th:text="${category.topicsSize}"></span>
-                                    </span>
                                 </small>
                             </td>
                             <td>

@@ -43,6 +43,14 @@ public class InterviewsService {
         });
     }
 
+    public List<InterviewDTO> getLast() throws JsonProcessingException {
+        String text = new RestAuthCall(String.format("%s%s", URL, "/last"))
+                .get();
+        var mapper = new ObjectMapper();
+        return mapper.readValue(text, new TypeReference<>() {
+        });
+    }
+
     public Page<InterviewDTO> getByTopicId(int topicId, int page, int size)
             throws JsonProcessingException {
         var text =
@@ -166,8 +174,9 @@ public class InterviewsService {
 
     /**
      * Метод выполняет set поля countWishers(количество откликов) модели Интервью
+     *
      * @param interviewsDTO interviewsDTO
-     * @param token token
+     * @param token         token
      * @throws JsonProcessingException
      */
     public void setCountWishers(List<InterviewDTO> interviewsDTO, String token)
