@@ -189,7 +189,7 @@
                 <!--  <div th:class="${isWisher} ? 'message p-1 rounded-2 col-1' : 'mock p-1 col-1'">
                       Вы участник
                   </div>-->
-                <a th:if="${!isWisher && (!isAuthor || userInfo == null)}"
+                <a th:if="${!isWisher && (!isAuthor || userInfo == null) && !isDismissed}"
                    class="btn btn-primary"
                    th:disabled="${isWisher || isAuthor}"
                    th:href="${userInfo != null}
