@@ -37,14 +37,16 @@ public class InnerMessageTest {
 
     @Test
     public void whenFieldsConstructorNotNull() {
-        InnerMessage botMessage = new InnerMessage(1, 1, "text",
+        ChatId chatId = new ChatId(1, null, null);
+        InnerMessage botMessage = new InnerMessage(1, chatId, "text",
                 new Timestamp(System.currentTimeMillis()), false);
         assertThat(botMessage).isNotNull();
     }
 
     @Test
     public void whenIDSetAndGetEquals() {
-        InnerMessage botMessage = new InnerMessage(0, 1, "text",
+        ChatId chatId = new ChatId(1, null, null);
+        InnerMessage botMessage = new InnerMessage(0, chatId, "text",
                 new Timestamp(System.currentTimeMillis()), false);
         botMessage.setId(1);
         assertThat(1).isEqualTo(botMessage.getId());

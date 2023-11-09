@@ -32,7 +32,7 @@ public class ForgetAction implements Action {
         var chatIdString = message.getChatId().toString();
         var text = "";
         String sl = System.lineSeparator();
-        Optional<ChatId> chatIdOptional = chatIdService.findByChatId(chatIdString);
+        Optional<ChatId> chatIdOptional = chatIdService.findById(Integer.parseInt(chatIdString));
         if (chatIdOptional.isEmpty()) {
             text = "Данный аккаунт Telegram на сайте не зарегистрирован";
             return new SendMessage(chatIdString, text);
@@ -46,7 +46,7 @@ public class ForgetAction implements Action {
             result = authCallWebClint.doPost(URL_AUTH_FORGOT, profile).block();
             text = "Ваш новый пароль:" + sl + passport;
             InnerMessage innerMessage = new InnerMessage();
-            innerMessage.setChatId(chatId.getId());
+            innerMessage.setChatId(chatId);
             innerMessage.setText(text);
             innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
             messageService.saveMessage(innerMessage);

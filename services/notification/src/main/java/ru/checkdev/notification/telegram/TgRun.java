@@ -59,7 +59,7 @@ public class TgRun {
                         "/forget  генерация нового пароля",
                         "/notify  подписаться на уведомления",
                         "/unnotify  отписаться от уведомлений")),
-                "/new", new RegAction(tgAuthCallWebClint, chatIdService , messageService, urlSiteAuth),
+                "/new", new RegAction(tgAuthCallWebClint, chatIdService, messageService, urlSiteAuth),
                 "/check", new CheckAction(tgAuthCallWebClint, chatIdService, messageService),
                 "/forget", new ForgetAction(tgAuthCallWebClint, chatIdService, messageService),
                 "/notify", new NotifyAction(tgAuthCallWebClint, chatIdService, messageService),

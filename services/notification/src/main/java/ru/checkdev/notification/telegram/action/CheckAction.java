@@ -28,7 +28,7 @@ public class CheckAction implements Action {
         var chatIdString = message.getChatId().toString();
         var out = new StringBuilder();
         String sl = System.lineSeparator();
-        Optional<ChatId> chatIdOptional = chatIdService.findByChatId(chatIdString);
+        Optional<ChatId> chatIdOptional = chatIdService.findById(Integer.parseInt(chatIdString));
         if (chatIdOptional.isEmpty()) {
             out.append("Данный аккаунт Telegram на сайте не зарегистрирован").append(sl);
             return new SendMessage(chatIdString, out.toString());
@@ -46,7 +46,7 @@ public class CheckAction implements Action {
                         .append(profile.getEmail())
                         .append(sl);
                 InnerMessage innerMessage = new InnerMessage();
-                innerMessage.setChatId(chatId.getId());
+                innerMessage.setChatId(chatId);
                 innerMessage.setText(out.toString());
                 innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
                 messageService.saveMessage(innerMessage);

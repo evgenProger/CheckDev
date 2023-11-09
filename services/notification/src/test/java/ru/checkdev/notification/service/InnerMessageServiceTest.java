@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.checkdev.notification.NtfSrv;
+import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.telegram.TgRun;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
@@ -32,9 +33,10 @@ public class InnerMessageServiceTest {
 
     @Test
     public void whenSaveBotMessageAndGetTheSame() {
-        InnerMessage botMessage = this.service.saveMessage(new InnerMessage(1, 2, "text",
+        ChatId chatId = new ChatId(2, null, null);
+        InnerMessage botMessage = this.service.saveMessage(new InnerMessage(1, chatId, "text",
                 new Timestamp(System.currentTimeMillis()), false));
-        List<InnerMessage> result = this.service.findByUserIdAndReadFalse(2);
+        List<InnerMessage> result = this.service.findByChatIdAndReadFalse(2);
         assertThat(result).contains(botMessage);
     }
 }

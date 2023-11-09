@@ -6,5 +6,4 @@ import ru.checkdev.notification.domain.ChatId;
 import java.util.Optional;
 
 public interface ChatIdRepository extends CrudRepository<ChatId, Integer> {
-    Optional<ChatId> findByChatId(String chatId);
 }

@@ -1,6 +1,7 @@
 package ru.checkdev.notification.service;
 
 import org.junit.jupiter.api.Test;
+import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
 
@@ -14,11 +15,12 @@ public class InnerMessageServiceFakeTest {
     public void whenSaveBotMessageAndGetTheSame() {
         var innerMessageRepository = new InnerMessageRepositoryFake();
         var innerMessageService = new InnerMessageService(innerMessageRepository);
+        ChatId chatId = new ChatId(2, null, null);
         var botMessage = innerMessageService.saveMessage(
-                new InnerMessage(1, 2, "text",
+                new InnerMessage(1, chatId, "text",
                 new Timestamp(System.currentTimeMillis()), false)
         );
-        var result = innerMessageService.findByUserIdAndReadFalse(botMessage.getUserId());
+        var result = innerMessageService.findByChatIdAndReadFalse(botMessage.getChatId().getId());
         assertThat(result).contains(botMessage);
     }
 }

@@ -21,7 +21,7 @@ public class ChatIdService {
         }
     }
 
-    public Optional<ChatId> findByChatId(String chatId) {
-        return repository.findByChatId(chatId);
+    public Optional<ChatId> findById(int id) {
+        return repository.findById(id);
     }
 }

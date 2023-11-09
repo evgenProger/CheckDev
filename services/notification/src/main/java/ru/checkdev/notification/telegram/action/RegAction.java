@@ -40,7 +40,7 @@ public class RegAction implements Action {
     public BotApiMethod<Message> handle(Message message) {
         var chatIdString = message.getChatId().toString();
         var text ="";
-        if (chatIdService.findByChatId(chatIdString).isPresent()) {
+        if (chatIdService.findById(Integer.parseInt(chatIdString)).isPresent()) {
             text = "Данный аккаунт Telegram уже зарегистрирован на сайте";
             return new SendMessage(chatIdString, text);
         }
@@ -81,7 +81,7 @@ public class RegAction implements Action {
         }
 
         ChatId chatId = new ChatId();
-        chatId.setChatId(chatIdString);
+        chatId.setId(Integer.parseInt(chatIdString));
         chatId.setEmail(email);
 
         if (!chatIdService.save(chatId)) {
@@ -110,7 +110,7 @@ public class RegAction implements Action {
                 + "Пароль : " + password + sl
                 + urlSiteAuth;
         InnerMessage innerMessage = new InnerMessage();
-        innerMessage.setChatId(chatId.getId());
+        innerMessage.setChatId(chatId);
         innerMessage.setText(text);
         innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
         messageService.saveMessage(innerMessage);

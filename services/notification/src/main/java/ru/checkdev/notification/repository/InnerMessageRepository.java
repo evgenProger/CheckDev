@@ -6,6 +6,5 @@ import ru.checkdev.notification.domain.InnerMessage;
 import java.util.List;
 
 public interface InnerMessageRepository extends CrudRepository<InnerMessage, Integer> {
-
     List<InnerMessage> findByChatIdAndReadFalse(int id);
 }
