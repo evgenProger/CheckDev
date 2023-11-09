@@ -194,13 +194,18 @@
                     }
                 });
             } else {
+                var filter = {
+                    userId: 0,
+                    categoryId: 0,
+                    topicId: 0,
+                    filterProfile: 0
+                };
                 $.ajax({
                     type: "POST",
                     url: "/interviews/reload",
-                    data: JSON.stringify(''),
+                    data: JSON.stringify(filter),
                     contentType: "application/json",
                     success: function (response) {
-                        console.log("filter saved.");
                         location.reload();
                     }
                 });
