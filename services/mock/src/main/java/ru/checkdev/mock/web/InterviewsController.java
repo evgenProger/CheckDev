@@ -34,6 +34,13 @@ public class InterviewsController {
                 .body(interviewService.findPaging(page, size));
     }
 
+    @GetMapping("/last")
+    public ResponseEntity<List<Interview>> findLastThree() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(interviewService.findLast());
+    }
+
     @GetMapping("/{mode}")
     public ResponseEntity<List<Interview>> findByMode(@PathVariable int mode) {
         return ResponseEntity
