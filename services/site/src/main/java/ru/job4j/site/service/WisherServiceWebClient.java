@@ -152,6 +152,23 @@ public class WisherServiceWebClient implements WisherService {
     }
 
     /**
+     * Метод проверяет является ли участник собеседования одобреным .
+     *
+     * @param interviewId Interview ID
+     * @param userId      User ID
+     * @param wishers     List<WisherDto>
+     * @return boolean true or false
+     */
+    @Override
+    public boolean isUserDismissed(int interviewId, int userId, List<WisherDto> wishers) {
+        int dismissedId = StatusWisher.IS_DISMISSED.getId();
+        return wishers.stream()
+                .filter(w -> w.getInterviewId() == interviewId && w.getUserId() == userId)
+                .mapToInt(WisherDto::getStatus)
+                .anyMatch(s -> s == dismissedId);
+    }
+
+    /**
      * Метод собирает статистику по всем коллекциям в карту
      * Map<Integer, InterviewStatistic>
      * key = interviewId,

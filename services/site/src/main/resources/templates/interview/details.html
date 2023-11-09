@@ -128,6 +128,31 @@
                     </div>
                 </form>
             </div>
+            <!-- Отображение списка выьранных участников собеседования -->
+            <div th:if="${isAuthor || isUserDismissed}">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Отобранный участник</th>
+                        <th scope="col">Контакт</th>
+                        <th scope="col">Роль</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="wisher : ${wishersDetail}" th:if="${wisher.approve}">
+                        <td>
+                            <span class="text-dark" th:text="${wisher.username}"></span>
+                        </td>
+                        <td>
+                            <span th:text="${wisher.contactBy}"></span>
+                        </td>
+                        <td>
+                            <span>Буду отвечать на вопросы</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
             <div>
                 <!-- Отображение списка участников собеседования -->
                 <div>

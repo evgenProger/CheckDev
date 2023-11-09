@@ -84,6 +84,7 @@ public class InterviewController {
         var wishersDetail = interviewService.getAllWisherDetail(wishers);
         boolean isDismissed = wisherService.isDismissed(interviewId, wishers);
         String topicDescription = topicsService.getById(interview.getTopicId()).getText();
+        boolean isUserDismissed = wisherService.isUserDismissed(interviewId, userInfo.getId(), wishers);
         model.addAttribute("interview", interview);
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("isWisher", isWisher);
@@ -94,6 +95,7 @@ public class InterviewController {
         model.addAttribute("wishersDetail", wishersDetail);
         model.addAttribute("isDismissed", isDismissed);
         model.addAttribute("topicDescription", topicDescription);
+        model.addAttribute("isUserDismissed", isUserDismissed);
         if (token != null) {
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }

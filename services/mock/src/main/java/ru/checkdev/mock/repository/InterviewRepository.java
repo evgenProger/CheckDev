@@ -36,22 +36,22 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
 
     /**
      * @param submitterId int
-     * @param pageable Pageable
+     * @param pageable    Pageable
      * @return интервью, автором которых является пользователь
      */
     Page<Interview> findBySubmitterId(int submitterId, Pageable pageable);
 
     /**
      * @param submitterId int
-     * @param pageable Pageable
+     * @param pageable    Pageable
      * @return интервью, автором которых пользователь НЕ является
      */
     Page<Interview> findBySubmitterIdNot(int submitterId, Pageable pageable);
 
     /**
-     * @param topicId int
+     * @param topicId     int
      * @param submitterId int
-     * @param pageable Pageable
+     * @param pageable    Pageable
      * @return интервью определённой темы, автором которых является пользователь
      */
     Page<Interview> findByTopicIdAndSubmitterId(
@@ -60,9 +60,9 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
             Pageable pageable);
 
     /**
-     * @param topicIds Collection<Integer>
+     * @param topicIds    Collection<Integer>
      * @param submitterId int
-     * @param pageable Pageable
+     * @param pageable    Pageable
      * @return интервью определённой категории, автором которых является пользователь
      */
     Page<Interview> findByTopicIdInAndSubmitterId(
@@ -71,9 +71,9 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
             Pageable pageable);
 
     /**
-     * @param topicId int
+     * @param topicId     int
      * @param submitterId int
-     * @param pageable Pageable
+     * @param pageable    Pageable
      * @return интервью определённой темы, автором которых пользователь НЕ является
      */
     Page<Interview> findByTopicIdAndSubmitterIdNot(
@@ -82,9 +82,9 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
             Pageable pageable);
 
     /**
-     * @param topicIds Collection<Integer>
+     * @param topicIds    Collection<Integer>
      * @param submitterId int
-     * @param pageable Pageable
+     * @param pageable    Pageable
      * @return интервью определённой категории, автором которых пользователь НЕ является
      */
     Page<Interview> findByTopicIdInAndSubmitterIdNot(
@@ -93,7 +93,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
             Pageable pageable);
 
     /**
-     * @param userId int
+     * @param userId   int
      * @param pageable Pageable
      * @return интервью, в которых пользователь НЕ участвует
      */
@@ -102,8 +102,8 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
     Page<Interview> findInterviewByUserIdNot(@Param("userId") int userId, Pageable pageable);
 
     /**
-     * @param userId int
-     * @param topicId int
+     * @param userId   int
+     * @param topicId  int
      * @param pageable Pageable
      * @return интервью определённой темы, в которых пользователь НЕ участвует
      */
@@ -115,9 +115,9 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
                                                          Pageable pageable);
 
     /**
-     * @param userId int
+     * @param userId    int
      * @param topicsIds Collection<Integer>
-     * @param pageable Pageable
+     * @param pageable  Pageable
      * @return интервью определённой категории, в которых пользователь НЕ участвует
      */
     @Query("SELECT i FROM interview i WHERE i.id NOT IN"
@@ -155,4 +155,13 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
                                AND cf.user_id = :userId)
             """, nativeQuery = true)
     List<Interview> findAllByUserIdWisherIsApproveAndNoFeedback(@Param("userId") int userId);
+
+    /**
+     * Получаем из базы ТРИ последние интервью отсортированные по убыванию по дате их создания.
+     *
+     * @return LIST из ТРЕХ последних интервью
+     */
+    @Query(value = "SELECT * FROM interview ORDER BY create_date DESC LIMIT 3", nativeQuery = true)
+    List<Interview> findLastInterviews();
+
 }

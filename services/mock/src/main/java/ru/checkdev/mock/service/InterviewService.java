@@ -49,6 +49,10 @@ public class InterviewService {
                 }).collect(Collectors.toList());
     }
 
+    public List<Interview> findLast() {
+        return interviewRepository.findLastInterviews();
+    }
+
     public Page<Interview> findPaging(int page, int size) {
         return interviewRepository.findAll(
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createDate")));
@@ -117,13 +121,13 @@ public class InterviewService {
     }
 
     public Page<Interview> findByTopicIdAndSubmitterId(int topicId, int submitterId,
-                                                      int page, int size) {
+                                                       int page, int size) {
         return interviewRepository.findByTopicIdAndSubmitterId(topicId, submitterId,
                 PageRequest.of(page, size));
     }
 
     public Page<Interview> findByTopicIdAndSubmitterIdNot(int topicId, int submitterId,
-                                                       int page, int size) {
+                                                          int page, int size) {
         return interviewRepository.findByTopicIdAndSubmitterIdNot(topicId, submitterId,
                 PageRequest.of(page, size));
     }
@@ -158,7 +162,7 @@ public class InterviewService {
     }
 
     public Page<Interview> findByUserIdAsNotWisherByTopic(int userId, int topicId,
-                                                       int page, int size) {
+                                                          int page, int size) {
         return interviewRepository
                 .findInterviewByUserIdNotAndByTopicId(userId, topicId,
                         PageRequest.of(page, size));
@@ -173,8 +177,8 @@ public class InterviewService {
     }
 
     public Page<Interview> findByUserIdAsNotWisherByTopicList(int userId,
-                                                           Collection<Integer> topicsIds,
-                                                           int page, int size) {
+                                                              Collection<Integer> topicsIds,
+                                                              int page, int size) {
         return interviewRepository
                 .findInterviewByUserIdNotAndByTopicIdIn(userId, topicsIds,
                         PageRequest.of(page, size));
