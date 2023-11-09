@@ -311,7 +311,9 @@
                             <span class="fw-bold">
                                     <a class="text-decoration-none text-dark"
                                        th:href="@{|/interview/${interview.id}|}">
-                                        <h5 th:text="${interview.title}"></h5>
+                                        <div th:if="${topicsLiteMap.containsKey(interview.id)}">
+                                        <h5 th:text="${topicsLiteMap.get(interview.id).categoryName + ' : ' + topicsLiteMap.get(interview.id).name}"></h5>
+                                        </div>
                                     </a>
                             </span>
                             <small class="mb-2 text-muted">
