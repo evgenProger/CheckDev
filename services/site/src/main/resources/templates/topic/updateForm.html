@@ -27,14 +27,21 @@
     <link th:href="@{/webjars/summernote/0.8.10/summernote-lite.css}" rel="stylesheet">
     <script th:src="@{/webjars/summernote/0.8.10/summernote-lite.js}"></script>
     <script th:src="@{/webjars/summernote/0.8.10/lang/summernote-ru-RU.js}"></script>
+
     <script>
-    $(document).ready(function() {
-    $('.summernote').summernote();
-            height:300,
-        maxWidth:1600,
-        maxHeight:1800,
-    });
+        $(document).ready(function() {
+            $('.summernote').summernote({
+                hint: false,
+                tooltip: false
+            });
+        });
     </script>
+    <style>
+        .note-editable {
+            height: 300px;
+            width: 100%;
+        }
+    </style>
 
 </head>
 <body>
@@ -60,8 +67,9 @@
                               name="text" th:text="${topic.text}"
                               rows="10" style="height:100%;"
                               aria-describedby="text" placeholder="Введите описание"></textarea>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
                 </div>
             </form>
         </div>
