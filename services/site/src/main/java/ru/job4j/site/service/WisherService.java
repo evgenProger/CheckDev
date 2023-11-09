@@ -27,6 +27,8 @@ public interface WisherService {
 
     boolean isDismissed(int interviewId, List<WisherDto> wishers);
 
+    boolean isUserDismissed(int interviewId, int userId, List<WisherDto> wishers);
+
     Map<Integer, InterviewStatistic> getInterviewStatistic(List<WisherDto> wishers);
 
     Long countWishers(List<WisherDto> wishers, int interviewId);
