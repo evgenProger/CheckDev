@@ -16,7 +16,7 @@ public class InnerMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "chat_id")
     private ChatId chatId;
     private String text;

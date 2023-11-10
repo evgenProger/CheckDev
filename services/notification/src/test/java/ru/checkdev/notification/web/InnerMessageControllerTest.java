@@ -18,6 +18,8 @@ import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.TgRun;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
+
+import java.util.ArrayList;
 import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -47,7 +49,7 @@ public class InnerMessageControllerTest {
 
 
 
-    private final InnerMessage botMessage = new InnerMessage(1, new ChatId(2, null, null),
+    private final InnerMessage botMessage = new InnerMessage(1, new ChatId(2, "mail", new ArrayList<>()),
             "text", null, false);
 
     private final String message = new GsonBuilder().serializeNulls().create().toJson(botMessage);
@@ -56,7 +58,7 @@ public class InnerMessageControllerTest {
     @Test
     @WithMockUser
     public void whenFindBotMessageByUserId() throws Exception {
-        when(service.findByChatIdAndReadFalse(botMessage.getChatId().getId())).thenReturn(List.of(botMessage));
+        when(service.findByChatIdAndReadFalse(botMessage.getChatId())).thenReturn(List.of(botMessage));
         mockMvc.perform(get("/messages/2"))
                 .andDo(print())
                 .andExpectAll(status().isOk(),
@@ -64,5 +66,4 @@ public class InnerMessageControllerTest {
                         content().contentType(MediaType.APPLICATION_JSON)
                         );
     }
-
 }

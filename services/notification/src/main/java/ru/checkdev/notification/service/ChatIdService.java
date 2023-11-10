@@ -21,6 +21,14 @@ public class ChatIdService {
         }
     }
 
+    public void delete(int id) {
+        Optional<ChatId> chatIdOptional = repository.findById(id);
+        if (chatIdOptional.isPresent()) {
+            ChatId chatId = chatIdOptional.get();
+            repository.delete(chatId);
+        }
+    }
+
     public Optional<ChatId> findById(int id) {
         return repository.findById(id);
     }

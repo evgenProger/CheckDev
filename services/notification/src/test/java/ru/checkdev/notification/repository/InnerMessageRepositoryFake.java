@@ -9,9 +9,9 @@ public class InnerMessageRepositoryFake implements InnerMessageRepository {
     private final Map<Integer, InnerMessage> messages = new HashMap<>();
 
     @Override
-    public List<InnerMessage> findByChatIdAndReadFalse(int id) {
+    public List<InnerMessage> findByChatIdAndReadFalse(ChatId chatId) {
         return messages.values().stream()
-                .filter(msg -> Objects.equals(msg.getChatId(), new ChatId(id, null, null)))
+                .filter(msg -> Objects.equals(msg.getChatId(), chatId))
                 .filter(msg -> !msg.isRead())
                 .toList();
     }

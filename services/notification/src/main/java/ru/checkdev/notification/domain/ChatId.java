@@ -14,9 +14,7 @@ import java.util.List;
 @Entity(name = "cd_chat_id")
 public class ChatId {
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
- //   private String chatId;
     private String email;
     @OneToMany(mappedBy = "chatId")
     private List<InnerMessage> innerMessages = new ArrayList<>();

@@ -20,7 +20,7 @@ public class InnerMessageServiceFakeTest {
                 new InnerMessage(1, chatId, "text",
                 new Timestamp(System.currentTimeMillis()), false)
         );
-        var result = innerMessageService.findByChatIdAndReadFalse(botMessage.getChatId().getId());
+        var result = innerMessageService.findByChatIdAndReadFalse(botMessage.getChatId());
         assertThat(result).contains(botMessage);
     }
 }
