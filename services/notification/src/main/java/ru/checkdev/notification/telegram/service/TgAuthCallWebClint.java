@@ -20,13 +20,9 @@ import ru.checkdev.notification.domain.Profile;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class TgAuthCallWebClint {
-    private WebClient webClient;
-
-    public TgAuthCallWebClint(@Value("${server.auth}") String urlAuth) {
-        this.webClient = WebClient.create(urlAuth);
-    }
-
+public class TgAuthCallWebClint implements TgCall {
+    @Value("${server.auth}")
+    private String urlServiceAuth;
 
     /**
      * Метод get
@@ -36,7 +32,7 @@ public class TgAuthCallWebClint {
      */
     @Override
     public Mono<Profile> doGet(String url) {
-        return webClient
+        return WebClient.create(urlServiceAuth)
                 .get()
                 .uri(url)
                 .retrieve()
@@ -53,16 +49,12 @@ public class TgAuthCallWebClint {
      */
     @Override
     public Mono<Object> doPost(String url, Profile profile) {
-        return webClient
+        return WebClient.create(urlServiceAuth)
                 .post()
                 .uri(url)
                 .bodyValue(profile)
                 .retrieve()
                 .bodyToMono(Object.class)
                 .doOnError(err -> log.error("API not found: {}", err.getMessage()));
-    }
-
-    public void setWebClient(WebClient webClient) {
-        this.webClient = webClient;
     }
 }

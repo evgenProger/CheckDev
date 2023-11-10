@@ -18,6 +18,7 @@ import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.service.ChatIdService;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
+import ru.checkdev.notification.telegram.service.TgCall;
 
 @TestPropertySource(locations="classpath:application.properties")
 @SpringBootTest(classes = NtfSrv.class)
@@ -32,14 +33,14 @@ class RegActionTest {
     private InnerMessageService messageService;
 
     @Autowired
-    private TgAuthCallWebClint tgAuthCallWebClint;
+    private TgCall tgCall;;
 
     @Test
     void whenHandleThenOk() {
         Chat chat = new Chat(1L, "type");
         Message message = new Message();
         message.setChat(chat);
-        RegAction regAction = new RegAction(tgAuthCallWebClint, chatIdService, messageService, "www");
+        RegAction regAction = new RegAction(tgCall, chatIdService, messageService, "www");
         BotApiMethod<Message> botApiMethod = regAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Введите email для регистрации:";
@@ -53,7 +54,7 @@ class RegActionTest {
         Message message = new Message();
         message.setChat(chat);
         chatIdService.save(new ChatId(Integer.parseInt(message.getChatId().toString()), "mail", null));
-        RegAction regAction = new RegAction(tgAuthCallWebClint, chatIdService, messageService, "www");
+        RegAction regAction = new RegAction(tgCall, chatIdService, messageService, "www");
         regAction.handle(message);
         BotApiMethod<Message> botApiMethod = regAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
@@ -68,7 +69,7 @@ class RegActionTest {
         Message message = new Message();
         message.setChat(chat);
         message.setText("емайл без собачки и точки");
-        RegAction regAction = new RegAction(tgAuthCallWebClint, chatIdService, messageService, "www");
+        RegAction regAction = new RegAction(tgCall, chatIdService, messageService, "www");
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Email: емайл без собачки и точки не корректный.\n"
@@ -84,7 +85,7 @@ class RegActionTest {
         Message message = new Message();
         message.setChat(chat);
         message.setText("a@a.ru");
-        RegAction regAction = new RegAction(tgAuthCallWebClint, chatIdService, messageService, "");
+        RegAction regAction = new RegAction(tgCall, chatIdService, messageService, "");
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Сервис не доступен попробуйте позже\n"
@@ -99,7 +100,7 @@ class RegActionTest {
         Message message = new Message();
         message.setChat(chat);
         message.setText("mail@mail.ru");
-        RegAction regAction = new RegAction(tgAuthCallWebClint, chatIdService, messageService, "www");
+        RegAction regAction = new RegAction(tgCall, chatIdService, messageService, "www");
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Вы зарегистрированы: \n"

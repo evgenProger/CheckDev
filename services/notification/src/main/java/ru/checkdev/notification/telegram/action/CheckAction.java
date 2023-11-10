@@ -11,6 +11,7 @@ import ru.checkdev.notification.domain.Profile;
 import ru.checkdev.notification.service.ChatIdService;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
+import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.sql.Timestamp;
 import java.util.Optional;
@@ -19,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 public class CheckAction implements Action {
     private static final String URL_AUTH_CURRENT = "/person/currentForTg/";
-    private final TgAuthCallWebClint authCallWebClint;
+    private final TgCall tgCall;;
     private final ChatIdService chatIdService;
     private final InnerMessageService messageService;
 
@@ -35,7 +36,7 @@ public class CheckAction implements Action {
         } else {
             try {
                 ChatId chatId = chatIdOptional.get();
-                Profile profile = authCallWebClint
+                Profile profile = tgCall
                         .doGet(URL_AUTH_CURRENT + chatId.getEmail()).block();
                 out.append("Имя:")
                         .append(sl)

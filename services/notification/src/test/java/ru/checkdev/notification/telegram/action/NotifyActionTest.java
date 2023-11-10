@@ -17,6 +17,7 @@ import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.service.ChatIdService;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
+import ru.checkdev.notification.telegram.service.TgCall;
 
 @TestPropertySource(locations="classpath:application.properties")
 @SpringBootTest(classes = NtfSrv.class)
@@ -30,7 +31,7 @@ class NotifyActionTest {
     private InnerMessageService messageService;
 
     @Autowired
-    private TgAuthCallWebClint tgAuthCallWebClint;
+    private TgCall tgCall;;
 
     @Test
     void whenNotChatId() {
@@ -38,7 +39,7 @@ class NotifyActionTest {
         chatIdService.delete(1);
         Message message = new Message();
         message.setChat(chat);
-        NotifyAction notifyAction = new NotifyAction(tgAuthCallWebClint, chatIdService, messageService);
+        NotifyAction notifyAction = new NotifyAction(tgCall, chatIdService, messageService);
         notifyAction.handle(message);
         BotApiMethod<Message> botApiMethod = notifyAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
@@ -54,7 +55,7 @@ class NotifyActionTest {
         Message message = new Message();
         message.setChat(chat);
         message.setText("a@a.ru");
-        NotifyAction notifyAction = new NotifyAction(tgAuthCallWebClint, chatIdService, messageService);
+        NotifyAction notifyAction = new NotifyAction(tgCall, chatIdService, messageService);
         BotApiMethod<Message> botApiMethod = notifyAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Сервис не доступен попробуйте позже";

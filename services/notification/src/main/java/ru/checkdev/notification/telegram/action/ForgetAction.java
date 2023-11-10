@@ -12,6 +12,7 @@ import ru.checkdev.notification.service.ChatIdService;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.config.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
+import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.sql.Timestamp;
 import java.util.Optional;
@@ -21,7 +22,7 @@ import java.util.Optional;
 public class ForgetAction implements Action {
     private static final String ERROR_OBJECT = "error";
     private static final String URL_AUTH_FORGOT = "/forgotTg";
-    private final TgAuthCallWebClint authCallWebClint;
+    private final TgCall tgCall;;
     private final ChatIdService chatIdService;
     private final InnerMessageService messageService;
     private final TgConfig tgConfig = new TgConfig("tg/", 8);
@@ -43,7 +44,7 @@ public class ForgetAction implements Action {
             profile.setEmail(chatId.getEmail());
             var passport = new TgConfig("tg/", 8).getPassword();
             profile.setPassword(passport);
-            result = authCallWebClint.doPost(URL_AUTH_FORGOT, profile).block();
+            result = tgCall.doPost(URL_AUTH_FORGOT, profile).block();
             text = "Ваш новый пароль:" + sl + passport;
             InnerMessage innerMessage = new InnerMessage();
             innerMessage.setChatId(chatId);

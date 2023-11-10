@@ -12,6 +12,7 @@ import ru.checkdev.notification.service.ChatIdService;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.config.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
+import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.sql.Timestamp;
 import java.util.Optional;
@@ -21,7 +22,7 @@ import java.util.Optional;
 public class NotifyAction implements Action {
     private static final String ERROR_OBJECT = "error";
     private static final String URL_AUTH_NOTIFIED = "/person/notified";
-    private final TgAuthCallWebClint authCallWebClint;
+    private final TgCall tgCall;;
     private final ChatIdService chatIdService;
     private final InnerMessageService messageService;
     private final TgConfig tgConfig = new TgConfig("tg/", 8);
@@ -40,7 +41,7 @@ public class NotifyAction implements Action {
             ChatId chatId = chatIdOptional.get();
             Profile profile = new Profile();
             profile.setEmail(chatId.getEmail());
-            result = authCallWebClint.doPost(URL_AUTH_NOTIFIED, profile).block();
+            result = tgCall.doPost(URL_AUTH_NOTIFIED, profile).block();
             text = "Вы подписаны на уведомления";
             InnerMessage innerMessage = new InnerMessage();
             innerMessage.setChatId(chatId);

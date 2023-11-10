@@ -10,8 +10,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.checkdev.notification.service.ChatIdService;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.action.*;
-import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
-
+import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.util.List;
 import java.util.Map;
@@ -23,8 +22,6 @@ import java.util.Map;
  *
  * @author Dmitry Stepanov, user Dmitry
  * @since 12.09.2023
- * Arcady555
- * 08.11.2023
  */
 @Component
 @Slf4j
@@ -38,13 +35,9 @@ public class TgRun {
     private String token;
     @Value("${server.site.url.login}")
     private String urlLogin;
-    @Value("${server.auth}")
-    private String authUrl;
 
-    public TgRun(TgAuthCallWebClint tgAuthCallWebClint, InnerMessageService messageService,
-                 ChatIdService chatIdService) {
-        this.tgAuthCallWebClint = tgAuthCallWebClint;
-
+    public TgRun(TgCall tgCall, InnerMessageService messageService, ChatIdService chatIdService) {
+        this.tgCall = tgCall;
         this.messageService = messageService;
         this.chatIdService = chatIdService;
     }
@@ -59,11 +52,11 @@ public class TgRun {
                         "/forget  генерация нового пароля",
                         "/notify  подписаться на уведомления",
                         "/unnotify  отписаться от уведомлений")),
-                "/new", new RegAction(tgAuthCallWebClint, chatIdService, messageService, urlSiteAuth),
-                "/check", new CheckAction(tgAuthCallWebClint, chatIdService, messageService),
-                "/forget", new ForgetAction(tgAuthCallWebClint, chatIdService, messageService),
-                "/notify", new NotifyAction(tgAuthCallWebClint, chatIdService, messageService),
-                "/unnotify", new UnNotifyAction(tgAuthCallWebClint, chatIdService, messageService)
+                "/new", new RegAction(tgCall, chatIdService, messageService, urlLogin),
+                "/check", new CheckAction(tgCall, chatIdService, messageService),
+                "/forget", new ForgetAction(tgCall, chatIdService, messageService),
+                "/notify", new NotifyAction(tgCall, chatIdService, messageService),
+                "/unnotify", new UnNotifyAction(tgCall, chatIdService, messageService)
 
         );
 
