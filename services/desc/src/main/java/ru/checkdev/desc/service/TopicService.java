@@ -75,4 +75,14 @@ public class TopicService {
     public List<TopicLiteDTO> getAllTopicLiteDTO() {
         return topicRepository.getAllTopicLiteDTO();
     }
+
+    /**
+     * Метод возвращает Optional TopicLiteDTO по Topic ID
+     *
+     * @param tId Topic ID
+     * @return Optional<TopicLiteDTO>
+     */
+    public Optional<TopicLiteDTO> getTopicLiteDTOById(int tId) {
+        return topicRepository.getTopicLiteDTOById(tId);
+    }
 }

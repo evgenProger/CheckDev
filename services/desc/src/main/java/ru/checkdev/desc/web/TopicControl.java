@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.desc.domain.Topic;
+import ru.checkdev.desc.dto.TopicLiteDTO;
 import ru.checkdev.desc.service.TopicService;
 
 @Tag(name = "TopicControl", description = "Topic REST API")
@@ -54,5 +55,13 @@ public class TopicControl {
     public ResponseEntity<Void> delete(@RequestBody Topic topic) {
         topicService.delete(topic.getId());
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/dto/lite/{tId}")
+    public ResponseEntity<TopicLiteDTO> getTopicLiteDtoById(@PathVariable("tId") int tId) {
+        var result = topicService.getTopicLiteDTOById(tId);
+        return result
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

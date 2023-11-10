@@ -10,10 +10,7 @@ import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.dto.TopicLiteDTO;
 import ru.job4j.site.dto.TopicIdNameDTO;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -97,6 +94,27 @@ public class TopicsService {
             var mapper = new ObjectMapper();
             result = mapper.readValue(text, new TypeReference<>() {
             });
+        } catch (Exception e) {
+            log.error("Request to API DESC error: {}", e.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * Метод возвращает Optional<TopicLiteDto> по Topic ID
+     *
+     * @param topicId ID Topic
+     * @return Optional<Topic>
+     */
+    public Optional<TopicLiteDTO> getTopicLiteDTOById(int topicId) {
+        Optional<TopicLiteDTO> result = Optional.empty();
+        try {
+            var url = String.format("http://localhost:9902/topic/dto/lite/%d", topicId);
+            var text = new RestAuthCall(url).get();
+            var mapper = new ObjectMapper();
+            TopicLiteDTO topicLiteDto = mapper.readValue(text, new TypeReference<>() {
+            });
+            result = Optional.of(topicLiteDto);
         } catch (Exception e) {
             log.error("Request to API DESC error: {}", e.getMessage());
         }

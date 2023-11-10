@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.dto.TopicLiteDTO;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.service.*;
 
@@ -83,7 +84,7 @@ public class InterviewController {
         var statisticMap = wisherService.getInterviewStatistic(wishers);
         var wishersDetail = interviewService.getAllWisherDetail(wishers);
         boolean isDismissed = wisherService.isDismissed(interviewId, wishers);
-        String topicDescription = topicsService.getById(interview.getTopicId()).getText();
+        var topicLiteDTO = topicsService.getTopicLiteDTOById(interview.getTopicId()).orElse(new TopicLiteDTO());
         boolean isUserDismissed = wisherService.isUserDismissed(interviewId, userInfo.getId(), wishers);
         model.addAttribute("interview", interview);
         model.addAttribute("isAuthor", isAuthor);
@@ -94,7 +95,7 @@ public class InterviewController {
         model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
         model.addAttribute("wishersDetail", wishersDetail);
         model.addAttribute("isDismissed", isDismissed);
-        model.addAttribute("topicDescription", topicDescription);
+        model.addAttribute("topicLiteDTO", topicLiteDTO);
         model.addAttribute("isUserDismissed", isUserDismissed);
         if (token != null) {
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));

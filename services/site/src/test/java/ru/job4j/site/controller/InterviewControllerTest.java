@@ -39,7 +39,7 @@ public class InterviewControllerTest {
     @MockBean
     private WisherService wisherService;
     @MockBean
-    private NotificationService notificationService;
+    private NotificationService notifications;
 
     @Test
     public void whenShowDetails() throws Exception {
@@ -56,9 +56,9 @@ public class InterviewControllerTest {
         interview.setMode(4);
         interview.setTopicId(1);
         List<WisherDto> wisherDtos = new ArrayList<>();
-        TopicDTO topicDTO = new TopicDTO();
-        topicDTO.setText("Some description");
-        when(topicsService.getById(interview.getTopicId())).thenReturn(topicDTO);
+        TopicLiteDTO topicLiteDTO = new TopicLiteDTO(1, "nameTopic", "text",
+                2, "categoryName", 15);
+        when(topicsService.getTopicLiteDTOById(topicLiteDTO.getId())).thenReturn(Optional.of(topicLiteDTO));
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(interviewService.getById(token, 1)).thenReturn(interview);
         when(interviewService.isAuthor(userInfo, interview)).thenReturn(false);
@@ -69,6 +69,7 @@ public class InterviewControllerTest {
         mockMvc.perform(get("/interview/{id}", interview.getId())
                         .sessionAttr("token", token))
                 .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(model().attribute("interview", interview))
                 .andExpect(model().attribute("breadcrumbs", breadcrumbs))
                 .andExpect(model().attribute("userInfo", userInfo))
@@ -78,8 +79,7 @@ public class InterviewControllerTest {
                 .andExpect(model().attribute("statuses", StatusInterview.values()))
                 .andExpect(model().attribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId()))
                 .andExpect(model().attribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId()))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("topicDescription", topicDTO.getText()))
+                .andExpect(model().attribute("topicLiteDTO", topicLiteDTO))
                 .andExpect(view().name("interview/details"));
     }
 
