@@ -13,14 +13,10 @@ import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.*;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,13 +31,15 @@ public class InterviewControllerTest {
     @MockBean
     private InterviewService interviewService;
     @MockBean
+    private InterviewsService interviewsService;
+    @MockBean
     private TopicsService topicsService;
     @MockBean
     private AuthService authService;
     @MockBean
     private WisherService wisherService;
     @MockBean
-    private NotificationService notificationService;
+    private NotificationService notifications;
 
     @Test
     public void whenShowDetails() throws Exception {
@@ -58,6 +56,9 @@ public class InterviewControllerTest {
         interview.setMode(4);
         interview.setTopicId(1);
         List<WisherDto> wisherDtos = new ArrayList<>();
+        TopicLiteDTO topicLiteDTO = new TopicLiteDTO(1, "nameTopic", "text",
+                2, "categoryName", 15);
+        when(topicsService.getTopicLiteDTOById(topicLiteDTO.getId())).thenReturn(Optional.of(topicLiteDTO));
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(interviewService.getById(token, 1)).thenReturn(interview);
         when(interviewService.isAuthor(userInfo, interview)).thenReturn(false);
@@ -68,6 +69,7 @@ public class InterviewControllerTest {
         mockMvc.perform(get("/interview/{id}", interview.getId())
                         .sessionAttr("token", token))
                 .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(model().attribute("interview", interview))
                 .andExpect(model().attribute("breadcrumbs", breadcrumbs))
                 .andExpect(model().attribute("userInfo", userInfo))
@@ -77,7 +79,7 @@ public class InterviewControllerTest {
                 .andExpect(model().attribute("statuses", StatusInterview.values()))
                 .andExpect(model().attribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId()))
                 .andExpect(model().attribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId()))
-                .andExpect(status().isOk())
+                .andExpect(model().attribute("topicLiteDTO", topicLiteDTO))
                 .andExpect(view().name("interview/details"));
     }
 
@@ -102,10 +104,12 @@ public class InterviewControllerTest {
         topic.setCategory(category);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(topicsService.getById(1)).thenReturn(topic);
+        when(interviewsService.findAllIdByNoFeedback(1)).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/interview/createForm")
                         .sessionAttr("token", token)
                         .param("topicId", "1"))
                 .andDo(print())
+                .andExpect(model().attribute("noFeedback", Collections.emptyList()))
                 .andExpect(model().attribute("category", topic.getCategory()))
                 .andExpect(model().attribute("topic", topic))
                 .andExpect(model().attribute("breadcrumbs", breadcrumbs))
@@ -260,15 +264,15 @@ public class InterviewControllerTest {
         interview.setSubmitterId(14375842);
         interview.setTitle("Some title");
         var wishers = IntStream.range(1, 3).mapToObj(i -> {
-                    var wisher = new WisherDto();
-                    wisher.setId(i);
-                    wisher.setInterviewId(interviewId);
-                    wisher.setUserId(userId + i);
-                    wisher.setContactBy(String.format("user_%d@mail.cd", i));
-                    wisher.setApprove(i % 2 == 0);
-                    wisher.setStatus(1);
-                    return wisher;
-                }).toList();
+            var wisher = new WisherDto();
+            wisher.setId(i);
+            wisher.setInterviewId(interviewId);
+            wisher.setUserId(userId + i);
+            wisher.setContactBy(String.format("user_%d@mail.cd", i));
+            wisher.setApprove(i % 2 == 0);
+            wisher.setStatus(1);
+            return wisher;
+        }).toList();
         var interviewStatistics = new HashMap<Integer, InterviewStatistic>();
         IntStream.range(1, 3).forEach(i ->
                 interviewStatistics.put(i, new InterviewStatistic(i + 1, i, i - 1)));
@@ -304,7 +308,7 @@ public class InterviewControllerTest {
         when(interviewService.getById(token, interviewId)).thenReturn(interview);
         when(authService.userInfo(token)).thenReturn(userInfo);
         mockMvc.perform(get(String.format("/interview/%d/participate", interviewId))
-                .sessionAttr("token", token))
+                        .sessionAttr("token", token))
                 .andDo(print()).andExpectAll(status().is3xxRedirection(),
                         view().name(String.format("redirect:/interview/%d", interviewId)));
     }

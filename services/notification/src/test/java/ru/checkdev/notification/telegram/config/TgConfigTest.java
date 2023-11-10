@@ -53,4 +53,11 @@ class TgConfigTest {
         assertThat(map.get("password")).isEqualTo(profile.getPassword());
         assertThat(String.valueOf(map.get("privacy"))).isEqualTo(String.valueOf(true));
     }
+
+    @Test
+    void whenGetNameFromEmailGetPrefixEmail() {
+        var email = "emailPrefix@emailDomen.ru";
+        var actual = tgConfig.getNameFromEmail(email);
+        assertThat(email.startsWith(actual)).isTrue();
+    }
 }

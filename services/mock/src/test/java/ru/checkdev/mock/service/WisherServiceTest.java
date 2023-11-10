@@ -2,26 +2,28 @@ package ru.checkdev.mock.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.dto.WisherDto;
+import ru.checkdev.mock.repository.WisherRepository;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.checkdev.mock.repository.WisherRepository;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MockSrv.class)
+@SpringBootTest(classes = WisherService.class)
 class WisherServiceTest {
 
     @MockBean
@@ -104,4 +106,58 @@ class WisherServiceTest {
         var actual = wisherService.delete(wisher);
         assertThat(actual, is(false));
     }
+
+    @Test
+    void whenFindByInterviewThenReturnListWisher() {
+        var interview = Interview.of().id(1).build();
+        var wisher = Wisher.of().id(1).interview(interview).build();
+        var wishers = List.of(wisher);
+        when(wisherRepository.findByInterview(interview)).thenReturn(wishers);
+        var actual = wisherService.findByInterview(interview);
+        assertThat(actual, is(wishers));
+    }
+
+    @Test
+    void whenFindByInterviewThenEmpty() {
+        var interview = Interview.of().id(1).build();
+        when(wisherRepository.findByInterview(interview)).thenReturn(Collections.emptyList());
+        var actual = wisherService.findByInterview(interview);
+        assertThat(actual.isEmpty(), is(true));
+    }
+
+    @Test
+    void whenUpdateWisherThenTrue() {
+        var wisher = new Wisher();
+        when(wisherRepository.save(wisher)).thenReturn(wisher);
+        var actual = wisherService.update(wisher);
+        assertThat(actual, is(true));
+    }
+
+    @Test
+    void whenFindAllWisherDTOThenReturnDtoList() {
+        var wisher = new WisherDto();
+        var expectList = List.of(wisher);
+        when(wisherRepository.findAllWiserDto()).thenReturn(expectList);
+        var actual = wisherService.findAllWisherDto();
+        assertThat(actual, is(expectList));
+    }
+
+    @Test
+    void whenFindAllWisherDTOThenEmptyList() {
+        when(wisherRepository.findAllWiserDto()).thenReturn(Collections.emptyList());
+        var actual = wisherService.findAllWisherDto();
+        assertThat(actual.isEmpty(), is(true));
+    }
+
+    @Test
+    void whenFindWisherDtoByInterviewIdThenReturnListWisherDTO() {
+        var interview = Interview.of().id(1).build();
+        var wisher = new WisherDto();
+        wisher.setInterviewId(interview.getId());
+        var wishers = List.of(wisher);
+        when(wisherRepository.findWisherDTOByInterviewId(interview.getId())).thenReturn(wishers);
+        var actual = wisherService.findWisherDtoByInterviewId(interview.getId());
+        assertThat(actual, is(wishers));
+    }
+
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.dto.TopicLiteDTO;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.service.*;
 
@@ -25,24 +26,27 @@ public class InterviewController {
     private final AuthService authService;
     private final TopicsService topicsService;
     private final InterviewService interviewService;
+    private final InterviewsService interviewsService;
     private final WisherService wisherService;
     private final NotificationService notifications;
 
     @GetMapping("/createForm")
     public String createForm(@ModelAttribute("topicId") int topicId,
-                             Model model, HttpServletRequest req)
+                             Model model,
+                             HttpServletRequest request)
             throws JsonProcessingException {
+        var token = getToken(request);
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            var interviewsNoFeedback = interviewsService.findAllIdByNoFeedback(userInfo.getId());
+            model.addAttribute("noFeedback", interviewsNoFeedback);
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+        }
         var topic = topicsService.getById(topicId);
         var categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();
         model.addAttribute("category", topic.getCategory());
         model.addAttribute("topic", topic);
-        var token = getToken(req);
-        if (token != null) {
-            var userInfo = authService.userInfo(token);
-            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
-        }
-
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
@@ -78,6 +82,10 @@ public class InterviewController {
         var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
         var isWisher = wisherService.isWisher(userInfo.getId(), interview.getId(), wishers);
         var statisticMap = wisherService.getInterviewStatistic(wishers);
+        var wishersDetail = interviewService.getAllWisherDetail(wishers);
+        boolean isDismissed = wisherService.isDismissed(interviewId, wishers);
+        var topicLiteDTO = topicsService.getTopicLiteDTOById(interview.getTopicId()).orElse(new TopicLiteDTO());
+        boolean isUserDismissed = wisherService.isUserDismissed(interviewId, userInfo.getId(), wishers);
         model.addAttribute("interview", interview);
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("isWisher", isWisher);
@@ -85,15 +93,14 @@ public class InterviewController {
         model.addAttribute("statuses", StatusInterview.values());
         model.addAttribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId());
         model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
-        if (isAuthor) {
-            var wishersDetail = interviewService.getAllWisherDetail(wishers);
-            boolean isDismissed = wisherService.isDismissed(interviewId, wishers);
-            model.addAttribute("isDismissed", isDismissed);
-            model.addAttribute("wishersDetail", wishersDetail);
-        }
+        model.addAttribute("wishersDetail", wishersDetail);
+        model.addAttribute("isDismissed", isDismissed);
+        model.addAttribute("topicLiteDTO", topicLiteDTO);
+        model.addAttribute("isUserDismissed", isUserDismissed);
         if (token != null) {
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
+
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Собеседования", "/interviews/",
@@ -175,8 +182,10 @@ public class InterviewController {
         if (userInfoDTO != null && interview.getSubmitterId() != userInfoDTO.getId()) {
             var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
             var statisticMap = wisherService.getInterviewStatistic(wishers);
+            var countWishers = wisherService.countWishers(wishers, interviewId);
             model.addAttribute("interview", interview);
             model.addAttribute("statisticMap", statisticMap);
+            model.addAttribute("countWishers", countWishers);
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index",
                     "Собеседования", "/interviews/",

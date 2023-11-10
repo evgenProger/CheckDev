@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.mock.dto.FeedbackDTO;
 import ru.checkdev.mock.service.FeedbackService;
@@ -27,6 +28,7 @@ public class FeedbackController {
     private final FeedbackService service;
 
     @PostMapping("/")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<FeedbackDTO> saveNewFeedback(@RequestBody FeedbackDTO feedbackDTO) {
         var result = service.save(feedbackDTO);
         return new ResponseEntity<>(

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
@@ -70,6 +71,7 @@ public class WishersController {
      * @return ResponseEntity
      */
     @PostMapping("/status/")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<HttpStatus> setWisherStatus(@RequestParam Map<String, String> param) {
         var interviewId = Integer.parseInt(param.get("interviewId"));
         var wisherId = Integer.parseInt(param.get("wisherId"));

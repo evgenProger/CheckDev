@@ -34,12 +34,15 @@
     <div class="row mb-3">
         <div class="col-3">
             <div class="mb-3">
-                <i class="fas fa-image" style="font-size: 3em;"
-                   th:if="${#strings.isEmpty(profile.photoId)}"></i>
-                <img alt="No image"
-                     class="w-100"
-                     th:if="${not #strings.isEmpty(profile.photoId)}"
-                     th:src="@{http://localhost:9900/img(id=*{profile.photoId})}">
+
+<!--                                Временно закомментировано-->
+
+<!--                <i class="fas fa-image" style="font-size: 3em;"-->
+<!--                   th:if="${#strings.isEmpty(profile.photoId)}"></i>-->
+<!--                <img alt="No image"-->
+<!--                     class="w-100"-->
+<!--                     th:if="${not #strings.isEmpty(profile.photoId)}"-->
+<!--                     th:src="@{http://localhost:9900/img(id=*{profile.photoId})}">-->
             </div>
         </div>
         <div class="col-9">

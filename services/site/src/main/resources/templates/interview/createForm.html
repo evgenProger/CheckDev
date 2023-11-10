@@ -32,6 +32,18 @@
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
     <div class="row">
+        <!--/* Отображение уведомления о необходимости оставить отзыв на собеседование */-->
+        <div th:if="${noFeedback!=null and !noFeedback.isEmpty()}" class="cell">
+            <div class="alert alert-warning" role="alert">
+                <span class="fw-bold">У вас есть незавершенные собеседования.</span> <br/>
+                Чтобы завершить собеседование нужно оставьте отзыв. <br/>
+                <div th:each="interview, state : ${noFeedback}">
+                    <a class="alert-link"
+                       th:href="@{|/interview/${interview.id}|}"
+                       th:text="${state.count + '. ' + interview.title}">Ссылка на собеседование</a>
+                </div>
+            </div>
+        </div>
         <div class="cell">
             <div class="card">
                 <div class="card-header">
@@ -39,13 +51,6 @@
                     <span class="fw-bold" th:text="${category.name + ' / ' + topic.name}"></span>
                 </div>
                 <div class="card-body">
-                    <button class="btn btn-secondary mb-3" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        Подробно
-                    </button>
-                    <div class="collapse" id="collapseExample">
-                        <pre th:utext="${topic.text}"></pre>
-                    </div>
                     <form class="needs-validation" th:action="@{/interview/create}" method="post">
                         <input type="hidden" class="form-control mb-3 mt-2" id="title"
                                name="title" th:value="${category.name + ' : ' + topic.name}">
@@ -60,7 +65,7 @@
                                 <small class="text-muted"><span>Например, Могу в любой день после 18.00 по Москве.</span>
                                 </small>
                             </div>
-                            <!--Поля contactBy -->
+                            <!--/* Поля contactBy */-->
                             <div class="mb-3">
                                 <label class="fw-bold" for="contactBy">Связаться со мной по telegram</label>
                                 <div class="input-group">
@@ -70,15 +75,15 @@
                                            placeholder="Способ связи" required>
                                 </div>
                             </div>
-                            <!--Заполнение поля description-->
+                            <!--/* Заполнение поля description */-->
                             <div class="mb-3">
                                 <label class="form-label" for="additional">Описание</label>
                                 <textarea class="form-control" rows="3"
                                           id="additional"
                                           name="additional"
-                                          placeholder="Введите дополнительную информацию" required></textarea>
+                                          placeholder="Введите дополнительную информацию"></textarea>
                             </div>
-                            <!--Выбор типа собеседования поел typeInterview-->
+                            <!-- /* Выбор типа собеседования поел typeInterview */-->
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="mode" id="1" value="1">
                                 <label class="form-check-label" for="1">
@@ -90,6 +95,15 @@
                                 <label class="form-check-label" for="2">
                                     Буду проходить собеседование (отвечать на вопросы)
                                 </label>
+                            </div>
+                        </div>
+                        <button class="btn btn-light mt-3" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            Описание <i class="fa-solid fa-caret-down"></i>
+                        </button>
+                        <div class="collapse pt-3" id="collapseExample">
+                            <div class="card card-body">
+                                <pre th:utext="${topic.text}"></pre>
                             </div>
                         </div>
                         <div class="form-group">

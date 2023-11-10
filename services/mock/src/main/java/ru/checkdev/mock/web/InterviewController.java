@@ -21,6 +21,7 @@ public class InterviewController {
     private final InterviewService interviewService;
 
     @PostMapping("/")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Interview> save(@Valid @RequestBody Interview interview) throws SQLException {
         return new ResponseEntity<>(
                 interviewService
@@ -39,25 +40,18 @@ public class InterviewController {
 
 
     @PutMapping("/")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Interview> update(@Valid @RequestBody Interview interview) {
         return new ResponseEntity<Interview>(interview,
                 interviewService.update(interview) ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/status/")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<HttpStatus> updateStatusInterview(@RequestParam String id, @RequestParam String newStatus) {
         var idInterview = Integer.parseInt(id);
         var status = Integer.parseInt(newStatus);
         var result = interviewService.updateStatus(idInterview, status);
         return ResponseEntity.status(result ? HttpStatus.OK : HttpStatus.NOT_FOUND).build();
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Interview> delete(@Valid @PathVariable int id) {
-        Interview interview = new Interview();
-        interview.setId(id);
-        return new ResponseEntity<Interview>(interview,
-                interviewService.delete(interview) ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 }

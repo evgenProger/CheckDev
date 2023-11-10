@@ -18,7 +18,8 @@ public class FilterService {
     }
 
     public Optional<Filter> findByUserId(int userId) {
-        return filterRepository.getByUserId(userId);
+        var filter = filterRepository.getByUserId(userId);
+        return filter == null ? Optional.empty() : Optional.of(filter);
     }
 
     public int deleteByUserId(int userId) {

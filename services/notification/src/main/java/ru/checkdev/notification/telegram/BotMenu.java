@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 3. Мидл
  * Реализация меню телеграм бота.
  *
  * @author Dmitry Stepanov, user Dmitry

@@ -1,6 +1,6 @@
 package ru.checkdev.mock.web;
 
-import com.google.gson.GsonBuilder;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -11,7 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.mock.MockSrv;
@@ -20,14 +19,14 @@ import ru.checkdev.mock.repository.InterviewRepository;
 import ru.checkdev.mock.service.InterviewService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -55,10 +54,7 @@ class InterviewsControllerTest {
             .createDate(null)
             .build();
 
-    private String string = new GsonBuilder().serializeNulls().create().toJson(interview);
-
     @Test
-    @WithMockUser
     public void whenGetAll() throws Exception {
         var page = new PageImpl<>(List.of(interview));
         when(interviewRepository.findAll(PageRequest.of(0, 5)))
@@ -72,7 +68,6 @@ class InterviewsControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void whenFindByTopicsIds() throws Exception {
         List<Interview> interviews = new ArrayList<>();
         IntStream.range(1, 8).forEach(i -> {
@@ -97,5 +92,33 @@ class InterviewsControllerTest {
                 .andDo(print())
                 .andExpectAll(status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void whenGetAllByNoFeedbackThenReturnResponseList() throws Exception {
+        int submitterId = 1;
+        int userWiserId = 2;
+        Interview interview = Interview.of()
+                .id(1)
+                .submitterId(submitterId)
+                .build();
+        List<Interview> expect = List.of(interview);
+        doReturn(expect).when(service).findAllIdByNoFeedback(userWiserId);
+        mockMvc.perform(get("/interviews/noFeedback/{uID}", userWiserId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id", Matchers.is(expect.get(0).getId())));
+    }
+
+    @Test
+    void whenGetAllByNoFeedbackThenReturnResponseEmptyList() throws Exception {
+        int userWiserId = 2;
+        doReturn(Collections.emptyList()).when(service).findAllIdByNoFeedback(userWiserId);
+        mockMvc.perform(get("/interviews/noFeedback/{uID}", userWiserId))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.size()", Matchers.is(0)));
     }
 }

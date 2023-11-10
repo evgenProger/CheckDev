@@ -11,7 +11,7 @@ import ru.checkdev.notification.service.ChatIdService;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.domain.Profile;
 import ru.checkdev.notification.telegram.config.TgConfig;
-import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
+import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -79,7 +79,6 @@ public class RegAction implements Action {
                     + "/new";
             return new SendMessage(chatIdString, text);
         }
-
         ChatId chatId = new ChatId();
         chatId.setId(Integer.parseInt(chatIdString));
         chatId.setEmail(email);
@@ -89,7 +88,7 @@ public class RegAction implements Action {
             return new SendMessage(chatIdString, text);
         }
         try {
-            result = authCallWebClint.doPost(URL_AUTH_REGISTRATION, profile).block();
+            result = tgCall.doPost(URL_AUTH_REGISTRATION, profile).block();
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             text = "Сервис не доступен попробуйте позже" + sl

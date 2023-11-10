@@ -11,8 +11,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.repository.InterviewRepository;
+import ru.checkdev.mock.repository.WisherRepository;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class InterviewService {
 
     private final InterviewRepository interviewRepository;
+    private final WisherRepository wisherRepository;
 
     private static final Logger LOG = LoggerFactory.getLogger(InterviewService.class.getName());
 
@@ -44,6 +47,10 @@ public class InterviewService {
                         interview.setTopicId(1);
                     }
                 }).collect(Collectors.toList());
+    }
+
+    public List<Interview> findLast() {
+        return interviewRepository.findLastInterviews();
     }
 
     public Page<Interview> findPaging(int page, int size) {
@@ -101,5 +108,89 @@ public class InterviewService {
             log.error("Update status error {}", e.getMessage());
             return false;
         }
+    }
+
+    public Page<Interview> findBySubmitterId(int submitterId, int page, int size) {
+        return interviewRepository
+                .findBySubmitterId(submitterId, PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findBySubmitterIdNot(int submitterId, int page, int size) {
+        return interviewRepository
+                .findBySubmitterIdNot(submitterId, PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findByTopicIdAndSubmitterId(int topicId, int submitterId,
+                                                       int page, int size) {
+        return interviewRepository.findByTopicIdAndSubmitterId(topicId, submitterId,
+                PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findByTopicIdAndSubmitterIdNot(int topicId, int submitterId,
+                                                          int page, int size) {
+        return interviewRepository.findByTopicIdAndSubmitterIdNot(topicId, submitterId,
+                PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findByTopicsListIdAndSubmitterId(Collection<Integer> topicsIds,
+                                                            int submitterId,
+                                                            int page, int size) {
+        return interviewRepository.findByTopicIdInAndSubmitterId(topicsIds, submitterId,
+                PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findByTopicsListIdAndSubmitterIdNot(
+            Collection<Integer> topicsIds,
+            int submitterId,
+            int page, int size) {
+        return interviewRepository.findByTopicIdInAndSubmitterIdNot(topicsIds, submitterId,
+                PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findByUserIdAsWisher(int userId, int page, int size) {
+        return wisherRepository.findInterviewByUserId(userId, PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findByUserIdAsNotWisher(int userId, int page, int size) {
+        return interviewRepository.findInterviewByUserIdNot(userId, PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findByUserIdAsWisherByTopic(int userId, int topicId,
+                                                       int page, int size) {
+        return wisherRepository
+                .findInterviewByUserIdAndByTopicId(userId, topicId, PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findByUserIdAsNotWisherByTopic(int userId, int topicId,
+                                                          int page, int size) {
+        return interviewRepository
+                .findInterviewByUserIdNotAndByTopicId(userId, topicId,
+                        PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findByUserIdAsWisherByTopicList(int userId,
+                                                           Collection<Integer> topicsIds,
+                                                           int page, int size) {
+        return wisherRepository
+                .findInterviewByUserIdAndByTopicIdIn(userId, topicsIds,
+                        PageRequest.of(page, size));
+    }
+
+    public Page<Interview> findByUserIdAsNotWisherByTopicList(int userId,
+                                                              Collection<Integer> topicsIds,
+                                                              int page, int size) {
+        return interviewRepository
+                .findInterviewByUserIdNotAndByTopicIdIn(userId, topicsIds,
+                        PageRequest.of(page, size));
+    }
+
+    /**
+     * Метод возвращает все Interview на которые пользователь должен оставить отзыв
+     *
+     * @param userId ID User
+     * @return List<Interview>
+     */
+    public List<Interview> findAllIdByNoFeedback(int userId) {
+        return interviewRepository.findAllByUserIdWisherIsApproveAndNoFeedback(userId);
     }
 }
