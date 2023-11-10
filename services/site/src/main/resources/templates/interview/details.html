@@ -161,7 +161,7 @@
                         <tr>
                             <th scope="col">Откликнулись</th>
                             <th scope="col">Статус</th>
-                            <th scope="col">Действия</th>
+                            <th th:if="${isAuthor}" scope="col">Действия</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -173,7 +173,7 @@
                                 <span th:text="${wisher.statusName}"></span>
                             </td>
                             <td>
-                                <form th:if="${!isDismissed}" th:action="@{/wisher/dismissed}" method="post">
+                                <form th:if="${!isDismissed && isAuthor}" th:action="@{/wisher/dismissed}" method="post">
                                     <input type="hidden" th:id="interviewId" th:name="interviewId"
                                            th:value="${wisher.interviewId}">
                                     <input type="hidden" th:id="wisherId" th:name="wisherId"
