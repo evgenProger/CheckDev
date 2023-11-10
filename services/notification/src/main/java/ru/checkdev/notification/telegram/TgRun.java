@@ -12,11 +12,11 @@ import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.action.*;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 
+
 import java.util.List;
 import java.util.Map;
 
 /**
- * 3. Мидл
  * Инициализация телеграм бот,
  * username = берем из properties
  * token = берем из properties
@@ -29,7 +29,7 @@ import java.util.Map;
 @Component
 @Slf4j
 public class TgRun {
-    private final TgAuthCallWebClint tgAuthCallWebClint;
+    private final TgCall tgCall;
     private final InnerMessageService messageService;
     private final ChatIdService chatIdService;
     @Value("${tg.username}")
@@ -37,14 +37,14 @@ public class TgRun {
     @Value("${tg.token}")
     private String token;
     @Value("${server.site.url.login}")
-    private String urlSiteAuth;
-
+    private String urlLogin;
     @Value("${server.auth}")
     private String authUrl;
 
     public TgRun(TgAuthCallWebClint tgAuthCallWebClint, InnerMessageService messageService,
                  ChatIdService chatIdService) {
         this.tgAuthCallWebClint = tgAuthCallWebClint;
+
         this.messageService = messageService;
         this.chatIdService = chatIdService;
     }
@@ -64,6 +64,7 @@ public class TgRun {
                 "/forget", new ForgetAction(tgAuthCallWebClint, chatIdService, messageService),
                 "/notify", new NotifyAction(tgAuthCallWebClint, chatIdService, messageService),
                 "/unnotify", new UnNotifyAction(tgAuthCallWebClint, chatIdService, messageService)
+
         );
 
         try {

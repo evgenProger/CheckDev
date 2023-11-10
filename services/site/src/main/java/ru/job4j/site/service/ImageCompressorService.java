@@ -48,6 +48,7 @@ public class ImageCompressorService implements ImageCompress {
                 .drawImage(resultingImage, 0, 0, null);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+        bufferedImage.getGraphics().dispose();
         return new SimpleMultipartFile(file.getName(), file.getOriginalFilename(),
                 file.getContentType(), byteArrayOutputStream.toByteArray());
     }

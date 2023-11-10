@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.checkdev.desc.domain.Topic;
 import ru.checkdev.desc.dto.TopicDTO;
+import ru.checkdev.desc.dto.TopicLiteDTO;
 import ru.checkdev.desc.service.TopicService;
 
 import java.util.List;
@@ -35,5 +36,11 @@ public class TopicsControl {
     public ResponseEntity<List<TopicDTO>> getByCategoryId(@PathVariable int categoryId) {
         return new ResponseEntity<>(topicService
                 .getTopicDTOsByCategoryId(categoryId), HttpStatus.OK);
+    }
+
+    @GetMapping("/dto/lite")
+    public ResponseEntity<List<TopicLiteDTO>> getAllTopicLiteDTO() {
+        var topicLiteDtoList = topicService.getAllTopicLiteDTO();
+        return ResponseEntity.ok(topicLiteDtoList);
     }
 }

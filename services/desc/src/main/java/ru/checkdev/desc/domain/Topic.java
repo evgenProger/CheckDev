@@ -1,7 +1,6 @@
 package ru.checkdev.desc.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -9,6 +8,9 @@ import java.util.Calendar;
 @Entity(name = "cd_topic")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(builderMethodName = "of")
 public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

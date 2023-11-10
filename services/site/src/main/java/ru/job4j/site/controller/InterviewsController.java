@@ -1,19 +1,21 @@
 package ru.job4j.site.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import ru.job4j.site.component.InterviewsRequestManager;
 import ru.job4j.site.domain.StatusInterview;
+import ru.job4j.site.dto.FilterDTO;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.TopicIdNameDTO;
 import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +27,7 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
 @Controller
 @RequestMapping("/interviews")
 @Slf4j
+@AllArgsConstructor
 public class InterviewsController {
 
     private final InterviewsService interviewsService;
@@ -33,48 +36,47 @@ public class InterviewsController {
     private final TopicsService topicsService;
     private final AuthService authService;
     private final FilterService filterService;
-    private final WisherService wisherService;
+    private final InterviewsRequestManager interviewsRequestManager;
     private final NotificationService notifications;
-
-    public InterviewsController(InterviewsService interviewsService, ProfilesService profilesService,
-                                CategoriesService categoriesService, TopicsService topicsService,
-                                AuthService authService, FilterService filterService,
-                                WisherService wisherService, NotificationService notifications) {
-        this.interviewsService = interviewsService;
-        this.profilesService = profilesService;
-        this.categoriesService = categoriesService;
-        this.topicsService = topicsService;
-        this.authService = authService;
-        this.filterService = filterService;
-        this.wisherService = wisherService;
-        this.notifications = notifications;
-    }
 
     @GetMapping("/")
     public String getAllInterviews(Model model,
                                    HttpServletRequest req,
                                    @RequestParam(required = false, defaultValue = "0") int page,
-                                   @RequestParam(required = false, defaultValue = "20") int size) {
+                                   @RequestParam(required = false, defaultValue = "20") int size,
+                                   HttpSession session) {
         try {
             var token = getToken(req);
             var user = authService.userInfo(token);
             var userId = user != null ? user.getId() : 0;
             var filter = userId > 0
-                    ? filterService.getByUserId(token, userId) : null;
-            var isFiltered = filter != null && filter.getCategoryId() > 0;
+                    ? filterService.getByUserId(token, userId)
+                    : (FilterDTO) session.getAttribute("filter");
+            var isFiltered = filter != null
+                             && (filter.getCategoryId() > 0
+                                 || filter.getFilterProfile() > 0);
             Page<InterviewDTO> interviewsPage;
             List<TopicIdNameDTO> topicIdNameDTOS = new ArrayList<>();
             var categoryName = "";
             var topicName = "";
+            var filterProfileName = "";
+            var filterProfiles = filterService.getProfiles();
             var categories = categoriesService.getAll();
             if (isFiltered) {
-                topicIdNameDTOS = topicsService.getTopicIdNameDtoByCategory(filter.getCategoryId());
-                interviewsPage = filter.getTopicId() > 0
-                        ? interviewsService.getByTopicId(filter.getTopicId(), page, size)
-                        : interviewsService.getByTopicsIds(
-                        topicIdNameDTOS.stream().map(TopicIdNameDTO::getId).toList(), page, size);
-                categoryName = categoriesService.getNameById(categories, filter.getCategoryId());
-                topicName = filter.getTopicId() > 0 ? topicsService.getNameById(filter.getTopicId()) : "";
+                var categoryId = filter.getCategoryId();
+                var topicId = filter.getTopicId();
+                var filterProfileId = filter.getFilterProfile();
+                if (categoryId > 0) {
+                    topicIdNameDTOS = topicsService.getTopicIdNameDtoByCategory(categoryId);
+                }
+                interviewsPage = categoryId <= 0 || topicId > 0
+                        ? interviewsRequestManager.find(token, filter, page, size)
+                        : interviewsRequestManager.findByTopicsList(
+                        topicIdNameDTOS.stream().map(TopicIdNameDTO::getId).toList(), filter, page, size);
+                categoryName = categoriesService.getNameById(categories, categoryId);
+                topicName = topicId > 0 ? topicsService.getNameById(topicId) : "";
+                filterProfileName = filterProfileId > 0
+                        ? filterService.getNameById(filterProfiles, filterProfileId) : "";
             } else {
                 interviewsPage = interviewsService.getAll(token, page, size);
             }
@@ -83,13 +85,14 @@ public class InterviewsController {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .collect(Collectors.toSet());
-            var wishers = wisherService.getAllWisherDtoByInterviewId(token, "");
-            var interviewStatistic = wisherService.getInterviewStatistic(wishers);
+            interviewsService.setCountWishers(interviewsPage.toList(), token);
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index",
                     "Собеседования", String.format("/interviews/?page=%d&?size=%d", page, size)
             );
-            model.addAttribute("statisticMap", interviewStatistic);
+            var topicLiteDTOs = topicsService.getAllTopicLiteDTO();
+            var topicsLiteMap = topicsService.liteDTTOSToMap(topicLiteDTOs);
+            model.addAttribute("topicsLiteMap", topicsLiteMap);
             model.addAttribute("interviewsPage", interviewsPage);
             model.addAttribute("statuses", StatusInterview.values());
             model.addAttribute("current_page", "interviews");
@@ -100,8 +103,11 @@ public class InterviewsController {
             model.addAttribute("categoryName", categoryName);
             model.addAttribute("topicName", topicName);
             model.addAttribute("topics", topicIdNameDTOS);
+            model.addAttribute("filterProfiles", filterProfiles);
+            model.addAttribute("filterProfileName", filterProfileName);
             if (token != null) {
-                model.addAttribute("botMessages", notifications.findBotMessageByUserId(token, user.getId()));
+                model.addAttribute("botMessages",
+                        notifications.findBotMessageByUserId(token, user.getId()));
             }
         } catch (Exception e) {
             RequestResponseTools.addAttrBreadcrumbs(model,
@@ -111,5 +117,17 @@ public class InterviewsController {
             log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
         }
         return "interview/interviews";
+    }
+
+    @PostMapping("/reload")
+    @ResponseBody
+    public void reload(@RequestBody FilterDTO filter,
+                       Model model,
+                       HttpServletRequest req,
+                       @RequestParam(required = false, defaultValue = "0") int page,
+                       @RequestParam(required = false, defaultValue = "20") int size,
+                       HttpSession session) {
+        session.setAttribute("filter", filter);
+        getAllInterviews(model, req, page, size, session);
     }
 }

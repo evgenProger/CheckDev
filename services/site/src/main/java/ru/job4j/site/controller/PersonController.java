@@ -3,6 +3,8 @@ package ru.job4j.site.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +14,12 @@ import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.ImageCompress;
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.PersonService;
+import ru.job4j.site.util.MultipartFileImpl;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -115,10 +121,22 @@ public class PersonController {
     @PostMapping("/edit")
     public String updatePerson(@ModelAttribute PersonDTO personDTO,
                                MultipartFile file,
-                               HttpServletRequest request) {
+                               HttpServletRequest request) throws IOException {
         var token = getToken(request);
         personDTO.setUpdated(Calendar.getInstance());
         var compressFile = file;
+/**
+ *      Это заглушка для картинки профиля, в следующей реализации будет убрана.
+ */
+        if (compressFile == null) {
+            ClassPathResource resource = new ClassPathResource("static/img/person_mock.jpeg");
+            File mockFile = resource.getFile();
+            byte[] bytes = Files.readAllBytes(mockFile.toPath());
+            compressFile =
+                    new MultipartFileImpl(bytes, mockFile.getName(),
+                            mockFile.getCanonicalPath(), null);
+        }
+
         try {
             if (!isValidFile(file)) {
                 compressFile = imageCompress.compressImage(file);

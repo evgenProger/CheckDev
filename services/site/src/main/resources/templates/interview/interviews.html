@@ -28,7 +28,7 @@
     <link th:href="@{/webjars/summernote/0.8.10/summernote-lite.css}" rel="stylesheet">
     <script th:src="@{/webjars/summernote/0.8.10/summernote-lite.js}"></script>
     <script th:src="@{/webjars/summernote/0.8.10/lang/summernote-ru-RU.js}"></script>
-  
+
 
     <script th:inline="javascript" type="text/javascript">
 
@@ -36,16 +36,26 @@
 
         var topics = /*[[${topics}]]*/ null;
 
+        var filterProfiles = /*[[${filterProfiles}]]*/ null;
+
         var userId = /*[[${userId}]]*/ 0;
 
         var currentCategoryId;
+
+        var currentTopicId;
+
+        var currentFilterProfile;
 
         function init() {
             document.getElementById('category_patch_div').style.display =
                 filter != null && filter.categoryId > 0 ? 'block' : 'none';
             document.getElementById('topic_patch_div').style.display =
                 filter != null && filter.topicId > 0 ? 'block' : 'none';
+            document.getElementById('filterProfile_patch_div').style.display =
+                filter != null && filter.filterProfile > 0 ? 'block' : 'none';
             currentCategoryId = filter != null ? filter.categoryId : 0;
+            currentTopicId = filter != null ? filter.topicId : 0;
+            currentFilterProfile = filter != null ? filter.filterProfile : 0;
             if (filter != null && currentCategoryId > 0) {
                 inflateTopicList(topics);
             }
@@ -58,7 +68,7 @@
             var categoryName = element.getAttribute('data-name');
             userId = element.getAttribute('data-user_id');
             currentCategoryId = id;
-            createFilter(0);
+            createFilter();
         }
 
         function inflateTopicList(response) {
@@ -77,23 +87,50 @@
             var topicId = element.getAttribute('data-id');
             var topicName = element.getAttribute('data-name');
             showPatch('topic_patch_div', 'topicPatchTextSpan', topicName);
-            createFilter(topicId);
+            currentTopicId = topicId;
+            createFilter();
+        }
+
+        function onFilterProfileItemClick(element) {
+            var filterProfileId = element.getAttribute('data-id');
+            var filterProfileName = element.getAttribute('data-name');
+            showPatch('filterProfile_patch_div', 'filterProfilePatchTextSpan', filterProfileName);
+            currentFilterProfile = filterProfileId;
+            createFilter();
         }
 
         function onCategoryPatchCancelClick(element) {
-            var container = element.parentNode
+            var container = element.parentNode;
             hideElement(container.id);
             hideElement('topic_patch_div');
             var userId = element.getAttribute('data-user_id');
             $('#topics_select').html('');
-            deleteFilter(userId)
+            currentTopicId = 0;
+            currentCategoryId = 0;
+            if (currentFilterProfile == 0 && userId > 0) {
+                deleteFilter(userId);
+            } else {
+                createFilter();
+            }
         }
 
         function onTopicPatchCancelClick(element) {
-            var container = element.parentNode
+            var container = element.parentNode;
+            hideElement(container.id);
+            currentTopicId = 0;
+            createFilter();
+        }
+
+        function onFilterProfilePatchCancelClick(element) {
+            var container = element.parentNode;
             hideElement(container.id);
             var userId = element.getAttribute('data-user_id');
-            createFilter(0);
+            currentFilterProfile = 0;
+            if (currentCategoryId == 0) {
+                deleteFilter(userId);
+            } else {
+                createFilter();
+            }
         }
 
         function showPatch(elementId, textSpanId, text) {
@@ -114,16 +151,28 @@
             }
         }
 
-        function createFilter(topicId) {
+        function createFilter() {
+            var filter = {
+                userId: userId,
+                categoryId: currentCategoryId,
+                topicId: currentTopicId,
+                filterProfile: currentFilterProfile
+            };
             if (userId > 0) {
-                var filter = {
-                    userId: userId,
-                    categoryId: currentCategoryId,
-                    topicId: topicId
-                };
                 $.ajax({
                     type: "POST",
                     url: "/filter/create",
+                    data: JSON.stringify(filter),
+                    contentType: "application/json",
+                    success: function (response) {
+                        console.log("filter saved.");
+                        location.reload();
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "/interviews/reload",
                     data: JSON.stringify(filter),
                     contentType: "application/json",
                     success: function (response) {
@@ -140,7 +189,23 @@
                     type: 'DELETE',
                     url: '/filter/delete/' + userId,
                     success: function (result) {
-                        console.log('filter with id ' + userId + ' was deleted')
+                        console.log('filter with id ' + userId + ' was deleted');
+                        location.reload();
+                    }
+                });
+            } else {
+                var filter = {
+                    userId: 0,
+                    categoryId: 0,
+                    topicId: 0,
+                    filterProfile: 0
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/interviews/reload",
+                    data: JSON.stringify(filter),
+                    contentType: "application/json",
+                    success: function (response) {
                         location.reload();
                     }
                 });
@@ -201,6 +266,32 @@
                         <span class="fas fa-times"></span>
                     </button>
                 </div>
+
+                <div th:if="${userId > 0}" class="dropdown me-1" id="filterProfile_select">
+                    <button class="btn btn-light btn-sm dropdown-toggle"
+                            type="button" id="dropdownMenuButton3"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Профиль
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                        <li class="dropdown-item" th:each="filterProfile: ${filterProfiles}">
+                            <ul onclick="onFilterProfileItemClick(this)"
+                                th:text="${filterProfile.name}"
+                                th:data-id="${filterProfile.id}"
+                                th:data-name="${filterProfile.name}"
+                                th:data-user_id="${userInfo != null ? userInfo.getId() : 0}">
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div id="filterProfile_patch_div" class="me-1">
+                    <button class="btn btn-light btn-sm" onclick="onFilterProfilePatchCancelClick(this)"
+                            th:data-user_id="${userId}">
+                        <span id="filterProfilePatchTextSpan" th:text="${filterProfileName}"></span>
+                        <span class="fas fa-times"></span>
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -214,13 +305,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="interview: ${interviewsPage.toList()}">
+                <tr th:each="interview: ${#lists.toList(interviewsPage)}">
                     <td>
                         <div>
                             <span class="fw-bold">
                                     <a class="text-decoration-none text-dark"
                                        th:href="@{|/interview/${interview.id}|}">
-                                        <h5 th:text="${interview.title}"></h5>
+                                        <div th:if="${topicsLiteMap.containsKey(interview.id)}">
+                                        <h5 th:text="${topicsLiteMap.get(interview.id).categoryName + ' : ' + topicsLiteMap.get(interview.id).name}"></h5>
+                                        </div>
                                     </a>
                             </span>
                             <small class="mb-2 text-muted">
@@ -231,10 +324,12 @@
                                       th:if="${interview.status >= statuses.length}">Статус неизвестен</span>
                                 <i class="far fa-clock"></i>
                                 <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
-                                        <i class="far fa-user"></i>
-                                        <span th:text="${interview.author}"></span>
-                                    </span>
+                                <i class="far fa-user"></i>
+                                <span th:if="${userInfo != null && userInfo.getUsername() == interview.author}">
+                                     <span class="fw-bold" th:text="${interview.author}"></span>
                                 </span>
+                                <span th:text="${interview.author}"></span>
+
                                 <!--Из переданного набора ENUM выбираем статус по его ID-->
                                 <!--                                <span>Статус: </span>-->
                                 <!--                                <span th:each="status: ${statuses}">-->
@@ -243,7 +338,8 @@
                                 <!--                                    </span>-->
                                 <!--                                </span>-->
                                 </span>
-                                <span>Откликов: 10</span>
+                                <span>Откликов:</span>
+                                <span th:text="${interview.countWishers}"></span>
                             </small>
                         </div>
                     </td>

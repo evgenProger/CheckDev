@@ -1,5 +1,7 @@
 package ru.checkdev.notification.telegram.service;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -8,13 +10,15 @@ import reactor.core.publisher.Mono;
 import ru.checkdev.notification.domain.Profile;
 
 /**
- * 3. Мидл
  * Класс реализует методы get и post для отправки сообщений через WebClient
  *
  * @author Dmitry Stepanov, user Dmitry
  * @since 12.09.2023
  */
+@org.springframework.context.annotation.Profile("default")
 @Service
+@NoArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class TgAuthCallWebClint {
     private WebClient webClient;
@@ -23,12 +27,14 @@ public class TgAuthCallWebClint {
         this.webClient = WebClient.create(urlAuth);
     }
 
+
     /**
      * Метод get
      *
      * @param url URL http
      * @return Mono<Person>
      */
+    @Override
     public Mono<Profile> doGet(String url) {
         return webClient
                 .get()
@@ -41,10 +47,11 @@ public class TgAuthCallWebClint {
     /**
      * Метод POST
      *
-     * @param url       URL http
+     * @param url     URL http
      * @param profile Body PersonDTO.class
      * @return Mono<Person>
      */
+    @Override
     public Mono<Object> doPost(String url, Profile profile) {
         return webClient
                 .post()

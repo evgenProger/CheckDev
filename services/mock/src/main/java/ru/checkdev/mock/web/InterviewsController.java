@@ -34,6 +34,13 @@ public class InterviewsController {
                 .body(interviewService.findPaging(page, size));
     }
 
+    @GetMapping("/last")
+    public ResponseEntity<List<Interview>> findLastThree() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(interviewService.findLast());
+    }
+
     @GetMapping("/{mode}")
     public ResponseEntity<List<Interview>> findByMode(@PathVariable int mode) {
         return ResponseEntity
@@ -44,26 +51,93 @@ public class InterviewsController {
     @GetMapping("/findByTopicId/{topicId}")
     public ResponseEntity<Page<Interview>> findByTopicId(
             @PathVariable int topicId,
+            @RequestParam(required = false, defaultValue = "0") int userId,
+            @RequestParam(required = false, defaultValue = "0") int submitterId,
+            @RequestParam(required = false, defaultValue = "false") boolean not,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int size) {
+        Page<Interview> result;
+        if (userId > 0) {
+            result = !not
+                    ? interviewService.findByUserIdAsWisherByTopic(userId, topicId, page, size)
+                    : interviewService.findByUserIdAsNotWisherByTopic(userId, topicId, page, size);
+        } else if (submitterId > 0) {
+            result = !not
+                    ? interviewService.findByTopicIdAndSubmitterId(topicId, submitterId, page, size)
+                    : interviewService.findByTopicIdAndSubmitterIdNot(topicId, submitterId, page, size);
+        } else {
+            result = interviewService.findByTopicId(topicId, page, size);
+        }
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(interviewService.findByTopicId(topicId, page, size));
+                .body(result);
     }
 
     @GetMapping("/findByTopicsIds/{tids}")
     public ResponseEntity<Page<Interview>> findByCategory(
             @PathVariable String tids,
+            @RequestParam(required = false, defaultValue = "0") int userId,
+            @RequestParam(required = false, defaultValue = "0") int submitterId,
+            @RequestParam(required = false, defaultValue = "false") boolean not,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int size) {
         var topicIdsArr = tids.split(",");
         List<Integer> topicIds = new ArrayList<>();
         for (String id : topicIdsArr) {
-            topicIds.add(Integer.valueOf(id));
+            if (id.matches("^\\d+$")) {
+                topicIds.add(Integer.valueOf(id));
+            }
+        }
+        Page<Interview> result;
+        if (userId > 0) {
+            result = !not
+                    ? interviewService.findByUserIdAsWisherByTopicList(userId, topicIds, page, size)
+                    : interviewService.findByUserIdAsNotWisherByTopicList(userId, topicIds, page, size);
+        } else if (submitterId > 0) {
+            result = !not
+                    ? interviewService.findByTopicsListIdAndSubmitterId(topicIds, submitterId, page, size)
+                    : interviewService.findByTopicsListIdAndSubmitterIdNot(topicIds, submitterId, page, size);
+        } else {
+            result = interviewService.findByTopicsIds(topicIds, page, size);
         }
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(interviewService.findByTopicsIds(topicIds, page, size));
+                .body(result);
+    }
+
+    @GetMapping("/findBySubmitter/{submitterId}")
+    public ResponseEntity<Page<Interview>> findBySubmitter(
+            @PathVariable int submitterId,
+            @RequestParam(required = false, defaultValue = "false") boolean not,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "20") int size) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(!not ? interviewService.findBySubmitterId(submitterId, page, size)
+                        : interviewService.findBySubmitterIdNot(submitterId, page, size));
+    }
+
+    @GetMapping("/findByWisher/{userId}")
+    public ResponseEntity<Page<Interview>> findByWisher(
+            @PathVariable int userId,
+            @RequestParam(required = false, defaultValue = "false") boolean not,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "20") int size) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(!not ? interviewService.findByUserIdAsWisher(userId, page, size)
+                        : interviewService.findByUserIdAsNotWisher(userId, page, size));
+    }
+
+    @GetMapping("/noFeedback/{uId}")
+    public ResponseEntity<List<Interview>> getAllNoFeedback(@PathVariable("uId") int uId) {
+        List<Interview> interviews = interviewService.findAllIdByNoFeedback(uId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(interviews);
     }
 }

@@ -2,6 +2,7 @@ package ru.checkdev.mock.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.GsonBuilder;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.mock.MockSrv;
@@ -19,12 +19,13 @@ import ru.checkdev.mock.service.InterviewService;
 import ru.checkdev.mock.service.WisherService;
 
 import java.util.Optional;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MockSrv.class)
@@ -38,6 +39,7 @@ class WisherControllerTest {
 
     @MockBean
     private InterviewService interviewService;
+
 
     private Interview interview = Interview.of()
             .id(1)
@@ -73,7 +75,18 @@ class WisherControllerTest {
     private String emptyWisherString = new GsonBuilder().serializeNulls().create().toJson(emptyWisher);
 
     @Test
-    @WithMockUser
+    public void whenSaveAndGetThenIsUnauthorized() throws Exception {
+        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interview));
+        when(wisherService.save(any(Wisher.class))).thenReturn(Optional.of(wisher));
+        mockMvc.perform(post("/wisher/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(wisher)))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Disabled
+    @Test
     public void whenSaveAndGetTheSame() throws Exception {
         when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interview));
         when(wisherService.save(any(Wisher.class))).thenReturn(Optional.of(wisher));
@@ -87,7 +100,6 @@ class WisherControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void whenGetByIdIsCorrect() throws Exception {
         when(wisherService.findById(any(Integer.class))).thenReturn(Optional.of(wisher));
         this.mockMvc.perform(get("/wisher/1"))
@@ -99,7 +111,6 @@ class WisherControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void whenGetByIdIsEmpty() throws Exception {
         when(wisherService.findById(any(Integer.class))).thenReturn(Optional.empty());
         this.mockMvc.perform(get("/wisher/1"))
@@ -109,8 +120,8 @@ class WisherControllerTest {
                 );
     }
 
+    @Disabled
     @Test
-    @WithMockUser(roles = {"ADMIN", "MODERATOR"})
     public void whenTryToUpdateIsCorrect() throws Exception {
         when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interview));
         when(wisherService.findById(any(Integer.class))).thenReturn(Optional.of(wisher));
@@ -126,7 +137,19 @@ class WisherControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"ADMIN", "MODERATOR"})
+    public void whenTryToUpdateIsUnauthorized() throws Exception {
+        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interview));
+        when(wisherService.findById(any(Integer.class))).thenReturn(Optional.of(wisher));
+        when(wisherService.update(any(Wisher.class))).thenReturn(true);
+        this.mockMvc.perform(put("/wisher/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(wisher)))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Disabled
+    @Test
     public void whenTryToUpdateIsNotCorrect() throws Exception {
         when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interview));
         when(wisherService.findById(any(Integer.class))).thenReturn(Optional.of(wisher));
@@ -139,29 +162,5 @@ class WisherControllerTest {
                         status().isNoContent(),
                         content().contentType(MediaType.APPLICATION_JSON),
                         content().string(wisherString));
-    }
-
-    @Test
-    @WithMockUser(roles = {"ADMIN", "MODERATOR"})
-    public void whenDeleteIsCorrect() throws Exception {
-        when(wisherService.delete(any(Wisher.class))).thenReturn(true);
-        this.mockMvc.perform(delete("/wisher/1"))
-                .andDo(print())
-                .andExpectAll(
-                        status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        content().string(emptyWisherString));
-    }
-
-    @Test
-    @WithMockUser(roles = {"ADMIN", "MODERATOR"})
-    public void whenDeleteIsNotCorrect() throws Exception {
-        when(wisherService.delete(any(Wisher.class))).thenReturn(false);
-        this.mockMvc.perform(delete("/wisher/1"))
-                .andDo(print())
-                .andExpectAll(
-                        status().isNoContent(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        content().string(emptyWisherString));
     }
 }

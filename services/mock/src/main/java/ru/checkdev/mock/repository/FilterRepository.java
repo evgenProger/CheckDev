@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface FilterRepository extends CrudRepository<Filter, Integer> {
 
-    Optional<Filter> getByUserId(int userId);
+    Filter getByUserId(int userId);
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     int deleteByUserId(int userId);

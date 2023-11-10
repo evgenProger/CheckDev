@@ -36,7 +36,8 @@ public class RestAuthCall {
                 new DefaultResponseErrorHandler() {
                     @Override
                     public void handleError(ClientHttpResponse response) throws IOException {
-                        if (response.getStatusCode().value() != 401) {
+                        var respValue = response.getStatusCode().value();
+                        if (respValue != 401 && respValue != 404) {
                             log.error("Call: " + url, response.getStatusText());
                         }
                     }

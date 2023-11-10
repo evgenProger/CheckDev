@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.checkdev.desc.domain.Topic;
 import ru.checkdev.desc.dto.TopicDTO;
+import ru.checkdev.desc.dto.TopicLiteDTO;
 import ru.checkdev.desc.repository.TopicRepository;
 
 import java.util.ArrayList;
@@ -64,5 +65,24 @@ public class TopicService {
             result.add(new TopicDTO(topic.getId(), topic.getName()));
         }
         return result;
+    }
+
+    /**
+     * Метод возвращает список всех TopicLiteDTO
+     *
+     * @return List<TopicLiteDTO>
+     */
+    public List<TopicLiteDTO> getAllTopicLiteDTO() {
+        return topicRepository.getAllTopicLiteDTO();
+    }
+
+    /**
+     * Метод возвращает Optional TopicLiteDTO по Topic ID
+     *
+     * @param tId Topic ID
+     * @return Optional<TopicLiteDTO>
+     */
+    public Optional<TopicLiteDTO> getTopicLiteDTOById(int tId) {
+        return topicRepository.getTopicLiteDTOById(tId);
     }
 }

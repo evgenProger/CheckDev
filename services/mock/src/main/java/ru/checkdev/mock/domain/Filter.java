@@ -16,10 +16,12 @@ public class Filter {
     @Id
     @Column(name = "user_id", nullable = false)
     private int userId;
-    @JoinColumn(name = "category_id")
+    @Column(name = "category_id")
     private int categoryId;
-    @JoinColumn(name = "topic_id")
+    @Column(name = "topic_id")
     private int topicId;
+    @Column(name = "filter_profile")
+    private int filterProfile;
 
     @Override
     public boolean equals(Object o) {
