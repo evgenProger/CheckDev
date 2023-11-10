@@ -231,4 +231,55 @@ class TopicRepositoryTest {
         var actualList = topicRepository.getAllTopicLiteDTO();
         assertThat(actualList).isEqualTo(expectList);
     }
+
+    @Test
+    void getTopicLiteDtoByIdThenReturnOptionalEmpty() {
+        var anyTopicId = -99;
+        var actual = topicRepository.getTopicLiteDTOById(anyTopicId);
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void getTopicLiteDtoByIdThenReturnOptionalIsPresent() {
+        var dateNow = Calendar.getInstance();
+        dateNow.set(Calendar.HOUR_OF_DAY, 0);
+        var topic1 = Topic.of()
+                .name("topic1")
+                .text("text1")
+                .created(dateNow)
+                .updated(dateNow)
+                .total(1)
+                .position(1)
+                .category(category1)
+                .build();
+        entityManager.persist(topic1);
+        entityManager.clear();
+        var expectTopicLite = new TopicLiteDTO(
+                topic1.getId(), topic1.getName(),
+                topic1.getText(), category1.getId(),
+                category1.getName(), topic1.getPosition());
+        var actualTopicLiteOptional = topicRepository.getTopicLiteDTOById(topic1.getId());
+        assertThat(actualTopicLiteOptional.isPresent()).isTrue();
+        assertThat(actualTopicLiteOptional.get()).isEqualTo(expectTopicLite);
+    }
+
+    @Test
+    void getTopicLiteDtoByIdAnyThenReturnOptionalEmpty() {
+        var anyId = -99;
+        var dateNow = Calendar.getInstance();
+        dateNow.set(Calendar.HOUR_OF_DAY, 0);
+        var topic1 = Topic.of()
+                .name("topic1")
+                .text("text1")
+                .created(dateNow)
+                .updated(dateNow)
+                .total(1)
+                .position(1)
+                .category(category1)
+                .build();
+        entityManager.persist(topic1);
+        entityManager.clear();
+        var actualTopicLiteOptional = topicRepository.getTopicLiteDTOById(anyId);
+        assertThat(actualTopicLiteOptional).isEmpty();
+    }
 }

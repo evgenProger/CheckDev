@@ -1,6 +1,5 @@
 package ru.job4j.site.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,9 +13,10 @@ import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.service.*;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -41,20 +41,13 @@ class IndexControllerTest {
     private TopicsService topicsService;
     @MockBean
     private InterviewsService interviewsService;
-    @MockBean
-    private AuthService authService;
-    @MockBean
-    private NotificationService notificationService;
-    @MockBean
-    private HttpServletRequest httpServletRequest;
 
-    private IndexController indexController;
-
-    @BeforeEach
-    void initTest() {
-        this.indexController = new IndexController(
-                categoriesService, interviewsService, authService, notificationService
-        );
+    @Test
+    void injectedNotNull() {
+        assertThat(mockMvc).isNotNull();
+        assertThat(categoriesService).isNotNull();
+        assertThat(topicsService).isNotNull();
+        assertThat(interviewsService).isNotNull();
     }
 
     @Test
@@ -86,15 +79,16 @@ class IndexControllerTest {
         var listInterviews = List.of(firstInterview, secondInterview);
         when(topicsService.getByCategory(cat1.getId())).thenReturn(List.of(topicDTO1));
         when(topicsService.getByCategory(cat2.getId())).thenReturn(List.of(topicDTO2));
+        when(topicsService.getAllTopicLiteDTO()).thenReturn(Collections.emptyList());
         when(categoriesService.getMostPopular()).thenReturn(listCat);
         when(interviewsService.getLast()).thenReturn(listInterviews);
         var listBread = List.of(new Breadcrumb("Главная", "/"));
-
         mockMvc.perform(get("/index/")
                         .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(model().attribute("categories", listCat))
                 .andExpect(model().attribute("breadcrumbs", listBread))
+                .andExpect(model().attribute("topicsLiteMap", Collections.emptyMap()))
                 .andExpect(model().attribute("new_interviews", listInterviews))
                 .andExpect(view().name("index"));
     }

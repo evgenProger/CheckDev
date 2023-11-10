@@ -55,7 +55,8 @@
                                 <div>
                                     <a class="fw-bold text-dark text-decoration-none"
                                        th:href="@{|/interview/${interview.id}|}">
-                                        <h5 th:text="${interview.title}"></h5>
+                                        <h5 th:if="${topicsLiteMap.containsKey(interview.topicId)}"
+                                            th:text="${topicsLiteMap.get(interview.topicId).categoryName + ' : ' + topicsLiteMap.get(interview.topicId).name}"></h5>
                                     </a>
                                 </div>
                                 <div class="pb-2">

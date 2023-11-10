@@ -37,4 +37,19 @@ public interface TopicRepository extends CrudRepository<Topic, Integer> {
             JOIN cd_topic ct ON cc.id = ct.category.id
             """)
     List<TopicLiteDTO> getAllTopicLiteDTO();
+
+    /**
+     * Метод возвращает Optional TopicLiteDTO по Topic ID
+     *
+     * @param tId ID Topic
+     * @return Optional<TopicLiteDTO>
+     */
+    @Query("""
+            SELECT 
+            new ru.checkdev.desc.dto.TopicLiteDTO(ct.id, ct.name, ct.text, cc.id, cc.name, ct.position) 
+            FROM cd_category cc 
+            JOIN cd_topic ct ON cc.id = ct.category.id 
+            WHERE ct.id =:tId
+            """)
+    Optional<TopicLiteDTO> getTopicLiteDTOById(@Param("tId") int tId);
 }
