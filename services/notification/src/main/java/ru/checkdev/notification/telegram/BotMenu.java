@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.checkdev.notification.telegram.action.Action;
+import ru.checkdev.notification.telegram.action.UnKnownRequestAction;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,6 +52,9 @@ public class BotMenu extends TelegramLongPollingBot {
                 var msg = actions.get(bindingBy.get(chatId)).callback(update.getMessage());
                 bindingBy.remove(chatId);
                 send(msg);
+            }  else if (!actions.containsKey(key)) {
+            var msg = new UnKnownRequestAction().handle(update.getMessage());
+            send(msg);
             }
         }
     }

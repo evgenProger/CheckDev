@@ -150,4 +150,37 @@ public class PersonController {
         map.put("getTotal", persons.showed());
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
+    @GetMapping("/currentForTg/{email}")
+    public Profile getCurrentByEmail(@PathVariable String email) {
+        return this.persons.findByEmail(email).get();
+    }
+
+    @PostMapping("/notified")
+    public Object notify(@RequestBody Profile profile) {
+        Optional<Profile> result = this.persons.toNotify(profile, true);
+        return result.<Object>map(prf -> new Object() {
+            public Profile getPerson() {
+                return prf;
+            }
+        }).orElseGet(() -> new Object() {
+            public String getError() {
+                return String.format("Пользователь с почтой %s не найден.", profile.getEmail());
+            }
+        });
+    }
+
+    @PostMapping("/unnotified")
+    public Object unNotify(@RequestBody Profile profile) {
+        Optional<Profile> result = this.persons.toNotify(profile, false);
+        return result.<Object>map(prf -> new Object() {
+            public Profile getPerson() {
+                return prf;
+            }
+        }).orElseGet(() -> new Object() {
+            public String getError() {
+                return String.format("Пользователь с почтой %s не найден.", profile.getEmail());
+            }
+        });
+    }
 }

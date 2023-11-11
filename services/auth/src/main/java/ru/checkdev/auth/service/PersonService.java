@@ -144,6 +144,24 @@ public class PersonService {
         return result;
     }
 
+    public Optional<Profile> forgotTg(Profile profile) {
+        final Optional<Profile> result;
+        Profile find = this.persons.findByEmail(profile.getEmail());
+        if (find == null) {
+            result = Optional.empty();
+        } else {
+            String password = profile.getPassword();
+            find.setPassword(this.encoding.encode(password));
+            find.setUpdated(Calendar.getInstance());
+            this.persons.save(find);
+            Map<String, Object> keys = new HashMap<>();
+            keys.put("password", password);
+            this.msg.send(new Notify(find.getEmail(), keys, Notify.Type.FORGOT.name()));
+            result = Optional.of(find);
+        }
+        return result;
+    }
+
     public List<Profile> findAll(Pageable pageable) {
         return this.persons.findAll(pageable).getContent();
     }
@@ -224,7 +242,6 @@ public class PersonService {
         return photo;
     }
 
-
     public Profile loadFromHh(String linc) {
         Profile profile = null;
         try {
@@ -257,7 +274,6 @@ public class PersonService {
         }
         return profile;
     }
-
 
     public String update(String email, MultipartFile file, Profile profile) {
         String result = "ok";
@@ -295,6 +311,19 @@ public class PersonService {
         profileDb.setActive(true);
         persons.save(profileDb);
         return result;
+    }
+
+    public Optional<Profile> toNotify(Profile profile, boolean setting) {
+        Optional<Profile> rsl = Optional.empty();
+        Optional<Profile> findOptional = findByEmail(profile.getEmail());
+        if (findOptional.isPresent()) {
+            Profile find = findOptional.get();
+            find.setNotification(setting);
+            find.setUpdated(Calendar.getInstance());
+            save(find);
+            rsl = Optional.of(find);
+        }
+        return rsl;
     }
 
     private Set<String> getNullPropertyNames(Object source, String... extra) {

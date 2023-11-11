@@ -13,10 +13,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.notification.NtfSrv;
+import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.TgRun;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
+
+import java.util.ArrayList;
 import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -44,8 +47,10 @@ public class InnerMessageControllerTest {
     @MockBean
     private TemplateController templateController;
 
-    private final InnerMessage botMessage = new InnerMessage(1, 2, "text",
-            null, false);
+
+
+    private final InnerMessage botMessage = new InnerMessage(1, new ChatId(2, "mail", new ArrayList<>()),
+            "text", null, false);
 
     private final String message = new GsonBuilder().serializeNulls().create().toJson(botMessage);
 
@@ -53,7 +58,7 @@ public class InnerMessageControllerTest {
     @Test
     @WithMockUser
     public void whenFindBotMessageByUserId() throws Exception {
-        when(service.findByUserIdAndReadFalse(botMessage.getUserId())).thenReturn(List.of(botMessage));
+        when(service.findByChatIdAndReadFalse(botMessage.getChatId())).thenReturn(List.of(botMessage));
         mockMvc.perform(get("/messages/2"))
                 .andDo(print())
                 .andExpectAll(status().isOk(),
@@ -61,5 +66,4 @@ public class InnerMessageControllerTest {
                         content().contentType(MediaType.APPLICATION_JSON)
                         );
     }
-
 }
