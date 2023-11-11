@@ -61,7 +61,7 @@
                                 </div>
                                 <div class="pb-2">
                                     <span class="mb-2 text-muted">
-                                        <span class="badge bg-success">Новое</span>
+                                        <span th:insert="fragments/statusInterview::status"></span>
                                         <i class="far fa-clock"></i>
                                         <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
                                         <i class="far fa-user"></i>

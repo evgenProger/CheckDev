@@ -1,0 +1,32 @@
+<!--Цветовая схема изменения статуса собеседования-->
+<div th:fragment="status">
+    <!--Новое-->
+    <span class="badge bg-success pr-3 me-2"
+          th:if="${interview.status == statuses[interview.status].IS_NEW.id}"
+          th:text="${statuses[interview.status].info}">Статус новое интервью</span>
+    <!--В процессе-->
+    <span class="badge bg-warning pr-3 me-2"
+          th:if="${interview.status == statuses[interview.status].IN_PROGRESS.id}"
+          th:text="${statuses[interview.status].info}">Статус интервью в процессе</span>
+    <!--Ожидает отзыв-->
+    <span class="badge bg-warning pr-3 me-2"
+          th:if="${interview.status == statuses[interview.status].IS_FEEDBACK.id}"
+          th:text="${statuses[interview.status].info}">Статус интервью ожидает отзыва</span>
+    <!--Завершено-->
+    <span class="badge bg-secondary pr-3 me-2"
+          th:if="${interview.status == statuses[interview.status].IS_COMPLETED.id}"
+          th:text="${statuses[interview.status].info}">Статус интервью завершено</span>
+    <!--Отменено-->
+    <span class="badge bg-light pr-3 me-2"
+          th:if="${interview.status == statuses[interview.status].IS_CANCELED.id}"
+          th:text="${statuses[interview.status].info}">Статус интервью отменено</span>
+    <!--Неизвестен-->
+    <span class="badge bg-danger pr-3 me-2"
+          th:if="${interview.status == statuses[interview.status].IS_UNKNOWN.id}"
+          th:text="${statuses[interview.status].info}">Статус интервью неизвестен</span>
+    <!--Другое-->
+    <span class="badge bg-danger"
+          th:if="${interview.status >= statuses.length}">Статус неизвестен</span>
+</div>
+
+

@@ -53,8 +53,8 @@ public class InterviewsController {
                     ? filterService.getByUserId(token, userId)
                     : (FilterDTO) session.getAttribute("filter");
             var isFiltered = filter != null
-                             && (filter.getCategoryId() > 0
-                                 || filter.getFilterProfile() > 0);
+                    && (filter.getCategoryId() > 0
+                    || filter.getFilterProfile() > 0);
             Page<InterviewDTO> interviewsPage;
             List<TopicIdNameDTO> topicIdNameDTOS = new ArrayList<>();
             var categoryName = "";
@@ -105,6 +105,7 @@ public class InterviewsController {
             model.addAttribute("topics", topicIdNameDTOS);
             model.addAttribute("filterProfiles", filterProfiles);
             model.addAttribute("filterProfileName", filterProfileName);
+            model.addAttribute("statuses", StatusInterview.values());
             if (token != null) {
                 model.addAttribute("botMessages",
                         notifications.findBotMessageByUserId(token, user.getId()));
