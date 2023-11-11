@@ -48,38 +48,34 @@
         }
 
 
-
     </style>
 
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <div class="card">
-        <div class="card-header">
+    <span class="card">
+        <span class="card-header">
             <div>
                 <span class="fw-bold" th:text="${topicLiteDTO.categoryName + ' : ' + topicLiteDTO.name}"></span>
                 <span th:if="${userInfo != null}">
                     <a th:if="${isAuthor and !isDismissed}"
                        class="text-decoration-none text-dark"
                        th:href="@{|/interview/edit/${interview.id}|}">
-                                        <i class="fas fa-pencil-alt pl-3"></i>
-                                    </a>
+                        <i class="fas fa-pencil-alt pl-3"></i>
+                    </a>
                 </span>
             </div>
             <span class="mb-2 text-muted">
-                 <span class="badge bg-success pr-3 me-2"
-                       th:if="${interview.status < statuses.length}"
-                       th:text="${statuses[interview.status].info}">Статус интервью</span>
-                <span class="badge bg-danger pr-3 me-2"
-                      th:if="${interview.status >= statuses.length}">Статус неизвестен</span>
-                 <i class="far fa-clock"></i>
-                 <span class="me-2" th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
-                 <i class="far fa-user"></i>
-                 <span class="me-2" th:text="${interview.author}"></span>
-                 <span class="me-2" th:text="${'Ориентировочная дата: ' + interview.approximateDate}"></span>
-                </span>
-        </div>
+                <span th:insert="fragments/statusInterview::status"></span>
+                <i class="far fa-clock"></i>
+                <span class="me-2" th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
+                <i class="far fa-user"></i>
+                <span class="me-2" th:text="${interview.author}"></span>
+                <i class="fa fa-calendar-check"></i>
+                <span class="me-2" th:text="${'Дата и время проведения собеседования: ' + interview.approximateDate}"></span>
+            </span>
+        </span>
         <div class="card-body">
             <table class="table">
                 <thead>
@@ -115,8 +111,7 @@
                 </tbody>
             </table>
             <!--Кнопки оставить отзыв. Доступна если статус IN_PROGRESS-->
-            <div
-                 th:if="${userInfo != null && (STATUS_IN_PROGRESS_ID==interview.status || STATUS_IS_FEEDBACK_ID==interview.status)}">
+            <div th:if="${userInfo != null && (STATUS_IN_PROGRESS_ID==interview.status || STATUS_IS_FEEDBACK_ID==interview.status)}">
                 <!--Кнопка оставляет отзыв АВТОР собеседования. Доступна если isAuthor=true-->
                 <form th:action="@{|/interview/feedback/${interview.id}|}" method="get">
                     <div th:if="${isAuthor}">
@@ -128,7 +123,7 @@
                     </div>
                 </form>
             </div>
-            <!-- Отображение списка выьранных участников собеседования -->
+            <!-- Отображение списка выбранных участников собеседования -->
             <div th:if="${isAuthor || isUserDismissed}">
                 <table class="table">
                     <thead>
@@ -179,16 +174,14 @@
                                     <input type="hidden" th:id="wisherId" th:name="wisherId"
                                            th:value="${wisher.id}">
                                     <button th:if="${userInfo != null && isAuthor}"
-                                            type="submit" class="btn btn-primary">Одобрить</button>
+                                            type="submit" class="btn btn-primary">Одобрить
+                                    </button>
                                 </form>
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-                <!--  <div th:class="${isWisher} ? 'message p-1 rounded-2 col-1' : 'mock p-1 col-1'">
-                      Вы участник
-                  </div>-->
                 <a th:if="${!isWisher && (!isAuthor || userInfo == null) && !isDismissed}"
                    class="btn btn-primary"
                    th:disabled="${isWisher || isAuthor}"

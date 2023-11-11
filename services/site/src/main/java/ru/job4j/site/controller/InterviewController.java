@@ -186,6 +186,7 @@ public class InterviewController {
             model.addAttribute("interview", interview);
             model.addAttribute("statisticMap", statisticMap);
             model.addAttribute("countWishers", countWishers);
+            model.addAttribute("statuses", StatusInterview.values());
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index",
                     "Собеседования", "/interviews/",

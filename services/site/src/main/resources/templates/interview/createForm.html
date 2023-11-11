@@ -36,7 +36,7 @@
         <div th:if="${noFeedback!=null and !noFeedback.isEmpty()}" class="cell">
             <div class="alert alert-warning" role="alert">
                 <span class="fw-bold">У вас есть незавершенные собеседования.</span> <br/>
-                Чтобы завершить собеседование нужно оставьте отзыв. <br/>
+                Чтобы завершить собеседование, нужно оставить отзыв. <br/>
                 <div th:each="interview, state : ${noFeedback}">
                     <a class="alert-link"
                        th:href="@{|/interview/${interview.id}|}"
