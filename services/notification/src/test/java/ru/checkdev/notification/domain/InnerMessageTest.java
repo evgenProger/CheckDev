@@ -22,8 +22,7 @@ public class InnerMessageTest {
 
     @BeforeEach
     public void setUp() {
-        chatId = new ChatId(1, null, null);
-        botMessage = new InnerMessage(0, chatId, "text",
+        botMessage = new InnerMessage(0, 1, "text",
                 new Timestamp(System.currentTimeMillis()), false);
     }
 
@@ -50,11 +49,6 @@ public class InnerMessageTest {
     }
 
     @Test
-    void getChatId() {
-        Assertions.assertEquals(chatId, botMessage.getChatId());
-    }
-
-    @Test
     void getText() {
         Assertions.assertEquals("text", botMessage.getText());
     }
@@ -68,13 +62,6 @@ public class InnerMessageTest {
     void setId() {
         botMessage.setId(11);
         Assertions.assertEquals(11, botMessage.getId());
-    }
-
-    @Test
-    void setChatId() {
-        ChatId chatId1 = new ChatId(2, null, null);
-        botMessage.setChatId(chatId1);
-        Assertions.assertEquals(chatId1, botMessage.getChatId());
     }
 
     @Test

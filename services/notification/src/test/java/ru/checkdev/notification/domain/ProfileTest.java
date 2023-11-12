@@ -15,7 +15,7 @@ class ProfileTest {
                 .setDate(2023, 10, 23)
                 .setTimeOfDay(20, 20, 20)
                 .build();
-        profile = new Profile("username", "email", "password", true, created);
+        profile = new Profile(0, "username", "email", "password", true, created);
     }
 
     @Test

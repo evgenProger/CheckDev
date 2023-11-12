@@ -24,13 +24,13 @@ class ChatIdServiceTest {
 
     @Test
     void save() {
-        this.service.save(new ChatId(1, "Arkadypar@mail.ru", new ArrayList<>()));
+        this.service.save(new ChatId(1, 10, "Arkadypar@mail.ru"));
         assertEquals(this.service.findById(1).get().getEmail(), "Arkadypar@mail.ru");
     }
 
     @Test
     void whenRepeatSaveThanFalse() {
-        this.service.save(new ChatId(2, "Par@mail.ru", new ArrayList<>()));
+        this.service.save(new ChatId(2, 22, "Par@mail.ru"));
         Assertions.assertFalse(false, this.service.findById(2).get().getEmail());
     }
 }

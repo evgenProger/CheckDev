@@ -13,8 +13,8 @@ public class InnerMessageService {
 
     private final InnerMessageRepository messageRepository;
 
-    public List<InnerMessage> findByChatIdAndReadFalse(ChatId chatId) {
-        return messageRepository.findByChatIdAndReadFalse(chatId);
+    public List<InnerMessage> findByUserIdAndReadFalse(int id) {
+        return messageRepository.findByUserIdAndReadFalse(id);
     }
 
     public InnerMessage saveMessage(InnerMessage message) {

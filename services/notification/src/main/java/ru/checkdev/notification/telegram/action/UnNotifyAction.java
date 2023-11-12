@@ -45,7 +45,7 @@ public class UnNotifyAction implements Action {
         result = tgCall.doPost(URL_AUTH_UNNOTIFIED, profile).block();
         text = "Вы отписались от уведомлений";
         InnerMessage innerMessage = new InnerMessage();
-        innerMessage.setChatId(chatId);
+        innerMessage.setUserId(profile.getId());
         innerMessage.setText(text);
         innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
         messageService.saveMessage(innerMessage);

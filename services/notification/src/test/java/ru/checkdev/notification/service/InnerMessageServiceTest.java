@@ -36,15 +36,12 @@ public class InnerMessageServiceTest {
     @MockBean
     private TemplateController templateController;
 
-    @Disabled
     @Test
     public void whenSaveBotMessageAndGetTheSame() {
         List<InnerMessage> list = new ArrayList<>();
-        ChatId chatId = new ChatId(2, null, list);
-        chatIdService.save(chatId);
-        InnerMessage botMessage = this.service.saveMessage(new InnerMessage(1, chatId, "text",
+        InnerMessage botMessage = this.service.saveMessage(new InnerMessage(1, 10, "text",
                 new Timestamp(System.currentTimeMillis()), false));
-        List<InnerMessage> result = this.service.findByChatIdAndReadFalse(chatId);
+        List<InnerMessage> result = this.service.findByUserIdAndReadFalse(10);
         assertThat(result).contains(botMessage);
     }
 }

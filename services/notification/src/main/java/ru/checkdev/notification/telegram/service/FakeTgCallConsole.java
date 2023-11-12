@@ -24,7 +24,7 @@ public class FakeTgCallConsole implements TgCall {
 
     @Override
     public Mono<Profile> doGet(String url) {
-        Profile profile = new Profile("FakeName", "FakeEmail",
+        Profile profile = new Profile(0, "FakeName", "FakeEmail",
                 "FakePassword", true, Calendar.getInstance());
         log.info("Fake TgCall doGet method. Request URL: {}{}, Response model: {}", urlServiceAuth, url, profile);
         return Mono.just(profile);

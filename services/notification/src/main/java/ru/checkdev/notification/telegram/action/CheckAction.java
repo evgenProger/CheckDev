@@ -47,7 +47,7 @@ public class CheckAction implements Action {
                         .append(profile.getEmail())
                         .append(sl);
                 InnerMessage innerMessage = new InnerMessage();
-                innerMessage.setChatId(chatId);
+                innerMessage.setUserId(profile.getId());
                 innerMessage.setText(out.toString());
                 innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
                 messageService.saveMessage(innerMessage);

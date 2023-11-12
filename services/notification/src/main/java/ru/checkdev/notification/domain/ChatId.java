@@ -15,7 +15,6 @@ import java.util.List;
 public class ChatId {
     @Id
     private int id;
+    private int userId;
     private String email;
-    @OneToMany(mappedBy = "chatId")
-    private List<InnerMessage> innerMessages = new ArrayList<>();
 }

@@ -1,11 +1,7 @@
 package ru.checkdev.notification.domain;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,8 +10,7 @@ class ChatIdTest {
 
     @BeforeEach
     public void setUp() {
-        List<InnerMessage> innerMessages = new ArrayList<>();
-        chatId = new ChatId(1, "email", innerMessages);
+        chatId = new ChatId(1, 10, "email");
     }
 
     @Test
@@ -26,13 +21,6 @@ class ChatIdTest {
     @Test
     void getEmail() {
         assertThat("email").isEqualTo(chatId.getEmail());
-    }
-
-    @Test
-    void getAndSetInnerMessages() {
-        List<InnerMessage> newInnerMessages = new ArrayList<>();
-        chatId.setInnerMessages(newInnerMessages);
-        Assertions.assertArrayEquals(newInnerMessages.toArray(), chatId.getInnerMessages().toArray());
     }
 
     @Test

@@ -53,7 +53,7 @@ class RegActionTest {
         Chat chat = new Chat(1L, "type");
         Message message = new Message();
         message.setChat(chat);
-        chatIdService.save(new ChatId(Integer.parseInt(message.getChatId().toString()), "mail", null));
+        chatIdService.save(new ChatId(Integer.parseInt(message.getChatId().toString()), 10, "mail"));
         RegAction regAction = new RegAction(tgCall, chatIdService, messageService, "www");
         regAction.handle(message);
         BotApiMethod<Message> botApiMethod = regAction.handle(message);
