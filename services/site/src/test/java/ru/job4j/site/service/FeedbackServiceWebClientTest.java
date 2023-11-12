@@ -18,7 +18,9 @@ import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.FeedbackDTO;
 import ru.job4j.site.dto.InterviewDTO;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
@@ -324,5 +326,89 @@ class FeedbackServiceWebClientTest {
         when(responseMock.toEntityList(FeedbackDTO.class)).thenReturn(Mono.just(new ResponseEntity<>(feedbacks, HttpStatus.OK)));
         var actual = feedbackService.updateStatusInterview(token, interviewDto, feedbackDto1.getUserId());
         assertThat(actual).isEqualTo(StatusInterview.IS_COMPLETED.getId());
+    }
+
+    @Test
+    void whenFeedbackDTOSToListThenReturnEmptyMap() {
+        var actual = feedbackService.feedbackDTOSToMap(Collections.emptyList());
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void whenFeedbackDTOSToListThenReturnMapSizeOne() {
+        var feedbackDto = FeedbackDTO.of()
+                .id(1)
+                .interviewId(2)
+                .userId(3)
+                .roleInInterview(1)
+                .textFeedback("text")
+                .scope(5)
+                .build();
+        var lestFeedbackDTO = List.of(feedbackDto);
+        var expectMap = Map.of(
+                feedbackDto.getUserId(),
+                lestFeedbackDTO
+        );
+        var actualMap = feedbackService.feedbackDTOSToMap(lestFeedbackDTO);
+        assertThat(actualMap)
+                .usingRecursiveComparison()
+                .isEqualTo(expectMap);
+    }
+
+    @Test
+    void whenFeedbackDTOSToListThenReturnMapSizeOneValueSizeTwo() {
+        var feedbackDto1 = FeedbackDTO.of()
+                .id(1)
+                .interviewId(2)
+                .userId(3)
+                .roleInInterview(1)
+                .textFeedback("text1")
+                .scope(5)
+                .build();
+        var feedbackDto2 = FeedbackDTO.of()
+                .id(2)
+                .interviewId(2)
+                .userId(3)
+                .roleInInterview(2)
+                .textFeedback("text2")
+                .scope(3)
+                .build();
+        var lestFeedbackDTO = List.of(feedbackDto1, feedbackDto2);
+        var expectMap = Map.of(
+                feedbackDto1.getUserId(), lestFeedbackDTO
+        );
+        var actualMap = feedbackService.feedbackDTOSToMap(lestFeedbackDTO);
+        assertThat(actualMap)
+                .usingRecursiveComparison()
+                .isEqualTo(expectMap);
+    }
+
+    @Test
+    void whenFeedbackDTOSToListThenReturnMapTwo() {
+        var feedbackDto1 = FeedbackDTO.of()
+                .id(1)
+                .interviewId(2)
+                .userId(3)
+                .roleInInterview(1)
+                .textFeedback("text1")
+                .scope(5)
+                .build();
+        var feedbackDto2 = FeedbackDTO.of()
+                .id(2)
+                .interviewId(2)
+                .userId(4)
+                .roleInInterview(2)
+                .textFeedback("text2")
+                .scope(3)
+                .build();
+        var lestFeedbackDTO = List.of(feedbackDto1, feedbackDto2);
+        var expectMap = Map.of(
+                feedbackDto1.getUserId(), List.of(feedbackDto1),
+                feedbackDto2.getUserId(), List.of(feedbackDto2)
+        );
+        var actualMap = feedbackService.feedbackDTOSToMap(lestFeedbackDTO);
+        assertThat(actualMap)
+                .usingRecursiveComparison()
+                .isEqualTo(expectMap);
     }
 }

@@ -11,9 +11,7 @@ import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.FeedbackDTO;
 import ru.job4j.site.dto.InterviewDTO;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * FeedbackServiceWebClient
@@ -94,6 +92,31 @@ public class FeedbackServiceWebClient implements FeedbackService {
         return listResponseEntity
                 .map(HttpEntity::getBody)
                 .orElse(new ArrayList<>());
+    }
+
+    /**
+     * Метод возвращает Map из списка отзывов.
+     * Key = FeedbackDTO.userId
+     * Value = List<FeedbackDTO>
+     *
+     * @param feedbackDTOS List<FeedbackDTO>
+     * @return Map<Integer, List < FeedbackDTO>>
+     */
+    public Map<Integer, List<FeedbackDTO>> feedbackDTOSToMap(List<FeedbackDTO> feedbackDTOS) {
+        if (feedbackDTOS.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        var result = new HashMap<Integer, List<FeedbackDTO>>();
+        for (FeedbackDTO feedbackDTO : feedbackDTOS) {
+            if (result.containsKey(feedbackDTO.getUserId())) {
+                result.get(feedbackDTO.getUserId()).add(feedbackDTO);
+                continue;
+            }
+            var list = new ArrayList<FeedbackDTO>();
+            list.add(feedbackDTO);
+            result.put(feedbackDTO.getUserId(), list);
+        }
+        return result;
     }
 
     /**

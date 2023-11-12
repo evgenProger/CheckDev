@@ -40,6 +40,8 @@ public class InterviewControllerTest {
     private WisherService wisherService;
     @MockBean
     private NotificationService notifications;
+    @MockBean
+    private FeedbackService feedbackService;
 
     @Test
     public void whenShowDetails() throws Exception {
@@ -66,6 +68,7 @@ public class InterviewControllerTest {
                 .thenReturn(wisherDtos);
         when(wisherService.getInterviewStatistic(wisherDtos)).thenReturn(new HashMap<>());
         when(wisherService.isWisher(userInfo.getId(), interview.getId(), wisherDtos)).thenReturn(false);
+        when(feedbackService.findByInterviewId(interview.getId())).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/interview/{id}", interview.getId())
                         .sessionAttr("token", token))
                 .andDo(print())
@@ -80,6 +83,7 @@ public class InterviewControllerTest {
                 .andExpect(model().attribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId()))
                 .andExpect(model().attribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId()))
                 .andExpect(model().attribute("topicLiteDTO", topicLiteDTO))
+                .andExpect(model().attribute("feedbackMap", Collections.emptyMap()))
                 .andExpect(view().name("interview/details"));
     }
 
