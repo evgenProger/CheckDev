@@ -35,18 +35,20 @@
     <div class="row pt-3">
         <div class="cell">
             <form class="needs-validation" th:action="@{/interview/createFeedback}" method="post">
-                <!--ID собеседования-->
+                <!--/* ID собеседования */-->
                 <input type="hidden" id="interviewId" name="interviewId" th:value="*{interview.id}">
-                <!--ID авторизованного пользователя-->
+                <!--/* ID авторизованного пользователя */-->
                 <input type="hidden" id="userId" name="userId" th:value="*{userInfo.id}">
-                <!--Форма ввода текста отзыва собеседования textFeedback-->
+                <!--/* Форма ввода текста отзыва собеседования textFeedback */-->
                 <div class="mb-3">
                     <label class="form-label h3" for="textFeedback">Отзыв собеседования</label>
                     <textarea class="form-control" rows="3"
                               id="textFeedback"
                               name="textFeedback" required></textarea>
                 </div>
-                <!--Check бокс выбора оценки собеседования поле scope значение от 0 до 5-->
+                <!--/*Временная оценки собеседования поле scope значение 0 issue#402*/ -->
+                <input type="hidden" id="scope" name="scope" th:value="0">
+                <!--/*Check бокс выбора оценки собеседования поле scope значение от 0 до 5
                 <div class="h4">
                     Оценка собеседования
                 </div>
@@ -74,6 +76,7 @@
                     <input class="form-check-input" type="radio" id="scope5" name="scope" value="5" required>
                     <label class="form-check-label" for="scope5">5</label>
                 </div>
+                */-->
                 <div class="form-group m3">
                     <button type="submit" class="btn btn-primary">Отправить отзыв</button>
                 </div>
