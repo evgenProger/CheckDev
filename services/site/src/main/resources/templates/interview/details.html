@@ -54,8 +54,8 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <span class="card">
-        <span class="card-header">
+    <div class="card">
+        <div class="card-header">
             <div>
                 <span class="fw-bold" th:text="${topicLiteDTO.categoryName + ' : ' + topicLiteDTO.name}"></span>
                 <span th:if="${userInfo != null}">
@@ -73,9 +73,10 @@
                 <i class="far fa-user"></i>
                 <span class="me-2" th:text="${interview.author}"></span>
                 <i class="fa fa-calendar-check"></i>
-                <span class="me-2" th:text="${'Дата и время проведения собеседования: ' + interview.approximateDate}"></span>
+                <span class="me-2"
+                      th:text="${'Дата и время проведения собеседования: ' + interview.approximateDate}"></span>
             </span>
-        </span>
+        </div>
         <div class="card-body">
             <table class="table">
                 <thead>
@@ -118,13 +119,13 @@
                         <button type="submit" class="btn btn-primary">Оставить отзыв участнику</button>
                     </div>
                     <!--Кнопка оставляет отзыв УЧАСТНИК собеседования. Доступна если isWisher=true-->
-                    <div th:if="${isWisher}">
+                    <div th:if="${isUserDismissed}">
                         <button type="submit" class="btn btn-primary">Оставить отзыв автору</button>
                     </div>
                 </form>
             </div>
             <!-- Отображение списка выбранных участников собеседования -->
-            <div th:if="${isAuthor || isUserDismissed}">
+            <div th:if="${isAuthor && isDismissed}">
                 <table class="table">
                     <thead>
                     <tr>
@@ -150,7 +151,7 @@
             </div>
             <div>
                 <!-- Отображение списка участников собеседования -->
-                <div>
+                <div th:if="${!isDismissed and !wishersDetail.isEmpty()}">
                     <table class="table">
                         <thead>
                         <tr>
@@ -168,7 +169,8 @@
                                 <span th:text="${wisher.statusName}"></span>
                             </td>
                             <td>
-                                <form th:if="${!isDismissed && isAuthor}" th:action="@{/wisher/dismissed}" method="post">
+                                <form th:if="${!isDismissed && isAuthor}" th:action="@{/wisher/dismissed}"
+                                      method="post">
                                     <input type="hidden" th:id="interviewId" th:name="interviewId"
                                            th:value="${wisher.interviewId}">
                                     <input type="hidden" th:id="wisherId" th:name="wisherId"
