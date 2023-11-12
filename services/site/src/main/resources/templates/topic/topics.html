@@ -89,11 +89,13 @@
                         <div>
                             <a class="nav-item nav-link" th:if="${!userTopicDTO.subscribeTopicIds.contains(topic.id)}"
                                th:href="@{|/notification/subscribeTopic/${userInfo.id}/${categoryId}/${topic.id}|}">
-                                <i class="far fa-bell"></i>
+                                <i class="far fa-bell" style="font-size: 2em;"
+                                   title="Подписаться на тему"></i>
                             </a>
                             <a class="nav-item nav-link" th:if="${userTopicDTO.subscribeTopicIds.contains(topic.id)}"
                                th:href="@{|/notification/unSubscribeTopic/${userInfo.id}/${categoryId}/${topic.id}|}">
-                                <i class="fa fa-bell-slash-o"></i>
+                                <i class="fa-regular fa-bell-slash" style="font-size: 2em;"
+                                   title="Вы подписаны на тему"></i>
                             </a>
                         </div>
                     </td>
