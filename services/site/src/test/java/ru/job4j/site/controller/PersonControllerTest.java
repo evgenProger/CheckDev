@@ -62,7 +62,7 @@ class PersonControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("personDto", person))
-                .andExpect(view().name("/persons/personView"));
+                .andExpect(view().name("persons/personView"));
     }
 
     @Test
@@ -89,7 +89,7 @@ class PersonControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("personDto", person))
-                .andExpect(view().name("/persons/personEdit"));
+                .andExpect(view().name("persons/personEdit"));
     }
 
     @Test
