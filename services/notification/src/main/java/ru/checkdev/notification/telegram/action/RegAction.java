@@ -30,6 +30,7 @@ import java.util.Calendar;
 public class RegAction implements Action {
     private static final String ERROR_OBJECT = "error";
     private static final String URL_AUTH_REGISTRATION = "/registration";
+    private static final String URL_AUTH_CURRENT = "/person/currentForTg/";
     private final TgConfig tgConfig = new TgConfig("tg/", 8);
     private final TgCall tgCall;;
     private final ChatIdService chatIdService;
@@ -71,7 +72,7 @@ public class RegAction implements Action {
         var sl = System.lineSeparator();
         var username = getNameFromEmail(email);
         var password = tgConfig.getPassword();
-        var profile = new Profile(username, email, password, true, Calendar.getInstance());
+        var profile = new Profile(0, username, email, password, true, Calendar.getInstance());
 
         if (!tgConfig.isEmail(email)) {
             text = "Email: " + email + " не корректный." + sl
@@ -89,6 +90,10 @@ public class RegAction implements Action {
         }
         try {
             result = tgCall.doPost(URL_AUTH_REGISTRATION, profile).block();
+            profile = tgCall
+                    .doGet(URL_AUTH_CURRENT + chatId.getEmail()).block();
+            chatId.setUserId(profile.getId());
+            chatIdService.save(chatId);
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             text = "Сервис не доступен попробуйте позже" + sl
@@ -109,7 +114,7 @@ public class RegAction implements Action {
                 + "Пароль : " + password + sl
                 + urlSiteAuth;
         InnerMessage innerMessage = new InnerMessage();
-        innerMessage.setChatId(chatId);
+        innerMessage.setUserId(profile.getId());
         innerMessage.setText(text);
         innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
         messageService.saveMessage(innerMessage);

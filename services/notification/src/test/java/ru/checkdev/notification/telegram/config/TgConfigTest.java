@@ -46,7 +46,7 @@ class TgConfigTest {
 
     @Test
     void whenGetObjectToMapThenReturnObjectMap() {
-        var profile = new Profile("username", "mail", "pass", true, Calendar.getInstance());
+        var profile = new Profile(0, "username", "mail", "pass", true, Calendar.getInstance());
         var map = tgConfig.getObjectToMap(profile);
         assertThat(map.get("username")).isEqualTo(profile.getUsername());
         assertThat(map.get("email")).isEqualTo(profile.getEmail());

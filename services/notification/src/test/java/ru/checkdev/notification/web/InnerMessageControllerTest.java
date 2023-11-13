@@ -49,7 +49,7 @@ public class InnerMessageControllerTest {
 
 
 
-    private final InnerMessage botMessage = new InnerMessage(1, new ChatId(2, "mail", new ArrayList<>()),
+    private final InnerMessage botMessage = new InnerMessage(1, 10,
             "text", null, false);
 
     private final String message = new GsonBuilder().serializeNulls().create().toJson(botMessage);
@@ -58,7 +58,7 @@ public class InnerMessageControllerTest {
     @Test
     @WithMockUser
     public void whenFindBotMessageByUserId() throws Exception {
-        when(service.findByChatIdAndReadFalse(botMessage.getChatId())).thenReturn(List.of(botMessage));
+        when(service.findByUserIdAndReadFalse(botMessage.getUserId())).thenReturn(List.of(botMessage));
         mockMvc.perform(get("/messages/2"))
                 .andDo(print())
                 .andExpectAll(status().isOk(),

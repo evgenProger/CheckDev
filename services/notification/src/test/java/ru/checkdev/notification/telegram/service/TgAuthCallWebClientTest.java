@@ -49,7 +49,7 @@ class TgAuthCallWebClientTest {
                 .set(Calendar.MONTH, Calendar.OCTOBER)
                 .set(Calendar.YEAR, 2023)
                 .build();
-        var profile = new Profile("username", "mail", "password", true, created);
+        var profile = new Profile(0, "username", "mail", "password", true, created);
         when(webClientMock.get()).thenReturn(requestHeadersUriMock);
         when(requestHeadersUriMock.uri("/person/" + personId)).thenReturn(requestHeadersMock);
         when(requestHeadersMock.retrieve()).thenReturn(responseMock);
@@ -79,7 +79,7 @@ class TgAuthCallWebClientTest {
                 .set(Calendar.MONTH, Calendar.OCTOBER)
                 .set(Calendar.YEAR, 2023)
                 .build();
-        var profile = new Profile("username", "mail", "password", true, created);
+        var profile = new Profile(0, "username", "mail", "password", true, created);
         when(webClientMock.post()).thenReturn(requestBodyUriMock);
         when(requestBodyUriMock.uri("/person/created")).thenReturn(requestBodyMock);
         when(requestBodyMock.bodyValue(profile)).thenReturn(requestHeadersMock);

@@ -15,12 +15,11 @@ public class InnerMessageServiceFakeTest {
     public void whenSaveBotMessageAndGetTheSame() {
         var innerMessageRepository = new InnerMessageRepositoryFake();
         var innerMessageService = new InnerMessageService(innerMessageRepository);
-        ChatId chatId = new ChatId(2, null, null);
         var botMessage = innerMessageService.saveMessage(
-                new InnerMessage(1, chatId, "text",
+                new InnerMessage(1, 10, "text",
                 new Timestamp(System.currentTimeMillis()), false)
         );
-        var result = innerMessageService.findByChatIdAndReadFalse(botMessage.getChatId());
+        var result = innerMessageService.findByUserIdAndReadFalse(botMessage.getUserId());
         assertThat(result).contains(botMessage);
     }
 }

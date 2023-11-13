@@ -50,7 +50,7 @@ class NotifyActionTest {
     @Test
     void whenNotConnection() {
         Chat chat = new Chat(1L, "type");
-        ChatId chatId = new ChatId(Integer.parseInt(chat.getId().toString()), "a@a.ru", null);
+        ChatId chatId = new ChatId(Integer.parseInt(chat.getId().toString()), 10, "a@a.ru");
         chatIdService.save(chatId);
         Message message = new Message();
         message.setChat(chat);

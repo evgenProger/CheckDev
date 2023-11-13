@@ -47,7 +47,7 @@ public class ForgetAction implements Action {
             result = tgCall.doPost(URL_AUTH_FORGOT, profile).block();
             text = "Ваш новый пароль:" + sl + passport;
             InnerMessage innerMessage = new InnerMessage();
-            innerMessage.setChatId(chatId);
+            innerMessage.setUserId(profile.getId());
             innerMessage.setText(text);
             innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
             messageService.saveMessage(innerMessage);

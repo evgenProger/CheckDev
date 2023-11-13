@@ -44,7 +44,7 @@ public class NotifyAction implements Action {
             result = tgCall.doPost(URL_AUTH_NOTIFIED, profile).block();
             text = "Вы подписаны на уведомления";
             InnerMessage innerMessage = new InnerMessage();
-            innerMessage.setChatId(chatId);
+            innerMessage.setUserId(profile.getId());
             innerMessage.setText(text);
             innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
             messageService.saveMessage(innerMessage);

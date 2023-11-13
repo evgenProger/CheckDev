@@ -20,6 +20,7 @@ import java.util.Calendar;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Profile {
+    private int id;
     private String username;
     private String email;
     private String password;

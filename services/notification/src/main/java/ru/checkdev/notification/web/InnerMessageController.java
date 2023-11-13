@@ -24,8 +24,7 @@ public class InnerMessageController {
 
     @GetMapping("/{id}")
     public ResponseEntity<List<InnerMessage>> findMessage(@PathVariable int id) {
-        ChatId chatId = chatIdService.findById(id).get();
-        List<InnerMessage> list = messageService.findByChatIdAndReadFalse(chatId);
+        List<InnerMessage> list = messageService.findByUserIdAndReadFalse(id);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

@@ -1,6 +1,5 @@
 package ru.checkdev.notification.repository;
 
-import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.domain.InnerMessage;
 
 import java.util.*;
@@ -9,9 +8,9 @@ public class InnerMessageRepositoryFake implements InnerMessageRepository {
     private final Map<Integer, InnerMessage> messages = new HashMap<>();
 
     @Override
-    public List<InnerMessage> findByChatIdAndReadFalse(ChatId chatId) {
+    public List<InnerMessage> findByUserIdAndReadFalse(int id) {
         return messages.values().stream()
-                .filter(msg -> Objects.equals(msg.getChatId(), chatId))
+                .filter(msg -> Objects.equals(msg.getUserId(), id))
                 .filter(msg -> !msg.isRead())
                 .toList();
     }
