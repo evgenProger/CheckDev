@@ -86,11 +86,12 @@
                     <td th:if="${userDTO != null}">
                         <a class="text-decoration-none text-dark" th:if="${!userDTO.subscribeCategoryIds.contains(category.id)}"
                            th:href="@{|/notification/subscribeCategory/${userInfo.id}/${category.id}|}">
-                            <i class="far fa-bell" title="Подписаться на категорию"></i>
+                            <i class="far fa-bell" style="font-size: 2em;"
+                               title="Подписаться на категорию"></i>
                         </a>
                         <a class="text-decoration-none text-dark" th:if="${userDTO.subscribeCategoryIds.contains(category.id)}"
                            th:href="@{|/notification/unSubscribeCategory/${userInfo.id}/${category.id}|}">
-                            <i class="fa-regular fa-bell-slash"
+                            <i class="fa-regular fa-bell-slash" style="font-size: 2em;"
                                title="Вы подписаны на категорию"></i>
                         </a>
                     </td>
