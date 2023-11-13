@@ -30,6 +30,8 @@ public class InterviewController {
     private final WisherService wisherService;
     private final NotificationService notifications;
 
+    private final FeedbackService feedbackService;
+
     @GetMapping("/createForm")
     public String createForm(@ModelAttribute("topicId") int topicId,
                              Model model,
@@ -86,6 +88,8 @@ public class InterviewController {
         boolean isDismissed = wisherService.isDismissed(interviewId, wishers);
         var topicLiteDTO = topicsService.getTopicLiteDTOById(interview.getTopicId()).orElse(new TopicLiteDTO());
         boolean isUserDismissed = wisherService.isUserDismissed(interviewId, userInfo.getId(), wishers);
+        var feedbacks = feedbackService.findByInterviewId(interview.getId());
+        var feedbackMap = feedbackService.feedbackDTOSToMap(feedbacks);
         model.addAttribute("interview", interview);
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("isWisher", isWisher);
@@ -97,6 +101,7 @@ public class InterviewController {
         model.addAttribute("isDismissed", isDismissed);
         model.addAttribute("topicLiteDTO", topicLiteDTO);
         model.addAttribute("isUserDismissed", isUserDismissed);
+        model.addAttribute("feedbackMap", feedbackMap);
         if (token != null) {
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
