@@ -16,7 +16,6 @@ import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.service.ChatIdService;
 import ru.checkdev.notification.service.InnerMessageService;
-import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 import ru.checkdev.notification.telegram.service.TgCall;
 
 @TestPropertySource(locations="classpath:application.properties")
@@ -32,7 +31,7 @@ class CheckActionTest {
     private InnerMessageService messageService;
 
     @Autowired
-    private TgCall tgCall;;
+    private TgCall tgCall;
 
     @Test
     void whenNotChatId() {
@@ -44,7 +43,8 @@ class CheckActionTest {
         checkAction.handle(message);
         BotApiMethod<Message> botApiMethod = checkAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = "Данный аккаунт Telegram на сайте не зарегистрирован\n";
+        String n = System.lineSeparator();
+        String text = String.format("Данный аккаунт Telegram на сайте не зарегистрирован%s", n);
         Assertions.assertEquals(text, sendMessage.getText());
     }
 
@@ -59,7 +59,8 @@ class CheckActionTest {
         CheckAction checkAction = new CheckAction(tgCall, chatIdService, messageService);
         BotApiMethod<Message> botApiMethod = checkAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = "Сервис не доступен попробуйте позже\n";
+        String n = System.lineSeparator();
+        String text = String.format("Сервис не доступен попробуйте позже%s", n);
         Assertions.assertEquals(text, sendMessage.getText());
         chatIdService.delete(1);
     }

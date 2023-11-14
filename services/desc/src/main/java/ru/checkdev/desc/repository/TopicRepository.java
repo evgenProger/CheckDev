@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.checkdev.desc.domain.Topic;
+import ru.checkdev.desc.dto.CategoryDTO;
+import ru.checkdev.desc.dto.TopicDTO;
 import ru.checkdev.desc.dto.TopicLiteDTO;
 
 import java.util.List;
@@ -24,6 +26,19 @@ public interface TopicRepository extends CrudRepository<Topic, Integer> {
 
     @Query("SELECT t.name FROM cd_topic t WHERE t.id = :id")
     Optional<String> getNameById(@Param("id") int id);
+
+    @Query("""
+              SELECT new ru.checkdev.desc.dto.TopicDTO(t.id, t.name)
+              FROM cd_topic t WHERE t.category.id = :categoryId
+              """)
+    List<TopicDTO> findIdAndNameByCategoryId(@Param("categoryId") Integer categoryId);
+
+    @Query("""
+              SELECT new ru.checkdev.desc.dto.CategoryDTO(c.id, c.name)
+              FROM cd_category c
+              JOIN cd_topic t ON c.id = t.category.id AND t.id = :id
+              """)
+    Optional<CategoryDTO> findCategoryIdAndNameById(@Param("id") Integer id);
 
     /**
      * Метод собирает список всех topic в модель TopicLiteDTO

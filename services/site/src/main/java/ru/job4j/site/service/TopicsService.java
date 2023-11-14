@@ -5,10 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.job4j.site.dto.CategoryDTO;
-import ru.job4j.site.dto.TopicDTO;
-import ru.job4j.site.dto.TopicLiteDTO;
-import ru.job4j.site.dto.TopicIdNameDTO;
+import ru.job4j.site.dto.*;
 
 import java.util.*;
 import java.util.function.Function;
@@ -70,6 +67,12 @@ public class TopicsService {
 
     public String getNameById(int id) {
         return new RestAuthCall(String.format("http://localhost:9902/topic/name/%d", id)).get();
+    }
+
+    public CategoryIdNameDTO getCategoryIdNameDTOByTopicId(int topicId) throws JsonProcessingException {
+        var mapper = new ObjectMapper();
+        var text = new RestAuthCall(String.format("http://localhost:9902/topic/categoryIdName/%d", topicId)).get();
+        return mapper.readValue(text, CategoryIdNameDTO.class);
     }
 
     public List<TopicIdNameDTO> getTopicIdNameDtoByCategory(int categoryId)

@@ -1,6 +1,7 @@
 package ru.checkdev.notification.repository;
 
 import ru.checkdev.notification.domain.InnerMessage;
+import ru.checkdev.notification.dto.InnerMessageDTO;
 
 import java.util.*;
 
@@ -12,6 +13,16 @@ public class InnerMessageRepositoryFake implements InnerMessageRepository {
         return messages.values().stream()
                 .filter(msg -> Objects.equals(msg.getUserId(), id))
                 .filter(msg -> !msg.isRead())
+                .toList();
+    }
+
+    @Override
+    public List<InnerMessageDTO> findMessageDTOByUserIdAndReadFalse(int userId) {
+        return messages.values().stream()
+                .filter(msg -> !msg.isRead())
+                .map(im -> new InnerMessageDTO(im.getId(),
+                        im.getUserId(), im.getText(), im.getCreated()))
+                .filter(msg -> Objects.equals(msg.getUserId(), userId))
                 .toList();
     }
 

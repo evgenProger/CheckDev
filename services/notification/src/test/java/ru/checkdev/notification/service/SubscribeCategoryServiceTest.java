@@ -58,4 +58,16 @@ public class SubscribeCategoryServiceTest {
         assertEquals(result, List.of(2));
         this.service.delete(subscribeCategory);
     }
+
+    @Test
+    public void whenFindUserIdsByCategoryId() {
+        SubscribeCategory subscribeCategory1 = service
+                .save(new SubscribeCategory(1, 1, 4));
+        SubscribeCategory subscribeCategory2 = service
+                .save(new SubscribeCategory(2, 2, 4));
+        var result = service.findUserIdsByCategoryId(4);
+        assertEquals(2, result.size());
+        service.delete(subscribeCategory1);
+        service.delete(subscribeCategory2);
+    }
 }

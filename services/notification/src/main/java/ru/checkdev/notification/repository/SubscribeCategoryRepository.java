@@ -1,5 +1,6 @@
 package ru.checkdev.notification.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import ru.checkdev.notification.domain.SubscribeCategory;
 
@@ -12,4 +13,7 @@ public interface SubscribeCategoryRepository extends CrudRepository<SubscribeCat
     List<SubscribeCategory> findByUserId(int id);
 
     SubscribeCategory findByUserIdAndCategoryId(int userId, int categoryId);
+
+    @Query("SELECT sc.userId FROM cd_subscribe_category sc WHERE sc.categoryId = :categoryId")
+    List<Integer> findUserIdByCategoryId(int categoryId);
 }

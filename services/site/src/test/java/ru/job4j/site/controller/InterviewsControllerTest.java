@@ -13,6 +13,7 @@ import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.*;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -40,6 +41,8 @@ public class InterviewsControllerTest {
     private FilterService filterService;
     @MockBean
     private TopicsService topicsService;
+    @MockBean
+    private NotificationService notificationService;
 
     @Test
     public void whenShowAllInterviews() throws Exception {
@@ -79,6 +82,8 @@ public class InterviewsControllerTest {
         ).toList();
         var filter = new FilterDTO(1, 1, 1, 0);
         var page = new PageImpl<>(interviews);
+        var messages = List.of(new InnerMessageDTO(1, id,
+                "message", new Timestamp(System.currentTimeMillis())));
         when(interviewsService.getAll(token, 1, 5)).thenReturn(page);
         when(interviewsService.getByTopicId(filter.getTopicId(), 1, 5)).thenReturn(page);
         when(authService.userInfo(token)).thenReturn(userInfo);
@@ -90,23 +95,24 @@ public class InterviewsControllerTest {
         when(topicsService.getTopicIdNameDtoByCategory(id)).thenReturn(topicIdNameDTOS);
         when(topicsService.getAllTopicLiteDTO()).thenReturn(Collections.emptyList());
         when(topicsService.liteDTTOSToMap(Collections.emptyList())).thenReturn(Collections.emptyMap());
+        when(notificationService.findBotMessageByUserId(token, id)).thenReturn(messages);
         mockMvc.perform(get("/interviews/")
                         .sessionAttr("token", token)
                         .param("page", "1")
                         .param("size", "5"))
                 .andDo(print())
-                .andExpect(model().attribute("interviewsPage", page))
-                .andExpect(model().attribute("statuses", StatusInterview.values()))
-                .andExpect(model().attribute("current_page", "interviews"))
-                .andExpect(model().attribute("userInfo", userInfo))
-                .andExpect(model().attribute("breadcrumbs", breadcrumbs))
-                .andExpect(model().attribute("users", Set.of(profile)))
-                .andExpect(model().attribute("categories", categories))
-                .andExpect(model().attribute("categoryName", "category_1"))
-                .andExpect(model().attribute("topicName", "SOME TOPIC NAME"))
-                .andExpect(model().attribute("filter", filter))
-                .andExpect(model().attribute("topics", topicIdNameDTOS))
-                .andExpect(status().isOk())
-                .andExpect(view().name("interview/interviews"));
+                .andExpectAll(model().attribute("interviewsPage", page),
+                        model().attribute("statuses", StatusInterview.values()),
+                        model().attribute("current_page", "interviews"),
+                        model().attribute("userInfo", userInfo),
+                        model().attribute("breadcrumbs", breadcrumbs),
+                        model().attribute("users", Set.of(profile)),
+                        model().attribute("categories", categories),
+                        model().attribute("categoryName", "category_1"),
+                        model().attribute("topicName", "SOME TOPIC NAME"),
+                        model().attribute("filter", filter),
+                        model().attribute("topics", topicIdNameDTOS),
+                        model().attribute("innerMessages", messages),
+                        view().name("interview/interviews"));
     }
 }

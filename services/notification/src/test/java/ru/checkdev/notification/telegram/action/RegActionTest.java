@@ -72,9 +72,8 @@ class RegActionTest {
         RegAction regAction = new RegAction(tgCall, chatIdService, messageService, "www");
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = "Email: емайл без собачки и точки не корректный.\n"
-                + "попробуйте снова.\n"
-                + "/new";
+        String n = System.lineSeparator();
+        String text = String.format("Email: емайл без собачки и точки не корректный.%sпопробуйте снова.%s/new", n, n);
         Assertions.assertEquals(text, sendMessage.getText());
         chatIdService.delete(1);
     }
@@ -88,8 +87,8 @@ class RegActionTest {
         RegAction regAction = new RegAction(tgCall, chatIdService, messageService, "");
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = "Сервис не доступен попробуйте позже\n"
-                + "/start";
+        String n = System.lineSeparator();
+        String text = String.format("Сервис не доступен попробуйте позже%s/start", n);
         Assertions.assertEquals(text, sendMessage.getText());
     }
 
@@ -103,11 +102,13 @@ class RegActionTest {
         RegAction regAction = new RegAction(tgCall, chatIdService, messageService, "www");
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = "Вы зарегистрированы: \n"
-                + "Имя: mail\n"
-                + "Email: mail@mail.ru\n"
-                + "Пароль : " + "password" + "\n"
-                + "urlSiteAuth";
+        String n = System.lineSeparator();
+        String text = String.format(
+                "Вы зарегистрированы: %s"
+                + "Имя: mail%s"
+                + "Email: mail@mail.ru%s"
+                + "Пароль : password%s"
+                + "urlSiteAuth", n, n, n, n);
         Assertions.assertEquals(text, sendMessage.getText());
         chatIdService.delete(1);
     }

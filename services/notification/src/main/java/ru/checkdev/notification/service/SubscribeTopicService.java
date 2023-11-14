@@ -32,4 +32,8 @@ public class SubscribeTopicService {
         repository.delete(rsl);
         return subscribeTopic;
     }
+
+    public List<Integer> findUserIdsByTopicId(int topicId) {
+        return repository.findUserIdByTopicId(topicId);
+    }
 }

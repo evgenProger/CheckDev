@@ -13,14 +13,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.notification.NtfSrv;
-import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.service.InnerMessageService;
-import ru.checkdev.notification.telegram.TgRun;
-import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -37,17 +34,6 @@ public class InnerMessageControllerTest {
 
     @MockBean
     private InnerMessageService service;
-
-    @MockBean
-    private TgRun tgRun;
-
-    @MockBean
-    private TgAuthCallWebClint tgAuthCallWebClint;
-
-    @MockBean
-    private TemplateController templateController;
-
-
 
     private final InnerMessage botMessage = new InnerMessage(1, 10,
             "text", null, false);
