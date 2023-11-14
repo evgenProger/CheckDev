@@ -39,6 +39,7 @@
                 <input type="hidden" name="submitterId" th:field="*{submitterId}">
                 <input type="hidden" name="title" th:field="*{title}">
                 <input type="hidden" name="topicId" th:field="*{topicId}">
+                <input type="hidden" name="author" th:value="${userInfo.username}">
                 <div class="mb-3">
                     <div class="mb-3" th:if="${error}">
                         <span class="text-danger" th:text="${error}"/>
@@ -72,14 +73,14 @@
                     </div>
                     <!--Выбор типа собеседования поел typeInterview-->
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="typeInterview" id="1" value="1"
+                        <input class="form-check-input" type="radio" name="mode" id="1" value="1"
                                th:checked="${interview.getMode==1}">
                         <label class="form-check-label" for="1">
                             Буду проводить собеседование (задавать вопросы)
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="typeInterview" id="2" value="2"
+                        <input class="form-check-input" type="radio" name="mode" id="2" value="2"
                                th:checked="${interview.getMode==2}">
                         <label class="form-check-label" for="2">
                             Буду проходить собеседование (отвечать на вопросы)
