@@ -48,6 +48,7 @@ public class IndexController {
         model.addAttribute("topicsLiteMap", topicsLiteMap);
         model.addAttribute("new_interviews", intDto);
         model.addAttribute("statuses", StatusInterview.values());
+        model.addAttribute("new_interviewsCount", intDto.size());
         return "index";
     }
 }
