@@ -21,9 +21,10 @@ class InfoActionTest {
         InfoAction infoAction = new InfoAction(actions);
         BotApiMethod<Message> botApiMethod = infoAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = "Выберите действие:\n"
-                + "/start\n"
-                + "/new  зарегистрировать нового пользователя\n";
+        String n = System.lineSeparator();
+        String text = String.format("Выберите действие:%s"
+                + "/start%s"
+                + "/new  зарегистрировать нового пользователя%s", n, n, n);
         Assertions.assertEquals(text, sendMessage.getText());
     }
 }

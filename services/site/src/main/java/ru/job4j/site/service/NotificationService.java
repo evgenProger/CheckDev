@@ -59,10 +59,17 @@ public class NotificationService {
     }
 
     public List<InnerMessageDTO> findBotMessageByUserId(String token, int id) throws JsonProcessingException {
-        String url = urlNtf + "/messages/" + id;
+        String url = urlNtf + "/messages/actual/" + id;
         var text = new RestAuthCall(url).get(token);
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>() {
         });
+    }
+
+    public void notifyAboutInterviewCreation(String token, CategoryWithTopicDTO categoryAndTopicIds)
+            throws JsonProcessingException {
+        var mapper = new ObjectMapper();
+        new RestAuthCall(String.format("%s%s", urlNtf, "/messages/newInterview"))
+                .post(token, mapper.writeValueAsString(categoryAndTopicIds));
     }
 }

@@ -36,4 +36,8 @@ public class SubscribeCategoryService {
         repository.delete(subscribeCategoryRsl);
         return subscribeCategory;
     }
+
+    public List<Integer> findUserIdsByCategoryId(int categoryId) {
+        return repository.findUserIdByCategoryId(categoryId);
+    }
 }

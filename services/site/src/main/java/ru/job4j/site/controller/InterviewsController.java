@@ -106,6 +106,7 @@ public class InterviewsController {
             model.addAttribute("filterProfiles", filterProfiles);
             model.addAttribute("filterProfileName", filterProfileName);
             model.addAttribute("statuses", StatusInterview.values());
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userId));
             if (token != null) {
                 model.addAttribute("botMessages",
                         notifications.findBotMessageByUserId(token, user.getId()));

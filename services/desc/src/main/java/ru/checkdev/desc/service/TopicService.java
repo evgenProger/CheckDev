@@ -3,6 +3,7 @@ package ru.checkdev.desc.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.checkdev.desc.domain.Topic;
+import ru.checkdev.desc.dto.CategoryDTO;
 import ru.checkdev.desc.dto.TopicDTO;
 import ru.checkdev.desc.dto.TopicLiteDTO;
 import ru.checkdev.desc.repository.TopicRepository;
@@ -59,12 +60,11 @@ public class TopicService {
     }
 
     public List<TopicDTO> getTopicDTOsByCategoryId(int categoryId) {
-        List<TopicDTO> result = new ArrayList<>();
-        var topics = topicRepository.findByCategoryIdOrderByPositionAsc(categoryId);
-        for (var topic : topics) {
-            result.add(new TopicDTO(topic.getId(), topic.getName()));
-        }
-        return result;
+        return topicRepository.findIdAndNameByCategoryId(categoryId);
+    }
+
+    public Optional<CategoryDTO> getCategoryDtoByTopicId(int id) {
+        return topicRepository.findCategoryIdAndNameById(id);
     }
 
     /**

@@ -139,6 +139,8 @@ public class InterviewControllerTest {
         interview.setTopicId(1);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(interviewService.create(token, interview)).thenReturn(interview);
+        when(topicsService.getCategoryIdNameDTOByTopicId(1))
+                .thenReturn(new CategoryIdNameDTO(1, "some category"));
         mockMvc.perform(post("/interview/create")
                         .flashAttr("interviewDTO", interview)
                         .sessionAttr("token", token)

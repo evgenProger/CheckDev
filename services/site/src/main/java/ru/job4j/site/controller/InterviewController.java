@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.job4j.site.domain.StatusInterview;
+import ru.job4j.site.dto.CategoryWithTopicDTO;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.TopicLiteDTO;
 import ru.job4j.site.dto.UserInfoDTO;
@@ -70,6 +71,12 @@ public class InterviewController {
         }
         interviewDTO.setTopicId(topicId);
         InterviewDTO createInterview = interviewService.create(getToken(req), interviewDTO);
+        var categoryIdName = topicsService.getCategoryIdNameDTOByTopicId(topicId);
+        var categoryWithTopicDTO = new CategoryWithTopicDTO(
+                categoryIdName.getId(), categoryIdName.getName(),
+                topicId, topicsService.getNameById(topicId));
+        notifications.notifyAboutInterviewCreation(token,
+                categoryWithTopicDTO);
         return "redirect:/interview/" + createInterview.getId();
     }
 

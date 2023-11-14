@@ -16,7 +16,6 @@ import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.service.ChatIdService;
 import ru.checkdev.notification.service.InnerMessageService;
-import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 import ru.checkdev.notification.telegram.service.TgCall;
 
 @TestPropertySource(locations="classpath:application.properties")
