@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.checkdev.mock.domain.Interview;
@@ -50,11 +51,20 @@ public class InterviewService {
     }
 
     public List<Interview> findLast() {
-        return interviewRepository.findLastInterviews();
+        int interviewStatusId = 1;
+        return interviewRepository.findLastInterviews(interviewStatusId);
     }
 
     public Page<Interview> findPaging(int page, int size) {
         return interviewRepository.findAll(
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createDate")));
+    }
+
+    public Page<Interview> findPagingByUserIdRelated(int page, int size, int userId) {
+        Page<Interview> interviews = wisherRepository.findInterviewByUserIdApproved(userId, Pageable.unpaged());
+        List<Integer> interviewIds = interviews.stream().map(Interview::getId).toList();
+        int interviewStatusId = 1;
+        return interviewRepository.findAllByUserIdRelated(userId, interviewStatusId, interviewIds,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createDate")));
     }
 
