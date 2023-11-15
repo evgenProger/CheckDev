@@ -39,9 +39,6 @@ public class SubscribeTopicControllerTest {
     @MockBean
     private TgAuthCallWebClint tgAuthCallWebClint;
 
-    @MockBean
-    private TemplateController templateController;
-
     private final SubscribeTopic subscribeTopic = new SubscribeTopic(1, 2, 2);
 
     @Test
