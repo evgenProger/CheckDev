@@ -40,9 +40,6 @@ public class SubscribeCategoriesControllerTest {
     @MockBean
     private TgAuthCallWebClint tgAuthCallWebClint;
 
-    @MockBean
-    private TemplateController templateController;
-
     private final SubscribeCategory subscribeCategory = new SubscribeCategory(1, 2, 2);
 
     @Test

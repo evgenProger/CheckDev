@@ -10,7 +10,6 @@ import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.dto.CategoryWithTopicDTO;
 import ru.checkdev.notification.telegram.TgRun;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
-import ru.checkdev.notification.web.TemplateController;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -28,9 +27,6 @@ public class InnerMessageServiceTest {
 
     @MockBean
     private TgAuthCallWebClint tgAuthCallWebClint;
-
-    @MockBean
-    private TemplateController templateController;
 
     @Test
     public void whenSaveBotMessageAndGetTheSame() {

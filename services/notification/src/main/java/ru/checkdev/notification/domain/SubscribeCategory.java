@@ -13,7 +13,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "cd_subscribe_category")
-public class SubscribeCategory {
+public class SubscribeCategory implements Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

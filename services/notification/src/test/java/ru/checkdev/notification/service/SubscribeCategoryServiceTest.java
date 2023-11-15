@@ -12,7 +12,6 @@ import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.SubscribeCategory;
 import ru.checkdev.notification.telegram.TgRun;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
-import ru.checkdev.notification.web.TemplateController;
 
 import java.util.List;
 
@@ -31,9 +30,6 @@ public class SubscribeCategoryServiceTest {
 
     @MockBean
     private TgAuthCallWebClint tgAuthCallWebClint;
-
-    @MockBean
-    private TemplateController templateController;
 
     @Test
     public void whenGetAllSubCatReturnContainsValue() {
