@@ -57,4 +57,5 @@ public class InnerMessageController {
         messageService.send(innerMessage);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }
