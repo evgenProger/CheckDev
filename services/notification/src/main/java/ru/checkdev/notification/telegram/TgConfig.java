@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.service.InnerMessageService;
+import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.action.*;
 import ru.checkdev.notification.telegram.service.TgCall;
 
@@ -25,7 +25,7 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class TgRun {
+public class TgConfig {
     private final TgCall tgCall;
     private final InnerMessageService messageService;
     private final UserTelegramService userTelegramService;
@@ -36,14 +36,14 @@ public class TgRun {
     @Value("${server.site.url.login}")
     private String urlLogin;
 
-    public TgRun(TgCall tgCall, InnerMessageService messageService, UserTelegramService userTelegramService) {
+    public TgConfig(TgCall tgCall, InnerMessageService messageService, UserTelegramService userTelegramService) {
         this.tgCall = tgCall;
         this.messageService = messageService;
         this.userTelegramService = userTelegramService;
     }
 
     @Bean
-    public void initTg() {
+    public TgBot initTg() {
         Map<String, Action> actionMap = Map.of(
                 "/start", new InfoAction(List.of(
                         "/start",
@@ -59,13 +59,14 @@ public class TgRun {
                 "/unnotify", new UnNotifyAction(tgCall, userTelegramService, messageService)
 
         );
-
         try {
-            BotMenu menu = new BotMenu(actionMap, username, token);
+            TgBot menu = new TgBot(actionMap, username, token);
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(menu);
+            return menu;
         } catch (TelegramApiException e) {
-            log.error("Telegram bot: {}, ERROR {}", username, e.getMessage());
+            log.error("Telegram bot: {}, ERROR {}", username, e);
         }
+        return null;
     }
 }

@@ -56,7 +56,7 @@
                 <a class="nav-item nav-link" th:if="${userTopicDTO.subscribeTopicIds.contains(topic.id)}"
                    th:href="@{|/notification/unSubscribeTopicFromDetails/${userInfo.id}/${topic.id}|}">
                     Подписаться:
-                    <i class="fa fa-bell-slash-o"></i>
+                    <i class="fa-regular fa-bell-slash"></i>
                 </a>
             </div>
         </div>
