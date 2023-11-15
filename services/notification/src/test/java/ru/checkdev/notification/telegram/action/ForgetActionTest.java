@@ -14,10 +14,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.checkdev.notification.NtfSrv;
-import ru.checkdev.notification.domain.ChatId;
-import ru.checkdev.notification.service.ChatIdService;
+import ru.checkdev.notification.domain.UserTelegram;
+import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.service.InnerMessageService;
-import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 import ru.checkdev.notification.telegram.service.TgCall;
 
 @TestPropertySource(locations="classpath:application.properties")
@@ -26,21 +25,21 @@ import ru.checkdev.notification.telegram.service.TgCall;
 @AutoConfigureMockMvc
 class ForgetActionTest {
     @Autowired
-    private ChatIdService chatIdService;
+    private UserTelegramService userTelegramService;
 
     @Autowired
     private InnerMessageService messageService;
 
     @Mock
-    private TgCall tgCall;;
+    private TgCall tgCall;
 
     @Test
     void whenNotChatId() {
         Chat chat = new Chat(1L, "type");
-        chatIdService.delete(1);
+        userTelegramService.delete(1);
         Message message = new Message();
         message.setChat(chat);
-        ForgetAction forgetAction = new ForgetAction(tgCall, chatIdService, messageService);
+        ForgetAction forgetAction = new ForgetAction(tgCall, userTelegramService, messageService);
         forgetAction.handle(message);
         BotApiMethod<Message> botApiMethod = forgetAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
@@ -51,16 +50,16 @@ class ForgetActionTest {
     @Test
     void whenNotConnection() {
         Chat chat = new Chat(1L, "type");
-        ChatId chatId = new ChatId(Integer.parseInt(chat.getId().toString()), 10, "a@a.ru");
-        chatIdService.save(chatId);
+        UserTelegram userTelegram = new UserTelegram(0, 10, chat.getId());
+        userTelegramService.save(userTelegram);
         Message message = new Message();
         message.setChat(chat);
         message.setText("a@a.ru");
-        ForgetAction forgetAction = new ForgetAction(tgCall, chatIdService, messageService);
+        ForgetAction forgetAction = new ForgetAction(tgCall, userTelegramService, messageService);
         BotApiMethod<Message> botApiMethod = forgetAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Сервис не доступен попробуйте позже";
         Assertions.assertEquals(text, sendMessage.getText());
-        chatIdService.delete(1);
+        userTelegramService.delete(1);
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.checkdev.notification.service.ChatIdService;
+import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.action.*;
 import ru.checkdev.notification.telegram.service.TgCall;
@@ -28,7 +28,7 @@ import java.util.Map;
 public class TgRun {
     private final TgCall tgCall;
     private final InnerMessageService messageService;
-    private final ChatIdService chatIdService;
+    private final UserTelegramService userTelegramService;
     @Value("${tg.username}")
     private String username;
     @Value("${tg.token}")
@@ -36,10 +36,10 @@ public class TgRun {
     @Value("${server.site.url.login}")
     private String urlLogin;
 
-    public TgRun(TgCall tgCall, InnerMessageService messageService, ChatIdService chatIdService) {
+    public TgRun(TgCall tgCall, InnerMessageService messageService, UserTelegramService userTelegramService) {
         this.tgCall = tgCall;
         this.messageService = messageService;
-        this.chatIdService = chatIdService;
+        this.userTelegramService = userTelegramService;
     }
 
     @Bean
@@ -52,11 +52,11 @@ public class TgRun {
                         "/forget  генерация нового пароля",
                         "/notify  подписаться на уведомления",
                         "/unnotify  отписаться от уведомлений")),
-                "/new", new RegAction(tgCall, chatIdService, messageService, urlLogin),
-                "/check", new CheckAction(tgCall, chatIdService, messageService),
-                "/forget", new ForgetAction(tgCall, chatIdService, messageService),
-                "/notify", new NotifyAction(tgCall, chatIdService, messageService),
-                "/unnotify", new UnNotifyAction(tgCall, chatIdService, messageService)
+                "/new", new RegAction(tgCall, userTelegramService, messageService, urlLogin),
+                "/check", new CheckAction(tgCall, userTelegramService, messageService),
+                "/forget", new ForgetAction(tgCall, userTelegramService, messageService),
+                "/notify", new NotifyAction(tgCall, userTelegramService, messageService),
+                "/unnotify", new UnNotifyAction(tgCall, userTelegramService, messageService)
 
         );
 

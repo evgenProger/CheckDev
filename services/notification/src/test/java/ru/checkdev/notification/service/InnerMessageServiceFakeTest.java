@@ -1,7 +1,6 @@
 package ru.checkdev.notification.service;
 
 import org.junit.jupiter.api.Test;
-import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
 

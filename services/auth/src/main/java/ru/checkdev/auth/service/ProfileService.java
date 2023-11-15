@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.checkdev.auth.dto.ProfileDTO;
+import ru.checkdev.auth.dto.ProfileTgDTO;
 import ru.checkdev.auth.repository.PersonRepository;
 
 import java.util.List;
@@ -34,11 +35,41 @@ public class ProfileService {
     }
 
     /**
+     * Получить ProfileTgDTO по ID
+     *
+     * @param id int
+     * @return ProfileDTO
+     */
+    public Optional<ProfileTgDTO> findProfileTgByID(int id) {
+        return Optional.ofNullable(personRepository.findProfileTgById(id));
+    }
+
+    /**
      * Получить список всех PersonDTO
      *
      * @return List<PersonDTO>
      */
     public List<ProfileDTO> findProfilesOrderByCreatedDesc() {
         return personRepository.findProfileOrderByCreatedDesc();
+    }
+
+    /**
+     * Разрешить подписки для пользователя с ID
+     * Profile.notification = true
+     *
+     * @param id int
+     */
+    public void notification(int id) {
+        personRepository.setNotification(id, true);
+    }
+
+    /**
+     * Запретить подписки для пользователя с ID
+     * Profile.notification = false
+     *
+     * @param id int
+     */
+    public void unNotification(int id) {
+        personRepository.setNotification(id, false);
     }
 }
