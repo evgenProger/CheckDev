@@ -15,6 +15,16 @@ import java.util.Optional;
 
 public interface InterviewRepository extends JpaRepository<Interview, Integer> {
 
+    @Query("SELECT i FROM interview i"
+            + " WHERE i.submitterId=:userId"
+            + " OR i.status=:statusId"
+            + " OR i.id IN (:interviewIds)"
+    )
+    Page<Interview> findAllByUserIdRelated(@Param("userId") int userId,
+                                           @Param("statusId") int statusId,
+                                           @Param("interviewIds") List<Integer> interviewIds,
+                                           Pageable pageable);
+
     Optional<Interview> findById(int id);
 
     List<Interview> findByMode(int mode);
@@ -161,7 +171,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      *
      * @return LIST из ТРЕХ последних интервью
      */
-    @Query(value = "SELECT * FROM interview ORDER BY create_date DESC LIMIT 3", nativeQuery = true)
-    List<Interview> findLastInterviews();
+    @Query(value = "SELECT i.* FROM interview i WHERE i.status = :interviewStatusId ORDER BY i.create_date DESC LIMIT 3", nativeQuery = true)
+    List<Interview> findLastInterviews(@Param("interviewStatusId") int interviewStatusId);
 
 }
