@@ -13,4 +13,6 @@ public interface TgCall {
     Mono<Profile> doGet(String url);
 
     Mono<Object> doPost(String url, Profile profile);
+
+    public Mono<Object> doPost(String url);
 }

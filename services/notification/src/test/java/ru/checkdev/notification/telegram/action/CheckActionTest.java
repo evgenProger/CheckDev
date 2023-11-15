@@ -13,8 +13,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.checkdev.notification.NtfSrv;
-import ru.checkdev.notification.domain.ChatId;
-import ru.checkdev.notification.service.ChatIdService;
+import ru.checkdev.notification.domain.UserTelegram;
+import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.telegram.service.TgCall;
 
@@ -25,7 +25,7 @@ import ru.checkdev.notification.telegram.service.TgCall;
 class CheckActionTest {
 
     @Autowired
-    private ChatIdService chatIdService;
+    private UserTelegramService userTelegramService;
 
     @Autowired
     private InnerMessageService messageService;
@@ -36,10 +36,10 @@ class CheckActionTest {
     @Test
     void whenNotChatId() {
         Chat chat = new Chat(1L, "type");
-        chatIdService.delete(1);
+        userTelegramService.delete(1);
         Message message = new Message();
         message.setChat(chat);
-        CheckAction checkAction = new CheckAction(tgCall, chatIdService, messageService);
+        CheckAction checkAction = new CheckAction(tgCall, userTelegramService, messageService);
         checkAction.handle(message);
         BotApiMethod<Message> botApiMethod = checkAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
@@ -51,17 +51,17 @@ class CheckActionTest {
     @Test
     void whenNotConnection() {
         Chat chat = new Chat(1L, "type");
-        ChatId chatId = new ChatId(Integer.parseInt(chat.getId().toString()), 10, "a@a.ru");
-        chatIdService.save(chatId);
+        UserTelegram userTelegram = new UserTelegram(0, 10, chat.getId());
+        userTelegramService.save(userTelegram);
         Message message = new Message();
         message.setChat(chat);
         message.setText("a@a.ru");
-        CheckAction checkAction = new CheckAction(tgCall, chatIdService, messageService);
+        CheckAction checkAction = new CheckAction(tgCall, userTelegramService, messageService);
         BotApiMethod<Message> botApiMethod = checkAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
         String text = String.format("Сервис не доступен попробуйте позже%s", n);
         Assertions.assertEquals(text, sendMessage.getText());
-        chatIdService.delete(1);
+        userTelegramService.delete(1);
     }
 }

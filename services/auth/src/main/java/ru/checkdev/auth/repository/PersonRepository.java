@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import ru.checkdev.auth.domain.Profile;
 import ru.checkdev.auth.domain.Photo;
 import ru.checkdev.auth.dto.ProfileDTO;
+import ru.checkdev.auth.dto.ProfileTgDTO;
 
 import java.util.List;
 
@@ -72,4 +74,19 @@ public interface PersonRepository extends CrudRepository<Profile, Integer> {
      */
     @Query("SELECT new ru.checkdev.auth.dto.ProfileDTO(p.id, p.username, p.experience, p.photo.id, p.updated, p.created) FROM profile p ORDER BY p.created DESC")
     List<ProfileDTO> findProfileOrderByCreatedDesc();
+
+    /**
+     * Метод ищет пользователей по ID,
+     * возвращая DTO модель ProfileTgDTO для сервиса Notification telegram
+     *
+     * @param id int person id
+     * @return ProfileTgDTO
+     */
+    @Query("SELECT new ru.checkdev.auth.dto.ProfileTgDTO(p.id, p.username, p.email) FROM profile p WHERE p.id = :id")
+    ProfileTgDTO findProfileTgById(@Param("id") int id);
+
+    @Modifying
+    @Transactional
+    @Query("update profile p set p.notification =:notifi where p.id=:id")
+    void setNotification(@Param("id") int id, @Param("notifi") boolean notifi);
 }

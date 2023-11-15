@@ -313,19 +313,6 @@ public class PersonService {
         return result;
     }
 
-    public Optional<Profile> toNotify(Profile profile, boolean setting) {
-        Optional<Profile> rsl = Optional.empty();
-        Optional<Profile> findOptional = findByEmail(profile.getEmail());
-        if (findOptional.isPresent()) {
-            Profile find = findOptional.get();
-            find.setNotification(setting);
-            find.setUpdated(Calendar.getInstance());
-            save(find);
-            rsl = Optional.of(find);
-        }
-        return rsl;
-    }
-
     private Set<String> getNullPropertyNames(Object source, String... extra) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         PropertyDescriptor[] pds = src.getPropertyDescriptors();

@@ -83,7 +83,7 @@ public class InterviewsControllerTest {
         var filter = new FilterDTO(1, 1, 1, 0);
         var page = new PageImpl<>(interviews);
         var messages = List.of(new InnerMessageDTO(1, id,
-                "message", new Timestamp(System.currentTimeMillis())));
+                "message", new Timestamp(System.currentTimeMillis()), true));
         when(interviewsService.getAll(token, 1, 5)).thenReturn(page);
         when(interviewsService.getByTopicId(filter.getTopicId(), 1, 5)).thenReturn(page);
         when(authService.userInfo(token)).thenReturn(userInfo);

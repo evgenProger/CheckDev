@@ -5,11 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.checkdev.notification.domain.ChatId;
 import ru.checkdev.notification.domain.InnerMessage;
-import ru.checkdev.notification.service.ChatIdService;
-import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.domain.Profile;
+import ru.checkdev.notification.domain.UserTelegram;
+import ru.checkdev.notification.dto.ProfileTgDTO;
+import ru.checkdev.notification.service.InnerMessageService;
+import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.config.TgConfig;
 import ru.checkdev.notification.telegram.service.TgCall;
 
@@ -30,23 +31,22 @@ import java.util.Calendar;
 public class RegAction implements Action {
     private static final String ERROR_OBJECT = "error";
     private static final String URL_AUTH_REGISTRATION = "/registration";
-    private static final String URL_AUTH_CURRENT = "/person/currentForTg/";
-    private final TgConfig tgConfig = new TgConfig("tg/", 8);
-    private final TgCall tgCall;;
-    private final ChatIdService chatIdService;
+    private final TgConfig tgConfig = new TgConfig("tg/", 10);
+    private final TgCall tgCall;
+    private final UserTelegramService userTelegramService;
     private final InnerMessageService messageService;
     private final String urlSiteAuth;
 
     @Override
     public BotApiMethod<Message> handle(Message message) {
-        var chatIdString = message.getChatId().toString();
-        var text ="";
-        if (chatIdService.findById(Integer.parseInt(chatIdString)).isPresent()) {
+        var chatId = message.getChatId();
+        var text = "";
+        if (userTelegramService.findByChatId(chatId).isPresent()) {
             text = "Данный аккаунт Telegram уже зарегистрирован на сайте";
-            return new SendMessage(chatIdString, text);
+            return new SendMessage(chatId.toString(), text);
         }
         text = "Введите email для регистрации:";
-        return new SendMessage(chatIdString, text);
+        return new SendMessage(chatId.toString(), text);
     }
 
     /**
@@ -67,62 +67,45 @@ public class RegAction implements Action {
     public BotApiMethod<Message> callback(Message message) {
         Object result;
         var text = "";
-        var chatIdString = message.getChatId().toString();
+        var chatId = message.getChatId();
         var email = message.getText();
         var sl = System.lineSeparator();
-        var username = getNameFromEmail(email);
-        var password = tgConfig.getPassword();
-        var profile = new Profile(0, username, email, password, true, Calendar.getInstance());
-
         if (!tgConfig.isEmail(email)) {
-            text = "Email: " + email + " не корректный." + sl
-                    + "попробуйте снова." + sl
-                    + "/new";
-            return new SendMessage(chatIdString, text);
+            text = new StringBuilder().append("Email: ").append(email)
+                    .append(" не корректный.").append(sl)
+                    .append("попробуйте снова.").append(sl)
+                    .append("/new").toString();
+            return new SendMessage(chatId.toString(), text);
         }
-        ChatId chatId = new ChatId();
-        chatId.setId(Integer.parseInt(chatIdString));
-        chatId.setEmail(email);
-
-        if (!chatIdService.save(chatId)) {
-            text = "Данный аккаунт Telegram уже зарегистрирован на сайте";
-            return new SendMessage(chatIdString, text);
-        }
+        var username = tgConfig.getNameFromEmail(email);
+        var password = tgConfig.getPassword();
+        var profile = new Profile(0, username, email,
+                password, true, Calendar.getInstance());
         try {
             result = tgCall.doPost(URL_AUTH_REGISTRATION, profile).block();
-            profile = tgCall
-                    .doGet(URL_AUTH_CURRENT + chatId.getEmail()).block();
-            chatId.setUserId(profile.getId());
-            chatIdService.save(chatId);
+            var mapObject = tgConfig.getObjectToMap(result);
+            if (mapObject.containsKey(ERROR_OBJECT)) {
+                text = "Ошибка регистрации: " + mapObject.get(ERROR_OBJECT);
+                return new SendMessage(chatId.toString(), text);
+            }
+            var profileTg = tgConfig.getMapper().convertValue(result, ProfileTgDTO.class);
+            profile.setId(profileTg.getId());
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
-            text = "Сервис не доступен попробуйте позже" + sl
-                    + "/start";
-            return new SendMessage(chatIdString, text);
+            text = String.format("Сервис не доступен попробуйте позже%s%s", sl, "/start");
+            return new SendMessage(chatId.toString(), text);
         }
-
-        var mapObject = tgConfig.getObjectToMap(result);
-
-        if (mapObject.containsKey(ERROR_OBJECT)) {
-            text = "Ошибка регистрации: " + mapObject.get(ERROR_OBJECT);
-            return new SendMessage(chatIdString, text);
-        }
-
-        text = "Вы зарегистрированы: " + sl
-                + "Имя: " + username + sl
-                + "Email: " + email + sl
-                + "Пароль : " + password + sl
-                + urlSiteAuth;
+        text = new StringBuilder().append("Вы зарегистрированы: ").append(sl)
+                .append("Имя: ").append(profile.getUsername()).append(sl)
+                .append("Email: ").append(profile.getEmail()).append(sl)
+                .append("Пароль : ").append(password).append(sl)
+                .append(urlSiteAuth).toString();
+        userTelegramService.save(new UserTelegram(0, profile.getId(), chatId));
         InnerMessage innerMessage = new InnerMessage();
         innerMessage.setUserId(profile.getId());
         innerMessage.setText(text);
         innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
         messageService.saveMessage(innerMessage);
-        return new SendMessage(chatIdString, text);
-    }
-
-    private String getNameFromEmail(String email) {
-        String[] array = email.split("@");
-        return array[0];
+        return new SendMessage(chatId.toString(), text);
     }
 }

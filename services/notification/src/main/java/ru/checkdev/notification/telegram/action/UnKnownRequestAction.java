@@ -10,7 +10,8 @@ public class UnKnownRequestAction implements Action {
         var chatId = message.getChatId().toString();
         String sl = System.lineSeparator();
         var out = new StringBuilder();
-        out.append("Команда не поддерживается! Список доступных команд: ").append(sl).append("/start");
+        out.append("Команда не поддерживается! Список доступных команд: ")
+                .append(sl).append("/start");
         return new SendMessage(chatId, out.toString());
     }
 

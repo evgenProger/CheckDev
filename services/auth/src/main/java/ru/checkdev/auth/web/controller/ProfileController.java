@@ -4,11 +4,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.checkdev.auth.dto.ProfileDTO;
+import ru.checkdev.auth.dto.ProfileTgDTO;
 import ru.checkdev.auth.service.ProfileService;
 
 import java.util.List;
@@ -57,5 +55,32 @@ public class ProfileController {
         return new ResponseEntity<>(
                 profiles,
                 profiles.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
+    }
+
+    /**
+     * Обрабатывает get запрос на получение профиля пользователя по запрошенному ID.
+     * Для телеграм бота
+     *
+     * @param id ProfileTg ID
+     * @return ResponseEntity<ProfileTgDTO>
+     */
+    @GetMapping("/tg/{id}")
+    public ResponseEntity<ProfileTgDTO> getProfileTgById(@PathVariable int id) {
+        var profileDTO = profileService.findProfileTgByID(id);
+        return new ResponseEntity<>(
+                profileDTO.orElse(new ProfileTgDTO()),
+                profileDTO.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
+    }
+
+    @PostMapping("/tg/notified/{id}")
+    public ResponseEntity<HttpStatus> tgNotification(@PathVariable int id) {
+        profileService.notification(id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @PostMapping("/tg/unnotified/{id}")
+    public ResponseEntity<HttpStatus> tgUnNotification(@PathVariable int id) {
+        profileService.unNotification(id);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

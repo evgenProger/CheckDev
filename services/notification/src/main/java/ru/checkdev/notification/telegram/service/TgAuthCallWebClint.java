@@ -57,4 +57,14 @@ public class TgAuthCallWebClint implements TgCall {
                 .bodyToMono(Object.class)
                 .doOnError(err -> log.error("API not found: {}", err.getMessage()));
     }
+
+    @Override
+    public Mono<Object> doPost(String url) {
+        return WebClient.create(urlServiceAuth)
+                .post()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(Object.class)
+                .doOnError(err -> log.error("API not found: {}", err.getMessage()));
+    }
 }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import ru.checkdev.notification.domain.Profile;
+import ru.checkdev.notification.dto.ProfileTgDTO;
 
 import java.util.Calendar;
 
@@ -34,5 +35,11 @@ public class FakeTgCallConsole implements TgCall {
     public Mono<Object> doPost(String url, Profile profile) {
         log.info("Fake TgCall doPost method. Request URL: {}{}, model: {}", urlServiceAuth, url, profile);
         return Mono.just(profile);
+    }
+
+    @Override
+    public Mono<Object> doPost(String url) {
+        log.info("Fake TgCall doPost method. Request URL: {}{}, model: {}", urlServiceAuth, url);
+        return Mono.just(new ProfileTgDTO());
     }
 }

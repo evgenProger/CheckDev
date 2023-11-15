@@ -60,4 +60,8 @@ public class TgConfig {
         String[] array = email.split("@");
         return array[0];
     }
+
+    public ObjectMapper getMapper() {
+        return MAPPER;
+    }
 }

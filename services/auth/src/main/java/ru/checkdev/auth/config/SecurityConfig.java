@@ -34,8 +34,6 @@ public class SecurityConfig {
                 "/person/random",
                 "/person/resume/**",
                 "/person/currentForTg/**",
-                "/person/notified",
-                "/person/unnotified",
                 "/person/checkPassword",
                 "/order/save",
                 "/person/by/email",
@@ -44,6 +42,8 @@ public class SecurityConfig {
                 "/template/queue",
                 "/template/ping",
                 "/profiles/**",
+                "/profiles/tg/notified/**",
+                "/profiles/tg/unnotified/**",
                 "/swagger-ui/**",
                 "/v3/**"
         );

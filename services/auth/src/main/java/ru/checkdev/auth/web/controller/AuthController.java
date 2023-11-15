@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.auth.domain.Profile;
+import ru.checkdev.auth.dto.ProfileTgDTO;
 import ru.checkdev.auth.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,15 +58,17 @@ public class AuthController {
     @PostMapping("/registration")
     public Object registration(@RequestBody Profile profile) {
         Optional<Profile> result = this.persons.reg(profile);
-        return result.<Object>map(prs -> new Object() {
-            public Profile getPerson() {
-                return prs;
-            }
-        }).orElseGet(() -> new Object() {
-            public String getError() {
-                return String.format("Пользователь с почтой %s уже существует.", profile.getEmail());
-            }
-        });
+        if (result.isPresent()) {
+            return new ProfileTgDTO(result.get().getId(),
+                    result.get().getUsername(),
+                    result.get().getEmail());
+        } else {
+            return new Object() {
+                public String getError() {
+                    return String.format("Пользователь с почтой %s уже существует.", profile.getEmail());
+                }
+            };
+        }
     }
 
     @PostMapping("/forgot")

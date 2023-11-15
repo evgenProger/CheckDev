@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 public class InnerMessageTest {
-    private ChatId chatId;
+    private UserTelegram userTelegram;
     private InnerMessage botMessage;
 
     @BeforeEach
