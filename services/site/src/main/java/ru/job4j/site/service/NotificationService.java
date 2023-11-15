@@ -72,4 +72,11 @@ public class NotificationService {
         new RestAuthCall(String.format("%s%s", urlNtf, "/messages/newInterview"))
                 .post(token, mapper.writeValueAsString(categoryAndTopicIds));
     }
+
+    public void sendFeedBackNotification(String token, InnerMessageDTO innerMessage) throws JsonProcessingException {
+        String url = urlNtf + "/messages/message";
+        var mapper = new ObjectMapper();
+        var out = new RestAuthCall(url).post(
+                token, mapper.writeValueAsString(innerMessage));
+    }
 }

@@ -22,6 +22,11 @@ public class BotMenu extends TelegramLongPollingBot {
     private final String username;
     private final String token;
 
+    public BotMenu(String username, String token) {
+        this.actions = null;
+        this.username = username;
+        this.token = token;
+    }
 
     public BotMenu(Map<String, Action> actions, String username, String token) throws TelegramApiException {
         this.actions = actions;

@@ -47,4 +47,10 @@ public class InnerMessageController {
                 categorySubscribersIds, topicSubscribersIds);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/message")
+    public ResponseEntity<Void> sendMessage(@RequestBody InnerMessage innerMessage) {
+        messageService.send(innerMessage);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

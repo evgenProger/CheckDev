@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface UserTelegramRepository extends JpaRepository<UserTelegram, Integer> {
     Optional<UserTelegram> findByChatId(long chatId);
+
+    Optional<UserTelegram> findByUserId(int userId);
 }

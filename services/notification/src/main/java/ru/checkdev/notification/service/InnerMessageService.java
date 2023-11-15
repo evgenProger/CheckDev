@@ -3,18 +3,23 @@ package ru.checkdev.notification.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.checkdev.notification.domain.InnerMessage;
+import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.dto.CategoryWithTopicDTO;
 import ru.checkdev.notification.dto.InnerMessageDTO;
 import ru.checkdev.notification.repository.InnerMessageRepository;
+import ru.checkdev.notification.telegram.service.TgRunForService;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class InnerMessageService {
 
     private final InnerMessageRepository messageRepository;
+    private final UserTelegramService userTelegramService;
+    public final TgRunForService tgRunForService;
 
     public List<InnerMessage> findByUserIdAndReadFalse(int id) {
         return messageRepository.findByUserIdAndReadFalse(id);
@@ -41,5 +46,19 @@ public class InnerMessageService {
                         String.format("Появилось новое собеседование по теме %s.",
                                 categoryWithTopicDTO.getTopicName()),
                         new Timestamp(System.currentTimeMillis()), false)));
+    }
+
+    public void send(InnerMessage innerMessage) {
+        Optional<UserTelegram> userOptional = userTelegramService.findByUserId(innerMessage.getUserId());
+        if (userOptional.isEmpty()) {
+            System.out.println("Пользователь не найден!!!!!!!!!!!!!!!!!!!!!!!!");
+        } else {
+            UserTelegram user = userOptional.get();
+            Long chatId = user.getChatId();
+            innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
+            innerMessage.setRead(false);
+            saveMessage(innerMessage);
+            tgRunForService.send(chatId.toString(), innerMessage.getText());
+        }
     }
 }

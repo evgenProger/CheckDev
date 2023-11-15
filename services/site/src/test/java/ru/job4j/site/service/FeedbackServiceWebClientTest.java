@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Mono;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.FeedbackDTO;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.dto.ProfileDTO;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,12 +56,16 @@ class FeedbackServiceWebClientTest {
     private WebClient.ResponseSpec responseMock;
     @MockBean
     private InterviewService interviewService;
+    @MockBean
+    private ProfilesService profilesService;
+    @MockBean
+    private NotificationService notificationService;
 
     private FeedbackServiceWebClient feedbackService;
 
     @BeforeEach
     void setUp() {
-        feedbackService = new FeedbackServiceWebClient(URL, interviewService);
+        feedbackService = new FeedbackServiceWebClient(URL, interviewService, profilesService, notificationService);
         feedbackService.setWebClientFeedback(webClientMock);
     }
 
@@ -77,6 +83,7 @@ class FeedbackServiceWebClientTest {
         interviewDto.setMode(1);
         var feedbackDto1 = new FeedbackDTO(1, interviewDto.getId(), interviewDto.getSubmitterId(), 0, "text", 5);
         var token = "1234";
+        var profile = new ProfileDTO();
         when(webClientMock.get()).thenReturn(requestHeadersUriMock);
         when(requestHeadersUriMock
                 .uri(
