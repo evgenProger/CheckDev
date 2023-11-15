@@ -22,21 +22,19 @@
                         <a class="nav-link" th:classappend="${'profiles' == current_page ? 'active' : ''}"
                            aria-current="page" th:href="@{/profiles/}">Профили</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" th:if="${userInfo != null}">
                         <a class="nav-link" th:classappend="${'messages' == current_page ? 'active' : ''}"
-                           aria-current="page" th:href="@{/messages/}">Сообщения</a>
+                           aria-current="page" th:href="@{/messages/}">Сообщения
+                            <span th:if="${userInfo != null &&
+                    innerMessages != null && innerMessages.size > 0}"
+                                  class="badge rounded-pill bg-success"
+                                  th:text="${innerMessages.size}"></span>
+                        </a>
                     </li>
                     <li class="nav-item" th:if="${userInfo != null}">
                         <a class="nav-link" th:href="@{/persons/}">
                         <span th:text="${userInfo.username != null} ? ${userInfo.username} : ${userInfo.email}">
                         </span>
-                        </a>
-                    </li>
-                    <li class="nav-item" th:if="${userInfo != null &&
-                    innerMessages != null && innerMessages.size > 0}">
-                        <a href="#" class="nav-link">
-                            <span class="badge rounded-pill bg-success"
-                                  th:text="${innerMessages.size}"></span>
                         </a>
                     </li>
                     <li class="nav-item" th:if="${userInfo != null}">

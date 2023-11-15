@@ -211,7 +211,9 @@
                     Откликнуться
                 </a>
             </div>
+            <p class="fw-bold" th:if="${interview.additional != ''}">Дополнительное описание</p>
             <pre class="mt-3" th:utext="${interview.additional}"></pre>
+            <p class="fw-bold">Описание</p>
             <pre class="mt-3" th:utext="${topicLiteDTO.text}"></pre>
         </div>
 </div>

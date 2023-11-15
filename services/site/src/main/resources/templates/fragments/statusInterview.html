@@ -1,5 +1,5 @@
 <!--Цветовая схема изменения статуса собеседования-->
-<div th:fragment="status">
+<span th:fragment="status">
     <!--Новое-->
     <span class="badge bg-success pr-3 me-2"
           th:if="${interview.status == statuses[interview.status].IS_NEW.id}"
@@ -27,6 +27,6 @@
     <!--Другое-->
     <span class="badge bg-danger"
           th:if="${interview.status >= statuses.length}">Статус неизвестен</span>
-</div>
+</span>
 
 
