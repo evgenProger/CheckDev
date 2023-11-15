@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.checkdev.notification.domain.SubscribeTopic;
-import ru.checkdev.notification.telegram.TgRun;
+import ru.checkdev.notification.telegram.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 public class SubscribeTopicServiceTest {
     @MockBean
-    private TgRun tgRun;
+    private TgConfig tgConfig;
 
     @MockBean
     private TgAuthCallWebClint tgAuthCallWebClint;

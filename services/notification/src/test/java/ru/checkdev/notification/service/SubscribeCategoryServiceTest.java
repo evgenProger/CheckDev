@@ -10,7 +10,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.SubscribeCategory;
-import ru.checkdev.notification.telegram.TgRun;
+import ru.checkdev.notification.telegram.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class SubscribeCategoryServiceTest {
     private SubscribeCategoryService service;
 
     @MockBean
-    private TgRun tgRun;
+    private TgConfig tgConfig;
 
     @MockBean
     private TgAuthCallWebClint tgAuthCallWebClint;
