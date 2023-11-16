@@ -74,7 +74,7 @@ public class InterviewController {
         var categoryIdName = topicsService.getCategoryIdNameDTOByTopicId(topicId);
         var categoryWithTopicDTO = new CategoryWithTopicDTO(
                 categoryIdName.getId(), categoryIdName.getName(),
-                topicId, topicsService.getNameById(topicId));
+                topicId, topicsService.getNameById(topicId), createInterview.getId());
         notifications.notifyAboutInterviewCreation(token,
                 categoryWithTopicDTO);
         return "redirect:/interview/" + createInterview.getId();

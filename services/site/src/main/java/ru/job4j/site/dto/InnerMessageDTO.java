@@ -15,4 +15,5 @@ public class InnerMessageDTO {
     private String text;
     private Timestamp created;
     private boolean read;
+    private int interviewId;
 }

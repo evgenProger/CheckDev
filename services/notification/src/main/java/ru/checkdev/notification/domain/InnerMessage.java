@@ -20,4 +20,13 @@ public class InnerMessage implements Base {
     private String text;
     private Timestamp created;
     private boolean read;
+    private int interviewId;
+
+    public InnerMessage(int id, int userId, String text, Timestamp created, boolean read) {
+        this.id = id;
+        this.userId = userId;
+        this.text = text;
+        this.created = created;
+        this.read = read;
+    }
 }

@@ -14,6 +14,7 @@ public class InnerMessageDTO {
     private int userId;
     private String text;
     private Timestamp created;
+    private int interviewId;
 
     public InnerMessageDTO(int id, int userId, String text, Timestamp created) {
         this.id = id;
@@ -27,5 +28,13 @@ public class InnerMessageDTO {
         this.userId = userId;
         this.text = text;
         this.created = new Timestamp(date.getTime());
+    }
+
+    public InnerMessageDTO(int id, int userId, String text, Date date, int interviewId) {
+        this.id = id;
+        this.userId = userId;
+        this.text = text;
+        this.created = new Timestamp(date.getTime());
+        this.interviewId = interviewId;
     }
 }

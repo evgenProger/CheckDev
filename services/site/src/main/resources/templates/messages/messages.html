@@ -41,7 +41,12 @@
         <tbody>
         <tr th:each="message : ${innerMessages}">
             <td>
-                <span th:text="${message.text}"></span>
+            <span>
+                <a class="text-decoration-none text-dark"
+                   th:href="@{|/interview/${message.interviewId}|}">
+                    <span th:text="${message.text}"></span>
+                </a>
+            </span>
             </td>
             <td>
                 <span th:text="${#dates.format(message.created, 'dd-MM-yyyy HH:mm:ss')}"></span>
