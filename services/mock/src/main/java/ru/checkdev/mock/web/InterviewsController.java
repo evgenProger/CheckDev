@@ -132,6 +132,16 @@ public class InterviewsController {
                         : interviewService.findByUserIdAsNotWisher(userId, page, size));
     }
 
+    @GetMapping("/findByUserIdRelated/{userId}")
+    public ResponseEntity<Page<Interview>> findByUserIdRelated(
+            @PathVariable int userId,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "20") int size) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(interviewService.findPagingByUserIdRelated(page, size, userId));
+    }
+
     @GetMapping("/noFeedback/{uId}")
     public ResponseEntity<List<Interview>> getAllNoFeedback(@PathVariable("uId") int uId) {
         List<Interview> interviews = interviewService.findAllIdByNoFeedback(uId);

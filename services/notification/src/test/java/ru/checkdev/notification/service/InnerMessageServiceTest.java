@@ -8,9 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.dto.CategoryWithTopicDTO;
-import ru.checkdev.notification.telegram.TgRun;
+import ru.checkdev.notification.telegram.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
-import ru.checkdev.notification.web.TemplateController;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -24,13 +23,10 @@ public class InnerMessageServiceTest {
     private InnerMessageService service;
 
     @MockBean
-    private TgRun tgRun;
+    private TgConfig tgConfig;
 
     @MockBean
     private TgAuthCallWebClint tgAuthCallWebClint;
-
-    @MockBean
-    private TemplateController templateController;
 
     @Test
     public void whenSaveBotMessageAndGetTheSame() {

@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "cd_message")
-public class InnerMessage {
+public class InnerMessage implements Base {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

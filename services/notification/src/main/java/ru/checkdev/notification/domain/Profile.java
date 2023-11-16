@@ -19,7 +19,7 @@ import java.util.Calendar;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Profile {
+public class Profile implements Base {
     private int id;
     private String username;
     private String email;

@@ -76,6 +76,14 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
 
     /**
      * @param userId int
+     * @param pageable Pageable
+     * @return интервью, в которых пользователь участвует и одобрен к участию
+     */
+    @Query("SELECT i FROM wisher w JOIN w.interview i WHERE w.userId = :userId AND w.approve IS TRUE")
+    Page<Interview> findInterviewByUserIdApproved(@Param("userId") int userId, Pageable pageable);
+
+    /**
+     * @param userId int
      * @param topicId int
      * @param pageable Pageable
      * @return интервью определённой темы, в которых пользователь участвует
