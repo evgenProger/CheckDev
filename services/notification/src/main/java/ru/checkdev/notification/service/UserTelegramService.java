@@ -38,4 +38,8 @@ public class UserTelegramService {
     public Optional<UserTelegram> findByChatId(long chatId) {
         return repository.findByChatId(chatId);
     }
+
+    public Optional<UserTelegram> findByUserId(int userId) {
+        return repository.findByUserId(userId);
+    }
 }

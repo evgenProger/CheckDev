@@ -22,6 +22,11 @@ public class TgBot extends TelegramLongPollingBot {
     private final String username;
     private final String token;
 
+    public TgBot(String username, String token) {
+        this.actions = null;
+        this.username = username;
+        this.token = token;
+    }
 
     public TgBot(Map<String, Action> actions, String username, String token) throws TelegramApiException {
         this.actions = actions;
@@ -53,8 +58,8 @@ public class TgBot extends TelegramLongPollingBot {
                 bindingBy.remove(chatId);
                 send(msg);
             }  else if (!actions.containsKey(key)) {
-            var msg = new UnKnownRequestAction().handle(update.getMessage());
-            send(msg);
+                var msg = new UnKnownRequestAction().handle(update.getMessage());
+                send(msg);
             }
         }
     }

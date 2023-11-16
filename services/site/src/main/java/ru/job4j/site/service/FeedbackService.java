@@ -1,6 +1,7 @@
 package ru.job4j.site.service;
 
 import ru.job4j.site.dto.FeedbackDTO;
+import ru.job4j.site.dto.ProfileDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.Map;
  * @since 25.10.2023
  */
 public interface FeedbackService {
-    boolean save(String token, FeedbackDTO feedbackDTO);
+    boolean save(String token, FeedbackDTO feedbackDTO, String name);
 
     List<FeedbackDTO> findByInterviewId(int interviewId);
 

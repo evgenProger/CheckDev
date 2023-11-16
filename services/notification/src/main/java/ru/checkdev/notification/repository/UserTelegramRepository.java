@@ -13,4 +13,6 @@ public interface UserTelegramRepository extends JpaRepository<UserTelegram, Inte
 
     @Query("SELECT ut.chatId FROM cd_user_telegram ut WHERE ut.userId IN :userIds")
     List<Long> findChatIdInUserIds(@Param("userIds") List<Integer> userIds);
+
+    Optional<UserTelegram> findByUserId(int userId);
 }

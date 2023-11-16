@@ -1,5 +1,6 @@
 package ru.job4j.site.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.FeedbackDTO;
+import ru.job4j.site.dto.InnerMessageDTO;
 import ru.job4j.site.dto.InterviewDTO;
 
 import java.util.*;
@@ -27,12 +29,19 @@ public class FeedbackServiceWebClient implements FeedbackService {
     private WebClient webClientFeedback;
     private static final String URL_FEEDBACK = "/feedback/";
 
-    private InterviewService interviewService;
+    private final InterviewService interviewService;
+    private final NotificationService notificationService;
 
-    public FeedbackServiceWebClient(@Value("${service.mock}") String urlMock, InterviewService interviewService) {
+    public FeedbackServiceWebClient(
+            @Value("${service.mock}") String urlMock,
+            InterviewService interviewService,
+            NotificationService notificationService
+    ) {
         this.urlMock = urlMock;
         this.webClientFeedback = WebClient.create(this.urlMock);
         this.interviewService = interviewService;
+      //  this.profilesService = profilesService;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -44,7 +53,7 @@ public class FeedbackServiceWebClient implements FeedbackService {
      * @return boolean true/false
      */
     @Override
-    public boolean save(String token, FeedbackDTO feedbackDTO) {
+    public boolean save(String token, FeedbackDTO feedbackDTO, String userName) {
         var interview = new InterviewDTO();
         try {
             interview = interviewService.getById(token, feedbackDTO.getInterviewId());
@@ -69,6 +78,19 @@ public class FeedbackServiceWebClient implements FeedbackService {
                 .orElse(false);
         if (result) {
             updateStatusInterview(token, interview, feedbackDTO.getUserId());
+            try {
+                InnerMessageDTO innerMessage = new InnerMessageDTO();
+                innerMessage.setUserId(feedbackDTO.getUserId());
+                innerMessage.setText("Пользователь "
+                        + userName
+                        + " оставил отзыв о собеседовании "
+                        + interview.getTitle()
+                );
+                notificationService.sendFeedBackNotification(token, innerMessage);
+            } catch (JsonProcessingException e) {
+                log.error("notificationService.class method sendFeedBackNotification error: {}", e.getMessage());
+            }
+
         }
         return result;
     }
