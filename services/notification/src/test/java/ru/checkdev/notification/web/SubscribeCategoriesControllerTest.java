@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.SubscribeCategory;
 import ru.checkdev.notification.service.SubscribeCategoryService;
-import ru.checkdev.notification.telegram.TgRun;
+import ru.checkdev.notification.telegram.TgConfig;
 import ru.checkdev.notification.telegram.service.TgAuthCallWebClint;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -35,7 +35,7 @@ public class SubscribeCategoriesControllerTest {
     private SubscribeCategoryService service;
 
     @MockBean
-    private TgRun tgRun;
+    private TgConfig tgConfig;
 
     @MockBean
     private TgAuthCallWebClint tgAuthCallWebClint;
