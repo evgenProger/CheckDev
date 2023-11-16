@@ -35,6 +35,18 @@ public class InterviewsService {
         return mapper.readValue(text, pageType);
     }
 
+    public Page<InterviewDTO> getAllByUserIdRelated(String token, int page, int size, int userId)
+            throws JsonProcessingException {
+        var text = new RestAuthCall(String
+                .format("%s/findByUserIdRelated/%s?page=%d&?size=%d", URL, userId, page, size))
+                .get(token);
+        var mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        var pageType = mapper.getTypeFactory()
+                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
+        return mapper.readValue(text, pageType);
+    }
+
     public List<InterviewDTO> getByType(int type) throws JsonProcessingException {
         var text = new RestAuthCall(String.format("%s%d", URL, type))
                 .get();

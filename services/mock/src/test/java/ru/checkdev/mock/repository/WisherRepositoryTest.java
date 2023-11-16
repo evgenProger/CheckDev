@@ -216,6 +216,43 @@ class WisherRepositoryTest {
     }
 
     @Test
+    void whenFindInterviewsFromWisherByUserIdApproved() {
+        entityManager.createQuery("delete from wisher").executeUpdate();
+        IntStream.range(1, 8).forEach(i -> entityManager.persist(
+                new Wisher(0, interview, i % 2 == 0 ? 1 : 2,
+                        String.format("user%d@zmail.cd", i), true, 1)));
+        entityManager.clear();
+        var page1 =
+                wisherRepository.findInterviewByUserIdApproved(1, PageRequest.of(0, 10));
+        var page2 =
+                wisherRepository.findInterviewByUserIdApproved(2, PageRequest.of(0, 10));
+        var page3 =
+                wisherRepository.findInterviewByUserIdApproved(1349, PageRequest.of(0, 10));
+        MatcherAssert.assertThat(page1.toList().size(), is(3));
+        MatcherAssert.assertThat(page1.toList().get(0), is(interview));
+        MatcherAssert.assertThat(page2.toList().size(), is(4));
+        MatcherAssert.assertThat(page3.toList().size(), is(0));
+    }
+
+    @Test
+    void whenFindInterviewsFromWisherByUserIdApprovedAndNothingFound() {
+        entityManager.createQuery("delete from wisher").executeUpdate();
+        IntStream.range(1, 8).forEach(i -> entityManager.persist(
+                new Wisher(0, interview, i % 2 == 0 ? 1 : 2,
+                        String.format("user%d@zmail.cd", i), false, 1)));
+        entityManager.clear();
+        var page1 =
+                wisherRepository.findInterviewByUserIdApproved(1, PageRequest.of(0, 10));
+        var page2 =
+                wisherRepository.findInterviewByUserIdApproved(2, PageRequest.of(0, 10));
+        var page3 =
+                wisherRepository.findInterviewByUserIdApproved(1349, PageRequest.of(0, 10));
+        MatcherAssert.assertThat(page1.toList().size(), is(0));
+        MatcherAssert.assertThat(page2.toList().size(), is(0));
+        MatcherAssert.assertThat(page3.toList().size(), is(0));
+    }
+
+    @Test
     public void whenFindInterviewsFromWisherByUserIdAndByTopicId() {
         entityManager.createQuery("delete from wisher").executeUpdate();
         IntStream.range(1, 8).forEach(i -> entityManager.persist(
