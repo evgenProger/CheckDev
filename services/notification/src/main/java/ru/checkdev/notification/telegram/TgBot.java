@@ -16,19 +16,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Dmitry Stepanov, user Dmitry
  * @since 12.09.2023
  */
-public class BotMenu extends TelegramLongPollingBot {
+public class TgBot extends TelegramLongPollingBot {
     private final Map<String, String> bindingBy = new ConcurrentHashMap<>();
     private final Map<String, Action> actions;
     private final String username;
     private final String token;
 
-    public BotMenu(String username, String token) {
+    public TgBot(String username, String token) {
         this.actions = null;
         this.username = username;
         this.token = token;
     }
 
-    public BotMenu(Map<String, Action> actions, String username, String token) throws TelegramApiException {
+    public TgBot(Map<String, Action> actions, String username, String token) throws TelegramApiException {
         this.actions = actions;
         this.username = username;
         this.token = token;
@@ -58,13 +58,13 @@ public class BotMenu extends TelegramLongPollingBot {
                 bindingBy.remove(chatId);
                 send(msg);
             }  else if (!actions.containsKey(key)) {
-            var msg = new UnKnownRequestAction().handle(update.getMessage());
-            send(msg);
+                var msg = new UnKnownRequestAction().handle(update.getMessage());
+                send(msg);
             }
         }
     }
 
-    private void send(BotApiMethod msg) {
+    public void send(BotApiMethod msg) {
         try {
             execute(msg);
         } catch (TelegramApiException e) {
