@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -86,6 +87,44 @@ class InterviewServiceTest {
         when(interviewRepository.findAll(pageable)).thenReturn(page);
         var actual = interviewService.findPaging(0, 5);
         assertThat(actual, is(page));
+    }
+
+    @Test
+    public void whenGetAllByUserIdRelated() {
+        int userId = 1;
+        int interviewStatusId = 1;
+        List<Interview> interviews = IntStream.range(0, 5).mapToObj(i -> {
+            var interview = new Interview();
+            interview.setId(i);
+            interview.setMode(1);
+            interview.setSubmitterId(userId);
+            interview.setTitle(String.format("Interview_%d", i));
+            interview.setAdditional("Some text");
+            interview.setContactBy("Some contact");
+            interview.setApproximateDate("30.02.2024");
+            interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
+            return interview;
+        }).toList();
+        var page = new PageImpl<>(interviews);
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createDate"));
+        when(wisherRepository.findInterviewByUserIdApproved(userId, Pageable.unpaged())).thenReturn(Page.empty());
+        when(interviewRepository.findAllByUserIdRelated(userId, interviewStatusId, List.of(), pageable)).thenReturn(page);
+        var actual = interviewService.findPagingByUserIdRelated(0, 5, userId);
+        assertThat(actual, is(page));
+        assertThat(actual.getTotalElements(), is(5L));
+    }
+
+    @Test
+    public void whenGetAllByUserIdRelatedAndNothingFound() {
+        int userId = 1;
+        int interviewStatusId = 1;
+        Page<Interview> page = Page.empty();
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createDate"));
+        when(wisherRepository.findInterviewByUserIdApproved(userId, Pageable.unpaged())).thenReturn(Page.empty());
+        when(interviewRepository.findAllByUserIdRelated(userId, interviewStatusId, List.of(), pageable)).thenReturn(page);
+        var actual = interviewService.findPagingByUserIdRelated(0, 5, userId);
+        assertThat(actual, is(page));
+        assertThat(actual.getTotalElements(), is(0L));
     }
 
     @Test

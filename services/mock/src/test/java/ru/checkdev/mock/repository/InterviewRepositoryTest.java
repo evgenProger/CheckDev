@@ -86,6 +86,44 @@ class InterviewRepositoryTest {
     }
 
     @Test
+    public void whenFindAllByUserIdRelatedAndNothingFound() {
+        var interview = new Interview();
+        interview.setMode(1);
+        interview.setSubmitterId(1);
+        interview.setTitle("title");
+        interview.setAdditional("additional");
+        interview.setContactBy("contact");
+        interview.setApproximateDate("30.02.2070");
+        interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
+        interview.setTopicId(1);
+        interview.setAuthor("author");
+        entityManager.persist(interview);
+        int userId = 2;
+        int interviewStatusId = 1;
+        var page = interviewRepository.findAllByUserIdRelated(userId, interviewStatusId, List.of(1), PageRequest.of(0, 10));
+        MatcherAssert.assertThat(page.getTotalElements(), is(0L));
+    }
+
+    @Test
+    public void whenFindAllByUserIdRelatedAndFound() {
+        var interview = new Interview();
+        interview.setMode(1);
+        interview.setSubmitterId(1);
+        interview.setTitle("title");
+        interview.setAdditional("additional");
+        interview.setContactBy("contact");
+        interview.setApproximateDate("30.02.2070");
+        interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
+        interview.setTopicId(1);
+        interview.setAuthor("author");
+        entityManager.persist(interview);
+        int userId = 1;
+        int interviewStatusId = 1;
+        var page = interviewRepository.findAllByUserIdRelated(userId, interviewStatusId, List.of(1), PageRequest.of(0, 10));
+        MatcherAssert.assertThat(page.getTotalElements(), is(1L));
+    }
+
+    @Test
     public void whenInterviewFindByTopicId() {
         var interview = new Interview();
         interview.setMode(1);

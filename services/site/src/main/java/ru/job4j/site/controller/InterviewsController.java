@@ -78,7 +78,7 @@ public class InterviewsController {
                 filterProfileName = filterProfileId > 0
                         ? filterService.getNameById(filterProfiles, filterProfileId) : "";
             } else {
-                interviewsPage = interviewsService.getAll(token, page, size);
+                interviewsPage = interviewsService.getAllByUserIdRelated(token, page, size, userId);
             }
             Set<ProfileDTO> userList = interviewsPage.toList().stream()
                     .map(x -> profilesService.getProfileById(x.getSubmitterId()))

@@ -12,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity(name = "cd_user_telegram")
-public class UserTelegram {
+public class UserTelegram implements Base {
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
