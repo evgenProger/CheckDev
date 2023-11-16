@@ -12,9 +12,15 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class UserTelegramRepositoryFake implements UserTelegramRepository{
+
     @Override
     public Optional<UserTelegram> findByChatId(long chatId) {
         return Optional.empty();
+    }
+
+    @Override
+    public List<Long> findChatIdInUserIds(List<Integer> userIds) {
+        return null;
     }
 
     @Override
