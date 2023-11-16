@@ -93,7 +93,7 @@
                         <span th:text="${interview.author}"></span>
                     </td>
                     <td>
-                        <span th:text="${interview.contactBy}"></span>
+                        <span th:if="${isAuthor or isUserDismissed}" th:text="${interview.contactBy}"></span>
                     </td>
                     <td>
                         <span th:if="${interview.mode == 1}">Буду проводить собеседование (задавать вопросы)</span>
@@ -111,7 +111,7 @@
                         <span th:text="${wisher.username}"></span>
                     </td>
                     <td>
-                        <span th:text="${wisher.contactBy}"></span>
+                        <span th:if="${isAuthor or isUserDismissed}" th:text="${wisher.contactBy}"></span>
                     </td>
                     <td>
                         <span th:if="${interview.mode == 2}">Буду проводить собеседование (задавать вопросы)</span>
