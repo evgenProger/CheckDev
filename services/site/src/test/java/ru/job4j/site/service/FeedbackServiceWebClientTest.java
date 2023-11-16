@@ -65,7 +65,7 @@ class FeedbackServiceWebClientTest {
 
     @BeforeEach
     void setUp() {
-        feedbackService = new FeedbackServiceWebClient(URL, interviewService, profilesService, notificationService);
+        feedbackService = new FeedbackServiceWebClient(URL, interviewService, notificationService);
         feedbackService.setWebClientFeedback(webClientMock);
     }
 
@@ -102,7 +102,7 @@ class FeedbackServiceWebClientTest {
         when(responseMock.toEntity(FeedbackDTO.class)).thenReturn(Mono.just(new ResponseEntity<>(feedbackDto1, HttpStatus.CREATED)));
         when(interviewService.getById(token, feedbackDto1.getInterviewId())).thenReturn(interviewDto);
         doNothing().when(interviewService).updateStatus(token, interviewDto.getId(), StatusInterview.IS_FEEDBACK.getId());
-        var actual = feedbackService.save(token, feedbackDto1);
+        var actual = feedbackService.save(token, feedbackDto1, "vasya");
         assertThat(actual).isTrue();
     }
 
@@ -122,7 +122,7 @@ class FeedbackServiceWebClientTest {
         when(requestHeadersMock.retrieve()).thenReturn(responseMock);
         when(responseMock.toEntity(FeedbackDTO.class)).thenReturn(Mono.empty());
         when(interviewService.getById(token, feedbackDto1.getInterviewId())).thenReturn(interviewDto);
-        var actual = feedbackService.save(token, feedbackDto1);
+        var actual = feedbackService.save(token, feedbackDto1, "vasya");
         assertThat(actual).isFalse();
     }
 

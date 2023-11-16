@@ -12,7 +12,6 @@ import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.FeedbackDTO;
 import ru.job4j.site.dto.InnerMessageDTO;
 import ru.job4j.site.dto.InterviewDTO;
-import ru.job4j.site.dto.ProfileDTO;
 
 import java.util.*;
 
@@ -31,19 +30,17 @@ public class FeedbackServiceWebClient implements FeedbackService {
     private static final String URL_FEEDBACK = "/feedback/";
 
     private final InterviewService interviewService;
-    private final ProfilesService profilesService;
     private final NotificationService notificationService;
 
     public FeedbackServiceWebClient(
             @Value("${service.mock}") String urlMock,
             InterviewService interviewService,
-            ProfilesService profilesService,
             NotificationService notificationService
     ) {
         this.urlMock = urlMock;
         this.webClientFeedback = WebClient.create(this.urlMock);
         this.interviewService = interviewService;
-        this.profilesService = profilesService;
+      //  this.profilesService = profilesService;
         this.notificationService = notificationService;
     }
 
@@ -56,7 +53,7 @@ public class FeedbackServiceWebClient implements FeedbackService {
      * @return boolean true/false
      */
     @Override
-    public boolean save(String token, FeedbackDTO feedbackDTO) {
+    public boolean save(String token, FeedbackDTO feedbackDTO, String userName) {
         var interview = new InterviewDTO();
         try {
             interview = interviewService.getById(token, feedbackDTO.getInterviewId());
@@ -83,12 +80,9 @@ public class FeedbackServiceWebClient implements FeedbackService {
             updateStatusInterview(token, interview, feedbackDTO.getUserId());
             try {
                 InnerMessageDTO innerMessage = new InnerMessageDTO();
-                ProfileDTO profile = profilesService.getProfileById(feedbackDTO.getUserId()).isPresent()
-                        ? profilesService.getProfileById(feedbackDTO.getUserId()).get()
-                        : new ProfileDTO();
                 innerMessage.setUserId(feedbackDTO.getUserId());
                 innerMessage.setText("Пользователь "
-                        + profile.getUsername()
+                        + userName
                         + " оставил отзыв о собеседовании "
                         + interview.getTitle()
                 );

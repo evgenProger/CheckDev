@@ -81,7 +81,7 @@ class FeedbackControllerTest {
     void whenPostSaveFeedbackThenRedirectInterviewPage() throws Exception {
         var token = "1234";
         var feedbackDTO = new FeedbackDTO(1, 1, 1, 1, "text", 5);
-        when(feedbackService.save(token, feedbackDTO)).thenReturn(true);
+        when(feedbackService.save(token, feedbackDTO, "vasya")).thenReturn(true);
         mockMvc.perform(post("/interview/createFeedback")
                         .flashAttr("feedbackDTO", feedbackDTO)
                         .sessionAttr("token", token))
