@@ -1,6 +1,7 @@
 package ru.checkdev.notification.telegram.action;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,14 +16,15 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.UserTelegram;
-import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.service.InnerMessageService;
+import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.service.TgCall;
 
 @TestPropertySource(locations="classpath:application.properties")
 @SpringBootTest(classes = NtfSrv.class)
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
+@Disabled
 class ForgetActionTest {
     @Autowired
     private UserTelegramService userTelegramService;

@@ -14,7 +14,7 @@ public class InnerMessageControllerFakeTest {
         var botMessage = new InnerMessage(1, 10,
                 "text", null, false);
         var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(),
-                null, null);
+                null);
         var savedMsg = innerMessageService.saveMessage(botMessage);
         var controller = new InnerMessageController(
                 innerMessageService, null, null, null
