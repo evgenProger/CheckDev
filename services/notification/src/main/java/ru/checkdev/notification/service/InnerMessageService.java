@@ -40,12 +40,14 @@ public class InnerMessageService {
                 saveMessage(new InnerMessage(0, id,
                         String.format("В категории \"%s\" появилось новое собеседование.",
                                 categoryWithTopicDTO.getCategoryName()),
-                        new Timestamp(System.currentTimeMillis()), false)));
+                        new Timestamp(System.currentTimeMillis()), false,
+                        categoryWithTopicDTO.getInterviewId())));
         topicSubscribersIds.forEach(id ->
                 saveMessage(new InnerMessage(0, id,
                         String.format("Появилось новое собеседование по теме %s.",
                                 categoryWithTopicDTO.getTopicName()),
-                        new Timestamp(System.currentTimeMillis()), false)));
+                        new Timestamp(System.currentTimeMillis()), false,
+                        categoryWithTopicDTO.getInterviewId())));
     }
 
     public void send(InnerMessage innerMessage) {

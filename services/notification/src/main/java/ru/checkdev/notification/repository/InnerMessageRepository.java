@@ -12,7 +12,7 @@ public interface InnerMessageRepository extends CrudRepository<InnerMessage, Int
     List<InnerMessage> findByUserIdAndReadFalse(int id);
 
     @Query("""
-              SELECT new ru.checkdev.notification.dto.InnerMessageDTO(m.id, m.userId, m.text, m.created)
+              SELECT new ru.checkdev.notification.dto.InnerMessageDTO(m.id, m.userId, m.text, m.created, m.interviewId)
               FROM cd_message m
               WHERE m.read = false AND m.userId = :id
               """)
