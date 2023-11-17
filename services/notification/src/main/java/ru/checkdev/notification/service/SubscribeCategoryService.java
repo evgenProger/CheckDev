@@ -37,7 +37,7 @@ public class SubscribeCategoryService {
         return subscribeCategory;
     }
 
-    public List<Integer> findUserIdsByCategoryId(int categoryId) {
-        return repository.findUserIdByCategoryId(categoryId);
+    public List<Integer> findUserIdsByCategoryIdExcludeCurrent(int categoryId, int excludedUserId) {
+        return repository.findUserIdByCategoryIdExcludeCurrent(categoryId, excludedUserId);
     }
 }

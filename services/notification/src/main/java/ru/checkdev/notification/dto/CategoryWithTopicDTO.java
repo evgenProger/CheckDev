@@ -14,4 +14,5 @@ public class CategoryWithTopicDTO {
     private int topicId;
     private String topicName;
     private int interviewId;
+    private int submitterId;
 }

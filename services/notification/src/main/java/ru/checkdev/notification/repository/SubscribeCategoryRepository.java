@@ -14,6 +14,8 @@ public interface SubscribeCategoryRepository extends CrudRepository<SubscribeCat
 
     SubscribeCategory findByUserIdAndCategoryId(int userId, int categoryId);
 
-    @Query("SELECT sc.userId FROM cd_subscribe_category sc WHERE sc.categoryId = :categoryId")
-    List<Integer> findUserIdByCategoryId(int categoryId);
+    @Query("""
+            SELECT sc.userId FROM cd_subscribe_category sc 
+            WHERE sc.categoryId = :categoryId AND sc.userId != :excludedUserId""")
+    List<Integer> findUserIdByCategoryIdExcludeCurrent(int categoryId, int excludedUserId);
 }
