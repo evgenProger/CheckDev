@@ -13,18 +13,7 @@ import java.sql.Timestamp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = NtfSrv.class)
-@ExtendWith(SpringExtension.class)
-@AutoConfigureMockMvc
 public class InnerMessageTest {
-    private UserTelegram userTelegram;
-    private InnerMessage botMessage;
-
-    @BeforeEach
-    public void setUp() {
-        botMessage = new InnerMessage(0, 1, "text",
-                new Timestamp(System.currentTimeMillis()), false);
-    }
 
     @Test
     public void whenDefaultConstructorNotNull() {
@@ -34,44 +23,60 @@ public class InnerMessageTest {
 
     @Test
     public void whenFieldsConstructorNotNull() {
+        var botMessage = new InnerMessage(0, 1, "text",
+                new Timestamp(System.currentTimeMillis()), false);
         assertThat(botMessage).isNotNull();
     }
 
     @Test
     public void whenIDSetAndGetEquals() {
+        var botMessage = new InnerMessage(0, 1, "text",
+                new Timestamp(System.currentTimeMillis()), false);
         botMessage.setId(1);
         assertThat(1).isEqualTo(botMessage.getId());
     }
 
     @Test
     void getId() {
+        var botMessage = new InnerMessage(0, 1, "text",
+                new Timestamp(System.currentTimeMillis()), false);
         Assertions.assertEquals(0, botMessage.getId());
     }
 
     @Test
     void getText() {
+        var botMessage = new InnerMessage(0, 1, "text",
+                new Timestamp(System.currentTimeMillis()), false);
         Assertions.assertEquals("text", botMessage.getText());
     }
 
     @Test
     void isRead() {
+        var botMessage = new InnerMessage(0, 1, "text",
+                new Timestamp(System.currentTimeMillis()), false);
         Assertions.assertFalse(botMessage.isRead());
     }
 
     @Test
     void setId() {
+        var botMessage = new InnerMessage(0, 1, "text",
+                new Timestamp(System.currentTimeMillis()), false);
         botMessage.setId(11);
         Assertions.assertEquals(11, botMessage.getId());
     }
 
     @Test
     void setText() {
+        var botMessage = new InnerMessage(0, 1, "text",
+                new Timestamp(System.currentTimeMillis()), false);
         botMessage.setText("txet");
         Assertions.assertEquals("txet", botMessage.getText());
     }
 
     @Test
     void setRead() {
+        var botMessage = new InnerMessage(0, 1, "text",
+                new Timestamp(System.currentTimeMillis()), false);
         botMessage.setRead(true);
         Assertions.assertTrue(botMessage.isRead());
     }

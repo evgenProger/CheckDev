@@ -119,6 +119,7 @@
             <property name="format" value="org\.hamcrest"/>
             <property name="ignoreComments" value="true"/>
         </module>
+
         <module name="RegexpSinglelineJava">
             <!-- . matches any character, so we need to
                  escape it and use \. to match dots. -->

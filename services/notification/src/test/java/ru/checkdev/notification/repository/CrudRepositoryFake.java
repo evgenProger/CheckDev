@@ -2,8 +2,10 @@ package ru.checkdev.notification.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import ru.checkdev.notification.domain.Base;
+import ru.checkdev.notification.domain.SubscribeTopic;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
