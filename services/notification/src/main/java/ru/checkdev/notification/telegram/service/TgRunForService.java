@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.checkdev.notification.telegram.BotMenu;
+import ru.checkdev.notification.telegram.TgBot;
 
 /**
  * Использование бота для отправки сообщений слоем Service
@@ -21,7 +21,7 @@ public class TgRunForService {
 
     public void send(String chatId, String text) {
         try {
-            BotMenu menu = new BotMenu(username, token);
+            TgBot menu = new TgBot(username, token);
             menu.execute(new SendMessage(chatId, text));
         } catch (TelegramApiException e) {
             log.error("Telegram bot: {}, ERROR {}", username, e.getMessage());
