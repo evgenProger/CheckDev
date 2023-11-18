@@ -7,7 +7,6 @@ import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.dto.CategoryWithTopicDTO;
 import ru.checkdev.notification.dto.InnerMessageDTO;
 import ru.checkdev.notification.repository.InnerMessageRepository;
-import ru.checkdev.notification.telegram.service.TgRunForService;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -19,7 +18,6 @@ public class InnerMessageService {
 
     private final InnerMessageRepository messageRepository;
     private final UserTelegramService userTelegramService;
-    public final TgRunForService tgRunForService;
 
     public List<InnerMessage> findByUserIdAndReadFalse(int id) {
         return messageRepository.findByUserIdAndReadFalse(id);
@@ -34,8 +32,8 @@ public class InnerMessageService {
     }
 
     public void saveMessagesForSubscribers(CategoryWithTopicDTO categoryWithTopicDTO,
-                             List<Integer> categorySubscribersIds,
-                             List<Integer> topicSubscribersIds) {
+                                           List<Integer> categorySubscribersIds,
+                                           List<Integer> topicSubscribersIds) {
         categorySubscribersIds.forEach(id ->
                 saveMessage(new InnerMessage(0, id,
                         String.format("В категории \"%s\" появилось новое собеседование.",
@@ -60,7 +58,6 @@ public class InnerMessageService {
             innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
             innerMessage.setRead(false);
             saveMessage(innerMessage);
-            tgRunForService.send(chatId.toString(), innerMessage.getText());
         }
     }
 }

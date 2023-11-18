@@ -1,32 +1,34 @@
 package ru.checkdev.notification.repository;
 
 import ru.checkdev.notification.domain.SubscribeTopic;
+
 import java.util.List;
 
+/**
+ * Переопределенной класс Repository для тестирования
+ * SubscribeTopicRepository
+ *
+ * @author Dmitry Stepanov, user Dmitry
+ * @since 17.11.2023
+ */
 public class SubscribeTopicRepositoryFake
         extends CrudRepositoryFake<SubscribeTopic>
         implements SubscribeTopicRepository {
-
-    @Override
-    public List<SubscribeTopic> findAll() {
-        return memory.values()
-                .stream()
-                .toList();
-    }
-
     @Override
     public List<SubscribeTopic> findByUserId(int id) {
-        return memory.values().stream()
+        return memory.values()
+                .stream()
                 .filter(subscribeTopic -> subscribeTopic.getUserId() == id)
                 .toList();
     }
 
     @Override
     public SubscribeTopic findByUserIdAndTopicId(int userId, int topicId) {
-        return memory.values().stream()
+        return memory.values()
+                .stream()
                 .filter(subscribeTopic -> subscribeTopic.getUserId() == userId)
                 .filter(subscribeTopic -> subscribeTopic.getTopicId() == topicId)
-                .findFirst().orElse(null);
+                .findFirst().orElseGet(() -> null);
     }
 
     @Override
@@ -35,6 +37,13 @@ public class SubscribeTopicRepositoryFake
                 .filter(subscribeTopic -> subscribeTopic.getTopicId() == topicId
                         && subscribeTopic.getUserId() != excludedUserId)
                 .map(SubscribeTopic::getUserId)
+                .toList();
+    }
+
+    @Override
+    public List<SubscribeTopic> findAll() {
+        return memory.values()
+                .stream()
                 .toList();
     }
 }

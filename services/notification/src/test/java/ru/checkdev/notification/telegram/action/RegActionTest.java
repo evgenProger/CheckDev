@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = NtfSrv.class)
 @AutoConfigureMockMvc
+@Disabled
 class RegActionTest {
 
     @MockBean

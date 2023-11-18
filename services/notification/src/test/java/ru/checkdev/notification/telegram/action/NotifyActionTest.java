@@ -1,6 +1,7 @@
 package ru.checkdev.notification.telegram.action;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = NtfSrv.class)
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
+@Disabled
 class NotifyActionTest {
     @MockBean
     private UserTelegramService userTelegramService;

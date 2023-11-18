@@ -8,10 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.job4j.site.domain.StatusInterview;
-import ru.job4j.site.dto.CategoryWithTopicDTO;
-import ru.job4j.site.dto.InterviewDTO;
-import ru.job4j.site.dto.TopicLiteDTO;
-import ru.job4j.site.dto.UserInfoDTO;
+import ru.job4j.site.dto.*;
 import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,22 +61,31 @@ public class InterviewController {
                                   HttpServletRequest req)
             throws JsonProcessingException {
         var token = getToken(req);
-        var interviewId = 0;
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            var userId = userInfo.getId();
-            interviewDTO.setSubmitterId(userId);
+            interviewDTO.setSubmitterId(userInfo.getId());
             interviewDTO.setAuthor(userInfo.getUsername());
-            interviewDTO.setTopicId(topicId);
-            InterviewDTO createInterview = interviewService.create(token, interviewDTO);
-            interviewId = createInterview.getId();
-            var categoryIdName = topicsService.getCategoryIdNameDTOByTopicId(topicId);
-            var categoryWithTopicDTO = new CategoryWithTopicDTO(
-                    categoryIdName.getId(), categoryIdName.getName(),
-                    topicId, topicsService.getNameById(topicId), interviewId, userId);
-            notifications.notifyAboutInterviewCreation(token, categoryWithTopicDTO);
         }
-        return interviewId > 0 ? "redirect:/interview/" + interviewId : "interview/createForm";
+        interviewDTO.setTopicId(topicId);
+        InterviewDTO createInterview = interviewService.create(getToken(req), interviewDTO);
+        var categoryIdName = topicsService.getCategoryIdNameDTOByTopicId(topicId);
+        var topicName = topicsService.getNameById(topicId);
+        var categoryWithTopicDTO = new CategoryWithTopicDTO(
+                categoryIdName.getId(), categoryIdName.getName(),
+                topicId, topicName, createInterview.getId(), interviewDTO.getSubmitterId());
+        notifications.notifyAboutInterviewCreation(token,
+                categoryWithTopicDTO);
+        var interviewNotifDto = InterviewNotifDTO.of()
+                .id(interviewDTO.getId())
+                .submitterId(interviewDTO.getSubmitterId())
+                .title(interviewDTO.getTitle())
+                .topicId(interviewDTO.getTopicId())
+                .topicName(topicName)
+                .categoryId(categoryIdName.getId())
+                .categoryName(categoryIdName.getName())
+                .build();
+        notifications.sendSubscribeTopic(token, interviewNotifDto);
+        return "redirect:/interview/" + createInterview.getId();
     }
 
     @GetMapping("/{interviewId}")

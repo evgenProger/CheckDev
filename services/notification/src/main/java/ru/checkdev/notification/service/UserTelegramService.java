@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.repository.UserTelegramRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,11 +23,7 @@ public class UserTelegramService {
     }
 
     public void delete(int id) {
-        Optional<UserTelegram> chatIdOptional = repository.findById(id);
-        if (chatIdOptional.isPresent()) {
-            UserTelegram userTelegram = chatIdOptional.get();
-            repository.delete(userTelegram);
-        }
+        repository.deleteById(id);
     }
 
     /**
@@ -41,5 +38,16 @@ public class UserTelegramService {
 
     public Optional<UserTelegram> findByUserId(int userId) {
         return repository.findByUserId(userId);
+    }
+
+    /**
+     * Метод возвращает всех подписчиков кроме автора.
+     *
+     * @param topicId SubscribeTopic TopicId
+     * @param userId  NOT SubscribeTopic UserId
+     * @return List<SubscribeTopic>
+     */
+    public List<UserTelegram> findAllByTopicIdAndUserIdNot(int topicId, int userId) {
+        return repository.findAllByTopicIdAndUserIdNot(topicId, userId);
     }
 }

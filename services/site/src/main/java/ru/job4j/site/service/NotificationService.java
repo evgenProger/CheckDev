@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.*;
+
 import java.util.List;
 
 @Service
@@ -78,5 +79,12 @@ public class NotificationService {
         var mapper = new ObjectMapper();
         var out = new RestAuthCall(url).post(
                 token, mapper.writeValueAsString(innerMessage));
+    }
+
+    public void sendSubscribeTopic(String token, InterviewNotifDTO interviewNotifDTO) throws JsonProcessingException {
+        var url = String.format("%s/notification/topic/", urlNtf);
+        var mapper = new ObjectMapper();
+        var out = new RestAuthCall(url).post(
+                token, mapper.writeValueAsString(interviewNotifDTO));
     }
 }
