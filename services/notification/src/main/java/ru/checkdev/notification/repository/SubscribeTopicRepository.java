@@ -13,6 +13,9 @@ public interface SubscribeTopicRepository extends CrudRepository<SubscribeTopic,
 
     SubscribeTopic findByUserIdAndTopicId(int userId, int topicId);
 
-    @Query("SELECT st.userId FROM cd_subscribe_topic st WHERE st.topicId = :topicId")
-    List<Integer> findUserIdByTopicId(int topicId);
+    @Query("""
+            SELECT st.userId FROM cd_subscribe_topic st 
+            WHERE st.topicId = :topicId 
+            AND st.userId != :excludedUserId""")
+    List<Integer> findUserIdByTopicIdExcludeCurrent(int topicId, int excludedUserId);
 }

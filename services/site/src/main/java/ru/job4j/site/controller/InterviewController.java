@@ -64,20 +64,22 @@ public class InterviewController {
                                   HttpServletRequest req)
             throws JsonProcessingException {
         var token = getToken(req);
+        var interviewId = 0;
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            interviewDTO.setSubmitterId(userInfo.getId());
+            var userId = userInfo.getId();
+            interviewDTO.setSubmitterId(userId);
             interviewDTO.setAuthor(userInfo.getUsername());
+            interviewDTO.setTopicId(topicId);
+            InterviewDTO createInterview = interviewService.create(token, interviewDTO);
+            interviewId = createInterview.getId();
+            var categoryIdName = topicsService.getCategoryIdNameDTOByTopicId(topicId);
+            var categoryWithTopicDTO = new CategoryWithTopicDTO(
+                    categoryIdName.getId(), categoryIdName.getName(),
+                    topicId, topicsService.getNameById(topicId), interviewId, userId);
+            notifications.notifyAboutInterviewCreation(token, categoryWithTopicDTO);
         }
-        interviewDTO.setTopicId(topicId);
-        InterviewDTO createInterview = interviewService.create(getToken(req), interviewDTO);
-        var categoryIdName = topicsService.getCategoryIdNameDTOByTopicId(topicId);
-        var categoryWithTopicDTO = new CategoryWithTopicDTO(
-                categoryIdName.getId(), categoryIdName.getName(),
-                topicId, topicsService.getNameById(topicId), createInterview.getId());
-        notifications.notifyAboutInterviewCreation(token,
-                categoryWithTopicDTO);
-        return "redirect:/interview/" + createInterview.getId();
+        return interviewId > 0 ? "redirect:/interview/" + interviewId : "interview/createForm";
     }
 
     @GetMapping("/{interviewId}")

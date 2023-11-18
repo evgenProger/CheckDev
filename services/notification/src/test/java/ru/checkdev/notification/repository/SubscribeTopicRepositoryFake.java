@@ -30,9 +30,10 @@ public class SubscribeTopicRepositoryFake
     }
 
     @Override
-    public List<Integer> findUserIdByTopicId(int topicId) {
+    public List<Integer> findUserIdByTopicIdExcludeCurrent(int topicId, int excludedUserId) {
         return memory.values().stream()
-                .filter(subscribeTopic -> subscribeTopic.getTopicId() == topicId)
+                .filter(subscribeTopic -> subscribeTopic.getTopicId() == topicId
+                        && subscribeTopic.getUserId() != excludedUserId)
                 .map(SubscribeTopic::getUserId)
                 .toList();
     }

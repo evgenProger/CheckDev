@@ -41,14 +41,25 @@ public class InnerMessageController {
     @PostMapping("/newInterview")
     public ResponseEntity<Void> createMessage(
             @RequestBody CategoryWithTopicDTO categoryWithTopicDTO) {
+
         List<Integer> categorySubscribersIds =
-                categoryService.findUserIdsByCategoryId(categoryWithTopicDTO.getCategoryId());
+                categoryService.findUserIdsByCategoryIdExcludeCurrent(
+                        categoryWithTopicDTO.getCategoryId(),
+                        categoryWithTopicDTO.getSubmitterId());
+
         List<Integer> topicSubscribersIds =
-                topicService.findUserIdsByTopicId(categoryWithTopicDTO.getTopicId());
-        messageService.saveMessagesForSubscribers(categoryWithTopicDTO,
+                topicService.findUserIdsByTopicIdExcludeCurrent(
+                        categoryWithTopicDTO.getTopicId(),
+                        categoryWithTopicDTO.getSubmitterId());
+
+        messageService.saveMessagesForSubscribers(
+                categoryWithTopicDTO,
                 categorySubscribersIds, topicSubscribersIds);
-        notificationMessagesService.sendMessagesToCategorySubscribers(categorySubscribersIds,
+
+        notificationMessagesService.sendMessagesToCategorySubscribers(
+                categorySubscribersIds,
                 categoryWithTopicDTO);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

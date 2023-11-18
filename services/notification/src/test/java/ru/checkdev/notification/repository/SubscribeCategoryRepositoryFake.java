@@ -26,10 +26,11 @@ public class SubscribeCategoryRepositoryFake
     }
 
     @Override
-    public List<Integer> findUserIdByCategoryId(int categoryId) {
+    public List<Integer> findUserIdByCategoryIdExcludeCurrent(int categoryId, int excludedUserId) {
         return memory.values()
                 .stream()
-                .filter(subscribeCategory -> subscribeCategory.getCategoryId() == categoryId)
+                .filter(subscribeCategory -> subscribeCategory.getCategoryId() == categoryId
+                        && subscribeCategory.getUserId() != excludedUserId)
                 .map(SubscribeCategory::getUserId)
                 .toList();
     }

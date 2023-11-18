@@ -37,7 +37,7 @@ public class InnerMessageServiceFakeTest {
     @Test
     public void whenSaveMessagesForSubscribers() {
         var categoryWithTopic = new CategoryWithTopicDTO(1, "Category_1",
-                1, "Topic_1", 1);
+                1, "Topic_1", 1, 3);
         var categorySubscribersIds = List.of(1);
         var topicSubscribersIds = List.of(2);
         var service = new InnerMessageService(new InnerMessageRepositoryFake(), null, null);

@@ -43,8 +43,21 @@ public class SubscribeTopicServiceFakeTest {
                 .save(new SubscribeTopic(1, 1, 1));
         SubscribeTopic subscribeTopic2 = service
                 .save(new SubscribeTopic(2, 2, 1));
-        var result = service.findUserIdsByTopicId(1);
+        var result = service.findUserIdsByTopicIdExcludeCurrent(1, 3);
         Assertions.assertEquals(2, result.size());
+        service.delete(subscribeTopic1);
+        service.delete(subscribeTopic2);
+    }
+
+    @Test
+    public void whenFindUserIdsByTopicIdExcludeFirst() {
+        var service = new SubscribeTopicService(new SubscribeTopicRepositoryFake());
+        SubscribeTopic subscribeTopic1 = service
+                .save(new SubscribeTopic(1, 1, 1));
+        SubscribeTopic subscribeTopic2 = service
+                .save(new SubscribeTopic(2, 2, 1));
+        var result = service.findUserIdsByTopicIdExcludeCurrent(1, 1);
+        Assertions.assertEquals(1, result.size());
         service.delete(subscribeTopic1);
         service.delete(subscribeTopic2);
     }

@@ -33,7 +33,7 @@ public class SubscribeTopicService {
         return subscribeTopic;
     }
 
-    public List<Integer> findUserIdsByTopicId(int topicId) {
-        return repository.findUserIdByTopicId(topicId);
+    public List<Integer> findUserIdsByTopicIdExcludeCurrent(int topicId, int excludedUserId) {
+        return repository.findUserIdByTopicIdExcludeCurrent(topicId, excludedUserId);
     }
 }

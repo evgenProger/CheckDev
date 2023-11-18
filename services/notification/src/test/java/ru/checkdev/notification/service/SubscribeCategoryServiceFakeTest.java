@@ -44,8 +44,21 @@ public class SubscribeCategoryServiceFakeTest {
                 .save(new SubscribeCategory(1, 1, 4));
         var subscribeCategory2 = service
                 .save(new SubscribeCategory(2, 2, 4));
-        assertThat(service.findUserIdsByCategoryId(4).size())
+        assertThat(service.findUserIdsByCategoryIdExcludeCurrent(4, 3).size())
                 .isEqualTo(2);
+        service.delete(subscribeCategory1);
+        service.delete(subscribeCategory2);
+    }
+
+    @Test
+    public void whenFindUserIdsByCategoryIdExcludeFirst() {
+        var service = new SubscribeCategoryService(new SubscribeCategoryRepositoryFake());
+        var subscribeCategory1 = service
+                .save(new SubscribeCategory(1, 1, 4));
+        var subscribeCategory2 = service
+                .save(new SubscribeCategory(2, 2, 4));
+        assertThat(service.findUserIdsByCategoryIdExcludeCurrent(4, 1).size())
+                .isEqualTo(1);
         service.delete(subscribeCategory1);
         service.delete(subscribeCategory2);
     }
