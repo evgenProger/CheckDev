@@ -54,4 +54,7 @@ public class Interview {
     @NotBlank(message = "Author must be not empty")
     @JoinColumn(name = "author")
     private String author;
+
+    @JoinColumn(name = "agreed_wisher_id")
+    private int agreedWisherId;
 }

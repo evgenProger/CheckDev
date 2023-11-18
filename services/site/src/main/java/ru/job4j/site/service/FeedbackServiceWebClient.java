@@ -40,7 +40,6 @@ public class FeedbackServiceWebClient implements FeedbackService {
         this.urlMock = urlMock;
         this.webClientFeedback = WebClient.create(this.urlMock);
         this.interviewService = interviewService;
-      //  this.profilesService = profilesService;
         this.notificationService = notificationService;
     }
 
@@ -79,18 +78,25 @@ public class FeedbackServiceWebClient implements FeedbackService {
         if (result) {
             updateStatusInterview(token, interview, feedbackDTO.getUserId());
             try {
-                InnerMessageDTO innerMessage = new InnerMessageDTO();
-                innerMessage.setUserId(feedbackDTO.getUserId());
-                innerMessage.setText("Пользователь "
+                InnerMessageDTO innerMessage1 = new InnerMessageDTO();
+                InnerMessageDTO innerMessage2 = new InnerMessageDTO();
+                String text = "Пользователь "
                         + userName
                         + " оставил отзыв о собеседовании "
-                        + interview.getTitle()
-                );
-                notificationService.sendFeedBackNotification(token, innerMessage);
+                        + interview.getTitle();
+                innerMessage1.setUserId(feedbackDTO.getUserId());
+                innerMessage1.setText(text);
+                if (feedbackDTO.getUserId() == interview.getSubmitterId()) {
+                    innerMessage2.setUserId(interview.getAgreedWisherId());
+                } else {
+                    innerMessage2.setUserId(interview.getSubmitterId());
+                }
+                innerMessage2.setText(text);
+                notificationService.sendFeedBackNotification(token, innerMessage1);
+                notificationService.sendFeedBackNotification(token, innerMessage2);
             } catch (JsonProcessingException e) {
                 log.error("notificationService.class method sendFeedBackNotification error: {}", e.getMessage());
             }
-
         }
         return result;
     }

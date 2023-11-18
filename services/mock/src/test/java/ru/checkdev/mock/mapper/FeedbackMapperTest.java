@@ -19,7 +19,7 @@ class FeedbackMapperTest {
     void whenMapperGetFeedbackDTOThenEquals() {
         var interview = new Interview(1, 1, 1, 1,
                 "titel", "add", "contact",
-                "approxim", null, 1, "author");
+                "approxim", null, 1, "author", 1);
         var feedback = new Feedback(1, interview, 2, 1, "text", 5);
         var expected = new FeedbackDTO(feedback.getId(), feedback.getInterview().getId(), feedback.getUserId(),
                 feedback.getRoleInInterview(), feedback.getTextFeedback(), feedback.getScope());
@@ -31,7 +31,7 @@ class FeedbackMapperTest {
     void whenMapperGetFeedbackThenEquals() {
         var interview = new Interview(1, 1, 1, 1,
                 "titel", "add", "contact",
-                "approxim", null, 1, "author");
+                "approxim", null, 1, "author", 1);
         var feedbackDTO = new FeedbackDTO(1, interview.getId(), 1,
                 2, "text", 5);
         var actual = new Feedback(feedbackDTO.getId(), interview, feedbackDTO.getUserId(),

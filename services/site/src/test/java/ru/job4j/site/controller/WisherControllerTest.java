@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.domain.StatusWisher;
+import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.WisherDto;
 import ru.job4j.site.service.InterviewService;
 import ru.job4j.site.service.WisherServiceWebClient;
@@ -51,11 +52,14 @@ class WisherControllerTest {
         var interviewId = 1;
         var wisherId = 2;
         var newStatusId = 22;
+        var wisherUserId = 13;
         doNothing().when(interviewService).updateStatus(token, interviewId, newStatusId);
+        when(interviewService.getById(token, interviewId)).thenReturn(new InterviewDTO());
         this.mockMvc.perform(post("/wisher/dismissed")
                         .sessionAttr("token", token)
                         .param("interviewId", String.valueOf(interviewId))
-                        .param("wisherId", String.valueOf(wisherId)))
+                        .param("wisherId", String.valueOf(wisherId))
+                        .param("wisherUserId", String.valueOf(wisherUserId)))
                 .andDo(print())
                 .andExpect(view().name("redirect:/interview/" + interviewId));
     }
