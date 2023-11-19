@@ -456,4 +456,18 @@ class InterviewServiceTest {
         List<Interview> actual = interviewService.findAllIdByNoFeedback(wisherUser);
         assertThat(actual.isEmpty()).isTrue();
     }
+
+    @Test
+    public void whenGetAllWithStatusNew() {
+        Interview interviewNewStatus = interview;
+        when(interviewRepository.findNewInterviews(1)).thenReturn(List.of(interview));
+
+    }
+
+    @Test
+    public void whenPutNotNewStatusGetEmptyList() {
+        Interview interviewNewStatus = interview;
+        when(interviewRepository.findNewInterviews(2)).thenReturn(List.of());
+
+    }
 }
