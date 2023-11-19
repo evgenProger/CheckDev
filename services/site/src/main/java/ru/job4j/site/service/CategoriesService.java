@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.CategoryDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 public class CategoriesService {
     private final TopicsService topicsService;
+
+    private final InterviewsService interviewsService;
 
     public List<CategoryDTO> getAll() throws JsonProcessingException {
         var text = new RestAuthCall("http://localhost:9902/categories/").get();
@@ -55,6 +58,9 @@ public class CategoriesService {
         var categoriesDTO = getAll();
         for (var categoryDTO : categoriesDTO) {
             categoryDTO.setTopicsSize(topicsService.getByCategory(categoryDTO.getId()).size());
+            var listTopicId = getAllWithTopicsCount(categoryDTO);
+            var count = countInterview(listTopicId);
+            categoryDTO.setCountInterview(count);
         }
         return categoriesDTO;
     }
@@ -63,6 +69,9 @@ public class CategoriesService {
         var categoriesDTO = getPopularFromDesc();
         for (var categoryDTO : categoriesDTO) {
             categoryDTO.setTopicsSize(topicsService.getByCategory(categoryDTO.getId()).size());
+            var listTopicId = getAllWithTopicsCount(categoryDTO);
+            var count = countInterview(listTopicId);
+            categoryDTO.setCountInterview(count);
         }
         return categoriesDTO;
     }
@@ -76,5 +85,32 @@ public class CategoriesService {
             }
         }
         return result;
+    }
+
+    /**
+     * Метод находит List TopicId для определенной категории
+     * @param categoryDTO categoryDTO
+     * @return List TopicId для определенной категории
+     * @throws JsonProcessingException
+     */
+    public List<Integer> getAllWithTopicsCount(CategoryDTO categoryDTO) throws JsonProcessingException {
+        return topicsService.getByCategory(categoryDTO.getId())
+                .stream().map(topicDTO -> topicDTO.getId()).collect(Collectors.toList());
+    }
+
+    /**
+     * Метод находит количество интервью для List TopicId
+     * @param intListTopic intListTopic
+     * @return количество интервью для List TopicId
+     */
+    public Long countInterview(List<Integer> intListTopic) {
+        var listInterview = interviewsService.getNewInterviews();
+        long countInt = 0L;
+        for (var interview : listInterview) {
+            if (intListTopic.contains(interview.getTopicId())) {
+                countInt++;
+            }
+        }
+        return countInt;
     }
 }

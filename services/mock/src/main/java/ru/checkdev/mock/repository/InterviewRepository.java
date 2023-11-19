@@ -174,4 +174,12 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
     @Query(value = "SELECT i.* FROM interview i WHERE i.status = :interviewStatusId ORDER BY i.create_date DESC LIMIT 3", nativeQuery = true)
     List<Interview> findLastInterviews(@Param("interviewStatusId") int interviewStatusId);
 
+    /**
+     * Получаем из базы новые интервью по статусу.
+     *
+     * @return LIST из новых интервью
+     */
+    @Query(value = "SELECT i.* FROM interview i WHERE i.status = :interviewStatusId", nativeQuery = true)
+    List<Interview> findNewInterviews(@Param("interviewStatusId") int interviewStatusId);
+
 }

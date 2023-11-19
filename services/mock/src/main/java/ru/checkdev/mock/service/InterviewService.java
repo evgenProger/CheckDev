@@ -203,4 +203,14 @@ public class InterviewService {
     public List<Interview> findAllIdByNoFeedback(int userId) {
         return interviewRepository.findAllByUserIdWisherIsApproveAndNoFeedback(userId);
     }
+
+    /**
+     * Метод возвращает все Interview со статусом новые
+     *
+     * @return List<Interview>
+     */
+    public List<Interview> findNewInterview() {
+        int interviewStatusId = 1;
+        return interviewRepository.findNewInterviews(interviewStatusId);
+    }
 }
