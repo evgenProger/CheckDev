@@ -43,7 +43,7 @@ public class TgConfig {
     }
 
     @Bean
-    public TgBot initTg() {
+    public TgBot initTg() throws TelegramApiException {
         Map<String, Action> actionMap = Map.of(
                 "/start", new InfoAction(List.of(
                         "/start",
@@ -59,14 +59,9 @@ public class TgConfig {
                 "/unnotify", new UnNotifyAction(tgCall, userTelegramService, messageService)
 
         );
-        try {
-            TgBot menu = new TgBot(actionMap, username, token);
-            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(menu);
-            return menu;
-        } catch (TelegramApiException e) {
-            log.error("Telegram bot: {}, ERROR {}", username, e);
-        }
-        return null;
+        TgBot menu = new TgBot(actionMap, username, token);
+        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+        botsApi.registerBot(menu);
+        return menu;
     }
 }
