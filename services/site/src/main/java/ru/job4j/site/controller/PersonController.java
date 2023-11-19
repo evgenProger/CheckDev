@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +40,9 @@ public class PersonController {
     private final ImageCompress imageCompress;
     private final AuthService authService;
     private final NotificationService notifications;
+
+    @Value("${botUserName}")
+    private String botUserName;
 
     public PersonController(@Value("${server.site.maxSizeLoadFile}") String maxSizeFile,
                             @Value("${server.site.contentTypeFile}") String contentTypeFile,
@@ -147,6 +149,15 @@ public class PersonController {
             return "redirect:/persons/edit?error=true";
         }
         return "redirect:/persons/";
+    }
+    @GetMapping("/changePassword")
+    public String changePassword(Model model) {
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/",
+                "Смена пароля", "/changePassword"
+        );
+        model.addAttribute("botUserName", botUserName);
+        return "persons/changePassword";
     }
 
     /**
