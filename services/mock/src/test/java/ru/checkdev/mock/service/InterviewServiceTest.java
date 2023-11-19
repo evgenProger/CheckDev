@@ -460,14 +460,16 @@ class InterviewServiceTest {
     @Test
     public void whenGetAllWithStatusNew() {
         Interview interviewNewStatus = interview;
-        when(interviewRepository.findNewInterviews(1)).thenReturn(List.of(interview));
-
+        int interviewStatusId = 1;
+        when(interviewRepository.findNewInterviews(interviewStatusId)).thenReturn(List.of(interviewNewStatus));
     }
 
     @Test
     public void whenPutNotNewStatusGetEmptyList() {
-        Interview interviewNewStatus = interview;
-        when(interviewRepository.findNewInterviews(2)).thenReturn(List.of());
+        int interviewStatusId = 2;
+        when(interviewRepository.findNewInterviews(interviewStatusId)).thenReturn(List.of());
+        List<Interview> actual = interviewService.findNewInterview();
+        assertThat(actual.isEmpty()).isTrue();
 
     }
 }
