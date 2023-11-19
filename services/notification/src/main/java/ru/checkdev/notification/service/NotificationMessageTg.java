@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class NotificationSubscribeTg implements NotificationSubscribe<UserTelegram, String> {
+public class NotificationMessageTg implements NotificationMessage<UserTelegram, String, InnerMessage> {
     private final TgBot tgBot;
     private final InnerMessageService innerMessageService;
 
@@ -29,15 +29,15 @@ public class NotificationSubscribeTg implements NotificationSubscribe<UserTelegr
      * Метод отправляет сообщения пользователям в телеграмм
      *
      * @param targets List<UserTelegram>
-     * @param value String message
+     * @param message String message
      * @return List<InnerMessage>
      */
     @Override
-    public List<InnerMessage> sendMessage(List<UserTelegram> targets, String value) {
+    public List<InnerMessage> sendMessage(List<UserTelegram> targets, String message) {
         List<InnerMessage> innerMessages = new ArrayList<>();
         for (UserTelegram user : targets) {
-            var messageTg = new SendMessage(String.valueOf(user.getChatId()), value);
-            var innerMessage = new InnerMessage(0, user.getUserId(), value, new Timestamp(System.currentTimeMillis()), true);
+            var messageTg = getSendMessage(user.getChatId(), message);
+            var innerMessage = new InnerMessage(0, user.getUserId(), message, new Timestamp(System.currentTimeMillis()), true);
             try {
                 tgBot.execute(messageTg);
             } catch (Exception e) {
@@ -48,5 +48,30 @@ public class NotificationSubscribeTg implements NotificationSubscribe<UserTelegr
             innerMessages.add(innerMessage);
         }
         return innerMessages;
+    }
+
+    /**
+     * Метод отправляет сообщения одному пользователю в телеграмм
+     *
+     * @param target  UserTelegram
+     * @param message String
+     * @return InnerMessage
+     */
+    @Override
+    public InnerMessage sendMessage(UserTelegram target, String message) {
+        var messageTg = getSendMessage(target.getChatId(), message);
+        var innerMessage = new InnerMessage(0, target.getUserId(), message, new Timestamp(System.currentTimeMillis()), true);
+        try {
+            tgBot.execute(messageTg);
+        } catch (Exception e) {
+            log.error("Send message by UserID:{}, from telegram Error:{}", target.getUserId(), e);
+            innerMessage.setRead(false);
+        }
+        return innerMessageService.saveMessage(innerMessage);
+    }
+
+    private SendMessage getSendMessage(Long chatId, String message) {
+        var chatIdString = String.valueOf(chatId);
+        return new SendMessage(chatIdString, message);
     }
 }

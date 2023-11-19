@@ -75,7 +75,7 @@ public class InterviewController {
                 topicId, topicName, createInterview.getId(), interviewDTO.getSubmitterId());
         notifications.notifyAboutInterviewCreation(token,
                 categoryWithTopicDTO);
-        var interviewNotifDto = InterviewNotifDTO.of()
+        var interviewNotifiDTO = InterviewNotifiDTO.of()
                 .id(interviewDTO.getId())
                 .submitterId(interviewDTO.getSubmitterId())
                 .title(interviewDTO.getTitle())
@@ -84,7 +84,7 @@ public class InterviewController {
                 .categoryId(categoryIdName.getId())
                 .categoryName(categoryIdName.getName())
                 .build();
-        notifications.sendSubscribeTopic(token, interviewNotifDto);
+        notifications.sendSubscribeTopic(token, interviewNotifiDTO);
         return "redirect:/interview/" + createInterview.getId();
     }
 

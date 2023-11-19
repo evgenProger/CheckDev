@@ -6,10 +6,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.job4j.site.domain.StatusWisher;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.WisherDto;
+import ru.job4j.site.dto.WisherNotifiDTO;
 import ru.job4j.site.service.InterviewService;
+import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.WisherServiceWebClient;
 
 import static org.mockito.Mockito.doNothing;
@@ -31,17 +32,19 @@ class WisherControllerTest {
     private WisherServiceWebClient wisherService;
     @MockBean
     private InterviewService interviewService;
+    @MockBean
+    private NotificationService notificationService;
 
     @Test
     void whenCreateWisherThenReturnRedirect() throws Exception {
-        var wisher = new WisherDto(1, 2, 3, "mail", true, StatusWisher.IS_CONSIDERED.getId());
+        var wisherNotifiDTO = new WisherNotifiDTO(2, "tile", 3, 5, "mail");
+        var wisher = new WisherDto(0, wisherNotifiDTO.getInterviewId(), wisherNotifiDTO.getUserId(),
+                wisherNotifiDTO.getContactBy(), false, 0);
         var token = "1234";
         when(wisherService.saveWisherDto(token, wisher)).thenReturn(true);
         this.mockMvc.perform(post("/wisher/create")
-                        .sessionAttr("token", token)
-                        .param("interviewId", String.valueOf(wisher.getInterviewId()))
-                        .param("userId", String.valueOf(wisher.getUserId()))
-                        .param("contactBy", wisher.getContactBy()))
+                        .flashAttr("wisherNotifiDTO", wisherNotifiDTO)
+                        .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(view().name("redirect:/interview/" + wisher.getInterviewId()));
     }

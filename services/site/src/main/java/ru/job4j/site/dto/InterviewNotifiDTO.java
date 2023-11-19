@@ -1,4 +1,4 @@
-package ru.checkdev.notification.dto;
+package ru.job4j.site.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Модель DTO описывает Собеседование для сервиса Notification
- *
  * @author Dmitry Stepanov, user Dmitry
  * @since 17.11.2023
  */
@@ -15,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "of")
-public class InterviewNotifDTO {
+public class InterviewNotifiDTO {
     private int id;
     private int submitterId;
     private String title;

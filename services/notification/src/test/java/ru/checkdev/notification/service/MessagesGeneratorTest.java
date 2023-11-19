@@ -1,7 +1,10 @@
 package ru.checkdev.notification.service;
 
 import org.junit.jupiter.api.Test;
-import ru.checkdev.notification.dto.InterviewNotifDTO;
+import ru.checkdev.notification.dto.InterviewNotifiDTO;
+import ru.checkdev.notification.dto.WisherNotifiDTO;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * CheckDev пробное собеседование
@@ -13,7 +16,7 @@ class MessagesGeneratorTest {
 
     @Test
     void generatorMessageSubscribeTopic() {
-        var interviewNotifDTO = InterviewNotifDTO.of()
+        var interviewNotifDTO = InterviewNotifiDTO.of()
                 .id(1)
                 .title("title")
                 .topicId(2)
@@ -23,9 +26,27 @@ class MessagesGeneratorTest {
                 .build();
         var expected = String.format(
                 "Вы подписаны на тему:%1$s, из категории:%2$s.%3$s"
-                        + "По вашей подписки создана новое собеседование.",
+                        + "По вашей подписке создана новое собеседование.",
                 interviewNotifDTO.getTopicName(), interviewNotifDTO.getCategoryName(),
                 System.lineSeparator());
-        var actual = MessagesGenerator.generatorMessageSubscribeTopic(interviewNotifDTO);
+        var actual = MessagesGenerator.getMessageSubscribeTopic(interviewNotifDTO);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void generatorMessagepublicParticipateWisher() {
+        WisherNotifiDTO wisherNotifiDTO = WisherNotifiDTO.of()
+                .interviewId(1)
+                .interviewTitle("titleInterview")
+                .submitterId(2)
+                .userId(3)
+                .contactBy("contact")
+                .build();
+        String expect = String.format(
+                "На ваше собеседование: %s добавился участник: %s",
+                wisherNotifiDTO.getInterviewTitle(),
+                wisherNotifiDTO.getContactBy());
+        String actual = MessagesGenerator.getMessageParticipateWisher(wisherNotifiDTO);
+        assertThat(actual).isEqualTo(expect);
     }
 }
