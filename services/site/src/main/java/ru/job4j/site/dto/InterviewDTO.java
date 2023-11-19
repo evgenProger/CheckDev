@@ -17,6 +17,13 @@ public class InterviewDTO {
 
     private int submitterId;
 
+    /**
+     * поле выбранного автором wisher
+     * Arcady555
+     */
+
+    private int agreedWisherId;
+
     private String title;
 
     private String additional;

@@ -24,4 +24,5 @@
     <include file="changelog/017_ddl_add_column_author_in_interview_table.sql" relativeToChangelogFile="true"/>
     <include file="changelog/018_ddl_add_column_table_filter.sql" relativeToChangelogFile="true"/>
     <include file="changelog/019_ddl_create_table_filter_profile.sql" relativeToChangelogFile="true"/>
+    <include file="changelog/021_dml_update_table_interview.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

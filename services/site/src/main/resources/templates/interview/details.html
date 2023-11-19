@@ -191,6 +191,8 @@
                                            th:value="${wisher.interviewId}">
                                     <input type="hidden" th:id="wisherId" th:name="wisherId"
                                            th:value="${wisher.id}">
+                                    <input type="hidden" th:id="wisherUserId" th:name="wisherUserId"
+                                           th:value="${wisher.userId}">
                                     <button th:if="${userInfo != null && isAuthor}"
                                             type="submit" class="btn btn-primary">Одобрить
                                     </button>

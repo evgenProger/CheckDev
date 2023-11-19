@@ -66,7 +66,6 @@ public class FeedbackController {
     public String saveFeedback(@ModelAttribute FeedbackDTO feedbackDTO,
                                @ModelAttribute("userName")String name,
                                HttpServletRequest request) {
-        System.out.println(name);
         var token = RequestResponseTools.getToken(request);
         feedbackService.save(token, feedbackDTO, name);
         return "redirect:/interview/" + feedbackDTO.getInterviewId();
