@@ -126,7 +126,7 @@
                 </tr>
                 </tbody>
             </table>
-            <!--Кнопки оставить отзыв. Доступна если статус IN_PROGRESS-->
+            <!--/*Кнопки оставить отзыв. Доступна если статус IN_PROGRESS*/-->
             <div th:if="${userInfo != null && (STATUS_IN_PROGRESS_ID==interview.status || STATUS_IS_FEEDBACK_ID==interview.status)}">
                 <!--Кнопка оставляет отзыв АВТОР собеседования. Доступна если isAuthor=true-->
                 <form th:action="@{|/interview/feedback/${interview.id}|}" method="get">
@@ -139,34 +139,8 @@
                     </div>
                 </form>
             </div>
-            <!-- Отображение списка выбранных участников собеседования -->
-            <div th:if="${isAuthor && isDismissed}">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Отобранный участник</th>
-                        <th scope="col">Контакт</th>
-                        <th scope="col">Роль</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="wisher : ${wishersDetail}" th:if="${wisher.approve}">
-                        <td>
-                            <span class="text-dark" th:text="${wisher.username}"></span>
-                        </td>
-                        <td>
-                            <span th:text="${wisher.contactBy}"></span>
-                        </td>
-                        <td>
-                            <span th:if="${interview.mode == 2}">Буду проводить собеседование (задавать вопросы)</span>
-                            <span th:if="${interview.mode == 1}">Буду проходить собеседование (отвечать на вопросы)</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
             <div>
-                <!-- Отображение списка участников собеседования -->
+                <!--/* Отображение списка участников собеседования */-->
                 <div th:if="${!isDismissed and !wishersDetail.isEmpty()}">
                     <table class="table">
                         <thead>
