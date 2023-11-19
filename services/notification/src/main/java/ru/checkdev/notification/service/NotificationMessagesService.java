@@ -6,8 +6,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.checkdev.notification.dto.CategoryWithTopicDTO;
 import ru.checkdev.notification.repository.UserTelegramRepository;
 import ru.checkdev.notification.telegram.TgBot;
-import ru.checkdev.notification.telegram.service.Notificator;
-
 import java.util.List;
 
 @Service
