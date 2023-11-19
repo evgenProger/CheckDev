@@ -16,7 +16,6 @@ public class WisherMapper {
                 .userId(wisherDto.getUserId())
                 .contactBy(wisherDto.getContactBy())
                 .approve(wisherDto.isApprove())
-                .status(wisherDto.getStatus())
                 .build();
     }
 }

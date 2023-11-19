@@ -114,8 +114,8 @@ class WishersControllerTest {
 
     @Test
     public void whenFindDtoThenReturnStatusOkAndListWisherDTO() throws Exception {
-        var wisherDto1 = new WisherDto(1, 1, 1, "mail@mail", false, 2);
-        var wisherDto2 = new WisherDto(2, 2, 2, "mail1@mail", false, 5);
+        var wisherDto1 = new WisherDto(1, 1, 1, "mail@mail", false);
+        var wisherDto2 = new WisherDto(2, 2, 2, "mail1@mail", false);
         var expectedList = List.of(wisherDto1, wisherDto2);
         when(wisherService.findAllWisherDto()).thenReturn(expectedList);
         mockMvc.perform(get("/wishers/dto/"))
@@ -138,7 +138,7 @@ class WishersControllerTest {
 
     @Test
     void whenFindDtoByInterviewThenReturnStatusOkAntListWisherDto() throws Exception {
-        var wisherDto1 = new WisherDto(1, 1, 1, "mail@mail", false, 2);
+        var wisherDto1 = new WisherDto(1, 1, 1, "mail@mail", false);
         var expectList = List.of(wisherDto1);
         when(wisherService.findWisherDtoByInterviewId(wisherDto1.getInterviewId())).thenReturn(expectList);
         mockMvc.perform(get("/wishers/dto/{id}", wisherDto1.getInterviewId()))
@@ -147,20 +147,17 @@ class WishersControllerTest {
                 .andExpect(jsonPath("$[0].id", Matchers.is(wisherDto1.getId())))
                 .andExpect(status().isOk());
     }
-
     @Disabled
     @Test
-    void setWisherStatusThenReturnStatusOk() throws Exception {
+    void setWisherApproveThenReturnStatusOk() throws Exception {
         var interviewId = 1;
         var wisherId = 2;
-        var newStatusId = 3;
-        var anyStatusId = 4;
-        doNothing().when(wisherService).setWisherStatus(interviewId, wisherId, newStatusId, anyStatusId);
-        mockMvc.perform(post("/wishers/status/")
+        var newApprove = true;
+        doNothing().when(wisherService).setWisherApprove(interviewId, wisherId, newApprove);
+        mockMvc.perform(post("/wishers/approve/")
                         .param("interviewId", String.valueOf(interviewId))
                         .param("wisherId", String.valueOf(wisherId))
-                        .param("newStatusId", String.valueOf(newStatusId))
-                        .param("anyStatusId", String.valueOf(anyStatusId)))
+                        .param("newApprove", String.valueOf(newApprove)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -169,14 +166,12 @@ class WishersControllerTest {
     void setWisherStatusThenIsUnauthorized() throws Exception {
         var interviewId = 1;
         var wisherId = 2;
-        var newStatusId = 3;
-        var anyStatusId = 4;
-        doNothing().when(wisherService).setWisherStatus(interviewId, wisherId, newStatusId, anyStatusId);
-        mockMvc.perform(post("/wishers/status/")
+        var newApprove = true;
+        doNothing().when(wisherService).setWisherApprove(interviewId, wisherId, newApprove);
+        mockMvc.perform(post("/wishers/approve/")
                         .param("interviewId", String.valueOf(interviewId))
                         .param("wisherId", String.valueOf(wisherId))
-                        .param("newStatusId", String.valueOf(newStatusId))
-                        .param("anyStatusId", String.valueOf(anyStatusId)))
+                        .param("newApprove", String.valueOf(newApprove)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }

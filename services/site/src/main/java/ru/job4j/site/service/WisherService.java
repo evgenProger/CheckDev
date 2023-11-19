@@ -19,9 +19,8 @@ public interface WisherService {
 
     List<WisherDto> getAllWisherDtoByInterviewId(String token, String interviewId);
 
-    boolean setNewStatusByWisherInterview(String token, String interviewId,
-                                                 String wisherId, String newStatusId,
-                                                 String anyStatusId);
+    boolean setNewApproveByWisherInterview(String token, String interviewId,
+                                           String wisherId, boolean newApprove);
 
     boolean isWisher(int userId, int interviewId, List<WisherDto> wishers);
 

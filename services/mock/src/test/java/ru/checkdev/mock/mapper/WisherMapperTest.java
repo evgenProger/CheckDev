@@ -19,8 +19,8 @@ public class WisherMapperTest {
                 "contact", "30.02.2070",
                 new Timestamp(System.currentTimeMillis()), 1, "author", 1);
         var wisherDTO = new WisherDto(1, 1, 1,
-                "contact", true, 1);
-        var expected = new Wisher(0, interview, 1, "contact", true, 1);
+                "contact", true);
+        var expected = new Wisher(0, interview, 1, "contact", true);
         assertEquals(new WisherMapper().getWisher(wisherDTO, interview), expected);
     }
 }

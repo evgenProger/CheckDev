@@ -20,7 +20,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class FeedbackJpaService implements FeedbackService {
+public class FeedbackCrudService implements FeedbackService {
     private final FeedbackRepository repository;
 
     @Override

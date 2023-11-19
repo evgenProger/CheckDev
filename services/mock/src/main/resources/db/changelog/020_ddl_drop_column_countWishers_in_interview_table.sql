@@ -1,1 +1,0 @@
-ALTER TABLE IF EXISTS interview DROP COLUMN count_wishers;

@@ -276,7 +276,6 @@ public class InterviewControllerTest {
             wisher.setUserId(userId + i);
             wisher.setContactBy(String.format("user_%d@mail.cd", i));
             wisher.setApprove(i % 2 == 0);
-            wisher.setStatus(1);
             return wisher;
         }).toList();
         var interviewStatistics = new HashMap<Integer, InterviewStatistic>();
