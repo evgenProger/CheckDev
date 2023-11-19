@@ -3,14 +3,14 @@ package ru.job4j.site.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.domain.StatusWisher;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.WisherDto;
+import ru.job4j.site.dto.WisherNotifiDTO;
 import ru.job4j.site.service.InterviewService;
+import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.WisherService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,22 +29,25 @@ public class WisherController {
     private final WisherService wisherService;
     private final InterviewService interviewService;
 
+    private final NotificationService notificationService;
+
     /**
      * Подать заявку на участие в собеседовании.
      *
-     * @param wishParam Map<String, String>
+     * @param wisherNotifiDTO WisherNotifiDTO
      * @param request   HttpServletRequest
      * @return String page.
      */
     @PostMapping("/create")
-    public String createWisher(@RequestParam Map<String, String> wishParam,
+    public String createWisher(@ModelAttribute WisherNotifiDTO wisherNotifiDTO,
                                HttpServletRequest request) {
         var token = RequestResponseTools.getToken(request);
-        int interviewId = Integer.parseInt(wishParam.get("interviewId"));
-        int userId = Integer.parseInt(wishParam.get("userId"));
-        var contactBy = wishParam.get("contactBy");
+        int interviewId = wisherNotifiDTO.getInterviewId();
+        int userId = wisherNotifiDTO.getUserId();
+        var contactBy = wisherNotifiDTO.getContactBy();
         var wisherDto = new WisherDto(0, interviewId, userId, contactBy, false, StatusWisher.IS_CONSIDERED.getId());
         wisherService.saveWisherDto(token, wisherDto);
+        notificationService.sendParticipateAuthor(token, wisherNotifiDTO);
         return "redirect:/interview/" + interviewId;
     }
 
