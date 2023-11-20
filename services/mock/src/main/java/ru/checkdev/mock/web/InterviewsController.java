@@ -150,4 +150,13 @@ public class InterviewsController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(interviews);
     }
+
+    @GetMapping("/interviewStatusNew")
+    public ResponseEntity<List<Interview>> getAllNewInterview() {
+        List<Interview> interviews = interviewService.findNewInterview();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(interviews);
+    }
 }
