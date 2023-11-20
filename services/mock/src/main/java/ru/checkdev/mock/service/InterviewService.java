@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.enums.StatusInterview;
 import ru.checkdev.mock.repository.InterviewRepository;
 import ru.checkdev.mock.repository.WisherRepository;
 
@@ -51,8 +52,8 @@ public class InterviewService {
     }
 
     public List<Interview> findLast() {
-        int interviewStatusId = 1;
-        return interviewRepository.findLastInterviews(interviewStatusId);
+        var status = StatusInterview.IS_NEW;
+        return interviewRepository.findLastInterviews(status);
     }
 
     public Page<Interview> findPaging(int page, int size) {
@@ -63,8 +64,8 @@ public class InterviewService {
     public Page<Interview> findPagingByUserIdRelated(int page, int size, int userId) {
         Page<Interview> interviews = wisherRepository.findInterviewByUserIdApproved(userId, Pageable.unpaged());
         List<Integer> interviewIds = interviews.stream().map(Interview::getId).toList();
-        int interviewStatusId = 1;
-        return interviewRepository.findAllByUserIdRelated(userId, interviewStatusId, interviewIds,
+        var status = StatusInterview.IS_NEW;
+        return interviewRepository.findAllByUserIdRelated(userId, status, interviewIds,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createDate")));
     }
 
@@ -110,7 +111,7 @@ public class InterviewService {
      * @param status Status
      * @return boolean true / false
      */
-    public boolean updateStatus(int id, int status) {
+    public boolean updateStatus(int id, StatusInterview status) {
         try {
             interviewRepository.updateStatus(id, status);
             return true;
@@ -210,7 +211,7 @@ public class InterviewService {
      * @return List<Interview>
      */
     public List<Interview> findNewInterview() {
-        int interviewStatusId = 1;
-        return interviewRepository.findNewInterviews(interviewStatusId);
+        var status = StatusInterview.IS_NEW;
+        return interviewRepository.findNewInterviews(status);
     }
 }

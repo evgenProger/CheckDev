@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.enums.StatusInterview;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,11 +18,11 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
 
     @Query("SELECT i FROM interview i"
             + " WHERE i.submitterId=:userId"
-            + " OR i.status=:statusId"
+            + " OR i.status=:status"
             + " OR i.id IN (:interviewIds)"
     )
     Page<Interview> findAllByUserIdRelated(@Param("userId") int userId,
-                                           @Param("statusId") int statusId,
+                                           @Param("status") StatusInterview status,
                                            @Param("interviewIds") List<Integer> interviewIds,
                                            Pageable pageable);
 
@@ -40,7 +41,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
     @Modifying
     @Transactional
     @Query(value = "UPDATE interview i SET i.status=:status WHERE i.id=:id")
-    void updateStatus(@Param("id") int id, @Param("status") int status);
+    void updateStatus(@Param("id") int id, @Param("status") StatusInterview status);
 
     Page<Interview> findByTopicIdIn(Collection<Integer> topicIds, Pageable pageable);
 
@@ -171,15 +172,15 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      *
      * @return LIST из ТРЕХ последних интервью
      */
-    @Query(value = "SELECT i.* FROM interview i WHERE i.status = :interviewStatusId ORDER BY i.create_date DESC LIMIT 3", nativeQuery = true)
-    List<Interview> findLastInterviews(@Param("interviewStatusId") int interviewStatusId);
+    @Query(value = "SELECT i.* FROM interview i WHERE i.status = :status ORDER BY i.create_date DESC LIMIT 3", nativeQuery = true)
+    List<Interview> findLastInterviews(@Param("status") StatusInterview status);
 
     /**
      * Получаем из базы новые интервью по статусу.
      *
      * @return LIST из новых интервью
      */
-    @Query(value = "SELECT i.* FROM interview i WHERE i.status = :interviewStatusId", nativeQuery = true)
-    List<Interview> findNewInterviews(@Param("interviewStatusId") int interviewStatusId);
+    @Query(value = "SELECT i.* FROM interview i WHERE i.status = :status", nativeQuery = true)
+    List<Interview> findNewInterviews(@Param("status") StatusInterview status);
 
 }

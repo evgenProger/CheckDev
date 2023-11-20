@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.enums.StatusInterview;
 import ru.checkdev.mock.service.InterviewService;
 
 import java.util.Optional;
@@ -41,6 +42,7 @@ class InterviewControllerTest {
     private Interview interview = Interview.of()
             .id(1)
             .mode(2)
+            .status(StatusInterview.IS_NEW)
             .submitterId(3)
             .title("test_title")
             .additional("test_additional")
@@ -55,6 +57,7 @@ class InterviewControllerTest {
     private Interview emptyInterview = Interview.of()
             .id(1)
             .mode(0)
+            .status(StatusInterview.IS_UNKNOWN)
             .submitterId(0)
             .title(null)
             .additional(null)
@@ -151,30 +154,30 @@ class InterviewControllerTest {
     @Test
     @WithMockUser
     public void whenUpdateStatusThenReturnStatusOk() throws Exception {
-        when(service.updateStatus(anyInt(), anyInt())).thenReturn(true);
+        when(service.updateStatus(anyInt(), StatusInterview.IN_PROGRESS)).thenReturn(true);
         this.mockMvc.perform(put("/interview/status/")
                         .param("id", "1")
-                        .param("newStatus", "2"))
+                        .flashAttr("newStatus", StatusInterview.IN_PROGRESS))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     public void whenUpdateStatusThenIsUnauthorized() throws Exception {
-        when(service.updateStatus(anyInt(), anyInt())).thenReturn(true);
+        when(service.updateStatus(1, StatusInterview.IS_NEW)).thenReturn(true);
         this.mockMvc.perform(put("/interview/status/")
                         .param("id", "1")
-                        .param("newStatus", "2"))
+                        .flashAttr("newStatus", StatusInterview.IS_NEW))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void whenUpdateStatusThenReturnStatusNotFound() throws Exception {
-        when(service.updateStatus(anyInt(), anyInt())).thenReturn(false);
+        when(service.updateStatus(1, StatusInterview.IS_CANCELED)).thenReturn(false);
         this.mockMvc.perform(put("/interview/status/")
                         .param("id", "1")
-                        .param("newStatus", "2"))
+                        .flashAttr("newStatus", StatusInterview.IS_CANCELED))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
     }

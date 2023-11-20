@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.job4j.site.domain.StatusInterview;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;

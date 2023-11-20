@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.domain.Feedback;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.enums.StatusInterview;
 
 import javax.persistence.EntityManager;
 import java.sql.Timestamp;
@@ -99,8 +100,8 @@ class InterviewRepositoryTest {
         interview.setAuthor("author");
         entityManager.persist(interview);
         int userId = 2;
-        int interviewStatusId = 1;
-        var page = interviewRepository.findAllByUserIdRelated(userId, interviewStatusId, List.of(1), PageRequest.of(0, 10));
+        var status = StatusInterview.IS_NEW;
+        var page = interviewRepository.findAllByUserIdRelated(userId, status, List.of(1), PageRequest.of(0, 10));
         MatcherAssert.assertThat(page.getTotalElements(), is(0L));
     }
 
@@ -118,8 +119,8 @@ class InterviewRepositoryTest {
         interview.setAuthor("author");
         entityManager.persist(interview);
         int userId = 1;
-        int interviewStatusId = 1;
-        var page = interviewRepository.findAllByUserIdRelated(userId, interviewStatusId, List.of(1), PageRequest.of(0, 10));
+        var status = StatusInterview.IS_NEW;
+        var page = interviewRepository.findAllByUserIdRelated(userId, status, List.of(1), PageRequest.of(0, 10));
         MatcherAssert.assertThat(page.getTotalElements(), is(1L));
     }
 
@@ -186,10 +187,10 @@ class InterviewRepositoryTest {
 
     @Test
     public void whenUpdateStatusInterviewThenUpdateStatus() {
-        var newStatus = 5;
+        var newStatus = StatusInterview.IS_CANCELED;
         var interview = new Interview();
         interview.setMode(1);
-        interview.setStatus(1);
+        interview.setStatus(StatusInterview.IS_NEW);
         interview.setSubmitterId(1);
         interview.setTitle("title");
         interview.setAdditional("additional");
@@ -208,10 +209,10 @@ class InterviewRepositoryTest {
 
     @Test
     public void whenUpdateStatusInterviewThenNotUpdateStatus() {
-        var newStatus = 5;
+        var newStatus = StatusInterview.IS_CANCELED;
         var interview = new Interview();
         interview.setMode(1);
-        interview.setStatus(1);
+        interview.setStatus(StatusInterview.IS_NEW);
         interview.setSubmitterId(1);
         interview.setTitle("title");
         interview.setAdditional("additional");

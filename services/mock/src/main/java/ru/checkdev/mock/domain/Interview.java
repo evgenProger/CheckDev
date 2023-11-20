@@ -1,6 +1,7 @@
 package ru.checkdev.mock.domain;
 
 import lombok.*;
+import ru.checkdev.mock.enums.StatusInterview;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -25,7 +26,7 @@ public class Interview {
     private int mode;
 
     @Column(name = "status")
-    private int status;
+    private StatusInterview status;
 
     @JoinColumn(name = "submitter_id")
     private int submitterId;

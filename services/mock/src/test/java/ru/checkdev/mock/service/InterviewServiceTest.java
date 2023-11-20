@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.enums.StatusInterview;
 import ru.checkdev.mock.repository.InterviewRepository;
 import ru.checkdev.mock.repository.WisherRepository;
 
@@ -45,7 +46,7 @@ class InterviewServiceTest {
     private Interview interview = Interview.of()
             .id(1)
             .mode(2)
-            .status(1)
+            .status(StatusInterview.IS_NEW)
             .submitterId(3)
             .title("test_title")
             .additional("test_additional")
@@ -92,7 +93,7 @@ class InterviewServiceTest {
     @Test
     public void whenGetAllByUserIdRelated() {
         int userId = 1;
-        int interviewStatusId = 1;
+        var status = StatusInterview.IS_NEW;
         List<Interview> interviews = IntStream.range(0, 5).mapToObj(i -> {
             var interview = new Interview();
             interview.setId(i);
@@ -108,7 +109,7 @@ class InterviewServiceTest {
         var page = new PageImpl<>(interviews);
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createDate"));
         when(wisherRepository.findInterviewByUserIdApproved(userId, Pageable.unpaged())).thenReturn(Page.empty());
-        when(interviewRepository.findAllByUserIdRelated(userId, interviewStatusId, List.of(), pageable)).thenReturn(page);
+        when(interviewRepository.findAllByUserIdRelated(userId, status, List.of(), pageable)).thenReturn(page);
         var actual = interviewService.findPagingByUserIdRelated(0, 5, userId);
         assertThat(actual, is(page));
         assertThat(actual.getTotalElements(), is(5L));
@@ -117,11 +118,11 @@ class InterviewServiceTest {
     @Test
     public void whenGetAllByUserIdRelatedAndNothingFound() {
         int userId = 1;
-        int interviewStatusId = 1;
+        var status = StatusInterview.IS_NEW;
         Page<Interview> page = Page.empty();
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createDate"));
         when(wisherRepository.findInterviewByUserIdApproved(userId, Pageable.unpaged())).thenReturn(Page.empty());
-        when(interviewRepository.findAllByUserIdRelated(userId, interviewStatusId, List.of(), pageable)).thenReturn(page);
+        when(interviewRepository.findAllByUserIdRelated(userId, status, List.of(), pageable)).thenReturn(page);
         var actual = interviewService.findPagingByUserIdRelated(0, 5, userId);
         assertThat(actual, is(page));
         assertThat(actual.getTotalElements(), is(0L));
@@ -183,8 +184,8 @@ class InterviewServiceTest {
 
     @Test
     public void whenUpdateStatusThenTrue() {
-        doNothing().when(interviewRepository).updateStatus(1, 12);
-        var actual = interviewService.updateStatus(1, 12);
+        doNothing().when(interviewRepository).updateStatus(1, StatusInterview.IN_PROGRESS);
+        var actual = interviewService.updateStatus(1, StatusInterview.IN_PROGRESS);
         assertThat(actual).isTrue();
     }
 
@@ -460,14 +461,14 @@ class InterviewServiceTest {
     @Test
     public void whenGetAllWithStatusNew() {
         Interview interviewNewStatus = interview;
-        int interviewStatusId = 1;
-        when(interviewRepository.findNewInterviews(interviewStatusId)).thenReturn(List.of(interviewNewStatus));
+        var status = StatusInterview.IS_NEW;
+        when(interviewRepository.findNewInterviews(status)).thenReturn(List.of(interviewNewStatus));
     }
 
     @Test
     public void whenPutNotNewStatusGetEmptyList() {
-        int interviewStatusId = 2;
-        when(interviewRepository.findNewInterviews(interviewStatusId)).thenReturn(List.of());
+        var status = StatusInterview.IS_NEW;
+        when(interviewRepository.findNewInterviews(status)).thenReturn(List.of());
         List<Interview> actual = interviewService.findNewInterview();
         assertThat(actual.isEmpty()).isTrue();
 

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.enums.StatusInterview;
 import ru.checkdev.mock.service.InterviewService;
 
 import javax.validation.Valid;
@@ -48,10 +49,9 @@ public class InterviewController {
 
     @PutMapping("/status/")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<HttpStatus> updateStatusInterview(@RequestParam String id, @RequestParam String newStatus) {
+    public ResponseEntity<HttpStatus> updateStatusInterview(@RequestParam String id, @ModelAttribute StatusInterview newStatus) {
         var idInterview = Integer.parseInt(id);
-        var status = Integer.parseInt(newStatus);
-        var result = interviewService.updateStatus(idInterview, status);
+        var result = interviewService.updateStatus(idInterview, newStatus);
         return ResponseEntity.status(result ? HttpStatus.OK : HttpStatus.NOT_FOUND).build();
     }
 }
