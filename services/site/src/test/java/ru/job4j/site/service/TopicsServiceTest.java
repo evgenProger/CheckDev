@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Dmitry Stepanov, user Dmitry
  * @since 09.11.2023
  */
 class TopicsServiceTest {
-
-    private TopicsService topicsService = new TopicsService();
+    private InterviewsService interviewsService = mock(InterviewsService.class);
+    private TopicsService topicsService = new TopicsService(interviewsService);
 
     @Test
     void injectedNotNull() {
