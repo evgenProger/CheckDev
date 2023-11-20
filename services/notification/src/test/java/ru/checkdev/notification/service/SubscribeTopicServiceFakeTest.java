@@ -1,6 +1,5 @@
 package ru.checkdev.notification.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.SubscribeTopic;
 import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
@@ -44,7 +43,7 @@ public class SubscribeTopicServiceFakeTest {
         SubscribeTopic subscribeTopic2 = service
                 .save(new SubscribeTopic(2, 2, 1));
         var result = service.findUserIdsByTopicIdExcludeCurrent(1, 3);
-        Assertions.assertEquals(2, result.size());
+        assertThat(2).isEqualTo(result.size());
         service.delete(subscribeTopic1);
         service.delete(subscribeTopic2);
     }
@@ -57,7 +56,7 @@ public class SubscribeTopicServiceFakeTest {
         SubscribeTopic subscribeTopic2 = service
                 .save(new SubscribeTopic(2, 2, 1));
         var result = service.findUserIdsByTopicIdExcludeCurrent(1, 1);
-        Assertions.assertEquals(1, result.size());
+        assertThat(1).isEqualTo(result.size());
         service.delete(subscribeTopic1);
         service.delete(subscribeTopic2);
     }

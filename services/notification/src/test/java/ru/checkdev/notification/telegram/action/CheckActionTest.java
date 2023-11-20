@@ -1,6 +1,5 @@
 package ru.checkdev.notification.telegram.action;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +17,8 @@ import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.service.TgCall;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(locations = "classpath:application.properties")
 @SpringBootTest(classes = NtfSrv.class)
@@ -47,7 +48,7 @@ class CheckActionTest {
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
         String text = String.format("Данный аккаунт Telegram на сайте не зарегистрирован%s", n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
@@ -63,7 +64,7 @@ class CheckActionTest {
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
         String text = String.format("Сервис не доступен попробуйте позже%s", n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
         userTelegramService.delete(1);
     }
 }

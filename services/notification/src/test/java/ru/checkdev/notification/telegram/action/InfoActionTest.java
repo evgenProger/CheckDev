@@ -1,6 +1,5 @@
 package ru.checkdev.notification.telegram.action;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -8,6 +7,8 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class InfoActionTest {
     @Test
@@ -25,6 +26,6 @@ class InfoActionTest {
         String text = String.format("Выберите действие:%s"
                 + "/start%s"
                 + "/new  зарегистрировать нового пользователя%s", n, n, n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 }

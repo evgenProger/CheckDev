@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InnerMessageServiceFakeTest {
 
@@ -42,11 +41,11 @@ public class InnerMessageServiceFakeTest {
         service.saveMessagesForSubscribers(categoryWithTopic, categorySubscribersIds, topicSubscribersIds);
         var categoryMessages = service.findByUserIdAndReadFalse(1);
         var topicMessages = service.findByUserIdAndReadFalse(2);
-        assertEquals(1, categoryMessages.size());
-        assertEquals("В категории \"Category_1\" появилось новое собеседование.",
-                categoryMessages.get(0).getText());
-        assertEquals(1, topicMessages.size());
-        assertEquals("Появилось новое собеседование по теме Topic_1.",
-                topicMessages.get(0).getText());
+        assertThat(1).isEqualTo(categoryMessages.size());
+        assertThat("В категории \"Category_1\" появилось новое собеседование.")
+                .isEqualTo(categoryMessages.get(0).getText());
+        assertThat(1).isEqualTo(topicMessages.size());
+        assertThat("Появилось новое собеседование по теме Topic_1.")
+                .isEqualTo(topicMessages.get(0).getText());
     }
 }
