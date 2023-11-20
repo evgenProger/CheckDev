@@ -1,6 +1,5 @@
 package ru.checkdev.notification.telegram.action;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = NtfSrv.class)
@@ -44,7 +44,7 @@ class RegActionTest {
         BotApiMethod<Message> botApiMethod = regAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Введите email для регистрации:";
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
@@ -59,7 +59,7 @@ class RegActionTest {
         BotApiMethod<Message> botApiMethod = regAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Данный аккаунт Telegram уже зарегистрирован на сайте";
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
@@ -73,7 +73,7 @@ class RegActionTest {
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
         String text = String.format("Email: емайл без собачки и точки не корректный.%sпопробуйте снова.%s/new", n, n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
@@ -87,7 +87,7 @@ class RegActionTest {
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
         String text = String.format("Сервис не доступен попробуйте позже%s/start", n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Disabled
@@ -107,6 +107,6 @@ class RegActionTest {
                         + "Email: mail@mail.ru%s"
                         + "Пароль : password%s"
                         + "urlSiteAuth", n, n, n, n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 }

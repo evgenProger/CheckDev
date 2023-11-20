@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.SubscribeTopic;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class SubscribeTopicRepositoryTest {
 
@@ -21,34 +20,28 @@ public class SubscribeTopicRepositoryTest {
     }
 
     @Test
-    void checkThatStuffNotNull() {
-        assertNotNull(repository);
-    }
-
-    @Test
     void whenFindSubscribeCategoryByUserId() {
-
         var result = repository.findByUserId(1);
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
+        assertThat(result.isEmpty()).isEqualTo(false);
+        assertThat(1).isEqualTo(result.size());
         assertThat(result.get(0)).isEqualTo(subscribeTopic);
     }
 
     @Test
     void whenSubscribeCategoryNotFoundByUserId() {
-        assertTrue(repository.findByUserId(2).isEmpty());
+        assertThat(repository.findByUserId(2).isEmpty()).isTrue();
     }
 
     @Test
     void whenFindByUserIdAndCategoryId() {
         var result = repository.findByUserIdAndTopicId(1, 1);
-        assertNotNull(result);
+        assertThat(result != null).isEqualTo(true);
         assertThat(result).isEqualTo(subscribeTopic);
     }
 
     @Test
     void whenNotFoundByUserIdAndCategoryId() {
         var result = repository.findByUserIdAndTopicId(2, 2);
-        assertNull(result);
+        assertThat(result != null).isEqualTo(false);
     }
 }

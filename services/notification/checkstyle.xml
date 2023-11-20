@@ -50,6 +50,10 @@
             <property name="tokens" value="METHOD_DEF"/>
             <property name="max" value="100"/>
         </module>
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="org\.junit\.jupiter\.api\.Assertions"/>
+            <property name="ignoreComments" value="true"/>
+        </module>
         <!--        <module name="ParameterNumber"/>-->
 
         <!-- Checks for whitespace                               -->

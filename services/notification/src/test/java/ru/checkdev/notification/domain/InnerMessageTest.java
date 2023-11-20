@@ -1,13 +1,6 @@
 package ru.checkdev.notification.domain;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.checkdev.notification.NtfSrv;
 
 import java.sql.Timestamp;
 
@@ -40,21 +33,21 @@ public class InnerMessageTest {
     void getId() {
         var botMessage = new InnerMessage(0, 1, "text",
                 new Timestamp(System.currentTimeMillis()), false);
-        Assertions.assertEquals(0, botMessage.getId());
+        assertThat(0).isEqualTo(botMessage.getId());
     }
 
     @Test
     void getText() {
         var botMessage = new InnerMessage(0, 1, "text",
                 new Timestamp(System.currentTimeMillis()), false);
-        Assertions.assertEquals("text", botMessage.getText());
+        assertThat("text").isEqualTo(botMessage.getText());
     }
 
     @Test
     void isRead() {
         var botMessage = new InnerMessage(0, 1, "text",
                 new Timestamp(System.currentTimeMillis()), false);
-        Assertions.assertFalse(botMessage.isRead());
+        assertThat(botMessage.isRead()).isEqualTo(false);
     }
 
     @Test
@@ -62,7 +55,7 @@ public class InnerMessageTest {
         var botMessage = new InnerMessage(0, 1, "text",
                 new Timestamp(System.currentTimeMillis()), false);
         botMessage.setId(11);
-        Assertions.assertEquals(11, botMessage.getId());
+        assertThat(11).isEqualTo(botMessage.getId());
     }
 
     @Test
@@ -70,7 +63,7 @@ public class InnerMessageTest {
         var botMessage = new InnerMessage(0, 1, "text",
                 new Timestamp(System.currentTimeMillis()), false);
         botMessage.setText("txet");
-        Assertions.assertEquals("txet", botMessage.getText());
+        assertThat("txet").isEqualTo(botMessage.getText());
     }
 
     @Test
@@ -78,6 +71,6 @@ public class InnerMessageTest {
         var botMessage = new InnerMessage(0, 1, "text",
                 new Timestamp(System.currentTimeMillis()), false);
         botMessage.setRead(true);
-        Assertions.assertTrue(botMessage.isRead());
+        assertThat(botMessage.isRead()).isEqualTo(true);
     }
 }

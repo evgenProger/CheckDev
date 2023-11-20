@@ -1,6 +1,5 @@
 package ru.checkdev.notification.telegram.action;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +21,7 @@ import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +50,7 @@ class NotifyActionTest {
         BotApiMethod<Message> botApiMethod = notifyAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Данный аккаунт Telegram на сайте не зарегистрирован";
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
@@ -66,6 +66,6 @@ class NotifyActionTest {
         BotApiMethod<Message> botApiMethod = notifyAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Сервис не доступен попробуйте позже";
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 }
