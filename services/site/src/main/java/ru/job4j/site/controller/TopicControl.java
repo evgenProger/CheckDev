@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.dto.TopicLiteDTO;
 import ru.job4j.site.service.AuthService;
@@ -51,7 +52,7 @@ public class TopicControl {
                 "Категории", "/categories/",
                 categoryName, String.format("/topics/%d", categoryId));
         log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
-    }
+        }
         return "topic/details";
     }
 
@@ -73,10 +74,15 @@ public class TopicControl {
     }
 
     @PostMapping("/create")
-    public String createTopic(@ModelAttribute TopicLiteDTO topic, HttpServletRequest req)
+    public String createTopic(@ModelAttribute TopicLiteDTO topic, HttpServletRequest req,
+                              RedirectAttributes redirectAttributes)
             throws JsonProcessingException {
-        topicsService.create(getToken(req), topic);
-        return "redirect:/categories/";
+        var createdTopic = topicsService.create(getToken(req), topic);
+        var notNull = createdTopic != null;
+        if (notNull) {
+            redirectAttributes.addAttribute("topicId", createdTopic.getId());
+        }
+        return notNull ? "redirect:/topic/{topicId}" : "redirect:/categories/";
     }
 
     @GetMapping("/updateForm/{topicId}")
