@@ -8,7 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.dto.InterviewDTO;
 import ru.checkdev.mock.dto.WisherDto;
+import ru.checkdev.mock.mapper.InterviewMapper;
 import ru.checkdev.mock.service.InterviewService;
 import ru.checkdev.mock.service.WisherService;
 
@@ -37,13 +39,14 @@ public class WishersController {
 
     @GetMapping("/{id}")
     public ResponseEntity<List<Wisher>> findByInterview(@Valid @PathVariable int id) throws SQLException {
-        Optional<Interview> interviewOptional = interviewService.findById(id);
-        if (interviewOptional.isEmpty()) {
+        Optional<InterviewDTO> interviewDtoOptional = interviewService.findById(id);
+        if (interviewDtoOptional.isEmpty()) {
             throw new SQLException("This interview is missing");
         }
+        var interview = InterviewMapper.getInterview(interviewDtoOptional.get());
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(wisherService.findByInterview(interviewOptional.get()));
+                .body(wisherService.findByInterview(interview));
     }
 
     @GetMapping("/dto/")

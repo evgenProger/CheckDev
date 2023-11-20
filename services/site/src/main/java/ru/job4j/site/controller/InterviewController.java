@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.job4j.site.domain.StatusInterview;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.*;
 
@@ -109,7 +109,6 @@ public class InterviewController {
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("isWisher", isWisher);
         model.addAttribute("statisticMap", statisticMap);
-        model.addAttribute("statuses", StatusInterview.values());
         model.addAttribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId());
         model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
         model.addAttribute("wishersDetail", wishersDetail);
@@ -206,7 +205,6 @@ public class InterviewController {
             model.addAttribute("interview", interview);
             model.addAttribute("statisticMap", statisticMap);
             model.addAttribute("countWishers", countWishers);
-            model.addAttribute("statuses", StatusInterview.values());
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index",
                     "Собеседования", "/interviews/",

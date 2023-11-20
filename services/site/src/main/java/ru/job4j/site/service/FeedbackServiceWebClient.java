@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.job4j.site.domain.StatusInterview;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.FeedbackDTO;
 import ru.job4j.site.dto.InnerMessageDTO;
 import ru.job4j.site.dto.InterviewDTO;
@@ -202,14 +202,16 @@ public class FeedbackServiceWebClient implements FeedbackService {
      */
     public int updateStatusInterview(String token, InterviewDTO interview, int feedbackUser) {
         var feedbacksByUser = findByInterviewIdAndUserId(interview.getId(), feedbackUser);
-        if (feedbacksByUser.size() == 1 && StatusInterview.IS_FEEDBACK.getId() == interview.getStatus()) {
-            interviewService.updateStatus(token, interview.getId(), StatusInterview.IS_COMPLETED.getId());
-            return StatusInterview.IS_COMPLETED.getId();
-        } else if (StatusInterview.IN_PROGRESS.getId() == interview.getStatus()) {
-            interviewService.updateStatus(token, interview.getId(), StatusInterview.IS_FEEDBACK.getId());
-            return StatusInterview.IS_FEEDBACK.getId();
+        if (feedbacksByUser.size() == 1 && StatusInterview.IS_FEEDBACK.getId() == interview.getStatusId()) {
+            interview.setStatusId(StatusInterview.IS_COMPLETED.getId());
+            interviewService.updateStatus(token, interview);
+            return interview.getStatusId();
+        } else if (StatusInterview.IN_PROGRESS.getId() == interview.getStatusId()) {
+            interview.setStatusId(StatusInterview.IS_FEEDBACK.getId());
+            interviewService.updateStatus(token, interview);
+            return interview.getStatusId();
         }
-        return interview.getStatus();
+        return interview.getStatusId();
     }
 
     public void setWebClientFeedback(WebClient webClient) {

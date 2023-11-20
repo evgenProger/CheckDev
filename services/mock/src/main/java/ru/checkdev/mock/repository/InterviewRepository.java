@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.enums.StatusInterview;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,12 +17,12 @@ import java.util.Optional;
 public interface InterviewRepository extends JpaRepository<Interview, Integer> {
 
     @Query("SELECT i FROM interview i"
-            + " WHERE i.submitterId=:userId"
-            + " OR i.status=:statusId"
-            + " OR i.id IN (:interviewIds)"
+           + " WHERE i.submitterId=:userId"
+           + " OR i.status=:status"
+           + " OR i.id IN (:interviewIds)"
     )
     Page<Interview> findAllByUserIdRelated(@Param("userId") int userId,
-                                           @Param("statusId") int statusId,
+                                           @Param("status") StatusInterview status,
                                            @Param("interviewIds") List<Integer> interviewIds,
                                            Pageable pageable);
 
@@ -40,7 +41,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
     @Modifying
     @Transactional
     @Query(value = "UPDATE interview i SET i.status=:status WHERE i.id=:id")
-    void updateStatus(@Param("id") int id, @Param("status") int status);
+    void updateStatus(@Param("id") int id, @Param("status") StatusInterview status);
 
     Page<Interview> findByTopicIdIn(Collection<Integer> topicIds, Pageable pageable);
 
@@ -108,7 +109,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      * @return интервью, в которых пользователь НЕ участвует
      */
     @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)")
+           + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)")
     Page<Interview> findInterviewByUserIdNot(@Param("userId") int userId, Pageable pageable);
 
     /**
@@ -118,8 +119,8 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      * @return интервью определённой темы, в которых пользователь НЕ участвует
      */
     @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
-            + " AND i.topicId = :topicId")
+           + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
+           + " AND i.topicId = :topicId")
     Page<Interview> findInterviewByUserIdNotAndByTopicId(@Param("userId") int userId,
                                                          @Param("topicId") int topicId,
                                                          Pageable pageable);
@@ -131,8 +132,8 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      * @return интервью определённой категории, в которых пользователь НЕ участвует
      */
     @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
-            + " AND i.topicId IN :topicsIds")
+           + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
+           + " AND i.topicId IN :topicsIds")
     Page<Interview> findInterviewByUserIdNotAndByTopicIdIn(
             @Param("userId") int userId,
             @Param("topicsIds") Collection<Integer> topicsIds,
@@ -171,15 +172,12 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      *
      * @return LIST из ТРЕХ последних интервью
      */
-    @Query(value = "SELECT i.* FROM interview i WHERE i.status = :interviewStatusId ORDER BY i.create_date DESC LIMIT 3", nativeQuery = true)
-    List<Interview> findLastInterviews(@Param("interviewStatusId") int interviewStatusId);
+    List<Interview> findAllByStatusOrderByCreateDateDesc(StatusInterview status);
 
     /**
      * Получаем из базы новые интервью по статусу.
      *
      * @return LIST из новых интервью
      */
-    @Query(value = "SELECT i.* FROM interview i WHERE i.status = :interviewStatusId", nativeQuery = true)
-    List<Interview> findNewInterviews(@Param("interviewStatusId") int interviewStatusId);
-
+    List<Interview> findAllByStatus(StatusInterview status);
 }
