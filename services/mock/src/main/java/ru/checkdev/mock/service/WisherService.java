@@ -77,16 +77,12 @@ public class WisherService {
     }
 
     /**
-     * Метод выполняет два запроса для изменения статуса нужного участника,
-     * и установки остальным участника anyStatus.
+     * Метод устанавливает approve у участника с указанным собеседованием.
      *
      * @param interviewId ID interview
      * @param wisherId    ID wisher from set newStatus
-     * @param newStatusId from Wisher ID
-     * @param anyStatusId Status IS from Any Wisher
      */
-    public void setWisherStatus(int interviewId, int wisherId, int newStatusId, int anyStatusId) {
-        wisherRepository.setWisherStatus(interviewId, wisherId, newStatusId);
-        wisherRepository.setNotWisherStatus(interviewId, wisherId, anyStatusId);
+    public void setWisherApprove(int interviewId, int wisherId, boolean approve) {
+        wisherRepository.setWisherApprove(interviewId, wisherId, approve);
     }
 }

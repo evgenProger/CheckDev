@@ -25,10 +25,9 @@ public class Wisher {
 
     @Column(name="contact_by")
     private String contactBy;
-
+    /**
+     * Поле определяет одобрен участник на собеседование или нет.
+     */
     @Column(name="approve")
     private boolean approve;
-
-    @Column(name = "status")
-    private int status;
 }

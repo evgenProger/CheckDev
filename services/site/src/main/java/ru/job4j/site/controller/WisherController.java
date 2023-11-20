@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.domain.StatusInterview;
-import ru.job4j.site.domain.StatusWisher;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.WisherDto;
 import ru.job4j.site.dto.WisherNotifiDTO;
@@ -45,7 +44,7 @@ public class WisherController {
         int interviewId = wisherNotifiDTO.getInterviewId();
         int userId = wisherNotifiDTO.getUserId();
         var contactBy = wisherNotifiDTO.getContactBy();
-        var wisherDto = new WisherDto(0, interviewId, userId, contactBy, false, StatusWisher.IS_CONSIDERED.getId());
+        var wisherDto = new WisherDto(0, interviewId, userId, contactBy, false);
         wisherService.saveWisherDto(token, wisherDto);
         notificationService.sendParticipateAuthor(token, wisherNotifiDTO);
         return "redirect:/interview/" + interviewId;
@@ -62,13 +61,11 @@ public class WisherController {
     public String dismissedWisher(@RequestParam Map<String, String> param,
                                   HttpServletRequest request) throws JsonProcessingException {
         var token = RequestResponseTools.getToken(request);
-        var statusDismissedID = String.valueOf(StatusWisher.IS_DISMISSED.getId());
-        var statusRejectedID = String.valueOf(StatusWisher.IS_REJECTED.getId());
         var interviewId = param.get("interviewId");
         var wisherId = param.get("wisherId");
         var wisherUserId = param.get("wisherUserId");
-        wisherService.setNewStatusByWisherInterview(
-                token, interviewId, wisherId, statusDismissedID, statusRejectedID);
+        wisherService.setNewApproveByWisherInterview(
+                token, interviewId, wisherId, true);
         InterviewDTO interview = interviewService.getById(token, Integer.parseInt(interviewId));
         interview.setAgreedWisherId(Integer.parseInt(wisherUserId));
         interviewService.update(token, interview);

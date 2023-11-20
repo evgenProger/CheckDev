@@ -39,7 +39,7 @@ class WisherControllerTest {
     void whenCreateWisherThenReturnRedirect() throws Exception {
         var wisherNotifiDTO = new WisherNotifiDTO(2, "tile", 3, 5, "mail");
         var wisher = new WisherDto(0, wisherNotifiDTO.getInterviewId(), wisherNotifiDTO.getUserId(),
-                wisherNotifiDTO.getContactBy(), false, 0);
+                wisherNotifiDTO.getContactBy(), false);
         var token = "1234";
         when(wisherService.saveWisherDto(token, wisher)).thenReturn(true);
         this.mockMvc.perform(post("/wisher/create")

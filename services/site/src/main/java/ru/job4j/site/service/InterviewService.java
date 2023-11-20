@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.domain.StatusInterview;
-import ru.job4j.site.domain.StatusWisher;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.dto.WisherDetailDTO;
@@ -78,7 +77,6 @@ public class InterviewService {
      */
     public List<WisherDetailDTO> getAllWisherDetail(List<WisherDto> wishers) {
         List<WisherDetailDTO> wishersDetail = new ArrayList<>();
-        var statusesWisher = StatusWisher.values();
         for (WisherDto wisherDto : wishers) {
             var person = profilesService.getProfileById(wisherDto.getUserId());
             if (person.isPresent()) {
@@ -87,9 +85,7 @@ public class InterviewService {
                         wisherDto.getUserId(),
                         person.get().getUsername(),
                         wisherDto.getContactBy(),
-                        wisherDto.isApprove(),
-                        wisherDto.getStatus(),
-                        statusesWisher[wisherDto.getStatus()].getInfo());
+                        wisherDto.isApprove());
                 wishersDetail.add(wisherUser);
             }
         }

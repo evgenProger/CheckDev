@@ -25,9 +25,9 @@ import static org.mockito.Mockito.when;
  * @author Dmitry Stepanov, user Dmitry
  * @since 25.10.2023
  */
-@SpringBootTest(classes = FeedbackJpaService.class)
+@SpringBootTest(classes = FeedbackCrudService.class)
 @RunWith(SpringRunner.class)
-class FeedbackJpaServiceTest {
+class FeedbackCrudServiceTest {
     private final Interview interview = Interview.of()
             .mode(1)
             .submitterId(1)
@@ -41,7 +41,7 @@ class FeedbackJpaServiceTest {
     @MockBean
     private FeedbackRepository repository;
     @Autowired
-    private FeedbackJpaService service;
+    private FeedbackCrudService service;
 
     @Test
     void injectedComponentAreNotNull() {

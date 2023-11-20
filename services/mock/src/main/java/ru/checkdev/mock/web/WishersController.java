@@ -70,14 +70,13 @@ public class WishersController {
      * @param param Map<String, String>
      * @return ResponseEntity
      */
-    @PostMapping("/status/")
+    @PostMapping("/approve/")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<HttpStatus> setWisherStatus(@RequestParam Map<String, String> param) {
         var interviewId = Integer.parseInt(param.get("interviewId"));
         var wisherId = Integer.parseInt(param.get("wisherId"));
-        var newStatusId = Integer.parseInt(param.get("newStatusId"));
-        var anyStatusId = Integer.parseInt(param.get("anyStatusId"));
-        wisherService.setWisherStatus(interviewId, wisherId, newStatusId, anyStatusId);
+        var newApprove = Boolean.valueOf(param.get("newApprove"));
+        wisherService.setWisherApprove(interviewId, wisherId, newApprove);
         return ResponseEntity.ok().build();
     }
 }

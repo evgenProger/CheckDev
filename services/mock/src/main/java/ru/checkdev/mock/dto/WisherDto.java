@@ -22,11 +22,8 @@ public class WisherDto {
 
     @NotBlank(message = "Title must be not empty")
     private String contactBy;
-
-    private boolean approve;
-
     /**
-     * Соответствует id enum StatusWisher.
+     * Поле определяет одобрен участник на собеседование или нет.
      */
-    private int status;
+    private boolean approve;
 }

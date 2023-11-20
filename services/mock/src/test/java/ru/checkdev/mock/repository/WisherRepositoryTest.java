@@ -72,11 +72,13 @@ class WisherRepositoryTest {
     @Test
     public void whenFindWisherByInterviewIdThenReturnListWisherDto() {
         var userId = 1;
-        var wisher = new Wisher(0, interview, userId, "user_Mail", false, 1);
+        var wisher = new Wisher(0, interview, userId, "user_Mail", false);
         entityManager.persist(wisher);
         entityManager.flush();
         var expect = List.of(
-                new WisherDto(wisher.getId(), wisher.getInterview().getId(), wisher.getUserId(), wisher.getContactBy(), wisher.isApprove(), wisher.getStatus()));
+                new WisherDto(
+                        wisher.getId(), wisher.getInterview().getId(),
+                        wisher.getUserId(), wisher.getContactBy(), wisher.isApprove()));
         var actual = wisherRepository.findWisherDTOByInterviewId(interview.getId());
         assertThat(actual, is(expect));
     }
@@ -84,7 +86,7 @@ class WisherRepositoryTest {
     @Test
     public void whenFindWisherByInterviewIdThenReturnEmptyList() {
         var userId = 1;
-        var wisher = new Wisher(0, interview, userId, "user_Mail", false, 1);
+        var wisher = new Wisher(0, interview, userId, "user_Mail", false);
         entityManager.persist(wisher);
         entityManager.flush();
         var actual = wisherRepository.findWisherDTOByInterviewId(-1);
@@ -94,20 +96,20 @@ class WisherRepositoryTest {
     @Test
     public void whenFindAllWisherDtoThenReturnListWisherDto() {
         var userId = 1;
-        var wisher = new Wisher(0, interview, userId, "user_Mail", false, 1);
-        var wisher1 = new Wisher(0, interview, userId, "user_Mail1", false, 1);
+        var wisher = new Wisher(0, interview, userId, "user_Mail", false);
+        var wisher1 = new Wisher(0, interview, userId, "user_Mail1", false);
         entityManager.persist(wisher);
         entityManager.persist(wisher1);
         entityManager.flush();
         var expect = List.of(
                 new WisherDto(
                         wisher.getId(), wisher.getInterview().getId(),
-                        wisher.getUserId(), wisher.getContactBy(),
-                        wisher.isApprove(), wisher.getStatus()),
+                        wisher.getUserId(), wisher.getContactBy(), wisher.isApprove()),
                 new WisherDto(
                         wisher1.getId(), wisher1.getInterview().getId(),
                         wisher1.getUserId(), wisher1.getContactBy(),
-                        wisher1.isApprove(), wisher.getStatus()));
+                        wisher1.isApprove())
+        );
         var actual = wisherRepository.findAllWiserDto();
         assertThat(actual, is(expect));
     }
@@ -119,81 +121,30 @@ class WisherRepositoryTest {
     }
 
     @Test
-    void whenSetWisherStatusThenReturnWisherNewStatus() {
+    void whenSetWisherApproveFalseThenReturnWisherNewApprove() {
         var userId = 1;
-        var newStatus = 3;
-        var wisher = new Wisher(0, interview, userId, "user_Mail", false, 1);
-        var wisher1 = new Wisher(0, interview, userId, "user_Mail1", false, 1);
+        var wisher = new Wisher(0, interview, userId, "user_Mail", false);
+        var wisher1 = new Wisher(0, interview, userId, "user_Mail1", false);
         entityManager.persist(wisher);
         entityManager.persist(wisher1);
         entityManager.clear();
-        wisherRepository.setWisherStatus(interview.getId(), wisher.getId(), newStatus);
+        wisherRepository.setWisherApprove(interview.getId(), wisher.getId(), true);
         var wisherInDB = wisherRepository.findById(wisher.getId());
         assertTrue(wisherInDB.isPresent());
-        assertThat(wisherInDB.get().getStatus(), is(newStatus));
         assertTrue(wisherInDB.get().isApprove());
     }
 
     @Test
-    void whenSetNotWisherStatusThenReturnStatusAnyWisher() {
-        var userId = 1;
-        var anyStatus = 55;
-        var notWisherId = -1;
-        var wisher = new Wisher(0, interview, userId, "user_Mail", false, 1);
-        var wisher1 = new Wisher(0, interview, userId, "user_Mail1", false, 1);
-        var wisher2 = new Wisher(0, interview, userId, "user_Mail2", false, 1);
-        entityManager.persist(wisher);
-        entityManager.persist(wisher1);
-        entityManager.persist(wisher2);
-        entityManager.clear();
-        wisherRepository.setNotWisherStatus(interview.getId(), notWisherId, anyStatus);
-        var wisherInDb = wisherRepository.findById(wisher.getId());
-        var wisher1InDb = wisherRepository.findById(wisher1.getId());
-        var wisher2InDb = wisherRepository.findById(wisher2.getId());
-        assertTrue(wisherInDb.isPresent());
-        assertTrue(wisher1InDb.isPresent());
-        assertTrue(wisher2InDb.isPresent());
-        assertThat(wisherInDb.get().getStatus(), is(anyStatus));
-        assertThat(wisher1InDb.get().getStatus(), is(anyStatus));
-        assertThat(wisher2InDb.get().getStatus(), is(anyStatus));
-        assertFalse(wisherInDb.get().isApprove());
-        assertFalse(wisher1InDb.get().isApprove());
-        assertFalse(wisher2InDb.get().isApprove());
-    }
-
-    @Test
-    void whenSetWisherStatusThenReturnOldStatus() {
+    void whenSetWisherApproveThenReturnOldApprove() {
         var userId = 1;
         var wisherId = -1;
-        var newStatus = 3;
-        var wisher = new Wisher(0, interview, userId, "user_Mail", false, 1);
+        var wisher = new Wisher(0, interview, userId, "user_Mail", false);
         entityManager.persist(wisher);
         entityManager.clear();
-        wisherRepository.setWisherStatus(interview.getId(), wisherId, newStatus);
+        wisherRepository.setWisherApprove(interview.getId(), wisherId, true);
         var wisherInDb = wisherRepository.findById(wisher.getId());
         assertTrue(wisherInDb.isPresent());
-        assertThat(wisherInDb.get().getStatus(), is(wisher.getStatus()));
         assertFalse(wisherInDb.get().isApprove());
-    }
-
-    @Test
-    void whenSetNotWisherStatusThenReturnFirstOldStatusSecondNewStatus() {
-        var userId = 1;
-        var newStatus = 55;
-        var wisher = new Wisher(0, interview, userId, "user_Mail", false, 1);
-        var wisher1 = new Wisher(0, interview, userId, "user_Mail1", false, 1);
-        entityManager.persist(wisher);
-        entityManager.persist(wisher1);
-        entityManager.clear();
-        wisherRepository.setNotWisherStatus(interview.getId(), wisher.getId(), newStatus);
-        var wisherFirstInDb = wisherRepository.findById(wisher.getId());
-        var wisherSecondInDb = wisherRepository.findById(wisher1.getId());
-        assertTrue(wisherFirstInDb.isPresent());
-        assertTrue(wisherSecondInDb.isPresent());
-        assertThat(wisherFirstInDb.get().getStatus(), is(wisher.getStatus()));
-        assertThat(wisherSecondInDb.get().getStatus(), is(newStatus));
-        assertFalse(wisherFirstInDb.get().isApprove());
-        assertFalse(wisherSecondInDb.get().isApprove());
     }
 
     @Test
@@ -201,7 +152,7 @@ class WisherRepositoryTest {
         entityManager.createQuery("delete from wisher").executeUpdate();
         IntStream.range(1, 8).forEach(i -> entityManager.persist(
                 new Wisher(0, interview, i % 2 == 0 ? 1 : 2,
-                String.format("user%d@zmail.cd", i), false, 1)));
+                        String.format("user%d@zmail.cd", i), false)));
         entityManager.clear();
         var page1 =
                 wisherRepository.findInterviewByUserId(1, PageRequest.of(0, 10));
@@ -220,7 +171,7 @@ class WisherRepositoryTest {
         entityManager.createQuery("delete from wisher").executeUpdate();
         IntStream.range(1, 8).forEach(i -> entityManager.persist(
                 new Wisher(0, interview, i % 2 == 0 ? 1 : 2,
-                        String.format("user%d@zmail.cd", i), true, 1)));
+                        String.format("user%d@zmail.cd", i), true)));
         entityManager.clear();
         var page1 =
                 wisherRepository.findInterviewByUserIdApproved(1, PageRequest.of(0, 10));
@@ -239,7 +190,7 @@ class WisherRepositoryTest {
         entityManager.createQuery("delete from wisher").executeUpdate();
         IntStream.range(1, 8).forEach(i -> entityManager.persist(
                 new Wisher(0, interview, i % 2 == 0 ? 1 : 2,
-                        String.format("user%d@zmail.cd", i), false, 1)));
+                        String.format("user%d@zmail.cd", i), false)));
         entityManager.clear();
         var page1 =
                 wisherRepository.findInterviewByUserIdApproved(1, PageRequest.of(0, 10));
@@ -257,7 +208,7 @@ class WisherRepositoryTest {
         entityManager.createQuery("delete from wisher").executeUpdate();
         IntStream.range(1, 8).forEach(i -> entityManager.persist(
                 new Wisher(0, interview, i % 2 == 0 ? 1 : 2,
-                        String.format("user%d@zmail.cd", i), false, 1)));
+                        String.format("user%d@zmail.cd", i), false)));
         entityManager.clear();
         var page1 =
                 wisherRepository.findInterviewByUserIdAndByTopicId(1, 1,
@@ -285,8 +236,8 @@ class WisherRepositoryTest {
             var tempInterview = interview;
             tempInterview.setTopicId(i);
             entityManager.persist(
-                new Wisher(0, tempInterview, i % 2 == 0 ? 1 : 2,
-                        String.format("user%d@zmail.cd", i), false, 1));
+                    new Wisher(0, tempInterview, i % 2 == 0 ? 1 : 2,
+                            String.format("user%d@zmail.cd", i), false));
         });
         entityManager.clear();
         var page1 =
