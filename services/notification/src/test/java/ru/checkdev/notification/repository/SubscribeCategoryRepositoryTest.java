@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.SubscribeCategory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class SubscribeCategoryRepositoryTest {
 
@@ -21,33 +20,28 @@ public class SubscribeCategoryRepositoryTest {
     }
 
     @Test
-    void checkThatStuffNotNull() {
-        assertNotNull(repository);
-    }
-
-    @Test
     void whenFindSubscribeCategoryByUserId() {
         var result = repository.findByUserId(1);
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
+        assertThat(result.isEmpty()).isEqualTo(false);
+        assertThat(1).isEqualTo(result.size());
         assertThat(result.get(0)).isEqualTo(subscribeCategory);
     }
 
     @Test
     void whenSubscribeCategoryNotFoundByUserId() {
-        assertTrue(repository.findByUserId(2).isEmpty());
+        assertThat(repository.findByUserId(2).isEmpty()).isEqualTo(true);
     }
 
     @Test
     void whenFindByUserIdAndCategoryId() {
         var result = repository.findByUserIdAndCategoryId(1, 1);
-        assertNotNull(result);
+        assertThat(result != null).isEqualTo(true);
         assertThat(result).isEqualTo(subscribeCategory);
     }
 
     @Test
     void whenNotFoundByUserIdAndCategoryId() {
         var result = repository.findByUserIdAndCategoryId(2, 2);
-        assertNull(result);
+        assertThat(result != null).isEqualTo(false);
     }
 }
