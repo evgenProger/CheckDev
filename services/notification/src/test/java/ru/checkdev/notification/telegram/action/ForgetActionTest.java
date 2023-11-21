@@ -1,48 +1,36 @@
 package ru.checkdev.notification.telegram.action;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.UserTelegram;
+import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
+import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
+import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.service.UserTelegramService;
-import ru.checkdev.notification.telegram.service.TgCall;
+import ru.checkdev.notification.telegram.service.FakeTgCallConsole;
+import ru.checkdev.notification.telegram.service.TgCallNoConnect;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestPropertySource(locations="classpath:application.properties")
-@SpringBootTest(classes = NtfSrv.class)
-@ExtendWith(SpringExtension.class)
-@AutoConfigureMockMvc
-@Disabled
+
 class ForgetActionTest {
-    @Autowired
-    private UserTelegramService userTelegramService;
-
-    @Autowired
-    private InnerMessageService messageService;
-
-    @Mock
-    private TgCall tgCall;
 
     @Test
     void whenNotChatId() {
+        var userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()
+                ));
         Chat chat = new Chat(1L, "type");
         userTelegramService.delete(1);
         Message message = new Message();
         message.setChat(chat);
-        ForgetAction forgetAction = new ForgetAction(tgCall, userTelegramService, messageService);
+        ForgetAction forgetAction = new ForgetAction(new FakeTgCallConsole(), userTelegramService,
+                new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService));
         forgetAction.handle(message);
         BotApiMethod<Message> botApiMethod = forgetAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
@@ -52,13 +40,18 @@ class ForgetActionTest {
 
     @Test
     void whenNotConnection() {
+        var userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()
+                ));
         Chat chat = new Chat(1L, "type");
         UserTelegram userTelegram = new UserTelegram(0, 10, chat.getId());
         userTelegramService.save(userTelegram);
         Message message = new Message();
         message.setChat(chat);
         message.setText("a@a.ru");
-        ForgetAction forgetAction = new ForgetAction(tgCall, userTelegramService, messageService);
+        ForgetAction forgetAction = new ForgetAction(new TgCallNoConnect(), userTelegramService,
+                new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService));
         BotApiMethod<Message> botApiMethod = forgetAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Сервис не доступен попробуйте позже";

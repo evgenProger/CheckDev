@@ -40,6 +40,7 @@ public class UnNotifyAction implements Action {
             innerMessage.setText(text);
             innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
             messageService.saveMessage(innerMessage);
+            userTelegramService.delete(chatIdOptional.get().getId());
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             text = "Сервис не доступен попробуйте позже";
