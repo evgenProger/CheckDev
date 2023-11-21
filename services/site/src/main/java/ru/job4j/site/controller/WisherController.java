@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.site.domain.StatusInterview;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.WisherDto;
 import ru.job4j.site.dto.WisherNotifiDTO;
@@ -66,10 +66,11 @@ public class WisherController {
         var wisherUserId = param.get("wisherUserId");
         wisherService.setNewApproveByWisherInterview(
                 token, interviewId, wisherId, true);
-        InterviewDTO interview = interviewService.getById(token, Integer.parseInt(interviewId));
-        interview.setAgreedWisherId(Integer.parseInt(wisherUserId));
-        interviewService.update(token, interview);
-        interviewService.updateStatus(token, Integer.parseInt(interviewId), StatusInterview.IN_PROGRESS.getId());
+        InterviewDTO interviewDto = interviewService.getById(token, Integer.parseInt(interviewId));
+        interviewDto.setAgreedWisherId(Integer.parseInt(wisherUserId));
+        interviewDto.setStatusId(StatusInterview.IN_PROGRESS.getId());
+        interviewService.update(token, interviewDto);
+        interviewService.updateStatus(token, interviewDto);
         return "redirect:/interview/" + interviewId;
     }
 }

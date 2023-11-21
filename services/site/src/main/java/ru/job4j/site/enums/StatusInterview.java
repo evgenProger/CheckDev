@@ -1,4 +1,4 @@
-package ru.job4j.site.domain;
+package ru.job4j.site.enums;
 
 /**
  * CheckDev пробное собеседование
