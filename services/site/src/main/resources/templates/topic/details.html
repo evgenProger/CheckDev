@@ -46,24 +46,21 @@
                 </a>
             </span>
         </div>
-        <div class="cell">
-            <div th:if="${userTopicDTO != null}">
-                <a class="nav-item nav-link" th:if="${!userTopicDTO.subscribeTopicIds.contains(topic.id)}"
-                   th:href="@{|/notification/subscribeTopicFromDetails/${userInfo.id}/${topic.id}|}">
-                    Подписаться:
-                    <i class="far fa-bell"></i>
-                </a>
-                <a class="nav-item nav-link" th:if="${userTopicDTO.subscribeTopicIds.contains(topic.id)}"
-                   th:href="@{|/notification/unSubscribeTopicFromDetails/${userInfo.id}/${topic.id}|}">
-                    Подписаться:
-                    <i class="fa-regular fa-bell-slash"></i>
-                </a>
-            </div>
-        </div>
     </div>
     <div class="card">
         <div class="card-header">
             <span class="fw-bold" th:text="${topic.name}"></span>
+            <span th:if="${userTopicDTO != null}">
+                 <a class="text-dark text-decoration-none" th:if="${!userTopicDTO.subscribeTopicIds.contains(topic.id)}"
+                    th:href="@{|/notification/subscribeTopicFromDetails/${userInfo.id}/${topic.id}|}">
+                    <i class="far fa-bell" title="Подписаться"></i>
+                </a>
+                <a class="text-dark text-decoration-none"
+                        th:if="${userTopicDTO.subscribeTopicIds.contains(topic.id)}"
+                   th:href="@{|/notification/unSubscribeTopicFromDetails/${userInfo.id}/${topic.id}|}">
+                    <i class="fa-regular fa-bell-slash" title="Отписаться"></i>
+                </a>
+            </span>
             <span th:if="${canManage}">
                 <span class="mr-3">Позиция : </span>
                 <span class="fw-bold" th:text="${topic.position}"></span>
