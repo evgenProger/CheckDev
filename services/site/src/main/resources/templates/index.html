@@ -74,7 +74,7 @@
                                         <span th:text="${interview.countWishers}"></span>
                                         <i class="fa fa-calendar-check pl-3"></i>
                                         <span>Удобное время:</span>
-                                        <span  th:text="${interview.approximateDate}"></span>
+                                        <span th:text="${interview.approximateDate}"></span>
                                     </span>
                                 </div>
                             </td>
@@ -115,7 +115,7 @@
                             </td>
                             <td>
                                 <span class="badge bg-success"
-                                      th:text="'Новых:' + ${new_interviewsCount}"></span>
+                                      th:text="'Новых:' + ${category.countInterview}"></span>
                             </td>
                         </tr>
                         </tbody>

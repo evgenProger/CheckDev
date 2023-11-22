@@ -27,7 +27,7 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
      * @param interviewId int Interview ID
      * @return List<WisherDTO>
      */
-    @Query("SELECT new ru.checkdev.mock.dto.WisherDto(w.id, w.interview.id, w.userId, w.contactBy, w.approve, w.status) FROM wisher w WHERE w.interview.id =:interviewId")
+    @Query("SELECT new ru.checkdev.mock.dto.WisherDto(w.id, w.interview.id, w.userId, w.contactBy, w.approve) FROM wisher w WHERE w.interview.id =:interviewId")
     List<WisherDto> findWisherDTOByInterviewId(@Param("interviewId") int interviewId);
 
     /**
@@ -35,39 +35,25 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
      *
      * @return List<WisherDTO>
      */
-    @Query("SELECT new ru.checkdev.mock.dto.WisherDto(w.id, w.interview.id, w.userId, w.contactBy, w.approve, w.status) FROM wisher w")
+    @Query("SELECT new ru.checkdev.mock.dto.WisherDto(w.id, w.interview.id, w.userId, w.contactBy, w.approve) FROM wisher w")
     List<WisherDto> findAllWiserDto();
 
     /**
-     * Метод устанавливает одобренному участнику approved = true.
+     * Метод устанавливает одобренному участнику approved, признак одобрен или нет.
      *
      * @param interviewId ID interview
      * @param wisherId    ID wisher
-     * @param newStatusId ID new Status
+     * @param approve     Boolean true/false
      */
     @Transactional
     @Modifying
-    @Query(value = "UPDATE wisher w SET w.approve = true, w.status=:newStatusId WHERE w.interview.id=:interviewId AND w.id=:wisherId ")
-    void setWisherStatus(@Param("interviewId") int interviewId,
-                         @Param("wisherId") int wisherId,
-                         @Param("newStatusId") int newStatusId);
+    @Query(value = "UPDATE wisher w SET w.approve =:approve WHERE w.interview.id=:interviewId AND w.id=:wisherId ")
+    void setWisherApprove(@Param("interviewId") int interviewId,
+                          @Param("wisherId") int wisherId,
+                          @Param("approve") boolean approve);
 
     /**
-     * Метод устанавливает всем участникам approved = false которых wisher.id != ID не равны.
-     *
-     * @param interviewId ID interview
-     * @param notWisherId ID Wisher exclude
-     * @param newStatusId ID new Status
-     */
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE wisher w SET w.approve = false, w.status=:newStatusId WHERE w.interview.id=:interviewId AND w.id!=:notWisherId")
-    void setNotWisherStatus(@Param("interviewId") int interviewId,
-                            @Param("notWisherId") int notWisherId,
-                            @Param("newStatusId") int newStatusId);
-
-    /**
-     * @param userId int
+     * @param userId   int
      * @param pageable Pageable
      * @return интервью, в которых пользователь участвует
      */
@@ -75,7 +61,7 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
     Page<Interview> findInterviewByUserId(@Param("userId") int userId, Pageable pageable);
 
     /**
-     * @param userId int
+     * @param userId   int
      * @param pageable Pageable
      * @return интервью, в которых пользователь участвует и одобрен к участию
      */
@@ -83,8 +69,8 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
     Page<Interview> findInterviewByUserIdApproved(@Param("userId") int userId, Pageable pageable);
 
     /**
-     * @param userId int
-     * @param topicId int
+     * @param userId   int
+     * @param topicId  int
      * @param pageable Pageable
      * @return интервью определённой темы, в которых пользователь участвует
      */
@@ -97,9 +83,9 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
                                                       Pageable pageable);
 
     /**
-     * @param userId int
+     * @param userId    int
      * @param topicsIds Collection<Integer>
-     * @param pageable Pageable
+     * @param pageable  Pageable
      * @return интервью определённой категории, в которых пользователь участвует
      */
     @Query("SELECT i FROM wisher w "

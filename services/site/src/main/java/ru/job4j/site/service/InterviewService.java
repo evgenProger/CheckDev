@@ -3,9 +3,9 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.job4j.site.domain.StatusInterview;
-import ru.job4j.site.domain.StatusWisher;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.dto.WisherDetailDTO;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class InterviewService {
     private static final String URL_MOCK = "http://localhost:9912/interview/";
     private final ProfilesService profilesService;
@@ -24,7 +25,7 @@ public class InterviewService {
     }
 
     public InterviewDTO create(String token, InterviewDTO interviewDTO) throws JsonProcessingException {
-        interviewDTO.setStatus(StatusInterview.IS_NEW.getId());
+        interviewDTO.setStatusId(StatusInterview.IS_NEW.getId());
         var mapper = new ObjectMapper();
         var out = new RestAuthCall(URL_MOCK).post(
                 token,
@@ -50,13 +51,18 @@ public class InterviewService {
     /**
      * Метод обновляет статус собеседования
      *
-     * @param token     User security token
-     * @param id        int ID Interview
-     * @param newStatus int New status
+     * @param token        User security token
+     * @param interviewDTO InterviewDTO
      */
-    public void updateStatus(String token, int id, int newStatus) {
-        new RestAuthCall(String.format("%sstatus/?id=%d&newStatus=%d", URL_MOCK, id, newStatus))
-                .put(token, "");
+    public void updateStatus(String token, InterviewDTO interviewDTO) {
+        try {
+            var mapper = new ObjectMapper();
+            new RestAuthCall(String.format("%sstatus/", URL_MOCK)).put(
+                    token,
+                    mapper.writeValueAsString(interviewDTO));
+        } catch (Exception e) {
+            log.error("API service MOCK not found, error: {}", e);
+        }
     }
 
     /**
@@ -78,7 +84,6 @@ public class InterviewService {
      */
     public List<WisherDetailDTO> getAllWisherDetail(List<WisherDto> wishers) {
         List<WisherDetailDTO> wishersDetail = new ArrayList<>();
-        var statusesWisher = StatusWisher.values();
         for (WisherDto wisherDto : wishers) {
             var person = profilesService.getProfileById(wisherDto.getUserId());
             if (person.isPresent()) {
@@ -87,9 +92,7 @@ public class InterviewService {
                         wisherDto.getUserId(),
                         person.get().getUsername(),
                         wisherDto.getContactBy(),
-                        wisherDto.isApprove(),
-                        wisherDto.getStatus(),
-                        statusesWisher[wisherDto.getStatus()].getInfo());
+                        wisherDto.isApprove());
                 wishersDetail.add(wisherUser);
             }
         }

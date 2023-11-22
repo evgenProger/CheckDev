@@ -1,6 +1,7 @@
-package ru.job4j.site.domain;
+package ru.job4j.site.enums;
 
 import org.junit.jupiter.api.Test;
+import ru.job4j.site.enums.StatusInterview;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

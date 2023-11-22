@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.dto.InterviewDTO;
 import ru.checkdev.mock.dto.WisherDto;
 
 @Component
@@ -16,7 +17,16 @@ public class WisherMapper {
                 .userId(wisherDto.getUserId())
                 .contactBy(wisherDto.getContactBy())
                 .approve(wisherDto.isApprove())
-                .status(wisherDto.getStatus())
+                .build();
+    }
+
+    public Wisher getWisher(WisherDto wisherDto, InterviewDTO interviewDTO) {
+        Interview interview = InterviewMapper.getInterview(interviewDTO);
+        return Wisher.of()
+                .interview(interview)
+                .userId(wisherDto.getUserId())
+                .contactBy(wisherDto.getContactBy())
+                .approve(wisherDto.isApprove())
                 .build();
     }
 }

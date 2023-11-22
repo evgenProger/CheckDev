@@ -35,7 +35,7 @@
         <div class="cell">
             <form class="needs-validation" th:action="@{/interview/update}" method="post" th:object="${interview}">
                 <input type="hidden" name="id" th:field="*{id}">
-                <input type="hidden" name="status" th:field="*{status}">
+                <input type="hidden" name="statusId" th:field="*{statusId}">
                 <input type="hidden" name="submitterId" th:field="*{submitterId}">
                 <input type="hidden" name="title" th:field="*{title}">
                 <input type="hidden" name="topicId" th:field="*{topicId}">

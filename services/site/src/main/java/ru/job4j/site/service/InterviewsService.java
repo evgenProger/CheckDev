@@ -221,4 +221,34 @@ public class InterviewsService {
         }
         return result;
     }
+
+    /**
+     * Метод получает из REST сервиса MOCK все новые собеседования,
+     *
+     * @return List<Interview>
+     */
+    public List<InterviewDTO> getNewInterviews() {
+        List<InterviewDTO> result = new ArrayList<>();
+        String url = String.format("http://localhost:9912/interviews/interviewStatusNew");
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String jsonText = new RestAuthCall(url).get();
+            result = mapper.readValue(jsonText, new TypeReference<>() {
+            });
+        } catch (Exception e) {
+            log.error("MOCK API is not available, error: {}", e.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * Метод выполняет подсчет количества интервью по topicId
+     * @param topicId topicId
+     * @return количество интервью по topicId
+     */
+    public Long  countNewInterviewsByTopic(int topicId) {
+        List<InterviewDTO> list = getNewInterviews();
+       return list.stream().map(interviewDTO -> interviewDTO.getTopicId())
+               .filter(integer -> integer.equals(topicId)).count();
+    }
 }

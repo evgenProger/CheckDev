@@ -19,6 +19,10 @@ class NotifyActionTest {
 
     @Test
     void whenNotChatId() {
+        var userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()
+                ));
         Chat chat = new Chat(1L, "type");
         Update update = new Update();
         Message message = new Message();

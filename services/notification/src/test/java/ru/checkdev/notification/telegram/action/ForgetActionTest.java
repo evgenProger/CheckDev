@@ -20,6 +20,10 @@ class ForgetActionTest {
 
     @Test
     void whenNotChatId() {
+        var userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()
+                ));
         Chat chat = new Chat(1L, "type");
         Update update = new Update();
         Message message = new Message();
@@ -63,5 +67,6 @@ class ForgetActionTest {
         String text = "Ваш новый пароль:" + sl
                 + "tg/f1f7347";
         assertThat(text).isEqualTo(sendMessage.getText());
+
     }
 }

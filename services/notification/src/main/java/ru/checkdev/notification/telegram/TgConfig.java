@@ -77,14 +77,9 @@ public class TgConfig {
                         new UnNotifyAction(sessionTg, tgCall, userTelegramService),
                         new SaveInnerMessageAction(sessionTg, messageService))
         );
-        try {
-            TgBot menu = new TgBot(actionMap, username, token);
-            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(menu);
-            return menu;
-        } catch (TelegramApiException e) {
-            log.error("Telegram bot: {}, ERROR {}", username, e);
-        }
-        return null;
+        TgBot menu = new TgBot(actionMap, username, token);
+        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+        botsApi.registerBot(menu);
+        return menu;
     }
 }

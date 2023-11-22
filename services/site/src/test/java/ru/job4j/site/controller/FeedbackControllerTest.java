@@ -11,6 +11,7 @@ import ru.job4j.site.dto.FeedbackDTO;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.service.FeedbackService;
 import ru.job4j.site.service.InterviewService;
+import ru.job4j.site.service.ProfilesService;
 
 import java.util.List;
 
@@ -36,6 +37,8 @@ class FeedbackControllerTest {
     InterviewService interviewService;
     @MockBean
     FeedbackService feedbackService;
+    @MockBean
+    ProfilesService profilesService;
 
     @Test
     void injectedIsNotNull() {
@@ -46,7 +49,7 @@ class FeedbackControllerTest {
 
     @Test
     void whenGetFeedbackFormThenReturnFeedbackPage() throws Exception {
-        var interviewDTO = new InterviewDTO(1, 1, 2, 2, 1,
+        var interviewDTO = new InterviewDTO(1, 1, 2, "status2", 2, 1,
                 "title", "additional", "contactBy",
                 null, null, 0, "author", 1L);
         var token = "1234";
