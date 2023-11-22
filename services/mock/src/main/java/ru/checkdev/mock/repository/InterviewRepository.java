@@ -172,7 +172,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      *
      * @return LIST из ТРЕХ последних интервью
      */
-    List<Interview> findAllByStatusOrderByCreateDateDesc(StatusInterview status);
+    List<Interview> findAllByStatusOrderByCreateDateDesc(StatusInterview status, Pageable pageable);
 
     /**
      * Получаем из базы новые интервью по статусу.
