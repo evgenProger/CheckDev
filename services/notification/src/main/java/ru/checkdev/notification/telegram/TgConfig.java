@@ -26,6 +26,7 @@ import java.util.Map;
 @Component
 @Slf4j
 public class TgConfig {
+    private final SessionTg sessionTg = new SessionTg();
     private final TgCall tgCall;
     private final InnerMessageService messageService;
     private final UserTelegramService userTelegramService;
@@ -36,7 +37,9 @@ public class TgConfig {
     @Value("${server.site.url.login}")
     private String urlLogin;
 
-    public TgConfig(TgCall tgCall, InnerMessageService messageService, UserTelegramService userTelegramService) {
+    public TgConfig(TgCall tgCall,
+                    InnerMessageService messageService,
+                    UserTelegramService userTelegramService) {
         this.tgCall = tgCall;
         this.messageService = messageService;
         this.userTelegramService = userTelegramService;
@@ -44,20 +47,35 @@ public class TgConfig {
 
     @Bean
     public TgBot initTg() {
-        Map<String, Action> actionMap = Map.of(
-                "/start", new InfoAction(List.of(
+        Map<String, List<Action>> actionMap = Map.of(
+                "/start", List.of(new InfoAction(List.of(
                         "/start",
                         "/new  зарегистрировать нового пользователя",
                         "/check  получить своё имя и емайл",
                         "/forget  генерация нового пароля",
                         "/notify  подписаться на уведомления",
-                        "/unnotify  отписаться от уведомлений")),
-                "/new", new RegAction(tgCall, userTelegramService, messageService, urlLogin),
-                "/check", new CheckAction(tgCall, userTelegramService, messageService),
-                "/forget", new ForgetAction(tgCall, userTelegramService, messageService),
-                "/notify", new NotifyAction(tgCall, userTelegramService, messageService),
-                "/unnotify", new UnNotifyAction(tgCall, userTelegramService, messageService)
-
+                        "/unnotify  отписаться от уведомлений"))),
+                "/new", List.of(
+                        new RegAction10(userTelegramService),
+                        new RegAction11(sessionTg),
+                        new RegAction15(userTelegramService),
+                        new RegAction16(sessionTg),
+                        new RegAction20(sessionTg),
+                        new RegAction30(sessionTg, tgCall, userTelegramService, urlLogin),
+                        new SaveInnerMessageAction(sessionTg, messageService)
+                ),
+                "/check", List.of(
+                        new CheckAction(sessionTg, tgCall, userTelegramService),
+                        new SaveInnerMessageAction(sessionTg, messageService)),
+                "/forget", List.of(
+                        new ForgetAction(sessionTg, tgCall, userTelegramService),
+                        new SaveInnerMessageAction(sessionTg, messageService)),
+                "/notify", List.of(
+                        new NotifyAction(sessionTg, tgCall, userTelegramService),
+                        new SaveInnerMessageAction(sessionTg, messageService)),
+                "/unnotify", List.of(
+                        new UnNotifyAction(sessionTg, tgCall, userTelegramService),
+                        new SaveInnerMessageAction(sessionTg, messageService))
         );
         try {
             TgBot menu = new TgBot(actionMap, username, token);

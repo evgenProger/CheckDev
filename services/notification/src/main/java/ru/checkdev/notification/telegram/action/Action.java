@@ -1,7 +1,11 @@
 package ru.checkdev.notification.telegram.action;
 
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Optional;
 
 /**
  * 3. Мидл
@@ -10,7 +14,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
  * @since 12.09.2023
  */
 public interface Action {
-    BotApiMethod<Message> handle(Message message);
+    Optional<BotApiMethod> handle(Update update);
 
-    BotApiMethod<Message> callback(Message message);
+    default Iterator<? extends Action> bindingActions() {
+        return new ArrayList<Action>().iterator();
+    }
 }

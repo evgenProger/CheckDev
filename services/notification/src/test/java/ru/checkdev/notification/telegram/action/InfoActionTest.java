@@ -1,30 +1,35 @@
 package ru.checkdev.notification.telegram.action;
 
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class InfoActionTest {
     @Test
     void handle() {
         Chat chat = new Chat(1L, "type");
+        Update update = new Update();
         Message message = new Message();
+        update.setMessage(message);
         message.setChat(chat);
         List<String> actions = List.of(
                 "/start",
                 "/new  зарегистрировать нового пользователя");
         InfoAction infoAction = new InfoAction(actions);
-        BotApiMethod<Message> botApiMethod = infoAction.handle(message);
+        BotApiMethod<Message> botApiMethod = infoAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
         String text = String.format("Выберите действие:%s"
                 + "/start%s"
                 + "/new  зарегистрировать нового пользователя%s", n, n, n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 }
