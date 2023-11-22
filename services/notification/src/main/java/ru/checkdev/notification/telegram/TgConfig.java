@@ -83,6 +83,7 @@ public class TgConfig {
             botsApi.registerBot(menu);
             return menu;
         } catch (TelegramApiException e) {
+            e.printStackTrace();
             log.error("Telegram bot: {}, ERROR {}", username, e);
         }
         return null;
