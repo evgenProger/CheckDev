@@ -2,45 +2,34 @@ package ru.checkdev.notification.telegram.action;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.UserTelegram;
+import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
+import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
+import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.service.UserTelegramService;
-import ru.checkdev.notification.telegram.service.TgCall;
-
-import java.util.Optional;
+import ru.checkdev.notification.telegram.service.FakeTgCallConsole;
+import ru.checkdev.notification.telegram.service.TgCallNoConnect;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = NtfSrv.class)
-@AutoConfigureMockMvc
-@Disabled
 class RegActionTest {
-
-    @MockBean
-    private UserTelegramService userTelegramService;
-
-    @MockBean
-    private InnerMessageService messageService;
-
-    @Autowired
-    private TgCall tgCall;
 
     @Test
     void whenHandleThenOk() {
+        var userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()
+                ));
         Chat chat = new Chat(1L, "type");
         Message message = new Message();
         message.setChat(chat);
-        RegAction regAction = new RegAction(tgCall, userTelegramService, messageService, "www");
+        var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
+        RegAction regAction = new RegAction(new FakeTgCallConsole(), userTelegramService, innerMessageService, "www");
         BotApiMethod<Message> botApiMethod = regAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Введите email для регистрации:";
@@ -49,12 +38,17 @@ class RegActionTest {
 
     @Test
     void whenNotUniqueChatId() {
+        var userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()
+                ));
         Chat chat = new Chat(1L, "type");
         Message message = new Message();
         message.setChat(chat);
         UserTelegram userTelegram = new UserTelegram(88, 10, chat.getId());
-        when(userTelegramService.findByChatId(chat.getId())).thenReturn(Optional.of(userTelegram));
-        RegAction regAction = new RegAction(tgCall, userTelegramService, messageService, "www");
+        userTelegramService.save(userTelegram);
+        var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
+        RegAction regAction = new RegAction(new FakeTgCallConsole(), userTelegramService, innerMessageService, "www");
         regAction.handle(message);
         BotApiMethod<Message> botApiMethod = regAction.handle(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
@@ -64,11 +58,16 @@ class RegActionTest {
 
     @Test
     void whenNotCorrectEmail() {
+        var userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()
+                ));
         Chat chat = new Chat(1L, "type");
         Message message = new Message();
         message.setChat(chat);
         message.setText("емайл без собачки и точки");
-        RegAction regAction = new RegAction(tgCall, userTelegramService, messageService, "www");
+        var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
+        RegAction regAction = new RegAction(new TgCallNoConnect(), userTelegramService, innerMessageService, "www");
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
@@ -78,11 +77,16 @@ class RegActionTest {
 
     @Test
     void whenNotConnection() {
+        var userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()
+                ));
         Chat chat = new Chat(1L, "type");
         Message message = new Message();
         message.setChat(chat);
         message.setText("a@a.ru");
-        RegAction regAction = new RegAction(tgCall, userTelegramService, messageService, "");
+        var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
+        RegAction regAction = new RegAction(new FakeTgCallConsole(), userTelegramService, innerMessageService, "");
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
@@ -93,20 +97,25 @@ class RegActionTest {
     @Disabled
     @Test
     void whenCallBackThenOk() {
+        var userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()
+                ));
         Chat chat = new Chat(1L, "type");
         Message message = new Message();
         message.setChat(chat);
         message.setText("mail@mail.ru");
-        RegAction regAction = new RegAction(tgCall, userTelegramService, messageService, "www");
+        var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
+        RegAction regAction = new RegAction(new FakeTgCallConsole(), userTelegramService, innerMessageService, "www");
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
-        String text = String.format(
+        String expected = String.format(
                 "Вы зарегистрированы: %s"
                         + "Имя: mail%s"
                         + "Email: mail@mail.ru%s"
                         + "Пароль : password%s"
                         + "urlSiteAuth", n, n, n, n);
-        assertThat(text).isEqualTo(sendMessage.getText());
+        assertThat(sendMessage.getText()).isEqualTo(expected);
     }
 }

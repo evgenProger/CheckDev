@@ -15,9 +15,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.mapper.InterviewMapper;
 import ru.checkdev.mock.repository.InterviewRepository;
 import ru.checkdev.mock.service.InterviewService;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +55,8 @@ class InterviewsControllerTest {
             .additional("test_additional")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
-            .createDate(null)
+            .createDate(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
+            .topicId(1)
             .build();
 
     @Test
@@ -60,7 +65,7 @@ class InterviewsControllerTest {
         when(interviewRepository.findAll(PageRequest.of(0, 5)))
                 .thenReturn(page);
         when(service.findPaging(Mockito.anyInt(), Mockito.anyInt()))
-                .thenReturn(page);
+                .thenReturn(page.map(InterviewMapper::getInterviewDTO));
         mockMvc.perform(get("/interviews/"))
                 .andDo(print())
                 .andExpectAll(status().isOk(),
@@ -79,7 +84,8 @@ class InterviewsControllerTest {
                     .additional("test_additional")
                     .contactBy("test_contact_by")
                     .approximateDate("test_approximate_date")
-                    .createDate(null)
+                    .createDate(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
+                    .topicId(2)
                     .build();
             interviews.add(interview);
         });
@@ -87,7 +93,7 @@ class InterviewsControllerTest {
         when(interviewRepository.findByTopicIdIn(List.of(1, 2, 3), PageRequest.of(0, 5)))
                 .thenReturn(page);
         when(service.findPaging(Mockito.anyInt(), Mockito.anyInt()))
-                .thenReturn(page);
+                .thenReturn(page.map(InterviewMapper::getInterviewDTO));
         mockMvc.perform(get("/interviews/findByTopicsIds/1,2,3"))
                 .andDo(print())
                 .andExpectAll(status().isOk(),

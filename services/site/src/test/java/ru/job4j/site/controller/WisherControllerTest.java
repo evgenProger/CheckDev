@@ -52,18 +52,19 @@ class WisherControllerTest {
     @Test
     void whenDismissedWisherThenRedirectInterviewDetailPage() throws Exception {
         var token = "1234";
-        var interviewId = 1;
+        var interviewDTO = new InterviewDTO(1, 1, 22, "status22", 2, 1,
+                "title", "additional", "contactBy",
+                null, null, 0, "author", 1L);
         var wisherId = 2;
-        var newStatusId = 22;
         var wisherUserId = 13;
-        doNothing().when(interviewService).updateStatus(token, interviewId, newStatusId);
-        when(interviewService.getById(token, interviewId)).thenReturn(new InterviewDTO());
+        doNothing().when(interviewService).updateStatus(token, interviewDTO);
+        when(interviewService.getById(token, interviewDTO.getId())).thenReturn(new InterviewDTO());
         this.mockMvc.perform(post("/wisher/dismissed")
                         .sessionAttr("token", token)
-                        .param("interviewId", String.valueOf(interviewId))
+                        .param("interviewId", String.valueOf(interviewDTO.getId()))
                         .param("wisherId", String.valueOf(wisherId))
                         .param("wisherUserId", String.valueOf(wisherUserId)))
                 .andDo(print())
-                .andExpect(view().name("redirect:/interview/" + interviewId));
+                .andExpect(view().name("redirect:/interview/" + interviewDTO.getId()));
     }
 }

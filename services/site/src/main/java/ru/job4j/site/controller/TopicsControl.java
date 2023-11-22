@@ -32,7 +32,7 @@ public class TopicsControl {
     public String getByCategory(@PathVariable int categoryId,
                                 Model model,
                                 HttpServletRequest req) throws JsonProcessingException {
-        var topics = topicsService.getByCategory(categoryId);
+        var topics = topicsService.getTopicsWithCountInterview(categoryId);
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("topics", topics);
         String categoryName = topics.isEmpty() ? "" : topics.get(0).getCategory().getName();

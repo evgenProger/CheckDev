@@ -8,7 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.dto.InterviewDTO;
 import ru.checkdev.mock.dto.WisherDto;
+import ru.checkdev.mock.mapper.InterviewMapper;
 import ru.checkdev.mock.mapper.WisherMapper;
 import ru.checkdev.mock.service.InterviewService;
 import ru.checkdev.mock.service.WisherService;
@@ -25,15 +27,16 @@ public class WisherController {
 
     private final InterviewService interviewService;
     private final WisherService wisherService;
+
     @PostMapping("/")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Wisher> save(@Valid @RequestBody WisherDto wisherDto) throws SQLException {
-        Optional<Interview> interviewOptional = interviewService.findById(wisherDto.getInterviewId());
-        if (interviewOptional.isEmpty()) {
+        Optional<InterviewDTO> interviewDtoOptional = interviewService.findById(wisherDto.getInterviewId());
+        if (interviewDtoOptional.isEmpty()) {
             throw new SQLException("This interview is missing");
         }
         Optional<Wisher> rsl = wisherService.save(
-                new WisherMapper().getWisher(wisherDto, interviewOptional.get()));
+                new WisherMapper().getWisher(wisherDto, interviewDtoOptional.get()));
         if (rsl.isEmpty()) {
             throw new SQLException("An error occurred while saving data");
         }
@@ -61,15 +64,16 @@ public class WisherController {
             throw new SQLException("There is no wisher with this number");
         }
         Wisher rsl = optionalWisher.get();
-        Optional<Interview> optionalInterview = interviewService.findById(wisherDto.getInterviewId());
-        if (optionalInterview.isEmpty()) {
+        Optional<InterviewDTO> optionalDtoInterview = interviewService.findById(wisherDto.getInterviewId());
+        if (optionalDtoInterview.isEmpty()) {
             throw new SQLException("There is no interview with this number");
         }
-        rsl.setInterview(optionalInterview.get());
+        var interview = InterviewMapper.getInterview(optionalDtoInterview.get());
+        rsl.setInterview(interview);
         rsl.setUserId(wisherDto.getUserId());
         rsl.setContactBy(wisherDto.getContactBy());
         rsl.setApprove(wisherDto.isApprove());
-        return new ResponseEntity<Wisher>(rsl,
-                wisherService.update(rsl) ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(wisherService.update(rsl) ? HttpStatus.OK : HttpStatus.NO_CONTENT)
+                .body(rsl);
     }
 }

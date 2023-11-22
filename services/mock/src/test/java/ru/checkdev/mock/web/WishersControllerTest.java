@@ -1,6 +1,5 @@
 package ru.checkdev.mock.web;
 
-import com.google.gson.GsonBuilder;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -16,14 +15,19 @@ import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
 import ru.checkdev.mock.dto.WisherDto;
+import ru.checkdev.mock.mapper.InterviewMapper;
 import ru.checkdev.mock.service.InterviewService;
 import ru.checkdev.mock.service.WisherService;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,7 +57,8 @@ class WishersControllerTest {
             .additional("test_additional")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
-            .createDate(null)
+            .createDate(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
+            .topicId(1)
             .build();
 
     private Wisher wisher = Wisher.of()
@@ -64,10 +69,6 @@ class WishersControllerTest {
             .approve(true)
             .build();
 
-    private String interviewString = new GsonBuilder().serializeNulls().create().toJson(interview);
-
-    private String wisherString = new GsonBuilder().serializeNulls().create().toJson(wisher);
-
     @Test
     public void whenGetAll() throws Exception {
         when(wisherService.findAll()).thenReturn(List.of(wisher));
@@ -75,7 +76,8 @@ class WishersControllerTest {
                 .andDo(print())
                 .andExpectAll(status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        content().string("[" + wisherString + "]"));
+                        jsonPath("$.size()", Matchers.is(1)),
+                        jsonPath("$[0].id", Matchers.is(wisher.getId())));
     }
 
     @Test
@@ -90,7 +92,8 @@ class WishersControllerTest {
 
     @Test
     public void whenFindByInterviewIdWhenReturnWishers() throws Exception {
-        when(interviewService.findById(interview.getId())).thenReturn(Optional.of(interview));
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interviewDTO));
         var wisherList = List.of(wisher);
         when(wisherService.findByInterview(interview)).thenReturn(wisherList);
         mockMvc.perform(get("/wishers/{id}", interview.getId()))
@@ -103,7 +106,8 @@ class WishersControllerTest {
 
     @Test
     public void whenFindByInterviewIdWhenReturnEmpty() throws Exception {
-        when(interviewService.findById(interview.getId())).thenReturn(Optional.of(interview));
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interviewDTO));
         when(wisherService.findByInterview(interview)).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/wishers/{id}", interview.getId()))
                 .andDo(print())
