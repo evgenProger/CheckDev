@@ -40,6 +40,12 @@
                 <!--/* ID авторизованного пользователя */-->
                 <input type="hidden" id="userId" name="userId" th:value="*{userInfo.id}">
                 <input type="hidden" id="userName" name="userName" th:value="*{userInfo.username}">
+                <input type="hidden" id="submitterId" name="submitterId"
+                       th:value="*{interview.submitterId}">
+                <input type="hidden" id="agreedWisherId" name="agreedWisherId"
+                       th:value="*{interview.agreedWisherId}">
+                <input type="hidden" id="interviewTitle" name="interviewTitle"
+                       th:value="*{interview.title}">
                 <!--/* Форма ввода текста отзыва собеседования textFeedback */-->
                 <div class="mb-3">
                     <label class="form-label h3" for="textFeedback">Отзыв собеседования</label>

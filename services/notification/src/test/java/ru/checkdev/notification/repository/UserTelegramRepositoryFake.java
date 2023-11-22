@@ -33,6 +33,13 @@ public class UserTelegramRepositoryFake
     }
 
     @Override
+    public long findChatIdByUserId(int userId) {
+        return memory.values().stream()
+                .filter(u -> u.getUserId() == userId)
+                .map(UserTelegram::getChatId).findFirst().orElse((long) 0);
+    }
+
+    @Override
     public Optional<UserTelegram> findByUserId(int userId) {
         return memory.values().stream()
                 .filter(userTelegram -> userTelegram.getUserId() == userId)

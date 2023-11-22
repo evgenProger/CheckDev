@@ -42,6 +42,20 @@ class UserTelegramRepositoryTest {
     }
 
     @Test
+    void whenFindChatIdByUserId() {
+        var user = new UserTelegram(0, 1, 1111L);
+        userTelegramFake.save(user);
+        assertThat(1111L).isEqualTo(userTelegramFake.findChatIdByUserId(1));
+    }
+
+    @Test
+    void whenTryToFindChatIdByInvalidUserId() {
+        var user = new UserTelegram(0, 1, 1111L);
+        userTelegramFake.save(user);
+        assertThat(0L).isEqualTo(userTelegramFake.findChatIdByUserId(27));
+    }
+
+    @Test
     void whenFindChatIdInUserIdsWhenListChatID() {
         var user1 = new UserTelegram(0, 1, 1111L);
         var user2 = new UserTelegram(0, 2, 2222L);

@@ -22,7 +22,7 @@ public class InnerMessageRepositoryFake
         return memory.values().stream()
                 .filter(msg -> !msg.isRead())
                 .map(im -> new InnerMessageDTO(im.getId(),
-                        im.getUserId(), im.getText(), im.getCreated()))
+                        im.getUserId(), im.getText(), im.getCreated(), im.getInterviewId()))
                 .filter(msg -> Objects.equals(msg.getUserId(), userId))
                 .toList();
     }

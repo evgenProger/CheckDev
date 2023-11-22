@@ -14,6 +14,9 @@ public interface UserTelegramRepository extends CrudRepository<UserTelegram, Int
     @Query("SELECT ut.chatId FROM cd_user_telegram ut WHERE ut.userId IN :userIds")
     List<Long> findChatIdInUserIds(@Param("userIds") List<Integer> userIds);
 
+    @Query("SELECT ut.chatId FROM cd_user_telegram ut WHERE ut.userId = :userId")
+    long findChatIdByUserId(@Param("userId") int userId);
+
     Optional<UserTelegram> findByUserId(int userId);
 
     /**
