@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.*;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -200,9 +200,11 @@ public class InterviewController {
         var result = "interview/participate";
         if (userInfoDTO != null && interview.getSubmitterId() != userInfoDTO.getId()) {
             var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
+            var isWisher = wisherService.isWisher(userInfoDTO.getId(), interview.getId(), wishers);
             var statisticMap = wisherService.getInterviewStatistic(wishers);
             var countWishers = wisherService.countWishers(wishers, interviewId);
             model.addAttribute("interview", interview);
+            model.addAttribute("isWisher", isWisher);
             model.addAttribute("statisticMap", statisticMap);
             model.addAttribute("countWishers", countWishers);
             RequestResponseTools.addAttrBreadcrumbs(model,
