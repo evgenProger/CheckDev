@@ -41,7 +41,7 @@ public class InterviewService {
         interview.setCreateDate(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)));
         try {
             var saveInterview = interviewRepository.save(interview);
-            rsl = Optional.of(InterviewMapper.getInterviewDTO(interview));
+            rsl = Optional.of(InterviewMapper.getInterviewDTO(saveInterview));
         } catch (DataIntegrityViolationException e) {
             LOG.error("Error!", e);
         }
@@ -59,9 +59,15 @@ public class InterviewService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Получаем последние 5 собеседований.
+     *
+     * @return List<InterviewDTO>
+     */
     public List<InterviewDTO> findLast() {
         var status = StatusInterview.IS_NEW;
-        return interviewRepository.findAllByStatusOrderByCreateDateDesc(status)
+        Pageable topFive = PageRequest.of(0, 5);
+        return interviewRepository.findAllByStatusOrderByCreateDateDesc(status, topFive)
                 .stream()
                 .map(InterviewMapper::getInterviewDTO)
                 .toList();
