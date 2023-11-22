@@ -202,14 +202,16 @@ public class FeedbackServiceWebClient implements FeedbackService {
      */
     public int updateStatusInterview(String token, InterviewDTO interview, int feedbackUser) {
         var feedbacksByUser = findByInterviewIdAndUserId(interview.getId(), feedbackUser);
-        if (feedbacksByUser.size() == 1 && StatusInterview.IS_FEEDBACK.getId() == interview.getStatus()) {
-            interviewService.updateStatus(token, interview.getId(), StatusInterview.IS_COMPLETED.getId());
-            return StatusInterview.IS_COMPLETED.getId();
-        } else if (StatusInterview.IN_PROGRESS.getId() == interview.getStatus()) {
-            interviewService.updateStatus(token, interview.getId(), StatusInterview.IS_FEEDBACK.getId());
-            return StatusInterview.IS_FEEDBACK.getId();
+        if (feedbacksByUser.size() == 1 && StatusInterview.IS_FEEDBACK.getId() == interview.getStatusId()) {
+            interview.setStatusId(StatusInterview.IS_COMPLETED.getId());
+            interviewService.updateStatus(token, interview);
+            return interview.getStatusId();
+        } else if (StatusInterview.IN_PROGRESS.getId() == interview.getStatusId()) {
+            interview.setStatusId(StatusInterview.IS_FEEDBACK.getId());
+            interviewService.updateStatus(token, interview);
+            return interview.getStatusId();
         }
-        return interview.getStatus();
+        return interview.getStatusId();
     }
 
     public void setWebClientFeedback(WebClient webClient) {

@@ -1,7 +1,7 @@
 package ru.checkdev.mock.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.GsonBuilder;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -15,17 +15,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.mapper.InterviewMapper;
 import ru.checkdev.mock.service.InterviewService;
 import ru.checkdev.mock.service.WisherService;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MockSrv.class)
@@ -49,7 +52,8 @@ class WisherControllerTest {
             .additional("test_additional")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
-            .createDate(null)
+            .createDate(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
+            .topicId(1)
             .build();
 
     private Wisher wisher = Wisher.of()
@@ -60,23 +64,10 @@ class WisherControllerTest {
             .approve(true)
             .build();
 
-    private String interviewString = new GsonBuilder().serializeNulls().create().toJson(interview);
-
-    private String wisherString = new GsonBuilder().serializeNulls().create().toJson(wisher);
-
-    private Wisher emptyWisher = Wisher.of()
-            .id(1)
-            .interview(null)
-            .userId(0)
-            .contactBy(null)
-            .approve(false)
-            .build();
-
-    private String emptyWisherString = new GsonBuilder().serializeNulls().create().toJson(emptyWisher);
-
     @Test
     public void whenSaveAndGetThenIsUnauthorized() throws Exception {
-        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interview));
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interviewDTO));
         when(wisherService.save(any(Wisher.class))).thenReturn(Optional.of(wisher));
         mockMvc.perform(post("/wisher/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -88,7 +79,8 @@ class WisherControllerTest {
     @Disabled
     @Test
     public void whenSaveAndGetTheSame() throws Exception {
-        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interview));
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interviewDTO));
         when(wisherService.save(any(Wisher.class))).thenReturn(Optional.of(wisher));
         mockMvc.perform(post("/wisher/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -96,7 +88,7 @@ class WisherControllerTest {
                 .andDo(print())
                 .andExpectAll(status().isCreated(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        content().string(wisherString));
+                        jsonPath("$.id", Matchers.is(wisher.getId())));
     }
 
     @Test
@@ -107,7 +99,7 @@ class WisherControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        content().string(wisherString));
+                        jsonPath("$.id", Matchers.is(wisher.getId())));
     }
 
     @Test
@@ -123,7 +115,8 @@ class WisherControllerTest {
     @Disabled
     @Test
     public void whenTryToUpdateIsCorrect() throws Exception {
-        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interview));
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interviewDTO));
         when(wisherService.findById(any(Integer.class))).thenReturn(Optional.of(wisher));
         when(wisherService.update(any(Wisher.class))).thenReturn(true);
         this.mockMvc.perform(put("/wisher/")
@@ -133,12 +126,13 @@ class WisherControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        content().string(wisherString));
+                        jsonPath("$.id", Matchers.is(wisher.getId())));
     }
 
     @Test
     public void whenTryToUpdateIsUnauthorized() throws Exception {
-        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interview));
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interviewDTO));
         when(wisherService.findById(any(Integer.class))).thenReturn(Optional.of(wisher));
         when(wisherService.update(any(Wisher.class))).thenReturn(true);
         this.mockMvc.perform(put("/wisher/")
@@ -151,7 +145,8 @@ class WisherControllerTest {
     @Disabled
     @Test
     public void whenTryToUpdateIsNotCorrect() throws Exception {
-        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interview));
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        when(interviewService.findById(any(Integer.class))).thenReturn(Optional.of(interviewDTO));
         when(wisherService.findById(any(Integer.class))).thenReturn(Optional.of(wisher));
         when(wisherService.update(any(Wisher.class))).thenReturn(false);
         this.mockMvc.perform(put("/wisher/")
@@ -161,6 +156,6 @@ class WisherControllerTest {
                 .andExpectAll(
                         status().isNoContent(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        content().string(wisherString));
+                        jsonPath("$.id", Matchers.is(wisher.getId())));
     }
 }

@@ -7,10 +7,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.dto.FeedbackDTO;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.service.FeedbackService;
 import ru.job4j.site.service.InterviewService;
+import ru.job4j.site.service.ProfilesService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 /**
  * FeedbackController контроллер обработки отзывов
@@ -25,8 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 public class FeedbackController {
 
     private FeedbackService feedbackService;
-
     private InterviewService interviewService;
+    private ProfilesService profilesService;
 
     /**
      * Отображение формы для сохранения отзыв на собеседование.
@@ -46,7 +49,19 @@ public class FeedbackController {
             log.error("InterviewService.class method getById error: {}", e.getMessage());
             return "redirect:/";
         }
+        ProfileDTO wisherProfileDTO = new ProfileDTO();
+        Optional<ProfileDTO> wisherProfile = profilesService.getProfileById(interviewDTO.getAgreedWisherId());
+        if (wisherProfile.isPresent()) {
+            wisherProfileDTO = wisherProfile.get();
+        }
+        ProfileDTO authorProfileDTO = new ProfileDTO();
+        Optional<ProfileDTO> authorProfile = profilesService.getProfileById(interviewDTO.getSubmitterId());
+        if (authorProfile.isPresent()) {
+            authorProfileDTO = authorProfile.get();
+        }
         model.addAttribute("interview", interviewDTO);
+        model.addAttribute("agreedWisher", wisherProfileDTO);
+        model.addAttribute("interviewAuthor", authorProfileDTO);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Собеседования", "/interviews/",

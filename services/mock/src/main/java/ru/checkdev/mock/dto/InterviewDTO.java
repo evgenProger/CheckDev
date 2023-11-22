@@ -1,10 +1,17 @@
-package ru.job4j.site.dto;
+package ru.checkdev.mock.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * CheckDev пробное собеседование
+ * DTO Interview
+ *
+ * @author Dmitry Stepanov
+ * @version 20.11.2023 22:01
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,8 +37,4 @@ public class InterviewDTO {
      * поле автор собеседования (тот кто создал собеседование)
      */
     private String author;
-    /**
-     * поле количество откликов(желающих участвовать в интервью)
-     */
-    private Long countWishers;
 }
