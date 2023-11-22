@@ -3,6 +3,7 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.*;
@@ -10,10 +11,12 @@ import ru.job4j.site.dto.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
+@AllArgsConstructor
 @Service
 @Slf4j
 public class TopicsService {
+
+    private final InterviewsService interviewsService;
 
     public List<TopicDTO> getByCategory(int id) throws JsonProcessingException {
         var text = new RestAuthCall("http://localhost:9902/topics/" + id).get();
@@ -137,5 +140,19 @@ public class TopicsService {
                 .collect(Collectors
                         .toMap(TopicLiteDTO::getId,
                                 Function.identity()));
+    }
+
+    /**
+     * Метод получает List Topic, c передачей в поле количеств интервью для определенного Topic Id.
+     * @param categoryId categoryId
+     * @return List Topic
+     * @throws JsonProcessingException
+     */
+    public List<TopicDTO> getTopicsWithCountInterview(int categoryId) throws JsonProcessingException {
+        List<TopicDTO> topicByCategory = getByCategory(categoryId);
+        for (var topic : topicByCategory) {
+            topic.setCountInterview(interviewsService.countNewInterviewsByTopic(topic.getId()));
+        }
+        return topicByCategory;
     }
 }

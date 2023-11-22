@@ -1,12 +1,13 @@
 package ru.checkdev.notification.telegram.action;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class UnKnownRequestActionTest {
 
@@ -24,6 +25,6 @@ class UnKnownRequestActionTest {
         String text = String.format(
                 "Команда не поддерживается! Список доступных команд: %s/start",
                 System.lineSeparator());
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 }

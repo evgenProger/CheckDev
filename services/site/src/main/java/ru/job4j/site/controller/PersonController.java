@@ -3,7 +3,8 @@ package ru.job4j.site.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,18 +42,23 @@ public class PersonController {
     private final AuthService authService;
     private final NotificationService notifications;
 
+    private final ResourceLoader resourceLoader;
+
     @Value("${botUserName}")
     private String botUserName;
 
     public PersonController(@Value("${server.site.maxSizeLoadFile}") String maxSizeFile,
                             @Value("${server.site.contentTypeFile}") String contentTypeFile,
-                            PersonService personService, ImageCompress imageCompress, AuthService authService, NotificationService notifications) {
+                            PersonService personService, ImageCompress imageCompress,
+                            AuthService authService, NotificationService notifications,
+                            ResourceLoader resourceLoader) {
         this.maxSizeFile = maxSizeFile;
         this.contentTypeFile = contentTypeFile;
         this.personService = personService;
         this.imageCompress = imageCompress;
         this.authService = authService;
         this.notifications = notifications;
+        this.resourceLoader = resourceLoader;
     }
 
     /**
@@ -131,8 +137,9 @@ public class PersonController {
  *      Это заглушка для картинки профиля, в следующей реализации будет убрана.
  */
         if (compressFile == null) {
-            ClassPathResource resource = new ClassPathResource("static/img/person_mock.jpeg");
-            File mockFile = resource.getFile();
+            Resource defaultProfileImage =
+                    resourceLoader.getResource("classpath:static/img/person_mock.jpeg");
+            File mockFile = defaultProfileImage.getFile();
             byte[] bytes = Files.readAllBytes(mockFile.toPath());
             compressFile =
                     new MultipartFileImpl(bytes, mockFile.getName(),

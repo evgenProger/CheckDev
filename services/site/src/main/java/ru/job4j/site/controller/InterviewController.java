@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.job4j.site.domain.StatusInterview;
 import ru.job4j.site.dto.*;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -75,7 +75,7 @@ public class InterviewController {
                 topicId, topicName, createInterview.getId(), interviewDTO.getSubmitterId());
         notifications.notifyAboutInterviewCreation(token,
                 categoryWithTopicDTO);
-        var interviewNotifDto = InterviewNotifDTO.of()
+        var interviewNotifiDTO = InterviewNotifiDTO.of()
                 .id(interviewDTO.getId())
                 .submitterId(interviewDTO.getSubmitterId())
                 .title(interviewDTO.getTitle())
@@ -84,7 +84,7 @@ public class InterviewController {
                 .categoryId(categoryIdName.getId())
                 .categoryName(categoryIdName.getName())
                 .build();
-        notifications.sendSubscribeTopic(token, interviewNotifDto);
+        notifications.sendSubscribeTopic(token, interviewNotifiDTO);
         return "redirect:/interview/" + createInterview.getId();
     }
 
@@ -109,7 +109,6 @@ public class InterviewController {
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("isWisher", isWisher);
         model.addAttribute("statisticMap", statisticMap);
-        model.addAttribute("statuses", StatusInterview.values());
         model.addAttribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId());
         model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
         model.addAttribute("wishersDetail", wishersDetail);
@@ -201,12 +200,13 @@ public class InterviewController {
         var result = "interview/participate";
         if (userInfoDTO != null && interview.getSubmitterId() != userInfoDTO.getId()) {
             var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
+            var isWisher = wisherService.isWisher(userInfoDTO.getId(), interview.getId(), wishers);
             var statisticMap = wisherService.getInterviewStatistic(wishers);
             var countWishers = wisherService.countWishers(wishers, interviewId);
             model.addAttribute("interview", interview);
+            model.addAttribute("isWisher", isWisher);
             model.addAttribute("statisticMap", statisticMap);
             model.addAttribute("countWishers", countWishers);
-            model.addAttribute("statuses", StatusInterview.values());
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index",
                     "Собеседования", "/interviews/",

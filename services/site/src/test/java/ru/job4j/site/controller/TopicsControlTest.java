@@ -56,13 +56,14 @@ public class TopicsControlTest {
             topic.setCreated(Calendar.getInstance());
             topic.setUpdated(Calendar.getInstance());
             topic.setCategory(new CategoryDTO(1, String.format("Category_%d", 1)));
+            topic.setCountInterview(1L);
             return topic;
         }).toList();
         userInfo.setRoles(List.of(role));
         var userTopicDto = new UserTopicDTO();
         userTopicDto.setId(1);
         userTopicDto.setSubscribeTopicIds(new ArrayList<>());
-        when(topicsService.getByCategory(1)).thenReturn(topics);
+        when(topicsService.getTopicsWithCountInterview(1)).thenReturn(topics);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(notifications.findTopicByUserId(userInfo.getId())).thenReturn(userTopicDto);
         mockMvc.perform(get("/topics/1").sessionAttr("token", token))

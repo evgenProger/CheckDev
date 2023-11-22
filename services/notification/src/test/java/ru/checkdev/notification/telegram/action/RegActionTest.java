@@ -1,12 +1,7 @@
 package ru.checkdev.notification.telegram.action;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -14,28 +9,17 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.checkdev.notification.NtfSrv;
 import ru.checkdev.notification.domain.UserTelegram;
+import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
+import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
+import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
 import ru.checkdev.notification.telegram.service.TgCall;
 
-import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.mockito.Mockito.when;
-
-@SpringBootTest(classes = NtfSrv.class)
-@AutoConfigureMockMvc
-@Disabled
 class RegActionTest {
-
-    @MockBean
-    private UserTelegramService userTelegramService;
-
-    @MockBean
-    private InnerMessageService messageService;
-
-    @Autowired
-    private TgCall tgCall;
 
     @Test
     void whenHandleThenOk() {
@@ -62,7 +46,7 @@ class RegActionTest {
         BotApiMethod botApiMethod = regAction15.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String text = "Данный аккаунт Telegram уже зарегистрирован на сайте";
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
@@ -78,7 +62,7 @@ class RegActionTest {
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
         String text = String.format("Email: емайл без собачки и точки не корректный.%sпопробуйте снова.%s/new", n, n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
@@ -94,7 +78,7 @@ class RegActionTest {
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
         String text = String.format("Сервис не доступен попробуйте позже%s/start", n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Disabled
@@ -109,12 +93,12 @@ class RegActionTest {
         BotApiMethod botApiMethod = regAction10.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
-        String text = String.format(
+        String expected = String.format(
                 "Вы зарегистрированы: %s"
                         + "Имя: mail%s"
                         + "Email: mail@mail.ru%s"
                         + "Пароль : password%s"
                         + "urlSiteAuth", n, n, n, n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        assertThat(sendMessage.getText()).isEqualTo(expected);
     }
 }

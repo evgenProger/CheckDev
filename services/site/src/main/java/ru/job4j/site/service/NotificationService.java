@@ -3,6 +3,7 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.*;
@@ -10,6 +11,7 @@ import ru.job4j.site.dto.*;
 import java.util.List;
 
 @Service
+@Slf4j
 public class NotificationService {
 
     @Value("${service.notification}")
@@ -81,10 +83,36 @@ public class NotificationService {
                 token, mapper.writeValueAsString(innerMessage));
     }
 
-    public void sendSubscribeTopic(String token, InterviewNotifDTO interviewNotifDTO) throws JsonProcessingException {
+    /**
+     * Метод отправляет запрос в сервис Notification.
+     * Запрос для отправки подписчикам темы о том, что появилось новое интервью.
+     *
+     * @param token              String
+     * @param interviewNotifiDTO InterviewNotifiDTO
+     * @throws JsonProcessingException Exception
+     */
+    public void sendSubscribeTopic(String token, InterviewNotifiDTO interviewNotifiDTO) throws JsonProcessingException {
         var url = String.format("%s/notification/topic/", urlNtf);
         var mapper = new ObjectMapper();
         var out = new RestAuthCall(url).post(
-                token, mapper.writeValueAsString(interviewNotifDTO));
+                token, mapper.writeValueAsString(interviewNotifiDTO));
+    }
+
+    /**
+     * Метод оправляет запрос в сервис Notification.
+     * Запрос для отправки автору собеседования о том что добавился участник.
+     *
+     * @param token           String
+     * @param wisherNotifiDTO WisherNotifiDTO
+     */
+    public void sendParticipateAuthor(String token, WisherNotifiDTO wisherNotifiDTO) {
+        var url = String.format("%s/notification/participate/", urlNtf);
+        var mapper = new ObjectMapper();
+        try {
+            var out = new RestAuthCall(url).post(
+                    token, mapper.writeValueAsString(wisherNotifiDTO));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
     }
 }

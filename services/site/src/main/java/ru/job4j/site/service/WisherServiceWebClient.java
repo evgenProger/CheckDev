@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.job4j.site.domain.StatusWisher;
 import ru.job4j.site.dto.InterviewStatistic;
 import ru.job4j.site.dto.WisherDto;
 
@@ -91,22 +90,19 @@ public class WisherServiceWebClient implements WisherService {
      * @param token       User token
      * @param interviewId ID Interview
      * @param wisherId    ID select Wisher
-     * @param newStatusId new Status ID select Wisher
-     * @param anyStatusId new Status ID any Wisher
+     * @param newApprove new Status ID select Wisher
      * @return boolean true / false
      */
     @Override
-    public boolean setNewStatusByWisherInterview(String token, String interviewId,
-                                                 String wisherId, String newStatusId,
-                                                 String anyStatusId) {
+    public boolean setNewApproveByWisherInterview(String token, String interviewId,
+                                                  String wisherId, boolean newApprove) {
         MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
         param.add("interviewId", interviewId);
         param.add("wisherId", wisherId);
-        param.add("newStatusId", newStatusId);
-        param.add("anyStatusId", anyStatusId);
+        param.add("newApprove", String.valueOf(newApprove));
         var setNewStatus = this.webClientWisher
                 .post()
-                .uri(URL_WISHERS + "status/")
+                .uri(URL_WISHERS + "approve/")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(param)
@@ -144,15 +140,15 @@ public class WisherServiceWebClient implements WisherService {
      */
     @Override
     public boolean isDismissed(int interviewId, List<WisherDto> wishers) {
-        int dismissedId = StatusWisher.IS_DISMISSED.getId();
         return wishers.stream()
-                .filter(w -> w.getInterviewId() == interviewId)
-                .mapToInt(WisherDto::getStatus)
-                .anyMatch(s -> s == dismissedId);
+                .anyMatch(
+                        w -> w.getInterviewId() == interviewId
+                                && w.isApprove()
+                );
     }
 
     /**
-     * Метод проверяет является ли участник собеседования одобреным .
+     * Метод проверяет является, ли участник собеседования одобренным.
      *
      * @param interviewId Interview ID
      * @param userId      User ID
@@ -161,11 +157,12 @@ public class WisherServiceWebClient implements WisherService {
      */
     @Override
     public boolean isUserDismissed(int interviewId, int userId, List<WisherDto> wishers) {
-        int dismissedId = StatusWisher.IS_DISMISSED.getId();
         return wishers.stream()
-                .filter(w -> w.getInterviewId() == interviewId && w.getUserId() == userId)
-                .mapToInt(WisherDto::getStatus)
-                .anyMatch(s -> s == dismissedId);
+                .anyMatch(
+                        w -> w.getInterviewId() == interviewId
+                                && w.getUserId() == userId
+                                && w.isApprove()
+                );
     }
 
     /**
@@ -197,13 +194,14 @@ public class WisherServiceWebClient implements WisherService {
 
     /**
      * Метод выполняет подсчет количества откликов на участие в собеседовании
-     * @param wishers wishers
+     *
+     * @param wishers     wishers
      * @param interviewId interviewId
      * @return количество откликов
      */
     @Override
     public Long countWishers(List<WisherDto> wishers, int interviewId) {
-        return  wishers
+        return wishers
                 .stream()
                 .map(wisherDto -> wisherDto.getInterviewId())
                 .filter(integer -> integer.equals(interviewId))

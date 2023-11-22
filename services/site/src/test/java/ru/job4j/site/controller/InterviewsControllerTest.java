@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
-import ru.job4j.site.domain.StatusInterview;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.*;
 
@@ -59,7 +59,7 @@ public class InterviewsControllerTest {
             var interview = new InterviewDTO();
             interview.setId(i);
             interview.setMode(1);
-            interview.setStatus(1);
+            interview.setStatusId(1);
             interview.setSubmitterId(1);
             interview.setTitle(String.format("Interview_%d", i));
             interview.setAdditional("Some text");

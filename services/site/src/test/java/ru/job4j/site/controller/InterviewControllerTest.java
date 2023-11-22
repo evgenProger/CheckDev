@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
-import ru.job4j.site.domain.StatusInterview;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.*;
 
@@ -79,7 +79,6 @@ public class InterviewControllerTest {
                 .andExpect(model().attribute("isAuthor", false))
                 .andExpect(model().attribute("isWisher", false))
                 .andExpect(model().attribute("statisticMap", new HashMap<>()))
-                .andExpect(model().attribute("statuses", StatusInterview.values()))
                 .andExpect(model().attribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId()))
                 .andExpect(model().attribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId()))
                 .andExpect(model().attribute("topicLiteDTO", topicLiteDTO))
@@ -276,7 +275,6 @@ public class InterviewControllerTest {
             wisher.setUserId(userId + i);
             wisher.setContactBy(String.format("user_%d@mail.cd", i));
             wisher.setApprove(i % 2 == 0);
-            wisher.setStatus(1);
             return wisher;
         }).toList();
         var interviewStatistics = new HashMap<Integer, InterviewStatistic>();

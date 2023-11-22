@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.dto.InterviewDTO;
 import ru.checkdev.mock.service.InterviewService;
 
 import java.sql.SQLException;
@@ -25,7 +26,7 @@ public class InterviewsController {
     /*Аннотация не работает
     @PreAuthorize("isAuthenticated()") */
     @GetMapping("/")
-    public ResponseEntity<Page<Interview>> findAll(
+    public ResponseEntity<Page<InterviewDTO>> findAll(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int size
     ) throws SQLException {
@@ -35,28 +36,28 @@ public class InterviewsController {
     }
 
     @GetMapping("/last")
-    public ResponseEntity<List<Interview>> findLastThree() {
+    public ResponseEntity<List<InterviewDTO>> findLastThree() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(interviewService.findLast());
     }
 
     @GetMapping("/{mode}")
-    public ResponseEntity<List<Interview>> findByMode(@PathVariable int mode) {
+    public ResponseEntity<List<InterviewDTO>> findByMode(@PathVariable int mode) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(interviewService.findByMode(mode));
     }
 
     @GetMapping("/findByTopicId/{topicId}")
-    public ResponseEntity<Page<Interview>> findByTopicId(
+    public ResponseEntity<Page<InterviewDTO>> findByTopicId(
             @PathVariable int topicId,
             @RequestParam(required = false, defaultValue = "0") int userId,
             @RequestParam(required = false, defaultValue = "0") int submitterId,
             @RequestParam(required = false, defaultValue = "false") boolean not,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int size) {
-        Page<Interview> result;
+        Page<InterviewDTO> result;
         if (userId > 0) {
             result = !not
                     ? interviewService.findByUserIdAsWisherByTopic(userId, topicId, page, size)
@@ -74,7 +75,7 @@ public class InterviewsController {
     }
 
     @GetMapping("/findByTopicsIds/{tids}")
-    public ResponseEntity<Page<Interview>> findByCategory(
+    public ResponseEntity<Page<InterviewDTO>> findByCategory(
             @PathVariable String tids,
             @RequestParam(required = false, defaultValue = "0") int userId,
             @RequestParam(required = false, defaultValue = "0") int submitterId,
@@ -88,7 +89,7 @@ public class InterviewsController {
                 topicIds.add(Integer.valueOf(id));
             }
         }
-        Page<Interview> result;
+        Page<InterviewDTO> result;
         if (userId > 0) {
             result = !not
                     ? interviewService.findByUserIdAsWisherByTopicList(userId, topicIds, page, size)
@@ -107,7 +108,7 @@ public class InterviewsController {
     }
 
     @GetMapping("/findBySubmitter/{submitterId}")
-    public ResponseEntity<Page<Interview>> findBySubmitter(
+    public ResponseEntity<Page<InterviewDTO>> findBySubmitter(
             @PathVariable int submitterId,
             @RequestParam(required = false, defaultValue = "false") boolean not,
             @RequestParam(required = false, defaultValue = "0") int page,
@@ -120,7 +121,7 @@ public class InterviewsController {
     }
 
     @GetMapping("/findByWisher/{userId}")
-    public ResponseEntity<Page<Interview>> findByWisher(
+    public ResponseEntity<Page<InterviewDTO>> findByWisher(
             @PathVariable int userId,
             @RequestParam(required = false, defaultValue = "false") boolean not,
             @RequestParam(required = false, defaultValue = "0") int page,
@@ -133,7 +134,7 @@ public class InterviewsController {
     }
 
     @GetMapping("/findByUserIdRelated/{userId}")
-    public ResponseEntity<Page<Interview>> findByUserIdRelated(
+    public ResponseEntity<Page<InterviewDTO>> findByUserIdRelated(
             @PathVariable int userId,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int size) {
@@ -143,8 +144,17 @@ public class InterviewsController {
     }
 
     @GetMapping("/noFeedback/{uId}")
-    public ResponseEntity<List<Interview>> getAllNoFeedback(@PathVariable("uId") int uId) {
-        List<Interview> interviews = interviewService.findAllIdByNoFeedback(uId);
+    public ResponseEntity<List<InterviewDTO>> getAllNoFeedback(@PathVariable("uId") int uId) {
+        List<InterviewDTO> interviews = interviewService.findAllIdByNoFeedback(uId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(interviews);
+    }
+
+    @GetMapping("/interviewStatusNew")
+    public ResponseEntity<List<InterviewDTO>> getAllNewInterview() {
+        List<InterviewDTO> interviews = interviewService.findNewInterview();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
