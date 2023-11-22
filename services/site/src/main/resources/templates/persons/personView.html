@@ -40,14 +40,11 @@
                 <div class="row mb-3">
                     <div class="col-3">
                         <div class="mb-3">
-
-<!--                                Временно закомментировано-->
-
-<!--                            <i th:if="${photoId<0}"-->
-<!--                               class="fas fa-image" style="font-size: 3em;"></i>-->
-<!--                            <img th:if="${photoId>0}"-->
-<!--                                 th:src="@{/photo/{id}(id=${photoId})}" class="w-100"-->
-<!--                                 alt="No image">-->
+                            <i th:if="${photoId<0}"
+                               class="fas fa-image" style="font-size: 3em;"></i>
+                            <img th:if="${photoId>0}"
+                                 th:src="@{/photo/{id}(id=${photoId})}" class="w-100"
+                                 alt="No image">
                         </div>
                     </div>
                     <div class="col-9">

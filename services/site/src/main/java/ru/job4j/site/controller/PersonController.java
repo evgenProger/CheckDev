@@ -3,10 +3,11 @@ package ru.job4j.site.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.site.dto.PersonDTO;
@@ -17,9 +18,7 @@ import ru.job4j.site.service.PersonService;
 import ru.job4j.site.util.MultipartFileImpl;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -136,14 +135,12 @@ public class PersonController {
 /**
  *      Это заглушка для картинки профиля, в следующей реализации будет убрана.
  */
-        if (compressFile == null) {
-            Resource defaultProfileImage =
-                    resourceLoader.getResource("classpath:static/img/person_mock.jpeg");
-            File mockFile = defaultProfileImage.getFile();
-            byte[] bytes = Files.readAllBytes(mockFile.toPath());
+        if (compressFile.isEmpty()) {
+            var classPathResource = new ClassPathResource("static/img/person_mock.jpeg");
+            byte[] bytes = FileCopyUtils.copyToByteArray(classPathResource.getInputStream());
             compressFile =
-                    new MultipartFileImpl(bytes, mockFile.getName(),
-                            mockFile.getCanonicalPath(), null);
+                    new MultipartFileImpl(bytes, classPathResource.getFilename(),
+                            classPathResource.getPath(), null);
         }
 
         try {
@@ -157,6 +154,7 @@ public class PersonController {
         }
         return "redirect:/persons/";
     }
+
     @GetMapping("/changePassword")
     public String changePassword(Model model) {
         RequestResponseTools.addAttrBreadcrumbs(model,
