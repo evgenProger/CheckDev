@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,11 +42,10 @@ public class IndexController {
         }
         var topicLiteDTOs = topicsService.getAllTopicLiteDTO();
         var topicsLiteMap = topicsService.liteDTTOSToMap(topicLiteDTOs);
-        var intDto = interviewsService.getLast();
-        interviewsService.setCountWishers(intDto, getToken(req));
+        var newInterviewsDTO = interviewsService.getLast();
+        interviewsService.setCountWishers(newInterviewsDTO, getToken(req));
         model.addAttribute("topicsLiteMap", topicsLiteMap);
-        model.addAttribute("new_interviews", intDto);
-        model.addAttribute("statuses", StatusInterview.values());
+        model.addAttribute("new_interviews", newInterviewsDTO);
         return "index";
     }
 }

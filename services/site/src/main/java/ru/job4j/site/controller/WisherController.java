@@ -66,10 +66,11 @@ public class WisherController {
         var wisherUserId = param.get("wisherUserId");
         wisherService.setNewApproveByWisherInterview(
                 token, interviewId, wisherId, true);
-        InterviewDTO interview = interviewService.getById(token, Integer.parseInt(interviewId));
-        interview.setAgreedWisherId(Integer.parseInt(wisherUserId));
-        interviewService.update(token, interview);
-        interviewService.updateStatus(token, Integer.parseInt(interviewId), StatusInterview.IN_PROGRESS.getId());
+        InterviewDTO interviewDto = interviewService.getById(token, Integer.parseInt(interviewId));
+        interviewDto.setAgreedWisherId(Integer.parseInt(wisherUserId));
+        interviewDto.setStatusId(StatusInterview.IN_PROGRESS.getId());
+        interviewService.update(token, interviewDto);
+        interviewService.updateStatus(token, interviewDto);
         return "redirect:/interview/" + interviewId;
     }
 }

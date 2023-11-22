@@ -13,11 +13,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.dto.InterviewDTO;
 import ru.checkdev.mock.enums.StatusInterview;
+import ru.checkdev.mock.mapper.InterviewMapper;
 import ru.checkdev.mock.repository.InterviewRepository;
 import ru.checkdev.mock.repository.WisherRepository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,20 +56,27 @@ class InterviewServiceTest {
             .additional("test_additional")
             .contactBy("test_contact_by")
             .approximateDate("test_approximate_date")
-            .createDate(new Timestamp(System.currentTimeMillis()))
+            .createDate(
+                    Timestamp
+                            .valueOf(
+                                    LocalDateTime.now()
+                                            .truncatedTo(ChronoUnit.MINUTES)))
+            .topicId(1)
             .build();
 
     @Test
     public void whenSaveAndGetTheSame() {
         when(interviewRepository.save(any(Interview.class))).thenReturn(interview);
-        var actual = interviewService.save(interview);
-        assertThat(actual, is(Optional.of(interview)));
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        Optional<InterviewDTO> actual = interviewService.save(interviewDTO);
+        assertThat(actual, is(Optional.of(interviewDTO)));
     }
 
     @Test
     public void whenSaveAndGetEmpty() {
         when(interviewRepository.save(any(Interview.class))).thenThrow(new DataIntegrityViolationException(""));
-        var actual = interviewService.save(interview);
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        Optional<InterviewDTO> actual = interviewService.save(interviewDTO);
         assertThat(actual, is(Optional.empty()));
     }
 
@@ -75,19 +86,22 @@ class InterviewServiceTest {
             var interview = new Interview();
             interview.setId(i);
             interview.setMode(1);
+            interview.setStatus(StatusInterview.IS_NEW);
             interview.setSubmitterId(1);
             interview.setTitle(String.format("Interview_%d", i));
             interview.setAdditional("Some text");
             interview.setContactBy("Some contact");
             interview.setApproximateDate("30.02.2024");
+            interview.setTopicId(1);
             interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
             return interview;
         }).toList();
         var page = new PageImpl<>(interviews);
+        var pageDto = page.map(InterviewMapper::getInterviewDTO);
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createDate"));
         when(interviewRepository.findAll(pageable)).thenReturn(page);
         var actual = interviewService.findPaging(0, 5);
-        assertThat(actual, is(page));
+        assertThat(actual, is(pageDto));
     }
 
     @Test
@@ -98,20 +112,23 @@ class InterviewServiceTest {
             var interview = new Interview();
             interview.setId(i);
             interview.setMode(1);
-            interview.setSubmitterId(userId);
+            interview.setStatus(StatusInterview.IS_NEW);
+            interview.setSubmitterId(1);
             interview.setTitle(String.format("Interview_%d", i));
             interview.setAdditional("Some text");
             interview.setContactBy("Some contact");
             interview.setApproximateDate("30.02.2024");
+            interview.setTopicId(1);
             interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
             return interview;
         }).toList();
         var page = new PageImpl<>(interviews);
+        var pageDto = page.map(InterviewMapper::getInterviewDTO);
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createDate"));
         when(wisherRepository.findInterviewByUserIdApproved(userId, Pageable.unpaged())).thenReturn(Page.empty());
         when(interviewRepository.findAllByUserIdRelated(userId, status, List.of(), pageable)).thenReturn(page);
         var actual = interviewService.findPagingByUserIdRelated(0, 5, userId);
-        assertThat(actual, is(page));
+        assertThat(actual, is(pageDto));
         assertThat(actual.getTotalElements(), is(5L));
     }
 
@@ -131,8 +148,10 @@ class InterviewServiceTest {
     @Test
     public void whenFindByIdIsCorrect() {
         when(interviewRepository.findById(any(Integer.class))).thenReturn(Optional.of(interview));
+        var expect = InterviewMapper.getInterviewDTO(interview);
         var actual = interviewService.findById(1);
-        assertThat(actual, is(Optional.of(interview)));
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.get(), is(expect));
     }
 
     @Test
@@ -145,31 +164,27 @@ class InterviewServiceTest {
     @Test
     public void whenUpdateIsCorrect() {
         when(interviewRepository.save(any(Interview.class))).thenReturn(interview);
-        var actual = interviewService.save(interview);
-        assertThat(actual, is(Optional.of(interview)));
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        Optional<InterviewDTO> actual = interviewService.save(interviewDTO);
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.get(), is(interviewDTO));
     }
 
     @Test
     public void whenDeleteIsCorrect() {
-        when(interviewRepository.findById(any(Integer.class))).thenReturn(Optional.of(interview));
-        var actual = interviewService.delete(interview);
-        assertThat(actual, is(true));
-    }
-
-    @Test
-    public void whenDeleteIsNotCorrect() {
-        when(interviewRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
-        var actual = interviewService.delete(interview);
-        assertThat(actual, is(false));
+        doNothing().when(interviewRepository).deleteById(interview.getId());
+        interviewService.delete(interview.getId());
+        assertThat(true).isTrue();
     }
 
     @Test
     public void whenGetAllWithTopicIdIsNull() {
-        Interview interviewWithTopicId = interview;
-        interviewWithTopicId.setTopicId(1);
-        when(interviewRepository.findAll()).thenReturn(List.of(interviewWithTopicId));
+        InterviewDTO interviewDTO = InterviewMapper.getInterviewDTO(interview);
+        var interviewList = List.of(interview);
+        var expectList = List.of(interviewDTO);
+        when(interviewRepository.findAll()).thenReturn(interviewList);
         var actual = interviewService.findAll();
-        assertThat(actual, is(List.of(interviewWithTopicId)));
+        assertThat(actual, is(expectList));
     }
 
     @Test
@@ -177,15 +192,17 @@ class InterviewServiceTest {
         Interview interviewWithTopicId = interview;
         interviewWithTopicId.setTopicId(1);
         interviewWithTopicId.setMode(1);
+        var expectList = List.of(InterviewMapper.getInterviewDTO(interviewWithTopicId));
         when(interviewRepository.findByMode(1)).thenReturn(List.of(interviewWithTopicId));
         var actual = interviewService.findByMode(1);
-        assertThat(actual, is(List.of(interviewWithTopicId)));
+        assertThat(actual, is(expectList));
     }
 
     @Test
     public void whenUpdateStatusThenTrue() {
+        var interviewDTO = InterviewMapper.getInterviewDTO(interview);
         doNothing().when(interviewRepository).updateStatus(1, StatusInterview.IN_PROGRESS);
-        var actual = interviewService.updateStatus(1, StatusInterview.IN_PROGRESS);
+        var actual = interviewService.updateStatus(interviewDTO);
         assertThat(actual).isTrue();
     }
 
@@ -215,8 +232,12 @@ class InterviewServiceTest {
                 .thenReturn(evenPage);
         when(interviewRepository.findByTopicIdIn(List.of(1, 3, 5, 7), PageRequest.of(0, 5)))
                 .thenReturn(oddPage);
-        assertThat(interviewService.findByTopicsIds(List.of(2, 4, 6), 0, 5), is(evenPage));
-        assertThat(interviewService.findByTopicsIds(List.of(1, 3, 5, 7), 0, 5), is(oddPage));
+        var expectEvenPage = evenPage.map(InterviewMapper::getInterviewDTO);
+        var expectOddPage = oddPage.map(InterviewMapper::getInterviewDTO);
+        var actualEvanPage = interviewService.findByTopicsIds(List.of(2, 4, 6), 0, 5);
+        var actualOddPage = interviewService.findByTopicsIds(List.of(1, 3, 5, 7), 0, 5);
+        assertThat(actualEvanPage, is(expectEvenPage));
+        assertThat(actualOddPage, is(expectOddPage));
     }
 
     @Test
@@ -231,8 +252,12 @@ class InterviewServiceTest {
                 .thenReturn(firstSubmitterPage);
         when(interviewRepository.findBySubmitterId(2, PageRequest.of(0, 5)))
                 .thenReturn(secondSubmitterPage);
-        assertThat(interviewService.findBySubmitterId(1, 0, 5), is(firstSubmitterPage));
-        assertThat(interviewService.findBySubmitterId(2, 0, 5), is(secondSubmitterPage));
+        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var actualFirstSubmitterPage = interviewService.findBySubmitterId(1, 0, 5);
+        var actualSecondSubmiterPage = interviewService.findBySubmitterId(2, 0, 5);
+        assertThat(actualFirstSubmitterPage, is(expectFirstSubmitterPage));
+        assertThat(actualSecondSubmiterPage, is(expectSecondSubmiterPage));
     }
 
     @Test
@@ -247,8 +272,12 @@ class InterviewServiceTest {
                 .thenReturn(secondSubmitterPage);
         when(interviewRepository.findBySubmitterIdNot(2, PageRequest.of(0, 5)))
                 .thenReturn(firstSubmitterPage);
-        assertThat(interviewService.findBySubmitterIdNot(1, 0, 5), is(secondSubmitterPage));
-        assertThat(interviewService.findBySubmitterIdNot(2, 0, 5), is(firstSubmitterPage));
+        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var actualFirstSubmitterPage = interviewService.findBySubmitterIdNot(1, 0, 5);
+        var actualSecondSubmiterPage = interviewService.findBySubmitterIdNot(2, 0, 5);
+        assertThat(actualFirstSubmitterPage, is(expectSecondSubmiterPage));
+        assertThat(actualSecondSubmiterPage, is(expectFirstSubmitterPage));
     }
 
     @Test
@@ -263,12 +292,12 @@ class InterviewServiceTest {
                 PageRequest.of(0, 5))).thenReturn(firstSubmitterPage);
         when(interviewRepository.findByTopicIdAndSubmitterId(1, 1,
                 PageRequest.of(0, 5))).thenReturn(secondSubmitterPage);
-        assertThat(interviewService
-                .findByTopicIdAndSubmitterId(2, 2, 0, 5),
-                is(firstSubmitterPage));
-        assertThat(interviewService
-                .findByTopicIdAndSubmitterId(1, 1, 0, 5),
-                is(secondSubmitterPage));
+        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var actualFirstSubmitterPage = interviewService.findByTopicIdAndSubmitterId(2, 2, 0, 5);
+        var actualSecondSubmiterPage = interviewService.findByTopicIdAndSubmitterId(1, 1, 0, 5);
+        assertThat(actualFirstSubmitterPage, is(expectFirstSubmitterPage));
+        assertThat(actualSecondSubmiterPage, is(expectSecondSubmiterPage));
     }
 
     @Test
@@ -283,12 +312,12 @@ class InterviewServiceTest {
                 PageRequest.of(0, 5))).thenReturn(secondSubmitterPage);
         when(interviewRepository.findByTopicIdAndSubmitterIdNot(1, 1,
                 PageRequest.of(0, 5))).thenReturn(firstSubmitterPage);
-        assertThat(interviewService
-                        .findByTopicIdAndSubmitterIdNot(2, 2, 0, 5),
-                is(secondSubmitterPage));
-        assertThat(interviewService
-                        .findByTopicIdAndSubmitterIdNot(1, 1, 0, 5),
-                is(firstSubmitterPage));
+        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var actualFirstSubmitterPage = interviewService.findByTopicIdAndSubmitterIdNot(1, 1, 0, 5);
+        var actualSecondSubmiterPage = interviewService.findByTopicIdAndSubmitterIdNot(2, 2, 0, 5);
+        assertThat(actualFirstSubmitterPage, is(expectFirstSubmitterPage));
+        assertThat(actualSecondSubmiterPage, is(expectSecondSubmiterPage));
     }
 
     private void inflateInterviewListsWith2SubmittersAnd2Topics(
@@ -326,12 +355,12 @@ class InterviewServiceTest {
         when(interviewRepository.findByTopicIdInAndSubmitterId(
                 List.of(1, 2, 3, 4, 5, 6, 7), 1,
                 PageRequest.of(0, 5))).thenReturn(secondSubmitterPage);
-        assertThat(interviewService.findByTopicsListIdAndSubmitterId(
-                List.of(1, 2, 3, 4, 5, 6, 7), 2, 0, 5),
-                is(firstSubmitterPage));
-        assertThat(interviewService.findByTopicsListIdAndSubmitterId(
-                List.of(1, 2, 3, 4, 5, 6, 7), 1, 0, 5),
-                is(secondSubmitterPage));
+        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var actualFirstSubmitterPage = interviewService.findByTopicsListIdAndSubmitterId(List.of(1, 2, 3, 4, 5, 6, 7), 2, 0, 5);
+        var actualSecondSubmiterPage = interviewService.findByTopicsListIdAndSubmitterId(List.of(1, 2, 3, 4, 5, 6, 7), 1, 0, 5);
+        assertThat(actualFirstSubmitterPage, is(expectFirstSubmitterPage));
+        assertThat(actualSecondSubmiterPage, is(expectSecondSubmiterPage));
     }
 
     @Test
@@ -348,12 +377,12 @@ class InterviewServiceTest {
         when(interviewRepository.findByTopicIdInAndSubmitterIdNot(
                 List.of(1, 2, 3, 4, 5, 6, 7), 1,
                 PageRequest.of(0, 5))).thenReturn(firstSubmitterPage);
-        assertThat(interviewService.findByTopicsListIdAndSubmitterIdNot(
-                        List.of(1, 2, 3, 4, 5, 6, 7), 2, 0, 5),
-                is(secondSubmitterPage));
-        assertThat(interviewService.findByTopicsListIdAndSubmitterIdNot(
-                        List.of(1, 2, 3, 4, 5, 6, 7), 1, 0, 5),
-                is(firstSubmitterPage));
+        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
+        var actualFirstSubmitterPage = interviewService.findByTopicsListIdAndSubmitterIdNot(List.of(1, 2, 3, 4, 5, 6, 7), 1, 0, 5);
+        var actualSecondSubmiterPage = interviewService.findByTopicsListIdAndSubmitterIdNot(List.of(1, 2, 3, 4, 5, 6, 7), 2, 0, 5);
+        assertThat(actualFirstSubmitterPage, is(expectFirstSubmitterPage));
+        assertThat(actualSecondSubmiterPage, is(expectSecondSubmiterPage));
     }
 
     private void inflateListsByInterviewsWith7topicsAnd2Submitters(
@@ -384,7 +413,9 @@ class InterviewServiceTest {
         when(wisherRepository
                 .findInterviewByUserId(1, PageRequest.of(0, 10)))
                 .thenReturn(page);
-        assertThat(interviewService.findByUserIdAsWisher(1, 0, 10), is(page));
+        var expect = page.map(InterviewMapper::getInterviewDTO);
+        var actual = interviewService.findByUserIdAsWisher(1, 0, 10);
+        assertThat(actual, is(expect));
     }
 
     @Test
@@ -393,7 +424,9 @@ class InterviewServiceTest {
         when(interviewRepository
                 .findInterviewByUserIdNot(1, PageRequest.of(0, 10)))
                 .thenReturn(page);
-        assertThat(interviewService.findByUserIdAsNotWisher(1, 0, 10), is(page));
+        var expect = page.map(InterviewMapper::getInterviewDTO);
+        var actual = interviewService.findByUserIdAsNotWisher(1, 0, 10);
+        assertThat(actual, is(expect));
     }
 
     @Test
@@ -402,8 +435,9 @@ class InterviewServiceTest {
         when(wisherRepository
                 .findInterviewByUserIdAndByTopicId(1, 1, PageRequest.of(0, 10)))
                 .thenReturn(page);
-        assertThat(interviewService
-                .findByUserIdAsWisherByTopic(1, 1, 0, 10), is(page));
+        var expect = page.map(InterviewMapper::getInterviewDTO);
+        var actual = interviewService.findByUserIdAsWisherByTopic(1, 1, 0, 10);
+        assertThat(actual, is(expect));
     }
 
     @Test
@@ -412,8 +446,9 @@ class InterviewServiceTest {
         when(interviewRepository
                 .findInterviewByUserIdNotAndByTopicId(1, 1, PageRequest.of(0, 10)))
                 .thenReturn(page);
-        assertThat(interviewService
-                .findByUserIdAsNotWisherByTopic(1, 1, 0, 10), is(page));
+        var expect = page.map(InterviewMapper::getInterviewDTO);
+        var actual = interviewService.findByUserIdAsNotWisherByTopic(1, 1, 0, 10);
+        assertThat(actual, is(expect));
     }
 
     @Test
@@ -422,8 +457,9 @@ class InterviewServiceTest {
         when(wisherRepository
                 .findInterviewByUserIdAndByTopicIdIn(1, List.of(1, 2), PageRequest.of(0, 10)))
                 .thenReturn(page);
-        assertThat(interviewService
-                .findByUserIdAsWisherByTopicList(1, List.of(1, 2), 0, 10), is(page));
+        var expect = page.map(InterviewMapper::getInterviewDTO);
+        var actual = interviewService.findByUserIdAsWisherByTopicList(1, List.of(1, 2), 0, 10);
+        assertThat(actual, is(expect));
     }
 
     @Test
@@ -432,8 +468,9 @@ class InterviewServiceTest {
         when(interviewRepository
                 .findInterviewByUserIdNotAndByTopicIdIn(1, List.of(1, 2), PageRequest.of(0, 10)))
                 .thenReturn(page);
-        assertThat(interviewService
-                .findByUserIdAsNotWisherByTopicList(1, List.of(1, 2), 0, 10), is(page));
+        var expect = page.map(InterviewMapper::getInterviewDTO);
+        var actual = interviewService.findByUserIdAsNotWisherByTopicList(1, List.of(1, 2), 0, 10);
+        assertThat(actual, is(expect));
     }
 
     @Test
@@ -443,10 +480,13 @@ class InterviewServiceTest {
         Interview interview = Interview.of()
                 .id(1)
                 .submitterId(submitterId)
+                .createDate(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
+                .topicId(1)
                 .build();
-        List<Interview> expected = List.of(interview);
-        doReturn(expected).when(interviewRepository).findAllByUserIdWisherIsApproveAndNoFeedback(wisherUser);
-        List<Interview> actual = interviewService.findAllIdByNoFeedback(wisherUser);
+        List<Interview> listInterview = List.of(interview);
+        List<InterviewDTO> expected = List.of(InterviewMapper.getInterviewDTO(interview));
+        doReturn(listInterview).when(interviewRepository).findAllByUserIdWisherIsApproveAndNoFeedback(wisherUser);
+        List<InterviewDTO> actual = interviewService.findAllIdByNoFeedback(wisherUser);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -454,7 +494,7 @@ class InterviewServiceTest {
     void whenFindAllIdByNoFeedbackThenReturnEmptyList() {
         int wisherUser = 2;
         doReturn(Collections.emptyList()).when(interviewRepository).findAllByUserIdWisherIsApproveAndNoFeedback(wisherUser);
-        List<Interview> actual = interviewService.findAllIdByNoFeedback(wisherUser);
+        List<InterviewDTO> actual = interviewService.findAllIdByNoFeedback(wisherUser);
         assertThat(actual.isEmpty()).isTrue();
     }
 
@@ -462,15 +502,14 @@ class InterviewServiceTest {
     public void whenGetAllWithStatusNew() {
         Interview interviewNewStatus = interview;
         var status = StatusInterview.IS_NEW;
-        when(interviewRepository.findNewInterviews(status)).thenReturn(List.of(interviewNewStatus));
+        when(interviewRepository.findAllByStatus(status)).thenReturn(List.of(interviewNewStatus));
     }
 
     @Test
     public void whenPutNotNewStatusGetEmptyList() {
         var status = StatusInterview.IS_NEW;
-        when(interviewRepository.findNewInterviews(status)).thenReturn(List.of());
-        List<Interview> actual = interviewService.findNewInterview();
+        when(interviewRepository.findAllByStatus(status)).thenReturn(List.of());
+        List<InterviewDTO> actual = interviewService.findNewInterview();
         assertThat(actual.isEmpty()).isTrue();
-
     }
 }

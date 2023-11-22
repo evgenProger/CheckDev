@@ -17,9 +17,9 @@ import java.util.Optional;
 public interface InterviewRepository extends JpaRepository<Interview, Integer> {
 
     @Query("SELECT i FROM interview i"
-            + " WHERE i.submitterId=:userId"
-            + " OR i.status=:status"
-            + " OR i.id IN (:interviewIds)"
+           + " WHERE i.submitterId=:userId"
+           + " OR i.status=:status"
+           + " OR i.id IN (:interviewIds)"
     )
     Page<Interview> findAllByUserIdRelated(@Param("userId") int userId,
                                            @Param("status") StatusInterview status,
@@ -109,7 +109,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      * @return интервью, в которых пользователь НЕ участвует
      */
     @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)")
+           + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)")
     Page<Interview> findInterviewByUserIdNot(@Param("userId") int userId, Pageable pageable);
 
     /**
@@ -119,8 +119,8 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      * @return интервью определённой темы, в которых пользователь НЕ участвует
      */
     @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
-            + " AND i.topicId = :topicId")
+           + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
+           + " AND i.topicId = :topicId")
     Page<Interview> findInterviewByUserIdNotAndByTopicId(@Param("userId") int userId,
                                                          @Param("topicId") int topicId,
                                                          Pageable pageable);
@@ -132,8 +132,8 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      * @return интервью определённой категории, в которых пользователь НЕ участвует
      */
     @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
-            + " AND i.topicId IN :topicsIds")
+           + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
+           + " AND i.topicId IN :topicsIds")
     Page<Interview> findInterviewByUserIdNotAndByTopicIdIn(
             @Param("userId") int userId,
             @Param("topicsIds") Collection<Integer> topicsIds,
@@ -172,15 +172,12 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
      *
      * @return LIST из ТРЕХ последних интервью
      */
-    @Query(value = "SELECT i.* FROM interview i WHERE i.status = :status ORDER BY i.create_date DESC LIMIT 3", nativeQuery = true)
-    List<Interview> findLastInterviews(@Param("status") StatusInterview status);
+    List<Interview> findAllByStatusOrderByCreateDateDesc(StatusInterview status);
 
     /**
      * Получаем из базы новые интервью по статусу.
      *
      * @return LIST из новых интервью
      */
-    @Query(value = "SELECT i.* FROM interview i WHERE i.status = :status", nativeQuery = true)
-    List<Interview> findNewInterviews(@Param("status") StatusInterview status);
-
+    List<Interview> findAllByStatus(StatusInterview status);
 }
