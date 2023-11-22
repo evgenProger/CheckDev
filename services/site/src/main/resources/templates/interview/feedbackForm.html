@@ -39,10 +39,16 @@
                 <input type="hidden" id="interviewId" name="interviewId" th:value="*{interview.id}">
                 <!--/* ID авторизованного пользователя */-->
                 <input type="hidden" id="userId" name="userId" th:value="*{userInfo.id}">
-                <input type="hidden" id="userName" name="userName" th:value="*{userInfo.username}">
-                <!--/* Форма ввода текста отзыва собеседования textFeedback */-->
                 <div class="mb-3">
-                    <label class="form-label h3" for="textFeedback">Отзыв собеседования</label>
+                    <label class="form-label h5" for="textFeedback">Собеседование -
+                        <span th:text="*{interview.title}"></span>
+                    </label><br/>
+                    <label class="form-label h5" for="textFeedback">Отзыв участнику -
+                        <span th:if="${userInfo.id} == ${agreedWisher.id}"
+                              th:text="*{interviewAuthor.username}"></span>
+                        <span th:if="${userInfo.id} == ${interviewAuthor.id}"
+                              th:text="*{agreedWisher.username}"></span>
+                    </label><br/>
                     <textarea class="form-control" rows="3"
                               id="textFeedback"
                               name="textFeedback" required></textarea>
