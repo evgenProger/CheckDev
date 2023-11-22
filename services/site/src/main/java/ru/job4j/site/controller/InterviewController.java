@@ -123,7 +123,8 @@ public class InterviewController {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Собеседования", "/interviews/",
-                interview.getTitle(), String.format("/interview/%d", interviewId));
+                String.format("%s : %s", topicLiteDTO.getCategoryName(), topicLiteDTO.getName()),
+                String.format("/interview/%d", interviewId));
         return "interview/details";
     }
 

@@ -1,6 +1,5 @@
 package ru.checkdev.notification.telegram.action;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -18,6 +17,7 @@ import ru.checkdev.notification.telegram.service.TgCallNoConnect;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RegActionTest {
+    private static final String ERROR_MAIL = "error@exception.er";
 
     @Test
     void whenHandleThenOk() {
@@ -84,7 +84,7 @@ class RegActionTest {
         Chat chat = new Chat(1L, "type");
         Message message = new Message();
         message.setChat(chat);
-        message.setText("a@a.ru");
+        message.setText(ERROR_MAIL);
         var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
         RegAction regAction = new RegAction(new FakeTgCallConsole(), userTelegramService, innerMessageService, "");
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
@@ -94,7 +94,6 @@ class RegActionTest {
         assertThat(text).isEqualTo(sendMessage.getText());
     }
 
-    @Disabled
     @Test
     void whenCallBackThenOk() {
         var userTelegramService = new UserTelegramService(
@@ -105,17 +104,22 @@ class RegActionTest {
         Message message = new Message();
         message.setChat(chat);
         message.setText("mail@mail.ru");
+        String urlSiteAuth = "www";
         var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
-        RegAction regAction = new RegAction(new FakeTgCallConsole(), userTelegramService, innerMessageService, "www");
+        RegAction regAction = new RegAction(new FakeTgCallConsole(), userTelegramService, innerMessageService, urlSiteAuth);
         BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String n = System.lineSeparator();
+        String ls = System.lineSeparator();
+        String actual = sendMessage.getText();
+        int startPassIndex = actual.lastIndexOf("tg/");
+        int endPassIndex = actual.lastIndexOf(ls + urlSiteAuth);
+        String passInMessage = actual.substring(startPassIndex, endPassIndex);
         String expected = String.format(
                 "Вы зарегистрированы: %s"
                         + "Имя: mail%s"
                         + "Email: mail@mail.ru%s"
-                        + "Пароль : password%s"
-                        + "urlSiteAuth", n, n, n, n);
+                        + "Пароль : %s%s"
+                        + urlSiteAuth, ls, ls, ls, passInMessage, ls);
         assertThat(sendMessage.getText()).isEqualTo(expected);
     }
 }
