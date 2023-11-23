@@ -44,26 +44,20 @@
                         <div class="col-3">
                             <!--Photo view-->
                             <div class="mb-3">
-
-<!--                                Временно закомментировано-->
-
-<!--                                <img th:if="${photoId>0}"-->
-<!--                                     th:src="@{/photo/{id}(id=${photoId})}" class="w-100"-->
-<!--                                     alt="No image">-->
+                                <img th:if="${photoId>0}"
+                                     th:src="@{/photo/{id}(id=${photoId})}" class="w-100"
+                                     alt="No image">
                             </div>
                             <!--Photo load-->
                             <div class="mb-3">
-
-<!--                                Временно закомментировано-->
-
-<!--                                <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger"-->
-<!--                                     role="alert">-->
-<!--                                    <span th:text="${errorMessage}"></span>-->
-<!--                                </div>-->
-<!--                                <label for="formFile" class="form-label">изображение формата jpeg.</label>-->
-<!--                                <input class="form-control form-control-sm w-100"-->
-<!--                                       type="file" accept="image/jpeg"-->
-<!--                                       id="formFile" name="file">-->
+                                <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger"
+                                     role="alert">
+                                    <span th:text="${errorMessage}"></span>
+                                </div>
+                                <label for="formFile" class="form-label">изображение формата jpeg.</label>
+                                <input class="form-control form-control-sm w-100"
+                                       type="file" accept="image/jpeg"
+                                       id="formFile" name="file">
                             </div>
                         </div>
                         <div class="col-9">

@@ -1,7 +1,5 @@
 package ru.checkdev.notification.telegram.action;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +25,7 @@ import static org.mockito.Mockito.when;
 @AutoConfigureMockMvc
 @Disabled
 class RegActionTest {
+    private static final String ERROR_MAIL = "error@exception.er";
 
     @MockBean
     private UserTelegramService userTelegramService;
@@ -88,16 +87,16 @@ class RegActionTest {
         Chat chat = new Chat(1L, "type");
         Message message = new Message();
         message.setChat(chat);
-        message.setText("a@a.ru");
-        RegAction30 regAction10 = new RegAction30(sessionTg, tgCall, userTelegramService, "www");
-        BotApiMethod botApiMethod = regAction10.handle(update).get();
+        message.setText(ERROR_MAIL);
+        var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
+        RegAction regAction = new RegAction(new FakeTgCallConsole(), userTelegramService, innerMessageService, "");
+        BotApiMethod<Message> botApiMethod = regAction.callback(message);
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
         String text = String.format("Сервис не доступен попробуйте позже%s/start", n);
         Assertions.assertEquals(text, sendMessage.getText());
     }
 
-    @Disabled
     @Test
     void whenCallBackThenOk() {
         Update update = new Update();
@@ -115,6 +114,22 @@ class RegActionTest {
                         + "Email: mail@mail.ru%s"
                         + "Пароль : password%s"
                         + "urlSiteAuth", n, n, n, n);
-        Assertions.assertEquals(text, sendMessage.getText());
+        String urlSiteAuth = "www";
+        var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
+        RegAction regAction = new RegAction(new FakeTgCallConsole(), userTelegramService, innerMessageService, urlSiteAuth);
+        BotApiMethod<Message> botApiMethod = regAction.callback(message);
+        SendMessage sendMessage = (SendMessage) botApiMethod;
+        String ls = System.lineSeparator();
+        String actual = sendMessage.getText();
+        int startPassIndex = actual.lastIndexOf("tg/");
+        int endPassIndex = actual.lastIndexOf(ls + urlSiteAuth);
+        String passInMessage = actual.substring(startPassIndex, endPassIndex);
+        String expected = String.format(
+                "Вы зарегистрированы: %s"
+                        + "Имя: mail%s"
+                        + "Email: mail@mail.ru%s"
+                        + "Пароль : %s%s"
+                        + urlSiteAuth, ls, ls, ls, passInMessage, ls);
+        assertThat(sendMessage.getText()).isEqualTo(expected);
     }
 }

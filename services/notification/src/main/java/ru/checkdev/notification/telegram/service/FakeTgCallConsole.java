@@ -20,6 +20,7 @@ import java.util.Calendar;
 @Service
 @Slf4j
 public class FakeTgCallConsole implements TgCall {
+    private static final String ERROR_MAIL = "error@exception.er";
     @Value("${server.auth}")
     private String urlServiceAuth;
 
@@ -33,13 +34,18 @@ public class FakeTgCallConsole implements TgCall {
 
     @Override
     public Mono<Object> doPost(String url, Profile profile) {
+        if (ERROR_MAIL.equals(profile.getEmail())) {
+            throw new IllegalArgumentException("Service is error");
+        }
+        ProfileTgDTO profileTgDTO = new ProfileTgDTO(-23, profile.getUsername(), profile.getEmail());
         log.info("Fake TgCall doPost method. Request URL: {}{}, model: {}", urlServiceAuth, url, profile);
-        return Mono.just(profile);
+        return Mono.just(profileTgDTO);
     }
 
     @Override
     public Mono<Object> doPost(String url) {
+        ProfileTgDTO profileTgDTO = new ProfileTgDTO(-23, "FakeName", "fake@mail.ru");
         log.info("Fake TgCall doPost method. Request URL: {}{}, model: {}", urlServiceAuth, url);
-        return Mono.just(new ProfileTgDTO());
+        return Mono.just(profileTgDTO);
     }
 }

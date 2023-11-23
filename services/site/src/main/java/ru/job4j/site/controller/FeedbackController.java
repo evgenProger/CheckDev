@@ -1,15 +1,19 @@
 package ru.job4j.site.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.dto.FeedbackDTO;
+import ru.job4j.site.dto.FeedbackNotificationDTO;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.service.FeedbackService;
 import ru.job4j.site.service.InterviewService;
+
+import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.ProfilesService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +34,8 @@ public class FeedbackController {
     private FeedbackService feedbackService;
     private InterviewService interviewService;
     private ProfilesService profilesService;
+
+    private NotificationService notificationService;
 
     /**
      * Отображение формы для сохранения отзыв на собеседование.
@@ -80,9 +86,18 @@ public class FeedbackController {
     @PostMapping("/createFeedback")
     public String saveFeedback(@ModelAttribute FeedbackDTO feedbackDTO,
                                @ModelAttribute("userName")String name,
-                               HttpServletRequest request) {
+                               @ModelAttribute("userId") int userId,
+                               @ModelAttribute("submitterId") int submitterId,
+                               @ModelAttribute("agreedWisherId") int agreedWisherId,
+                               @ModelAttribute("interviewTitle") String interviewTitle,
+                               HttpServletRequest request) throws JsonProcessingException {
         var token = RequestResponseTools.getToken(request);
         feedbackService.save(token, feedbackDTO, name);
+        var recipientId = submitterId == userId ? agreedWisherId : submitterId;
+        if (userId > 0 && recipientId > 0) {
+            notificationService.sendFeedbackNotification(token,
+                    new FeedbackNotificationDTO(recipientId, name, interviewTitle));
+        }
         return "redirect:/interview/" + feedbackDTO.getInterviewId();
     }
 }
