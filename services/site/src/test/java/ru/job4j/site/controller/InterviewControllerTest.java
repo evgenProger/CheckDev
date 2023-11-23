@@ -45,10 +45,6 @@ public class InterviewControllerTest {
 
     @Test
     public void whenShowDetails() throws Exception {
-        var breadcrumbs = List.of(
-                new Breadcrumb("Главная", "/index"),
-                new Breadcrumb("Собеседования", "/interviews/"),
-                new Breadcrumb("Some interview", "/interview/1"));
         var token = "1410";
         var userInfo = new UserInfoDTO();
         InterviewDTO interview = new InterviewDTO();
@@ -60,6 +56,12 @@ public class InterviewControllerTest {
         List<WisherDto> wisherDtos = new ArrayList<>();
         TopicLiteDTO topicLiteDTO = new TopicLiteDTO(1, "nameTopic", "text",
                 2, "categoryName", 15);
+        var breadcrumbs = List.of(
+                new Breadcrumb("Главная", "/index"),
+                new Breadcrumb("Собеседования", "/interviews/"),
+                new Breadcrumb(
+                        String.format("%s : %s", topicLiteDTO.getCategoryName(), topicLiteDTO.getName()),
+                        "/interview/" + interview.getId()));
         when(topicsService.getTopicLiteDTOById(topicLiteDTO.getId())).thenReturn(Optional.of(topicLiteDTO));
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(interviewService.getById(token, 1)).thenReturn(interview);
