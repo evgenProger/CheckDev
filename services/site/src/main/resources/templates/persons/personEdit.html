@@ -42,14 +42,15 @@
                     <input type="hidden" name="photo" th:field="*{photo.id}">
                     <div class="row mb-3">
                         <div class="col-3">
+                            <!-- Временно отключено task#525-->
                             <!--Photo view-->
-                            <div class="mb-3">
+                            <!--<div class="mb-3">
                                 <img th:if="${photoId>0}"
                                      th:src="@{/photo/{id}(id=${photoId})}" class="w-100"
                                      alt="No image">
-                            </div>
+                            </div>-->
                             <!--Photo load-->
-                            <div class="mb-3">
+                            <!--<div class="mb-3">
                                 <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger"
                                      role="alert">
                                     <span th:text="${errorMessage}"></span>
@@ -58,7 +59,7 @@
                                 <input class="form-control form-control-sm w-100"
                                        type="file" accept="image/jpeg"
                                        id="formFile" name="file">
-                            </div>
+                            </div>-->
                         </div>
                         <div class="col-9">
                             <!--Username-->
