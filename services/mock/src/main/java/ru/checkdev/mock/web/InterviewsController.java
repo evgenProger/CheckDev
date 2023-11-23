@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.dto.InterviewDTO;
 import ru.checkdev.mock.service.InterviewService;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Tag(name = "InterviewsController", description = "Interviews REST API")
@@ -141,6 +141,29 @@ public class InterviewsController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(interviewService.findPagingByUserIdRelated(page, size, userId));
+    }
+
+    @GetMapping("/findByUserIdRelatedFiltered/{userId}")
+    public ResponseEntity<Page<InterviewDTO>> findByUserIdRelatedFiltered(// todo
+            @PathVariable int userId,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "20") int size,
+            @RequestParam(required = false, defaultValue = "") String tids) {
+        if (tids.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(interviewService.findPagingByUserIdRelatedFiltered(page, size, userId));
+        }
+        var topicIdsArr = tids.split(",");
+        List<Integer> topicIds = new ArrayList<>();
+        for (String id : topicIdsArr) {
+            if (id.matches("^\\d+$")) {
+                topicIds.add(Integer.valueOf(id));
+            }
+        }
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(interviewService.findPagingByUserIdRelatedFiltered(page, size, userId, topicIds));
     }
 
     @GetMapping("/noFeedback/{uId}")
