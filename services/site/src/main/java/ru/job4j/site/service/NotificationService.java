@@ -76,11 +76,20 @@ public class NotificationService {
                 .post(token, mapper.writeValueAsString(categoryAndTopicIds));
     }
 
-    public void sendFeedBackNotification(String token, InnerMessageDTO innerMessage) throws JsonProcessingException {
+    public void sendFeedBackMessage(String token, InnerMessageDTO innerMessage)
+            throws JsonProcessingException {
         String url = urlNtf + "/messages/message";
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall(url).post(
+        new RestAuthCall(url).post(
                 token, mapper.writeValueAsString(innerMessage));
+    }
+
+    public void sendFeedbackNotification(String token, FeedbackNotificationDTO feedbackNotification)
+            throws JsonProcessingException {
+        String url = urlNtf + "/feedback/interview";
+        var mapper = new ObjectMapper();
+        new RestAuthCall(url).post(
+                token, mapper.writeValueAsString(feedbackNotification));
     }
 
     /**

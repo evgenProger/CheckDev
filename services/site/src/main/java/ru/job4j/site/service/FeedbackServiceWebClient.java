@@ -92,8 +92,8 @@ public class FeedbackServiceWebClient implements FeedbackService {
                     innerMessage2.setUserId(interview.getSubmitterId());
                 }
                 innerMessage2.setText(text);
-                notificationService.sendFeedBackNotification(token, innerMessage1);
-                notificationService.sendFeedBackNotification(token, innerMessage2);
+                notificationService.sendFeedBackMessage(token, innerMessage1);
+                notificationService.sendFeedBackMessage(token, innerMessage2);
             } catch (JsonProcessingException e) {
                 log.error("notificationService.class method sendFeedBackNotification error: {}", e.getMessage());
             }

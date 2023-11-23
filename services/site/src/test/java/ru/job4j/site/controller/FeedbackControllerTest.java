@@ -1,18 +1,25 @@
 package ru.job4j.site.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.FeedbackDTO;
+import ru.job4j.site.dto.FeedbackNotificationDTO;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.service.FeedbackService;
 import ru.job4j.site.service.InterviewService;
+
+import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.ProfilesService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,13 +45,17 @@ class FeedbackControllerTest {
     @MockBean
     FeedbackService feedbackService;
     @MockBean
+    NotificationService notificationService;
+    @MockBean
     ProfilesService profilesService;
+
 
     @Test
     void injectedIsNotNull() {
         assertThat(mockMvc).isNotNull();
         assertThat(interviewService).isNotNull();
         assertThat(feedbackService).isNotNull();
+        assertThat(notificationService).isNotNull();
     }
 
     @Test
@@ -83,10 +94,18 @@ class FeedbackControllerTest {
     @Test
     void whenPostSaveFeedbackThenRedirectInterviewPage() throws Exception {
         var token = "1234";
-        var feedbackDTO = new FeedbackDTO(1, 1, 1, 1, "text", 5);
+        var feedbackDTO = new FeedbackDTO(1, 1, 1,
+                1, "text", 5);
+        var feedbackNotification = new FeedbackNotificationDTO(
+                1,
+                "vasya", "interview");
         when(feedbackService.save(token, feedbackDTO, "vasya")).thenReturn(true);
         mockMvc.perform(post("/interview/createFeedback")
                         .flashAttr("feedbackDTO", feedbackDTO)
+                        .flashAttr("userId", 1)
+                        .flashAttr("submitterId", 2)
+                        .flashAttr("agreedWisherId", 1)
+                        .flashAttr("interviewTitle", "interview")
                         .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
