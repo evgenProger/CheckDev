@@ -35,7 +35,7 @@ public class NotifyAction implements Action {
         }
         try {
             UserTelegram userTelegram = chatIdOptional.get();
-            sessionTg.put(chatId.toString(), "userId", Long.toString(userTelegram.getChatId()));
+            sessionTg.put(chatId.toString(), "userId", Long.toString(userTelegram.getUserId()));
             tgCall.doPost(URL_AUTH_NOTIFIED + userTelegram.getUserId()).block();
             text = "Вы подписаны на уведомления";
         } catch (Exception e) {

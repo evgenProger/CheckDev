@@ -31,7 +31,7 @@ public class UnNotifyAction implements Action {
         }
         try {
             UserTelegram userTelegram = chatIdOptional.get();
-            sessionTg.put(chatId.toString(), "userId", Long.toString(userTelegram.getChatId()));
+            sessionTg.put(chatId.toString(), "userId", Long.toString(userTelegram.getUserId()));
             tgCall.doPost(URL_AUTH_UNNOTIFIED + userTelegram.getUserId()).block();
             text = "Вы отписались от уведомлений";
         } catch (Exception e) {
