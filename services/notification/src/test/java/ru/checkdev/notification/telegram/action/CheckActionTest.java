@@ -5,14 +5,13 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.checkdev.notification.domain.UserTelegram;
-import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
 import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
 import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
-import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.service.UserTelegramService;
+import ru.checkdev.notification.telegram.SessionTg;
 import ru.checkdev.notification.telegram.service.FakeTgCallConsole;
-import ru.checkdev.notification.telegram.service.TgCallNoConnect;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,43 +19,49 @@ class CheckActionTest {
 
     @Test
     void whenNotChatId() {
+        Chat chat = new Chat(1L, "type");
+        Update update = new Update();
+        Message message = new Message();
+        update.setMessage(message);
+        message.setChat(chat);
         var userTelegramService = new UserTelegramService(
                 new UserTelegramRepositoryFake(
                         new SubscribeTopicRepositoryFake()
                 ));
-        Chat chat = new Chat(1L, "type");
-        userTelegramService.delete(1);
-        Message message = new Message();
+        SessionTg sessionTg = new SessionTg();
         message.setChat(chat);
-        CheckAction checkAction = new CheckAction(new FakeTgCallConsole(), userTelegramService,
-                new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService));
-        checkAction.handle(message);
-        BotApiMethod<Message> botApiMethod = checkAction.handle(message);
+        CheckAction checkAction = new CheckAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
+        checkAction.handle(update);
+        BotApiMethod<Message> botApiMethod = checkAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String n = System.lineSeparator();
-        String text = String.format("Данный аккаунт Telegram на сайте не зарегистрирован%s", n);
+        String text = "Данный аккаунт Telegram на сайте не зарегистрирован" + System.lineSeparator();
         assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
-    void whenNotConnection() {
+    void whenConnection() {
+        Chat chat = new Chat(1L, "type");
+        Update update = new Update();
+        Message message = new Message();
+        update.setMessage(message);
+        message.setChat(chat);
+        SessionTg sessionTg = new SessionTg();
         var userTelegramService = new UserTelegramService(
                 new UserTelegramRepositoryFake(
                         new SubscribeTopicRepositoryFake()
                 ));
-        Chat chat = new Chat(1L, "type");
-        UserTelegram userTelegram = new UserTelegram(0, 10, chat.getId());
+        UserTelegram userTelegram = new UserTelegram(11, 10, chat.getId());
         userTelegramService.save(userTelegram);
-        Message message = new Message();
         message.setChat(chat);
         message.setText("a@a.ru");
-        CheckAction checkAction = new CheckAction(new TgCallNoConnect(), userTelegramService,
-                new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService));
-        BotApiMethod<Message> botApiMethod = checkAction.callback(message);
+        CheckAction checkAction = new CheckAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
+        BotApiMethod<Message> botApiMethod = checkAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String n = System.lineSeparator();
-        String text = String.format("Сервис не доступен попробуйте позже%s", n);
+        String sl = System.lineSeparator();
+        String text = "Имя:" + sl
+                + "FakeName" + sl
+                + "Email:" + sl
+                + "FakeEmail" + sl;
         assertThat(text).isEqualTo(sendMessage.getText());
-        userTelegramService.delete(1);
     }
 }

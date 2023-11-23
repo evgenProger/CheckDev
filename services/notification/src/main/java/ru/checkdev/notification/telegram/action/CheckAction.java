@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.checkdev.notification.domain.UserTelegram;
-import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.domain.Profile;
 import ru.checkdev.notification.service.UserTelegramService;
-import ru.checkdev.notification.service.InnerMessageService;
+import ru.checkdev.notification.telegram.SessionTg;
 import ru.checkdev.notification.telegram.service.TgCall;
 
-import java.sql.Timestamp;
 import java.util.Optional;
 
 /**
@@ -24,19 +22,19 @@ import java.util.Optional;
 @Slf4j
 public class CheckAction implements Action {
     private static final String URL_AUTH_CURRENT = "/profiles/tg/";
+    private final SessionTg sessionTg;
     private final TgCall tgCall;
     private final UserTelegramService userTelegramService;
-    private final InnerMessageService messageService;
 
     @Override
-    public BotApiMethod<Message> handle(Message message) {
-        var chatIdString = message.getChatId();
+    public Optional<BotApiMethod> handle(Update update) {
+        var chatId = update.getMessage().getChatId();
         var out = new StringBuilder();
         String sl = System.lineSeparator();
-        Optional<UserTelegram> chatIdOptional = userTelegramService.findByChatId(chatIdString);
+        Optional<UserTelegram> chatIdOptional = userTelegramService.findByChatId(chatId);
         if (chatIdOptional.isEmpty()) {
             out.append("Данный аккаунт Telegram на сайте не зарегистрирован").append(sl);
-            return new SendMessage(chatIdString.toString(), out.toString());
+            return Optional.of(new SendMessage(chatId.toString(), out.toString()));
         }
         try {
             UserTelegram userTelegram = chatIdOptional.get();
@@ -50,21 +48,12 @@ public class CheckAction implements Action {
                     .append(sl)
                     .append(profile.getEmail())
                     .append(sl);
-            InnerMessage innerMessage = new InnerMessage();
-            innerMessage.setUserId(profile.getId());
-            innerMessage.setText(out.toString());
-            innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
-            messageService.saveMessage(innerMessage);
-            return new SendMessage(chatIdString.toString(), out.toString());
+            sessionTg.put(chatId.toString(), "userId", Integer.toString(profile.getId()));
+            return Optional.of(new SendMessage(chatId.toString(), out.toString()));
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             out.append("Сервис не доступен попробуйте позже").append(sl);
-            return new SendMessage(chatIdString.toString(), out.toString());
+            return Optional.of(new SendMessage(chatId.toString(), out.toString()));
         }
-    }
-
-    @Override
-    public BotApiMethod<Message> callback(Message message) {
-        return handle(message);
     }
 }

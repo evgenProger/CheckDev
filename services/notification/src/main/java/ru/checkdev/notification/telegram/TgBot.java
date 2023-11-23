@@ -9,6 +9,9 @@ import ru.checkdev.notification.telegram.action.UnKnownRequestAction;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Реализация меню телеграм бота.
@@ -17,18 +20,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 12.09.2023
  */
 public class TgBot extends TelegramLongPollingBot {
-    private final Map<String, String> bindingBy = new ConcurrentHashMap<>();
-    private final Map<String, Action> actions;
+    private final Map<String, Iterator<Action>> bindingBy = new ConcurrentHashMap<>();
+    private final Map<String, List<Action>> actions;
     private final String username;
     private final String token;
 
-    public TgBot(String username, String token) {
-        this.actions = null;
-        this.username = username;
-        this.token = token;
-    }
-
-    public TgBot(Map<String, Action> actions, String username, String token) throws TelegramApiException {
+    public TgBot(Map<String, List<Action>> actions, String username, String token) throws TelegramApiException {
         this.actions = actions;
         this.username = username;
         this.token = token;
@@ -44,24 +41,32 @@ public class TgBot extends TelegramLongPollingBot {
         return token;
     }
 
-    @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage()) {
-            var key = update.getMessage().getText();
-            var chatId = update.getMessage().getChatId().toString();
-            if (actions.containsKey(key)) {
-                var msg = actions.get(key).handle(update.getMessage());
-                bindingBy.put(chatId, key);
-                send(msg);
-            } else if (bindingBy.containsKey(chatId)) {
-                var msg = actions.get(bindingBy.get(chatId)).callback(update.getMessage());
-                bindingBy.remove(chatId);
-                send(msg);
-            }  else if (!actions.containsKey(key)) {
-                var msg = new UnKnownRequestAction().handle(update.getMessage());
-                send(msg);
-            }
+        if (!update.hasMessage()) {
+            return;
         }
+        var key = update.getMessage().getText();
+        var chatId = update.getMessage().getChatId().toString();
+        if (actions.containsKey(key)) {
+            bindingBy.put(chatId, actions.get(key).iterator());
+        } else  {
+            var msg = new UnKnownRequestAction().handle(update);
+            send(msg.get());
+        }
+        if (!bindingBy.containsKey(chatId)) {
+            return;
+        }
+        var bindingActions = bindingBy.get(chatId);
+        if (bindingActions == null || !bindingActions.hasNext()) {
+            bindingBy.remove(chatId);
+            return;
+        }
+
+        Optional<BotApiMethod> result;
+        do {
+            result = bindingActions.next().handle(update);
+        } while (result.isEmpty());
+        send(result.get());
     }
 
     public void send(BotApiMethod msg) {
