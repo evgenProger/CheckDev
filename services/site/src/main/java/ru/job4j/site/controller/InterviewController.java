@@ -50,8 +50,9 @@ public class InterviewController {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
-                categoryName, String.format("/topics/%s/%d", categoryName, categoryId),
-                topic.getName(), String.format("/topic/%s/%d/%d", categoryName, categoryId, topicId));
+                categoryName, String.format("/topics/%d", categoryId),
+                topic.getName(), String.format("/topic/%d", topicId),
+                "Создание собеседования", String.format("/interview/createForm?topicId=%d", topicId));
         return "interview/createForm";
     }
 
