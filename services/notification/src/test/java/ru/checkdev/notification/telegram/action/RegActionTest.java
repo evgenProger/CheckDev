@@ -92,10 +92,8 @@ class RegActionTest {
         BotApiMethod botApiMethod = regAction10.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String n = System.lineSeparator();
-        String text = "Вы зарегистрированы:"
-                + " Имя:"
-                + " Email: ";
-        Assertions.assertThat(text).isEqualTo(trim(sendMessage.getText()));
+        String text = "Пройдите регистрацию заново" + n + "/new";
+        Assertions.assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
@@ -123,10 +121,5 @@ class RegActionTest {
                         + "Пароль : password%s"
                         + "urlSiteAuth", n, n, n, n);
         Assertions.assertThat(text).isEqualTo(sendMessage.getText());
-    }
-
-    public String trim(String str) {
-        String[] array = str.split(System.lineSeparator());
-        return array[0] + array[1] + array[2];
     }
 }

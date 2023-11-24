@@ -49,9 +49,10 @@ public class TgBot extends TelegramLongPollingBot {
         var chatId = update.getMessage().getChatId().toString();
         if (actions.containsKey(key)) {
             bindingBy.put(chatId, actions.get(key).iterator());
-        } else  {
+        } else if (!actions.containsKey(key) && !bindingBy.get(chatId).hasNext()) {
             var msg = new UnKnownRequestAction().handle(update);
             send(msg.get());
+            return;
         }
         if (!bindingBy.containsKey(chatId)) {
             return;

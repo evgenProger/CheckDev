@@ -46,7 +46,7 @@ public class TgConfig {
     }
 
     @Bean
-    public TgBot initTg() {
+    public TgBot initTg() throws TelegramApiException {
         Map<String, List<Action>> actionMap = Map.of(
                 "/start", List.of(new InfoAction(List.of(
                         "/start",
@@ -61,31 +61,16 @@ public class TgConfig {
                         new RegAction15(userTelegramService),
                         new RegAction16(sessionTg),
                         new RegAction20(sessionTg),
-                        new RegAction30(sessionTg, tgCall, userTelegramService, urlLogin),
-                        new SaveInnerMessageAction(sessionTg, messageService)
+                        new RegAction30(sessionTg, tgCall, userTelegramService, urlLogin)
                 ),
-                "/check", List.of(
-                        new CheckAction(sessionTg, tgCall, userTelegramService),
-                        new SaveInnerMessageAction(sessionTg, messageService)),
-                "/forget", List.of(
-                        new ForgetAction(sessionTg, tgCall, userTelegramService),
-                        new SaveInnerMessageAction(sessionTg, messageService)),
-                "/notify", List.of(
-                        new NotifyAction(sessionTg, tgCall, userTelegramService),
-                        new SaveInnerMessageAction(sessionTg, messageService)),
-                "/unnotify", List.of(
-                        new UnNotifyAction(sessionTg, tgCall, userTelegramService),
-                        new SaveInnerMessageAction(sessionTg, messageService))
+                "/check", List.of(new CheckAction(sessionTg, tgCall, userTelegramService)),
+                "/forget", List.of(new ForgetAction(sessionTg, tgCall, userTelegramService)),
+                "/notify", List.of(new NotifyAction(sessionTg, tgCall, userTelegramService)),
+                "/unnotify", List.of(new UnNotifyAction(sessionTg, tgCall, userTelegramService))
         );
-        try {
-            TgBot menu = new TgBot(actionMap, username, token);
-            TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(menu);
-            return menu;
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-            log.error("Telegram bot: {}, ERROR {}", username, e);
-        }
-        return null;
+        TgBot menu = new TgBot(actionMap, username, token);
+        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+        botsApi.registerBot(menu);
+        return menu;
     }
 }
