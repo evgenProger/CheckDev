@@ -8,8 +8,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.desc.domain.Category;
+import ru.checkdev.desc.domain.Topic;
+import ru.checkdev.desc.dto.CategoryDTO;
 
 import javax.persistence.EntityManager;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,8 +111,16 @@ class CategoryRepositoryTest {
         entityManager.persist(category1);
         entityManager.persist(category2);
         entityManager.clear();
+        var categoryDto1 = new CategoryDTO();
+        categoryDto1.setId(category1.getId());
+        categoryDto1.setName(category1.getName());
+        categoryDto1.setTotal(category1.getTotal());
+        var categoryDto2 = new CategoryDTO();
+        categoryDto2.setId(category2.getId());
+        categoryDto2.setName(category2.getName());
+        categoryDto2.setTotal(category2.getTotal());
         var actual = categoryRepository.findAllByOrderTotalDescLimit(PageRequest.of(0, limit));
-        var expect = List.of(category2);
+        var expect = List.of(categoryDto2);
         assertThat(actual).isEqualTo(expect);
     }
 
@@ -125,8 +136,16 @@ class CategoryRepositoryTest {
         entityManager.persist(category1);
         entityManager.persist(category2);
         entityManager.clear();
+        var categoryDto1 = new CategoryDTO();
+        categoryDto1.setId(category1.getId());
+        categoryDto1.setName(category1.getName());
+        categoryDto1.setTotal(category1.getTotal());
+        var categoryDto2 = new CategoryDTO();
+        categoryDto2.setId(category2.getId());
+        categoryDto2.setName(category2.getName());
+        categoryDto2.setTotal(category2.getTotal());
         var actual = categoryRepository.findAllByOrderTotalDescLimit(PageRequest.of(0, limit));
-        var expect = List.of(category2, category1);
+        var expect = List.of(categoryDto2, categoryDto1);
         assertThat(actual).isEqualTo(expect);
     }
 
@@ -154,8 +173,95 @@ class CategoryRepositoryTest {
         entityManager.persist(category4);
         entityManager.persist(category5);
         entityManager.clear();
+        var categoryDto1 = new CategoryDTO();
+        categoryDto1.setId(category1.getId());
+        categoryDto1.setName(category1.getName());
+        categoryDto1.setTotal(category1.getTotal());
+        var categoryDto2 = new CategoryDTO();
+        categoryDto2.setId(category2.getId());
+        categoryDto2.setName(category2.getName());
+        categoryDto2.setTotal(category2.getTotal());
+        var categoryDto3 = new CategoryDTO();
+        categoryDto3.setId(category3.getId());
+        categoryDto3.setName(category3.getName());
+        categoryDto3.setTotal(category3.getTotal());
+        var categoryDto4 = new CategoryDTO();
+        categoryDto4.setId(category4.getId());
+        categoryDto4.setName(category4.getName());
+        categoryDto4.setTotal(category4.getTotal());
         var actual = categoryRepository.findAllByOrderTotalDescLimit(PageRequest.of(0, limit));
-        var expect = List.of(category4, category2, category1, category3);
+        var expect = List.of(categoryDto4, categoryDto2, categoryDto1, categoryDto3);
         assertThat(actual).isEqualTo(expect);
+    }
+
+    @Test
+    void whenGetAllCategoryDTOThenEmpty() {
+        var actual = categoryRepository.getAllCategoryDTO();
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void whenGetAllCategoryDTOThenReturnListSizeOneTopicSizeTwo() {
+        var created = Calendar.getInstance();
+        created.set(2_023, 11, 24, 22, 05, 00);
+        var category = new Category(0, "name1", 1, 1);
+        entityManager.persist(category);
+        var topic1 = Topic.of()
+                .name("topic1")
+                .text("text1")
+                .created(created)
+                .total(1)
+                .position(2)
+                .category(category)
+                .build();
+        var topic2 = Topic.of()
+                .name("topic2")
+                .text("text2")
+                .created(created)
+                .total(2)
+                .position(3)
+                .category(category)
+                .build();
+        entityManager.persist(topic1);
+        entityManager.persist(topic2);
+        entityManager.clear();
+        var categoryDTO = CategoryDTO.of()
+                .id(category.getId())
+                .name(category.getName())
+                .total(category.getTotal())
+                .topicsSize(2L)
+                .position(category.getPosition())
+                .build();
+        var expected = List.of(categoryDTO);
+        var actual = categoryRepository.getAllCategoryDTO();
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void whenGetAllCategoryDTOThenReturnListSizeOneTopicSizeOne() {
+        var created = Calendar.getInstance();
+        created.set(2023, 11, 24, 22, 05, 00);
+        var category = new Category(0, "name1", 1, 1);
+        entityManager.persist(category);
+        var topic1 = Topic.of()
+                .name("topic1")
+                .text("text1")
+                .created(created)
+                .total(1)
+                .position(2)
+                .category(category)
+                .build();
+        entityManager.persist(topic1);
+        entityManager.clear();
+        var categoryDTO = CategoryDTO.of()
+                .id(category.getId())
+                .name(category.getName())
+                .total(category.getTotal())
+                .topicsSize(1L)
+                .position(category.getPosition())
+                .build();
+        var expected = List.of(categoryDTO);
+        var actual = categoryRepository.getAllCategoryDTO();
+        assertThat(actual).isEqualTo(expected);
     }
 }

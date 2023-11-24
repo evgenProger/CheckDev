@@ -47,17 +47,9 @@ public class CategoriesService {
                 mapper.writeValueAsString(category)
         );
     }
-
-    public void updateStatistic(String token, int categoryId) throws JsonProcessingException {
-        var mapper = new ObjectMapper();
-        new RestAuthCall("http://localhost:9902/category/statistic").put(
-                token, mapper.writeValueAsString(categoryId));
-    }
-
     public List<CategoryDTO> getAllWithTopics() throws JsonProcessingException {
         var categoriesDTO = getAll();
         for (var categoryDTO : categoriesDTO) {
-            categoryDTO.setTopicsSize(topicsService.getByCategory(categoryDTO.getId()).size());
             var listTopicId = getAllWithTopicsCount(categoryDTO);
             var count = countInterview(listTopicId);
             categoryDTO.setCountInterview(count);
@@ -68,7 +60,6 @@ public class CategoriesService {
     public List<CategoryDTO> getMostPopular() throws JsonProcessingException {
         var categoriesDTO = getPopularFromDesc();
         for (var categoryDTO : categoriesDTO) {
-            categoryDTO.setTopicsSize(topicsService.getByCategory(categoryDTO.getId()).size());
             var listTopicId = getAllWithTopicsCount(categoryDTO);
             var count = countInterview(listTopicId);
             categoryDTO.setCountInterview(count);
@@ -94,8 +85,10 @@ public class CategoriesService {
      * @throws JsonProcessingException
      */
     public List<Integer> getAllWithTopicsCount(CategoryDTO categoryDTO) throws JsonProcessingException {
-        return topicsService.getByCategory(categoryDTO.getId())
-                .stream().map(topicDTO -> topicDTO.getId()).collect(Collectors.toList());
+        return topicsService.getTopicIdNameDtoByCategory(categoryDTO.getId())
+                .stream()
+                .map(topicDTO -> topicDTO.getId())
+                .collect(Collectors.toList());
     }
 
     /**

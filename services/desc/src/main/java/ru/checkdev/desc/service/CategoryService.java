@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.checkdev.desc.domain.Category;
+import ru.checkdev.desc.dto.CategoryDTO;
 import ru.checkdev.desc.repository.CategoryRepository;
 import ru.checkdev.desc.utility.Utility;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,13 +32,11 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
-    public List<Category> getAll() {
-        var list = new ArrayList<Category>();
-        categoryRepository.findAllByOrderByPositionAsc().forEach(list::add);
-        return list;
+    public List<CategoryDTO> getAllCategoryDTO() {
+       return categoryRepository.getAllCategoryDTO();
     }
 
-    public List<Category> getMostPopular() {
+    public List<CategoryDTO> getMostPopular() {
         return categoryRepository.findAllByOrderTotalDescLimit(
                 PageRequest.of(0, Utility.LIMIT_MOST_POPULAR));
     }

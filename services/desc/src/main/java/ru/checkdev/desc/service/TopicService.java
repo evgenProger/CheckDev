@@ -3,7 +3,7 @@ package ru.checkdev.desc.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.checkdev.desc.domain.Topic;
-import ru.checkdev.desc.dto.CategoryDTO;
+import ru.checkdev.desc.dto.CategoryIdNameDTO;
 import ru.checkdev.desc.dto.TopicDTO;
 import ru.checkdev.desc.dto.TopicLiteDTO;
 import ru.checkdev.desc.repository.TopicRepository;
@@ -43,8 +43,8 @@ public class TopicService {
         }
     }
 
-    public List<Topic> findByCategory(int id) {
-        return new ArrayList<>(topicRepository.findByCategoryIdOrderByPositionAsc(id));
+    public List<Topic> findByCategoryId(int id) {
+        return topicRepository.findByCategoryIdOrderByPositionAsc(id);
     }
 
     public List<Topic> getAll() {
@@ -63,7 +63,7 @@ public class TopicService {
         return topicRepository.findIdAndNameByCategoryId(categoryId);
     }
 
-    public Optional<CategoryDTO> getCategoryDtoByTopicId(int id) {
+    public Optional<CategoryIdNameDTO> getCategoryIdNameDtoByTopicId(int id) {
         return topicRepository.findCategoryIdAndNameById(id);
     }
 

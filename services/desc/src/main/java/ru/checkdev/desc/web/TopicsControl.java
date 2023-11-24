@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.checkdev.desc.domain.Topic;
 import ru.checkdev.desc.dto.TopicDTO;
 import ru.checkdev.desc.dto.TopicLiteDTO;
+import ru.checkdev.desc.service.CategoryService;
 import ru.checkdev.desc.service.TopicService;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TopicsControl {
     private final TopicService topicService;
+    private final CategoryService categoryService;
 
     @GetMapping("/")
     public List<Topic> getAll() {
@@ -29,7 +31,9 @@ public class TopicsControl {
 
     @GetMapping("/{id}")
     public List<Topic> getByCategory(@PathVariable int id) {
-        return topicService.findByCategory(id);
+        var topics = topicService.findByCategoryId(id);
+        categoryService.updateStatistic(id);
+        return topics;
     }
 
     @GetMapping("/getByCategoryId/{categoryId}")
