@@ -1,6 +1,5 @@
 package ru.job4j.site.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -12,7 +11,6 @@ import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.service.FeedbackService;
 import ru.job4j.site.service.InterviewService;
-
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.ProfilesService;
 
@@ -90,7 +88,7 @@ public class FeedbackController {
                                @ModelAttribute("submitterId") int submitterId,
                                @ModelAttribute("agreedWisherId") int agreedWisherId,
                                @ModelAttribute("interviewTitle") String interviewTitle,
-                               HttpServletRequest request) throws JsonProcessingException {
+                               HttpServletRequest request) {
         var token = RequestResponseTools.getToken(request);
         feedbackService.save(token, feedbackDTO, name);
         var recipientId = submitterId == userId ? agreedWisherId : submitterId;

@@ -38,7 +38,7 @@ public class TopicControl {
             var token = getToken(req);
             if (token != null) {
                 var userInfo = authService.userInfo(token);
-                model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()));
+                model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()).orElse(null));
                 model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
             }
             RequestResponseTools.addAttrBreadcrumbs(model,

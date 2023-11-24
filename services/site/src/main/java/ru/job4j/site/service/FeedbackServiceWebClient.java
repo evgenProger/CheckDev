@@ -1,6 +1,5 @@
 package ru.job4j.site.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -8,10 +7,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.FeedbackDTO;
 import ru.job4j.site.dto.InnerMessageDTO;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.enums.StatusInterview;
 
 import java.util.*;
 
@@ -94,7 +93,7 @@ public class FeedbackServiceWebClient implements FeedbackService {
                 innerMessage2.setText(text);
                 notificationService.sendFeedBackMessage(token, innerMessage1);
                 notificationService.sendFeedBackMessage(token, innerMessage2);
-            } catch (JsonProcessingException e) {
+            } catch (Exception e) {
                 log.error("notificationService.class method sendFeedBackNotification error: {}", e.getMessage());
             }
         }

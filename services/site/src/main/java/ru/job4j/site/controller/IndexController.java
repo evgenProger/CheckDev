@@ -33,7 +33,7 @@ public class IndexController {
             if (token != null) {
                 var userInfo = authService.userInfo(token);
                 model.addAttribute("userInfo", userInfo);
-                model.addAttribute("userDTO", notifications.findCategoriesByUserId(userInfo.getId()));
+                model.addAttribute("userDTO", notifications.findCategoriesByUserId(userInfo.getId()).orElse(null));
                 model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
                 RequestResponseTools.addAttrCanManage(model, userInfo);
             }

@@ -140,7 +140,7 @@ public class InterviewController {
     @GetMapping("/edit/{id}")
     public String getEditView(@PathVariable("id") int interviewId,
                               Model model,
-                              HttpServletRequest request) throws JsonProcessingException {
+                              HttpServletRequest request) {
         var token = getToken(request);
         InterviewDTO interview;
         UserInfoDTO userInfoDTO;
