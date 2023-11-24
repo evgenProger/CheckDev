@@ -16,6 +16,7 @@ import ru.job4j.site.service.TopicsService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -61,7 +62,7 @@ public class TopicControlTest {
         userTopicDto.setSubscribeTopicIds(new ArrayList<>());
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(topicsService.getById(1)).thenReturn(topic);
-        when(notifications.findTopicByUserId(userInfo.getId())).thenReturn(userTopicDto);
+        when(notifications.findTopicByUserId(userInfo.getId())).thenReturn(Optional.of(userTopicDto));
         mockMvc.perform(get("/topic/1")
                         .sessionAttr("token", token))
                 .andDo(print())
