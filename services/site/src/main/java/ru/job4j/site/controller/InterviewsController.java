@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.site.component.InterviewsRequestManager;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.FilterDTO;
 import ru.job4j.site.dto.InterviewDTO;
@@ -36,7 +35,6 @@ public class InterviewsController {
     private final TopicsService topicsService;
     private final AuthService authService;
     private final FilterService filterService;
-    private final InterviewsRequestManager interviewsRequestManager;
     private final NotificationService notifications;
 
     @GetMapping("/")
@@ -69,10 +67,11 @@ public class InterviewsController {
                 if (categoryId > 0) {
                     topicIdNameDTOS = topicsService.getTopicIdNameDtoByCategory(categoryId);
                 }
-                interviewsPage = categoryId <= 0 || topicId > 0
-                        ? interviewsRequestManager.find(token, filter, page, size)
-                        : interviewsRequestManager.findByTopicsList(
-                        topicIdNameDTOS.stream().map(TopicIdNameDTO::getId).toList(), filter, page, size);
+                List<Integer> topicIds = topicId != 0 ? List.of(topicId) : topicIdNameDTOS.stream().map(TopicIdNameDTO::getId).toList();
+                if (categoryId > 0 && topicIds.isEmpty()) {
+                    topicIds = List.of(0);
+                }
+                interviewsPage = interviewsService.getAllByUserIdRelatedFiltered(token, page, size, userId, topicIds);
                 categoryName = categoriesService.getNameById(categories, categoryId);
                 topicName = topicId > 0 ? topicsService.getNameById(topicId) : "";
                 filterProfileName = filterProfileId > 0

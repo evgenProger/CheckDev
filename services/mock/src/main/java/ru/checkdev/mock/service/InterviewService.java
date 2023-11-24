@@ -88,6 +88,20 @@ public class InterviewService {
                 .map(InterviewMapper::getInterviewDTO);
     }
 
+    public Page<InterviewDTO> findPagingByUserIdRelatedFiltered(int page, int size, int userId) {
+        var status = StatusInterview.IS_NEW.getId();
+        return interviewRepository.findAllByUserIdRelatedFiltered(userId, status,
+                        PageRequest.of(page, size, Sort.unsorted()))
+                .map(InterviewMapper::getInterviewDTO);
+    }
+
+    public Page<InterviewDTO> findPagingByUserIdRelatedFiltered(int page, int size, int userId, List<Integer> topicsIds) {
+        var status = StatusInterview.IS_NEW.getId();
+        return interviewRepository.findAllByUserIdRelatedFiltered(userId, status, topicsIds,
+                        PageRequest.of(page, size, Sort.unsorted()))
+                .map(InterviewMapper::getInterviewDTO);
+    }
+
     public Optional<InterviewDTO> findById(Integer id) {
         var interview = interviewRepository.findById(id);
         if (interview.isEmpty()) {
