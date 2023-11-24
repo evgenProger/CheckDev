@@ -84,8 +84,8 @@ public class InterviewsControllerTest {
         var page = new PageImpl<>(interviews);
         var messages = List.of(new InnerMessageDTO(1, id,
                 "message", new Timestamp(System.currentTimeMillis()), 1));
-        when(interviewsService.getAll(token, 1, 5)).thenReturn(page);
-        when(interviewsService.getByTopicId(filter.getTopicId(), 1, 5)).thenReturn(page);
+        when(interviewsService.getAllByUserIdRelated(token, 1, 5, userInfo.getId())).thenReturn(page);
+        when(interviewsService.getAllByUserIdRelatedFiltered(token, 1, 5, userInfo.getId(), List.of(1))).thenReturn(page);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(profilesService.getProfileById(id)).thenReturn(Optional.of(profile));
         when(categoriesService.getAll()).thenReturn(categories);

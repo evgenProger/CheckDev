@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -17,79 +19,119 @@ public class NotificationService {
     @Value("${service.notification}")
     private String urlNtf;
 
-    public void addSubscribeCategory(String token, int userId, int categoryId) throws JsonProcessingException {
+    public void addSubscribeCategory(String token, int userId, int categoryId) {
         SubscribeCategory subscribeCategory = new SubscribeCategory(userId, categoryId);
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall("http://localhost:9920/subscribeCategory/add").post(
-                token, mapper.writeValueAsString(subscribeCategory));
+        try {
+            new RestAuthCall("http://localhost:9920/subscribeCategory/add").post(
+                    token, mapper.writeValueAsString(subscribeCategory));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
     }
 
-    public void deleteSubscribeCategory(String token, int userId, int categoryId) throws JsonProcessingException {
+    public void deleteSubscribeCategory(String token, int userId, int categoryId) {
         SubscribeCategory subscribeCategory = new SubscribeCategory(userId, categoryId);
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall("http://localhost:9920/subscribeCategory/delete").post(
-                token, mapper.writeValueAsString(subscribeCategory));
+        try {
+            new RestAuthCall("http://localhost:9920/subscribeCategory/delete").post(
+                    token, mapper.writeValueAsString(subscribeCategory));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
     }
 
-    public UserDTO findCategoriesByUserId(int id) throws JsonProcessingException {
-        var text = new RestAuthCall("http://localhost:9920/subscribeCategory/" + id).get();
+    public Optional<UserDTO> findCategoriesByUserId(int id) {
         var mapper = new ObjectMapper();
-        List<Integer> list = mapper.readValue(text, new TypeReference<>() {
-        });
-        return new UserDTO(id, list);
+        try {
+            var text = new RestAuthCall("http://localhost:9920/subscribeCategory/" + id).get();
+            List<Integer> list = mapper.readValue(text, new TypeReference<>() {
+            });
+            return Optional.of(new UserDTO(id, list));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+            return Optional.empty();
+        }
     }
 
-    public void addSubscribeTopic(String token, int userId, int topicId) throws JsonProcessingException {
+    public void addSubscribeTopic(String token, int userId, int topicId) {
         SubscribeTopicDTO subscribeTopicDTO = new SubscribeTopicDTO(userId, topicId);
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall("http://localhost:9920/subscribeTopic/add").post(
-                token, mapper.writeValueAsString(subscribeTopicDTO));
+        try {
+            new RestAuthCall("http://localhost:9920/subscribeTopic/add").post(
+                    token, mapper.writeValueAsString(subscribeTopicDTO));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
     }
 
-    public void deleteSubscribeTopic(String token, int userId, int topicId) throws JsonProcessingException {
+    public void deleteSubscribeTopic(String token, int userId, int topicId) {
         SubscribeTopicDTO subscribeTopic = new SubscribeTopicDTO(userId, topicId);
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall("http://localhost:9920/subscribeTopic/delete").post(
-                token, mapper.writeValueAsString(subscribeTopic));
+        try {
+            new RestAuthCall("http://localhost:9920/subscribeTopic/delete").post(
+                    token, mapper.writeValueAsString(subscribeTopic));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
     }
 
-    public UserTopicDTO findTopicByUserId(int id) throws JsonProcessingException {
-        var text = new RestAuthCall("http://localhost:9920/subscribeTopic/" + id).get();
+    public Optional<UserTopicDTO> findTopicByUserId(int id) {
         var mapper = new ObjectMapper();
-        List<Integer> list = mapper.readValue(text, new TypeReference<>() {
-        });
-        return new UserTopicDTO(id, list);
+        try {
+            var text = new RestAuthCall("http://localhost:9920/subscribeTopic/" + id).get();
+            List<Integer> list = mapper.readValue(text, new TypeReference<>() {
+            });
+            return Optional.of(new UserTopicDTO(id, list));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+            return Optional.empty();
+        }
     }
 
-    public List<InnerMessageDTO> findBotMessageByUserId(String token, int id) throws JsonProcessingException {
+    public List<InnerMessageDTO> findBotMessageByUserId(String token, int id) {
         String url = urlNtf + "/messages/actual/" + id;
-        var text = new RestAuthCall(url).get(token);
         var mapper = new ObjectMapper();
-        return mapper.readValue(text, new TypeReference<>() {
-        });
+        try {
+            var text = new RestAuthCall(url).get(token);
+            return mapper.readValue(text, new TypeReference<>() {
+            });
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+            return Collections.emptyList();
+        }
     }
 
-    public void notifyAboutInterviewCreation(String token, CategoryWithTopicDTO categoryAndTopicIds)
-            throws JsonProcessingException {
+    public void notifyAboutInterviewCreation(String token, CategoryWithTopicDTO categoryAndTopicIds) {
         var mapper = new ObjectMapper();
-        new RestAuthCall(String.format("%s%s", urlNtf, "/messages/newInterview"))
-                .post(token, mapper.writeValueAsString(categoryAndTopicIds));
+        try {
+            new RestAuthCall(String.format("%s%s", urlNtf, "/messages/newInterview"))
+                    .post(token, mapper.writeValueAsString(categoryAndTopicIds));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
     }
 
-    public void sendFeedBackMessage(String token, InnerMessageDTO innerMessage)
-            throws JsonProcessingException {
+    public void sendFeedBackMessage(String token, InnerMessageDTO innerMessage) {
         String url = urlNtf + "/messages/message";
         var mapper = new ObjectMapper();
-        new RestAuthCall(url).post(
-                token, mapper.writeValueAsString(innerMessage));
+        try {
+            new RestAuthCall(url).post(
+                    token, mapper.writeValueAsString(innerMessage));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
     }
 
-    public void sendFeedbackNotification(String token, FeedbackNotificationDTO feedbackNotification)
-            throws JsonProcessingException {
+    public void sendFeedbackNotification(String token, FeedbackNotificationDTO feedbackNotification) {
         String url = urlNtf + "/feedback/interview";
         var mapper = new ObjectMapper();
-        new RestAuthCall(url).post(
-                token, mapper.writeValueAsString(feedbackNotification));
+        try {
+            new RestAuthCall(url).post(
+                    token, mapper.writeValueAsString(feedbackNotification));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
     }
 
     /**
@@ -100,11 +142,15 @@ public class NotificationService {
      * @param interviewNotifiDTO InterviewNotifiDTO
      * @throws JsonProcessingException Exception
      */
-    public void sendSubscribeTopic(String token, InterviewNotifiDTO interviewNotifiDTO) throws JsonProcessingException {
+    public void sendSubscribeTopic(String token, InterviewNotifiDTO interviewNotifiDTO) {
         var url = String.format("%s/notification/topic/", urlNtf);
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall(url).post(
-                token, mapper.writeValueAsString(interviewNotifiDTO));
+        try {
+            new RestAuthCall(url).post(
+                    token, mapper.writeValueAsString(interviewNotifiDTO));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
     }
 
     /**
@@ -118,7 +164,7 @@ public class NotificationService {
         var url = String.format("%s/notification/participate/", urlNtf);
         var mapper = new ObjectMapper();
         try {
-            var out = new RestAuthCall(url).post(
+            new RestAuthCall(url).post(
                     token, mapper.writeValueAsString(wisherNotifiDTO));
         } catch (Exception e) {
             log.error("API notification not found, error: {}", e);

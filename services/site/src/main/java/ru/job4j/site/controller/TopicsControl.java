@@ -47,7 +47,7 @@ public class TopicsControl {
                 model.addAttribute("userInfo", userInfo);
                 RequestResponseTools.addAttrCanManage(model, userInfo);
                 categoriesService.updateStatistic(token, categoryId);
-                model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()));
+                model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()).orElse(null));
                 model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
             }
         } catch (Exception e) {

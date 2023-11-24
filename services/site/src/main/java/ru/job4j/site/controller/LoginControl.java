@@ -37,7 +37,7 @@ public class LoginControl {
         );
         String errorMessage = null;
         if (error != null) {
-            errorMessage = "Email or Password is incorrect !!";
+            errorMessage = "Email или пароль введены неверно!";
         }
         model.addAttribute("authPing", authService.getPing());
         model.addAttribute("errorMessage", errorMessage);

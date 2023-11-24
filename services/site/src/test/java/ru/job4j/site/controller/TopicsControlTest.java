@@ -17,6 +17,7 @@ import ru.job4j.site.service.TopicsService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.mockito.Mockito.when;
@@ -46,7 +47,7 @@ public class TopicsControlTest {
         var token = "1410";
         var userInfo = new UserInfoDTO();
         var role = new Role();
-        role .setId(1);
+        role.setId(1);
         role.setValue("ROLE_USER");
         List<TopicDTO> topics = IntStream.range(0, 3).mapToObj(i -> {
             var topic = new TopicDTO();
@@ -65,7 +66,7 @@ public class TopicsControlTest {
         userTopicDto.setSubscribeTopicIds(new ArrayList<>());
         when(topicsService.getTopicsWithCountInterview(1)).thenReturn(topics);
         when(authService.userInfo(token)).thenReturn(userInfo);
-        when(notifications.findTopicByUserId(userInfo.getId())).thenReturn(userTopicDto);
+        when(notifications.findTopicByUserId(userInfo.getId())).thenReturn(Optional.of(userTopicDto));
         mockMvc.perform(get("/topics/1").sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(status().isOk())
