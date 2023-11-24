@@ -24,6 +24,7 @@ public class RegAction20 implements Action {
                     .append(" не корректный.").append(sl)
                     .append("попробуйте снова.").append(sl)
                     .append("/new").toString();
+            sessionTg.put(chatId.toString(), "email", "");
             return Optional.of(new SendMessage(chatId.toString(), text));
         } else {
             return Optional.empty();

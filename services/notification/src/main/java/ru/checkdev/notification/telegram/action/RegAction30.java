@@ -33,6 +33,10 @@ public class RegAction30 implements Action {
         var text = "";
         var chatId = update.getMessage().getChatId();
         var email = sessionTg.get(chatId.toString(), "email", "");
+        if (email.equals("")) {
+            text = "Пройдите регистрацию заново" + System.lineSeparator() + "/new";
+            return Optional.of(new SendMessage(chatId.toString(), text));
+        }
         var sl = System.lineSeparator();
         var username = sessionTg.get(chatId.toString(), "name", "");
         var password = tgConfig.getPassword();
