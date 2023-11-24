@@ -31,75 +31,79 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <div class="row">
-        <div class="card" style="width: 100%">
-            <div class="card-header">
-                Редактирование пользователя
-            </div>
-            <div class="card-body">
-                <form th:action="@{/persons/edit}" method="POST" th:object="${personDto}" enctype="multipart/form-data">
-                    <input type="hidden" name="id" th:field="*{id}">
-                    <input type="hidden" name="photo" th:field="*{photo.id}">
-                    <div class="row mb-3">
-                        <div class="col-3">
-                            <!-- Временно отключено task#525-->
-                            <!--Photo view-->
-                            <!--<div class="mb-3">
-                                <img th:if="${photoId>0}"
-                                     th:src="@{/photo/{id}(id=${photoId})}" class="w-100"
-                                     alt="No image">
-                            </div>-->
-                            <!--Photo load-->
-                            <!--<div class="mb-3">
-                                <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger"
-                                     role="alert">
-                                    <span th:text="${errorMessage}"></span>
+    <div class="row pb-3">
+        <div class="cell">
+            <div class="card">
+                <h5 class="card-header">Редактирование пользователя</h5>
+                <div class="card-body">
+                    <form th:action="@{/persons/edit}" method="POST" th:object="${personDto}"
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="id" th:field="*{id}">
+                        <input type="hidden" name="photo" th:field="*{photo.id}">
+                        <div class="row mb-3">
+                            <!--/*
+                            <div class="col-3">
+                                 Временно отключено task#525
+                                Photo view
+                                <div class="mb-3">
+                                    <img th:if="${photoId>0}"
+                                         th:src="@{/photo/{id}(id=${photoId})}" class="w-100"
+                                         alt="No image">
                                 </div>
-                                <label for="formFile" class="form-label">изображение формата jpeg.</label>
-                                <input class="form-control form-control-sm w-100"
-                                       type="file" accept="image/jpeg"
-                                       id="formFile" name="file">
-                            </div>-->
+                                Photo load
+                                <div class="mb-3">
+                                    <div th:if="${not #lists.isEmpty(errorMessage)}" class="alert alert-danger"
+                                         role="alert">
+                                        <span th:text="${errorMessage}"></span>
+                                    </div>
+                                    <label for="formFile" class="form-label">изображение формата jpeg.</label>
+                                    <input class="form-control form-control-sm w-100"
+                                           type="file" accept="image/jpeg"
+                                           id="formFile" name="file">
+                                </div>
+                            </div>
+                                     */-->
+                            <div class="col-9">
+                                <!--Username-->
+                                <div class="mb-3">
+                                    <label for="username" class="form-label"><b>ФИО</b></label>
+                                    <input type="text" class="form-control" id="username" name="username"
+                                           th:field="*{username}">
+                                </div>
+                                <!--Email-->
+                                <div class="mb-3">
+                                    <label class="form-label" for="email"><b>Email</b></label>
+                                    <input class="form-control" id="email" name="username" placeholder="Email"
+                                           th:field="*{email}"
+                                           type="email">
+                                </div>
+                                <!--Experience-->
+                                <div class="mb-3">
+                                    <label class="form-label" for="experience"><b>Опыт</b></label>
+                                    <textarea class="form-control"
+                                              id="experience"
+                                              name="experience" placeholder="Опыт" rows="5"
+                                              th:field="*{experience}"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="salary"><b>Ожидаемый доход</b></label>
+                                    <input class="form-control" id="salary" name="salary" th:field="*{salary}"
+                                           type="text">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="location"><b>Город</b></label>
+                                    <input class="form-control" id="location" name="location" placeholder="Город"
+                                           th:field="*{location}" type="text">
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-9">
-                            <!--Username-->
-                            <div class="mb-3">
-                                <label for="username" class="form-label"><b>ФИО</b></label>
-                                <input type="text" class="form-control" id="username" name="username"
-                                       th:field="*{username}">
-                            </div>
-                            <!--Email-->
-                            <div class="mb-3">
-                                <label class="form-label" for="email"><b>Email</b></label>
-                                <input class="form-control" id="email" name="username" placeholder="Email"
-                                       th:field="*{email}"
-                                       type="email">
-                            </div>
-                            <!--Experience-->
-                            <div class="mb-3">
-                                <label class="form-label" for="experience"><b>Опыт</b></label>
-                                <textarea class="form-control"
-                                          id="experience"
-                                          name="experience" placeholder="Опыт" rows="5"
-                                          th:field="*{experience}"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="salary"><b>Ожидаемый доход</b></label>
-                                <input class="form-control" id="salary" name="salary" th:field="*{salary}" type="text">
-                            </div>
-                            <div class="mb-3">
-                                <label for="location"><b>Город</b></label>
-                                <input class="form-control" id="location" name="location" placeholder="Город"
-                                       th:field="*{location}" type="text">
-                            </div>
-                        </div>
-                    </div>
-                    <!--Отмена-->
-                    <a class="btn btn-secondary mt-3"
-                       th:href="@{/}">Отмена</a>
-                    <!--Обновить инцидент-->
-                    <button class="btn btn-success mt-3" type="submit">Обновить</button>
-                </form>
+                        <!--Отмена-->
+                        <a class="btn btn-secondary mt-3"
+                           th:href="@{/}">Отмена</a>
+                        <!--Обновить инцидент-->
+                        <button class="btn btn-success mt-3" type="submit">Обновить</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

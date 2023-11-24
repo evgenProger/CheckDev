@@ -31,49 +31,50 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
-    <div class="row">
-        <div class="card" style="width: 100%">
-            <div class="card-header">
-                Просмотр пользователя
-            </div>
-            <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-3">
-                        <!-- Временно отключено task#525-->
-                        <!--<div class="mb-3">
-                            <i th:if="${photoId<0}"
-                               class="fas fa-image" style="font-size: 3em;"></i>
-                            <img th:if="${photoId>0}"
-                                 th:src="@{/photo/{id}(id=${photoId})}" class="w-100"
-                                 alt="No image">
-                        </div>-->
+    <div class="row pb-3">
+        <div class="cell">
+            <div class="card">
+                <h5 class="card-header">Просмотр пользователя</h5>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <!--/*
+                        <div class="col-3">
+                            Временно отключено task#525
+                            <div class="mb-3">
+                                <i th:if="${photoId<0}"
+                                   class="fas fa-image" style="font-size: 3em;"></i>
+                                <img th:if="${photoId>0}"
+                                     th:src="@{/photo/{id}(id=${photoId})}" class="w-100"
+                                     alt="No image">
+                            </div>
+                        </div> */-->
+                        <div class="col-9">
+                            <div class="mb-3">
+                                <h4>
+                                    <p th:text="'Имя: ' + ${personDto.username}">Имя пользователя</p>
+                                </h4>
+                            </div>
+                            <div class="mb-3">
+                                <p th:text="'Email: ' + ${personDto.email}">Email</p>
+                            </div>
+                            <div class="mb-3">
+                                <p th:text="'Опыт: ' + ${personDto.experience}">Опыт</p>
+                            </div>
+                            <div class="mb-3">
+                                <p th:text="'Ожидаемый доход: ' + ${personDto.salary}">Ожидаемый доход</p>
+                            </div>
+                            <div class="mb-3">
+                                <p th:text="'Город: ' + ${personDto.location}">Город</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-9">
-                        <div class="mb-3">
-                            <h4>
-                                <p th:text="'Имя: ' + ${personDto.username}">Имя пользователя</p>
-                            </h4>
-                        </div>
-                        <div class="mb-3">
-                            <p th:text="'Email: ' + ${personDto.email}">Email</p>
-                        </div>
-                        <div class="mb-3">
-                            <p th:text="'Опыт: ' + ${personDto.experience}">Опыт</p>
-                        </div>
-                        <div class="mb-3">
-                            <p th:text="'Ожидаемый доход: ' + ${personDto.salary}">Ожидаемый доход</p>
-                        </div>
-                        <div class="mb-3">
-                            <p th:text="'Город: ' + ${personDto.location}">Город</p>
-                        </div>
-                    </div>
+                    <!--/*Кнопка редактировать*/-->
+                    <a class="btn btn-success mt-3"
+                       th:href="@{/persons/edit}">Редактировать</a>
+                    <!--Кнопка смены пароля-->
+                    <a class="btn btn-success mt-3"
+                       th:href="@{/persons/changePassword}">Сменить пароль</a>
                 </div>
-                <!--Кнопка редактировать-->
-                <a class="btn btn-success mt-3"
-                   th:href="@{/persons/edit}">Редактировать</a>
-                <!--Кнопка смены пароля-->
-                <a class="btn btn-success mt-3"
-                   th:href="@{/persons/changePassword}">Сменить пароль</a>
             </div>
         </div>
     </div>
