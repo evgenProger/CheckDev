@@ -93,8 +93,9 @@ public class InterviewControllerTest {
         var breadcrumbs = List.of(
                 new Breadcrumb("Главная", "/index"),
                 new Breadcrumb("Категории", "/categories/"),
-                new Breadcrumb("Some category", "/topics/Some category/1"),
-                new Breadcrumb("Some topic", "/topic/Some category/1/1"));
+                new Breadcrumb("Some category", "/topics/1"),
+                new Breadcrumb("Some topic", "/topic/1"),
+                new Breadcrumb("Создание собеседования", String.format("/interview/createForm?topicId=%d", 1)));
         var token = "1410";
         var userInfo = new UserInfoDTO();
         var topic = new TopicDTO();
