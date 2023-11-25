@@ -5,6 +5,7 @@ import ru.checkdev.notification.domain.SubscribeTopic;
 import ru.checkdev.notification.domain.UserTelegram;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,14 +46,14 @@ class UserTelegramRepositoryTest {
     void whenFindChatIdByUserId() {
         var user = new UserTelegram(0, 1, 1111L);
         userTelegramFake.save(user);
-        assertThat(1111L).isEqualTo(userTelegramFake.findChatIdByUserId(1));
+        assertThat(Optional.of(1111L)).isEqualTo(userTelegramFake.findChatIdByUserId(1));
     }
 
     @Test
     void whenTryToFindChatIdByInvalidUserId() {
         var user = new UserTelegram(0, 1, 1111L);
         userTelegramFake.save(user);
-        assertThat(0L).isEqualTo(userTelegramFake.findChatIdByUserId(27));
+        assertThat(Optional.empty()).isEqualTo(userTelegramFake.findChatIdByUserId(27));
     }
 
     @Test

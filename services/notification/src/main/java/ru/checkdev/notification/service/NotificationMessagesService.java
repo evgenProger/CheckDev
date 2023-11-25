@@ -31,13 +31,11 @@ public class NotificationMessagesService {
     }
 
     public void sendFeedbackNotification(FeedbackNotificationDTO feedbackNotification) {
-        long chatId = userTelegramRepository
+        var optionalChatId = userTelegramRepository
                 .findChatIdByUserId(feedbackNotification.getRecipientId());
-        if (chatId > 0) {
-            bot.send(new SendMessage(String.valueOf(chatId),
-                    String.format("Пользователь %s ооставил Вам отзыв о собеседовании на тему \"%s\"",
-                            feedbackNotification.getSenderName(),
-                            feedbackNotification.getInterviewName())));
-        }
+        optionalChatId.ifPresent(aLong -> bot.send(new SendMessage(String.valueOf(aLong),
+                String.format("Пользователь %s ооставил Вам отзыв о собеседовании на тему \"%s\"",
+                        feedbackNotification.getSenderName(),
+                        feedbackNotification.getInterviewName()))));
     }
 }
