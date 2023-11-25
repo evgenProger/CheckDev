@@ -55,8 +55,8 @@
                 </small>
             </div>
         </div>
-        <div class="card-body">
-            <div th:if="${userInfo != null and isWisher}">
+        <div th:if="${userInfo != null and isWisher}" class="card-body">
+            <div>
                 <span class="text-success">Вы уже откликнулись на это собеседование!</span>
             </div>
         </div>
