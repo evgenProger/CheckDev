@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.desc.domain.Topic;
-import ru.checkdev.desc.dto.CategoryDTO;
+import ru.checkdev.desc.dto.CategoryIdNameDTO;
 import ru.checkdev.desc.dto.TopicLiteDTO;
 import ru.checkdev.desc.service.TopicService;
 
@@ -38,8 +38,8 @@ public class TopicControl {
     }
 
     @GetMapping("/categoryIdName/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryIdById(@PathVariable int id) {
-        var name = topicService.getCategoryDtoByTopicId(id);
+    public ResponseEntity<CategoryIdNameDTO> getCategoryIdById(@PathVariable int id) {
+        var name = topicService.getCategoryIdNameDtoByTopicId(id);
         return name.map(
                 value -> new ResponseEntity<>(value, HttpStatus.OK)
         ).orElseGet(

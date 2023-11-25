@@ -10,7 +10,6 @@ import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.AuthService;
-import ru.job4j.site.service.CategoriesService;
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.TopicsService;
 
@@ -24,7 +23,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
@@ -34,8 +32,6 @@ public class TopicsControlTest {
     private MockMvc mockMvc;
     @MockBean
     private TopicsService topicsService;
-    @MockBean
-    private CategoriesService categoriesService;
     @MockBean
     private AuthService authService;
 

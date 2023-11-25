@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.desc.DescSrv;
-import ru.checkdev.desc.domain.Category;
+import ru.checkdev.desc.dto.CategoryDTO;
 import ru.checkdev.desc.service.CategoryService;
 
 import java.util.List;
@@ -30,9 +30,9 @@ public class CategoriesControlAnonymousTest {
 
     @Test
     void whenGetAllWithoutAuth() throws Exception {
-        var category = new Category();
+        var category = new CategoryDTO();
         category.setId(1);
-        when(categoryService.getAll()).thenReturn(List.of(category));
+        when(categoryService.getAllCategoryDTO()).thenReturn(List.of(category));
         mockMvc.perform(get("/categories/"))
                 .andDo(print())
                 .andExpectAll(

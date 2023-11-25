@@ -1,19 +1,20 @@
 package ru.checkdev.desc.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * CheckDev пробное собеседование
+ *
+ * @author Dmitry Stepanov
+ * @version 24.11.2023 23:35
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder(builderMethodName = "of")
-public class CategoryDTO {
+public class CategoryIdNameDTO {
 
     private int id;
     private String name;
-    private int total;
-    private long topicsSize;
-    private int position;
 }

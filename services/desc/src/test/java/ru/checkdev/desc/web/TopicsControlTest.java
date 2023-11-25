@@ -9,13 +9,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.desc.DescSrv;
+import ru.checkdev.desc.domain.Category;
+import ru.checkdev.desc.domain.Topic;
 import ru.checkdev.desc.dto.TopicLiteDTO;
+import ru.checkdev.desc.service.CategoryService;
 import ru.checkdev.desc.service.TopicService;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -36,6 +41,8 @@ class TopicsControlTest {
     private MockMvc mockMvc;
     @MockBean
     private TopicService topicService;
+    @MockBean
+    private CategoryService categoryService;
 
     @Test
     void injectedNotNull() {
@@ -63,4 +70,33 @@ class TopicsControlTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", Matchers.is(0)));
     }
+
+    @Test
+    void whenGetTopicByCategoryIdThenEmptyList() throws Exception {
+        var category = new Category();
+        category.setId(1);
+        doReturn(Collections.emptyList()).when(topicService).findByCategoryId(category.getId());
+        mockMvc.perform(get("/topics/{id}", category.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", Matchers.is(0)));
+    }
+
+    @Test
+    void whenGetTopicByCategoryIdThenListSizeOne() throws Exception {
+        var category = new Category();
+        category.setId(1);
+        var topic = new Topic(1, "name", "text",
+                Calendar.getInstance(), null,
+                1, 2, category);
+        var topicList = List.of(topic);
+        doNothing().when(categoryService).updateStatistic(category.getId());
+        doReturn(topicList).when(topicService).findByCategoryId(category.getId());
+        mockMvc.perform(get("/topics/{id}", category.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", Matchers.is(1)))
+                .andExpect(jsonPath("$[0].id", Matchers.is(topic.getId())));
+    }
+
 }
