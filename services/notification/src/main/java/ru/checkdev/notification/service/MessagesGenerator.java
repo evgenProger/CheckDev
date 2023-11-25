@@ -2,6 +2,7 @@ package ru.checkdev.notification.service;
 
 import org.springframework.stereotype.Component;
 import ru.checkdev.notification.dto.InterviewNotifiDTO;
+import ru.checkdev.notification.dto.WisherApprovedDTO;
 import ru.checkdev.notification.dto.WisherNotifiDTO;
 
 /**
@@ -38,5 +39,11 @@ public class MessagesGenerator {
                 "На ваше собеседование: %s добавился участник: %s",
                 wisherNotifiDTO.getInterviewTitle(),
                 wisherNotifiDTO.getContactBy());
+    }
+
+    public static String getMessageApprovedWisher(WisherApprovedDTO wisherApprovedNotifyDTO) {
+        return String.format(
+                "Вы одобрены на собеседование: %s ",
+                wisherApprovedNotifyDTO.getInterviewTitle());
     }
 }

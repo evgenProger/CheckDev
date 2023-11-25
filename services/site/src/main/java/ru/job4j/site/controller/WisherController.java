@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.site.dto.WisherApprovedDTO;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.WisherDto;
@@ -59,6 +60,7 @@ public class WisherController {
      */
     @PostMapping("/dismissed")
     public String dismissedWisher(@RequestParam Map<String, String> param,
+                                  @ModelAttribute WisherApprovedDTO wisherApprovedDTO,
                                   HttpServletRequest request) throws JsonProcessingException {
         var token = RequestResponseTools.getToken(request);
         var interviewId = param.get("interviewId");
@@ -71,6 +73,7 @@ public class WisherController {
         interviewDto.setStatusId(StatusInterview.IN_PROGRESS.getId());
         interviewService.update(token, interviewDto);
         interviewService.updateStatus(token, interviewDto);
+        notificationService.approvedWisher(token, wisherApprovedDTO);
         return "redirect:/interview/" + interviewId;
     }
 }

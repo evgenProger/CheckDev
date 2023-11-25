@@ -2,6 +2,7 @@ package ru.checkdev.notification.service;
 
 import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.dto.InterviewNotifiDTO;
+import ru.checkdev.notification.dto.WisherApprovedDTO;
 import ru.checkdev.notification.dto.WisherNotifiDTO;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,6 +48,21 @@ class MessagesGeneratorTest {
                 wisherNotifiDTO.getInterviewTitle(),
                 wisherNotifiDTO.getContactBy());
         String actual = MessagesGenerator.getMessageParticipateWisher(wisherNotifiDTO);
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    @Test
+    void generatorMessagepublicApprovedWisherWisher() {
+        WisherApprovedDTO wisherApprovedDTO = WisherApprovedDTO.of()
+                .interviewId(1)
+                .wisherId(1)
+                .wisherUserId(2)
+                .interviewTitle("interview")
+                .build();
+        String expect = String.format(
+                "Вы одобрены на собеседование: %s ",
+                wisherApprovedDTO.getInterviewTitle());
+        String actual = MessagesGenerator.getMessageApprovedWisher(wisherApprovedDTO);
         assertThat(actual).isEqualTo(expect);
     }
 }
