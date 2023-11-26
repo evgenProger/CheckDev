@@ -170,4 +170,14 @@ public class NotificationService {
             log.error("API notification not found, error: {}", e);
         }
     }
+    public void approvedWisher(String token, WisherApprovedDTO wisherApprovedDTO) {
+        var url = String.format("%s/notificationWisher/approvedWisher/", urlNtf);
+        var mapper = new ObjectMapper();
+        try {
+            var out = new RestAuthCall(url).post(
+                    token, mapper.writeValueAsString(wisherApprovedDTO));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
+    }
 }
