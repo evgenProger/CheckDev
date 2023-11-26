@@ -1,4 +1,4 @@
-package ru.checkdev.notification.telegram.action;
+package ru.checkdev.notification.telegram.action.info;
 
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -22,9 +22,10 @@ class UnKnownRequestActionTest {
         unKnownRequestAction.handle(update);
         BotApiMethod botApiMethod = unKnownRequestAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = String.format(
+        String expect = String.format(
                 "Команда не поддерживается! Список доступных команд: %s/start",
                 System.lineSeparator());
-        assertThat(text).isEqualTo(sendMessage.getText());
+        String actual = sendMessage.getText();
+        assertThat(actual).isEqualTo(expect);
     }
 }

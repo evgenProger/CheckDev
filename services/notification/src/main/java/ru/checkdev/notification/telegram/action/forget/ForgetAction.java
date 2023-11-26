@@ -1,4 +1,4 @@
-package ru.checkdev.notification.telegram.action;
+package ru.checkdev.notification.telegram.action.forget;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,7 @@ import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.domain.Profile;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
+import ru.checkdev.notification.telegram.action.Action;
 import ru.checkdev.notification.telegram.config.TgConfig;
 import ru.checkdev.notification.telegram.service.TgCall;
 
@@ -52,14 +53,11 @@ public class ForgetAction implements Action {
             text = "Сервис не доступен попробуйте позже";
             return Optional.of(new SendMessage(chatId.toString(), text));
         }
-
         var mapObject = tgConfig.getObjectToMap(result);
-
         if (mapObject.containsKey(ERROR_OBJECT)) {
             text = "Ошибка смены пароля: " + mapObject.get(ERROR_OBJECT);
             return Optional.of(new SendMessage(chatId.toString(), text));
         }
-
         return Optional.of(new SendMessage(chatId.toString(), text));
     }
 }

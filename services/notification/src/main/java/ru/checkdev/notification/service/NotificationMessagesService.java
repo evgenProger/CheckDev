@@ -3,11 +3,11 @@ package ru.checkdev.notification.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.dto.CategoryWithTopicDTO;
 import ru.checkdev.notification.dto.FeedbackNotificationDTO;
 import ru.checkdev.notification.repository.UserTelegramRepository;
 import ru.checkdev.notification.telegram.TgBot;
+
 import java.util.List;
 
 @Service
@@ -34,7 +34,7 @@ public class NotificationMessagesService {
         var optionalChatId = userTelegramRepository
                 .findChatIdByUserId(feedbackNotification.getRecipientId());
         optionalChatId.ifPresent(aLong -> bot.send(new SendMessage(String.valueOf(aLong),
-                String.format("Пользователь %s ооставил Вам отзыв о собеседовании на тему \"%s\"",
+                String.format("Пользователь %s оставил Вам отзыв о собеседовании на тему \"%s\"",
                         feedbackNotification.getSenderName(),
                         feedbackNotification.getInterviewName()))));
     }

@@ -57,7 +57,6 @@ public class InnerMessageService {
             Long chatId = user.getChatId();
             innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
             innerMessage.setRead(false);
-            saveMessage(innerMessage);
         }
     }
 }

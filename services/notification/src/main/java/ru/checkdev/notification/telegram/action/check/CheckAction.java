@@ -1,4 +1,4 @@
-package ru.checkdev.notification.telegram.action;
+package ru.checkdev.notification.telegram.action.check;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,7 @@ import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.domain.Profile;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
+import ru.checkdev.notification.telegram.action.Action;
 import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class CheckAction implements Action {
         String sl = System.lineSeparator();
         Optional<UserTelegram> chatIdOptional = userTelegramService.findByChatId(chatId);
         if (chatIdOptional.isEmpty()) {
-            out.append("Данный аккаунт Telegram на сайте не зарегистрирован").append(sl);
+            out.append("Данный аккаунт Telegram на сайте не зарегистрирован");
             return Optional.of(new SendMessage(chatId.toString(), out.toString()));
         }
         try {
@@ -52,7 +53,7 @@ public class CheckAction implements Action {
             return Optional.of(new SendMessage(chatId.toString(), out.toString()));
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
-            out.append("Сервис не доступен попробуйте позже").append(sl);
+            out.append("Сервис не доступен попробуйте позже");
             return Optional.of(new SendMessage(chatId.toString(), out.toString()));
         }
     }

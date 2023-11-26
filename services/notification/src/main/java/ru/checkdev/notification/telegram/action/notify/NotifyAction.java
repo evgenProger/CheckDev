@@ -1,4 +1,4 @@
-package ru.checkdev.notification.telegram.action;
+package ru.checkdev.notification.telegram.action.notify;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,14 +8,19 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
+import ru.checkdev.notification.telegram.action.Action;
 import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.util.Optional;
 
+/**
+ * Telegram Action команда /notify
+ * Подписаться на уведомление
+ */
 @AllArgsConstructor
 @Slf4j
-public class UnNotifyAction implements Action {
-    private static final String URL_AUTH_UNNOTIFIED = "/profiles/tg/unnotified/";
+public class NotifyAction implements Action {
+    private static final String URL_AUTH_NOTIFIED = "/profiles/tg/notified/";
     private final SessionTg sessionTg;
     private final TgCall tgCall;
     private final UserTelegramService userTelegramService;
@@ -32,8 +37,8 @@ public class UnNotifyAction implements Action {
         try {
             UserTelegram userTelegram = chatIdOptional.get();
             sessionTg.put(chatId.toString(), "userId", Long.toString(userTelegram.getUserId()));
-            tgCall.doPost(URL_AUTH_UNNOTIFIED + userTelegram.getUserId()).block();
-            text = "Вы отписались от уведомлений";
+            tgCall.doPost(URL_AUTH_NOTIFIED + userTelegram.getUserId()).block();
+            text = "Вы подписаны на уведомления";
         } catch (Exception e) {
             log.error("WebClient doPost error: {}", e.getMessage());
             text = "Сервис не доступен попробуйте позже";

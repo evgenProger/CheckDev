@@ -1,4 +1,4 @@
-package ru.checkdev.notification.telegram.action;
+package ru.checkdev.notification.telegram.action.check;
 
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -16,6 +16,9 @@ import ru.checkdev.notification.telegram.service.FakeTgCallConsole;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CheckActionTest {
+    private UserTelegramService userTelegramService = new UserTelegramService(
+            new UserTelegramRepositoryFake(
+                    new SubscribeTopicRepositoryFake()));
 
     @Test
     void whenNotChatId() {
@@ -24,36 +27,27 @@ class CheckActionTest {
         Message message = new Message();
         update.setMessage(message);
         message.setChat(chat);
-        var userTelegramService = new UserTelegramService(
-                new UserTelegramRepositoryFake(
-                        new SubscribeTopicRepositoryFake()
-                ));
         SessionTg sessionTg = new SessionTg();
         message.setChat(chat);
         CheckAction checkAction = new CheckAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
         checkAction.handle(update);
         BotApiMethod<Message> botApiMethod = checkAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = "Данный аккаунт Telegram на сайте не зарегистрирован" + System.lineSeparator();
+        String text = "Данный аккаунт Telegram на сайте не зарегистрирован";
         assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
-    void whenConnection() {
+    void whenHandleChatIdIsPresentThenReturnMessage() {
         Chat chat = new Chat(1L, "type");
         Update update = new Update();
         Message message = new Message();
         update.setMessage(message);
         message.setChat(chat);
         SessionTg sessionTg = new SessionTg();
-        var userTelegramService = new UserTelegramService(
-                new UserTelegramRepositoryFake(
-                        new SubscribeTopicRepositoryFake()
-                ));
-        UserTelegram userTelegram = new UserTelegram(11, 10, chat.getId());
+        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId());
         userTelegramService.save(userTelegram);
         message.setChat(chat);
-        message.setText("a@a.ru");
         CheckAction checkAction = new CheckAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
         BotApiMethod<Message> botApiMethod = checkAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
@@ -62,6 +56,24 @@ class CheckActionTest {
                 + "FakeName" + sl
                 + "Email:" + sl
                 + "FakeEmail" + sl;
+        assertThat(text).isEqualTo(sendMessage.getText());
+    }
+
+    @Test
+    void whenHandleChatIdIsPresentThenReturnServiceError() {
+        Chat chat = new Chat(1L, "type");
+        Update update = new Update();
+        Message message = new Message();
+        update.setMessage(message);
+        message.setChat(chat);
+        SessionTg sessionTg = new SessionTg();
+        UserTelegram userTelegram = new UserTelegram(0, -23, chat.getId());
+        userTelegramService.save(userTelegram);
+        message.setChat(chat);
+        CheckAction checkAction = new CheckAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
+        BotApiMethod<Message> botApiMethod = checkAction.handle(update).get();
+        SendMessage sendMessage = (SendMessage) botApiMethod;
+        String text = "Сервис не доступен попробуйте позже";
         assertThat(text).isEqualTo(sendMessage.getText());
     }
 }
