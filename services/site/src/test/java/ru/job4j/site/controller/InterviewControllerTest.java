@@ -47,6 +47,7 @@ public class InterviewControllerTest {
     public void whenShowDetails() throws Exception {
         var token = "1410";
         var userInfo = new UserInfoDTO();
+        var profileDTO = new ProfileDTO();
         InterviewDTO interview = new InterviewDTO();
         interview.setId(1);
         interview.setTitle("Some interview");
@@ -64,6 +65,7 @@ public class InterviewControllerTest {
                         "/interview/" + interview.getId()));
         when(topicsService.getTopicLiteDTOById(topicLiteDTO.getId())).thenReturn(Optional.of(topicLiteDTO));
         when(authService.userInfo(token)).thenReturn(userInfo);
+        when(authService.findById(interview.getSubmitterId())).thenReturn(profileDTO);
         when(interviewService.getById(token, 1)).thenReturn(interview);
         when(interviewService.isAuthor(userInfo, interview)).thenReturn(false);
         when(wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId())))
@@ -76,6 +78,7 @@ public class InterviewControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("interview", interview))
+                .andExpect(model().attribute("authService", authService))
                 .andExpect(model().attribute("breadcrumbs", breadcrumbs))
                 .andExpect(model().attribute("userInfo", userInfo))
                 .andExpect(model().attribute("isAuthor", false))

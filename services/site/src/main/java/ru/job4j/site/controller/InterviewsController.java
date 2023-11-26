@@ -91,6 +91,7 @@ public class InterviewsController {
             );
             var topicLiteDTOs = topicsService.getAllTopicLiteDTO();
             var topicsLiteMap = topicsService.liteDTTOSToMap(topicLiteDTOs);
+            model.addAttribute("authService", authService);
             model.addAttribute("topicsLiteMap", topicsLiteMap);
             model.addAttribute("interviewsPage", interviewsPage);
             model.addAttribute("statuses", StatusInterview.values());

@@ -1,10 +1,12 @@
 package ru.job4j.site.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.UserInfoDTO;
 
 import java.util.Map;
@@ -19,11 +21,13 @@ public class AuthService {
     private String oauth2Token;
     @Value("${server.auth.ping}")
     private String authServicePing;
+    @Value("${server.auth}")
+    private String serverAuth;
 
     public UserInfoDTO userInfo(String token) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(new RestAuthCall(
-                "http://localhost:9900/person/current"
+                serverAuth + "/person/current"
         ).get(token), UserInfoDTO.class);
     }
 
@@ -55,5 +59,10 @@ public class AuthService {
         return result;
     }
 
-
+    public ProfileDTO findById(int id) throws JsonProcessingException {
+        var text = new RestAuthCall(serverAuth + "/profiles/" + id).get();
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(text, new TypeReference<>() {
+        });
+    }
 }

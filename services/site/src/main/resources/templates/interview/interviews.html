@@ -324,7 +324,7 @@
                                 <span th:if="${userInfo != null && userInfo.getUsername() == interview.author}">
                                      <span class="fw-bold" th:text="${interview.author}"></span>
                                 </span>
-                                <span th:text="${interview.author}"></span>
+                                <span th:text="${authService.findById(interview.submitterId).username}"></span>
                                 <i class="fa fa-comments" aria-hidden="true"></i>
                                 <span>Откликов:</span>
                                 <span th:text="${interview.countWishers}"></span>

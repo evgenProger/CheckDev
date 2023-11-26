@@ -106,6 +106,7 @@ public class InterviewController {
         boolean isUserDismissed = wisherService.isUserDismissed(interviewId, userInfo.getId(), wishers);
         var feedbacks = feedbackService.findByInterviewId(interview.getId());
         var feedbackMap = feedbackService.feedbackDTOSToMap(feedbacks);
+        model.addAttribute("authService", authService);
         model.addAttribute("interview", interview);
         model.addAttribute("isAuthor", isAuthor);
         model.addAttribute("isWisher", isWisher);
