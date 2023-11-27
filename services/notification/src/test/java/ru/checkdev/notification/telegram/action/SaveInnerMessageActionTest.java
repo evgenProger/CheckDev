@@ -3,7 +3,6 @@ package ru.checkdev.notification.telegram.action;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -15,6 +14,7 @@ import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
+import ru.checkdev.notification.telegram.action.notify.NotifyAction;
 import ru.checkdev.notification.telegram.service.FakeTgCallConsole;
 
 import java.util.List;

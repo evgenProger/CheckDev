@@ -1,6 +1,5 @@
-package ru.checkdev.notification.telegram.action;
+package ru.checkdev.notification.telegram.action.forget;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,18 +16,24 @@ import ru.checkdev.notification.telegram.service.FakeTgCallConsole;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ForgetActionTest {
+    /**
+     * Поле заведено для отладки тестов
+     * При указании данного ERROR_ID в качестве userId в моделях данных сервис бросает exception.
+     */
+    private static final String ERROR_ID = "-23";
+
+    private final UserTelegramService userTelegramService = new UserTelegramService(
+            new UserTelegramRepositoryFake(
+                    new SubscribeTopicRepositoryFake()
+            ));
 
     @Test
-    void whenNotChatId() {
+    void whenForgetActionNotChatIdThenMessageAccountNotRegistered() {
         Chat chat = new Chat(1L, "type");
         Update update = new Update();
         Message message = new Message();
         update.setMessage(message);
         message.setChat(chat);
-        var userTelegramService = new UserTelegramService(
-                new UserTelegramRepositoryFake(
-                        new SubscribeTopicRepositoryFake()
-                ));
         SessionTg sessionTg = new SessionTg();
         message.setChat(chat);
         ForgetAction forgetAction = new ForgetAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
@@ -40,19 +45,14 @@ class ForgetActionTest {
     }
 
     @Test
-    @Disabled
-    void whenConnection() {
+    void whenForgetActionChatIdIsPresentThenMessageNewPassword() {
         Chat chat = new Chat(1L, "type");
         Update update = new Update();
         Message message = new Message();
         update.setMessage(message);
         message.setChat(chat);
         SessionTg sessionTg = new SessionTg();
-        var userTelegramService = new UserTelegramService(
-                new UserTelegramRepositoryFake(
-                        new SubscribeTopicRepositoryFake()
-                ));
-        UserTelegram userTelegram = new UserTelegram(11, 10, chat.getId());
+        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId());
         userTelegramService.save(userTelegram);
         message.setChat(chat);
         message.setText("password");
@@ -60,8 +60,35 @@ class ForgetActionTest {
         BotApiMethod<Message> botApiMethod = forgetAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String sl = System.lineSeparator();
+        var actual = sendMessage.getText();
+        String passInMessage = getPassInMessage(actual);
         String text = "Ваш новый пароль:" + sl
-                + "tg/f1f7347";
-        assertThat(text).isEqualTo(sendMessage.getText());
+                      + passInMessage;
+        assertThat(text).isEqualTo(actual);
+    }
+
+    @Test
+    void whenForgetActionWebClientExceptionThenMessageServiceError() {
+        Chat chat = new Chat(1L, "type");
+        Update update = new Update();
+        Message message = new Message();
+        update.setMessage(message);
+        message.setChat(chat);
+        SessionTg sessionTg = new SessionTg();
+        UserTelegram userTelegram = new UserTelegram(0, Integer.parseInt(ERROR_ID), chat.getId());
+        userTelegramService.save(userTelegram);
+        message.setChat(chat);
+        message.setText("password");
+        ForgetAction forgetAction = new ForgetAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
+        BotApiMethod<Message> botApiMethod = forgetAction.handle(update).get();
+        SendMessage sendMessage = (SendMessage) botApiMethod;
+        var actual = sendMessage.getText();
+        var expect = "Сервис не доступен попробуйте позже";
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    private String getPassInMessage(String textMessage) {
+        int startPassIndex = textMessage.lastIndexOf("tg/");
+        return textMessage.substring(startPassIndex, textMessage.length());
     }
 }

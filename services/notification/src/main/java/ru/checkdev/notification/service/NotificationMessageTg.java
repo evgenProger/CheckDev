@@ -23,7 +23,6 @@ import java.util.List;
 @Slf4j
 public class NotificationMessageTg implements NotificationMessage<UserTelegram, String, InnerMessage> {
     private final TgBot tgBot;
-    private final InnerMessageService innerMessageService;
 
     /**
      * Метод отправляет сообщения пользователям в телеграмм
@@ -44,7 +43,6 @@ public class NotificationMessageTg implements NotificationMessage<UserTelegram, 
                 log.error("Send message by UserID:{}, from telegram Error:{}", user.getUserId(), e);
                 innerMessage.setRead(false);
             }
-            innerMessageService.saveMessage(innerMessage);
             innerMessages.add(innerMessage);
         }
         return innerMessages;
@@ -67,7 +65,7 @@ public class NotificationMessageTg implements NotificationMessage<UserTelegram, 
             log.error("Send message by UserID:{}, from telegram Error:{}", target.getUserId(), e);
             innerMessage.setRead(false);
         }
-        return innerMessageService.saveMessage(innerMessage);
+        return innerMessage;
     }
 
     private SendMessage getSendMessage(Long chatId, String message) {

@@ -5,7 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.checkdev.notification.telegram.action.Action;
-import ru.checkdev.notification.telegram.action.UnKnownRequestAction;
+import ru.checkdev.notification.telegram.action.info.UnKnownRequestAction;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +25,7 @@ public class TgBot extends TelegramLongPollingBot {
     private final String username;
     private final String token;
 
-    public TgBot(Map<String, List<Action>> actions, String username, String token) throws TelegramApiException {
+    public TgBot(Map<String, List<Action>> actions, String username, String token) {
         this.actions = actions;
         this.username = username;
         this.token = token;
@@ -62,7 +62,6 @@ public class TgBot extends TelegramLongPollingBot {
             bindingBy.remove(chatId);
             return;
         }
-
         Optional<BotApiMethod> result;
         do {
             result = bindingActions.next().handle(update);
