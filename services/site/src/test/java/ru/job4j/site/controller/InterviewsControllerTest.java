@@ -56,17 +56,17 @@ public class InterviewsControllerTest {
                 new Breadcrumb("Главная", "/index"),
                 new Breadcrumb("Собеседования", "/interviews/"));
         List<InterviewDTO> interviews = IntStream.range(0, 3).mapToObj(i -> {
-            var interview = new InterviewDTO();
-            interview.setId(i);
-            interview.setMode(1);
-            interview.setStatusId(1);
-            interview.setSubmitterId(1);
-            interview.setTitle(String.format("Interview_%d", i));
-            interview.setAdditional("Some text");
-            interview.setContactBy("Some contact");
-            interview.setApproximateDate("30.02.2024");
-            interview.setCreateDate("06.10.2023");
-            return interview;
+            var interviewDTO = new InterviewDTO();
+            interviewDTO.setId(i);
+            interviewDTO.setMode(1);
+            interviewDTO.setStatusId(1);
+            interviewDTO.setSubmitterId(1);
+            interviewDTO.setTitle(String.format("Interview_%d", i));
+            interviewDTO.setAdditional("Some text");
+            interviewDTO.setContactBy("Some contact");
+            interviewDTO.setApproximateDate("30.02.2024");
+            interviewDTO.setCreateDate("06.10.2023");
+            return interviewDTO;
         }).toList();
         List<CategoryDTO> categories = IntStream.range(0, 3).mapToObj(i -> {
             var category = new CategoryDTO();
@@ -87,6 +87,7 @@ public class InterviewsControllerTest {
         when(interviewsService.getAllByUserIdRelated(token, 1, 5, userInfo.getId())).thenReturn(page);
         when(interviewsService.getAllByUserIdRelatedFiltered(token, 1, 5, userInfo.getId(), List.of(1))).thenReturn(page);
         when(authService.userInfo(token)).thenReturn(userInfo);
+        when(authService.findById(1)).thenReturn(profile);
         when(profilesService.getProfileById(id)).thenReturn(Optional.of(profile));
         when(categoriesService.getAll()).thenReturn(categories);
         when(filterService.getByUserId(token, userInfo.getId())).thenReturn(filter);
@@ -103,6 +104,7 @@ public class InterviewsControllerTest {
                 .andDo(print())
                 .andExpectAll(model().attribute("interviewsPage", page),
                         model().attribute("statuses", StatusInterview.values()),
+                        model().attribute("authService", authService),
                         model().attribute("current_page", "interviews"),
                         model().attribute("userInfo", userInfo),
                         model().attribute("breadcrumbs", breadcrumbs),
