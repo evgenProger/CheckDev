@@ -20,21 +20,22 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
      * @return List<CategoryDTO>
      */
     @Query("""
-            SELECT new ru.checkdev.desc.dto.CategoryDTO(c.id, c.name, c.total, COUNT(t.id), c.position) 
-            FROM cd_category c 
-            LEFT JOIN cd_topic t ON c.id = t.category.id 
+            SELECT new ru.checkdev.desc.dto.CategoryDTO(c.id, c.name, c.total, COUNT(t.id), c.position)
+            FROM cd_category c
+            LEFT JOIN cd_topic t ON c.id = t.category.id
             GROUP BY c.id
+            ORDER BY c.position
             """)
     List<CategoryDTO> getAllCategoryDTO();
 
     Iterable<Category> findAllByOrderByPositionAsc();
 
     @Query("""
-            SELECT new ru.checkdev.desc.dto.CategoryDTO(c.id, c.name, c.total, COUNT(t.id), c.position) 
-            FROM cd_category c 
-            LEFT JOIN cd_topic t ON c.id = t.category.id 
+            SELECT new ru.checkdev.desc.dto.CategoryDTO(c.id, c.name, c.total, COUNT(t.id), c.position)
+            FROM cd_category c
+            LEFT JOIN cd_topic t ON c.id = t.category.id
             GROUP BY c.id
-            ORDER BY c.total DESC 
+            ORDER BY c.total DESC
             """)
     List<CategoryDTO> findAllByOrderTotalDescLimit(Pageable pageable);
 
