@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "of")
-public class InterviewNotifiDTO {
+public class InterviewNotifyDTO {
     private int id;
     private int submitterId;
     private String title;

@@ -1,9 +1,9 @@
 package ru.checkdev.notification.service;
 
 import org.springframework.stereotype.Component;
-import ru.checkdev.notification.dto.InterviewNotifiDTO;
+import ru.checkdev.notification.dto.InterviewNotifyDTO;
 import ru.checkdev.notification.dto.WisherApprovedDTO;
-import ru.checkdev.notification.dto.WisherNotifiDTO;
+import ru.checkdev.notification.dto.WisherNotifyDTO;
 
 /**
  * CheckDev пробное собеседование
@@ -17,28 +17,28 @@ public class MessagesGenerator {
     /**
      * Генерация сообщения для отправки при подписке на тему.
      *
-     * @param interviewNotifiDTO InterviewNotifDTO
+     * @param interviewNotifyDTO InterviewNotifDTO
      * @return String
      */
-    public static String getMessageSubscribeTopic(InterviewNotifiDTO interviewNotifiDTO) {
+    public static String getMessageSubscribeTopic(InterviewNotifyDTO interviewNotifyDTO) {
         return String.format(
                 "Вы подписаны на тему:%s, из категории:%s.%s"
                         + "По вашей подписке создана новое собеседование.",
-                interviewNotifiDTO.getTopicName(), interviewNotifiDTO.getCategoryName(),
+                interviewNotifyDTO.getTopicName(), interviewNotifyDTO.getCategoryName(),
                 System.lineSeparator());
     }
 
     /**
      * Генерация сообщения для отправки при добавлении участника к собеседованию.
      *
-     * @param wisherNotifiDTO WisherNotifiDTO
+     * @param wisherNotifyDTO WisherNotifyDTO
      * @return String message.
      */
-    public static String getMessageParticipateWisher(WisherNotifiDTO wisherNotifiDTO) {
+    public static String getMessageParticipateWisher(WisherNotifyDTO wisherNotifyDTO) {
         return String.format(
                 "На ваше собеседование: %s добавился участник: %s",
-                wisherNotifiDTO.getInterviewTitle(),
-                wisherNotifiDTO.getContactBy());
+                wisherNotifyDTO.getInterviewTitle(),
+                wisherNotifyDTO.getContactBy());
     }
 
     public static String getMessageApprovedWisher(WisherApprovedDTO wisherApprovedNotifyDTO) {
