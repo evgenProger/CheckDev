@@ -1,9 +1,9 @@
 package ru.checkdev.notification.service;
 
 import org.junit.jupiter.api.Test;
-import ru.checkdev.notification.dto.InterviewNotifiDTO;
+import ru.checkdev.notification.dto.InterviewNotifyDTO;
 import ru.checkdev.notification.dto.WisherApprovedDTO;
-import ru.checkdev.notification.dto.WisherNotifiDTO;
+import ru.checkdev.notification.dto.WisherNotifyDTO;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,7 +17,7 @@ class MessagesGeneratorTest {
 
     @Test
     void generatorMessageSubscribeTopic() {
-        var interviewNotifDTO = InterviewNotifiDTO.of()
+        var interviewNotifDTO = InterviewNotifyDTO.of()
                 .id(1)
                 .title("title")
                 .topicId(2)
@@ -36,7 +36,7 @@ class MessagesGeneratorTest {
 
     @Test
     void generatorMessagepublicParticipateWisher() {
-        WisherNotifiDTO wisherNotifiDTO = WisherNotifiDTO.of()
+        WisherNotifyDTO wisherNotifyDTO = WisherNotifyDTO.of()
                 .interviewId(1)
                 .interviewTitle("titleInterview")
                 .submitterId(2)
@@ -45,9 +45,9 @@ class MessagesGeneratorTest {
                 .build();
         String expect = String.format(
                 "На ваше собеседование: %s добавился участник: %s",
-                wisherNotifiDTO.getInterviewTitle(),
-                wisherNotifiDTO.getContactBy());
-        String actual = MessagesGenerator.getMessageParticipateWisher(wisherNotifiDTO);
+                wisherNotifyDTO.getInterviewTitle(),
+                wisherNotifyDTO.getContactBy());
+        String actual = MessagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
         assertThat(actual).isEqualTo(expect);
     }
 

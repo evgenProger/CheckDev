@@ -1,8 +1,6 @@
 package ru.checkdev.notification.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -10,6 +8,8 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Builder(builderMethodName = "of")
 @Entity(name = "cd_message")
 public class InnerMessage implements Base {
 

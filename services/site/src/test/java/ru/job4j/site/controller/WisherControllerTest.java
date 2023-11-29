@@ -8,7 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.WisherDto;
-import ru.job4j.site.dto.WisherNotifiDTO;
+import ru.job4j.site.dto.WisherNotifyDTO;
 import ru.job4j.site.service.InterviewService;
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.WisherServiceWebClient;
@@ -37,13 +37,13 @@ class WisherControllerTest {
 
     @Test
     void whenCreateWisherThenReturnRedirect() throws Exception {
-        var wisherNotifiDTO = new WisherNotifiDTO(2, "tile", 3, 5, "mail");
+        var wisherNotifiDTO = new WisherNotifyDTO(2, "tile", 3, 5, "mail");
         var wisher = new WisherDto(0, wisherNotifiDTO.getInterviewId(), wisherNotifiDTO.getUserId(),
                 wisherNotifiDTO.getContactBy(), false);
         var token = "1234";
         when(wisherService.saveWisherDto(token, wisher)).thenReturn(true);
         this.mockMvc.perform(post("/wisher/create")
-                        .flashAttr("wisherNotifiDTO", wisherNotifiDTO)
+                        .flashAttr("wisherNotifyDTO", wisherNotifiDTO)
                         .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(view().name("redirect:/interview/" + wisher.getInterviewId()));

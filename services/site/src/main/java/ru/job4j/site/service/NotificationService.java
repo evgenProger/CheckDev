@@ -158,14 +158,14 @@ public class NotificationService {
      * Запрос для отправки автору собеседования о том что добавился участник.
      *
      * @param token           String
-     * @param wisherNotifiDTO WisherNotifiDTO
+     * @param wisherNotifyDTO WisherNotifyDTO
      */
-    public void sendParticipateAuthor(String token, WisherNotifiDTO wisherNotifiDTO) {
+    public void sendParticipateAuthor(String token, WisherNotifyDTO wisherNotifyDTO) {
         var url = String.format("%s/notification/participate/", urlNtf);
         var mapper = new ObjectMapper();
         try {
             new RestAuthCall(url).post(
-                    token, mapper.writeValueAsString(wisherNotifiDTO));
+                    token, mapper.writeValueAsString(wisherNotifyDTO));
         } catch (Exception e) {
             log.error("API notification not found, error: {}", e);
         }

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "of")
-public class WisherNotifiDTO {
+public class WisherNotifyDTO {
     private int interviewId;
     private String interviewTitle;
     private int submitterId;

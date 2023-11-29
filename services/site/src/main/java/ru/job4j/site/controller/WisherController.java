@@ -5,10 +5,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.dto.WisherApprovedDTO;
+import ru.job4j.site.dto.WisherNotifyDTO;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.WisherDto;
-import ru.job4j.site.dto.WisherNotifiDTO;
 import ru.job4j.site.service.InterviewService;
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.WisherService;
@@ -34,20 +34,20 @@ public class WisherController {
     /**
      * Подать заявку на участие в собеседовании.
      *
-     * @param wisherNotifiDTO WisherNotifiDTO
+     * @param wisherNotifyDTO WisherNotifyDTO
      * @param request   HttpServletRequest
      * @return String page.
      */
     @PostMapping("/create")
-    public String createWisher(@ModelAttribute WisherNotifiDTO wisherNotifiDTO,
+    public String createWisher(@ModelAttribute WisherNotifyDTO wisherNotifyDTO,
                                HttpServletRequest request) {
         var token = RequestResponseTools.getToken(request);
-        int interviewId = wisherNotifiDTO.getInterviewId();
-        int userId = wisherNotifiDTO.getUserId();
-        var contactBy = wisherNotifiDTO.getContactBy();
+        int interviewId = wisherNotifyDTO.getInterviewId();
+        int userId = wisherNotifyDTO.getUserId();
+        var contactBy = wisherNotifyDTO.getContactBy();
         var wisherDto = new WisherDto(0, interviewId, userId, contactBy, false);
         wisherService.saveWisherDto(token, wisherDto);
-        notificationService.sendParticipateAuthor(token, wisherNotifiDTO);
+        notificationService.sendParticipateAuthor(token, wisherNotifyDTO);
         return "redirect:/interview/" + interviewId;
     }
 
