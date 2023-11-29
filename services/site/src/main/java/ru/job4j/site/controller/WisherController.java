@@ -73,6 +73,8 @@ public class WisherController {
         interviewDto.setStatusId(StatusInterview.IN_PROGRESS.getId());
         interviewService.update(token, interviewDto);
         interviewService.updateStatus(token, interviewDto);
+        wisherApprovedDTO.setInterviewLink(
+                String.format("https://checkdev.ru/interview/%d", Integer.parseInt(interviewId)));
         notificationService.approvedWisher(token, wisherApprovedDTO);
         return "redirect:/interview/" + interviewId;
     }
