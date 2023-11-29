@@ -12,4 +12,5 @@ public class FeedbackNotificationDTO {
     private int recipientId;
     private String senderName;
     private String interviewName;
+    private int interviewId;
 }

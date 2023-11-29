@@ -98,7 +98,7 @@ class FeedbackControllerTest {
                 1, "text", 5);
         var feedbackNotification = new FeedbackNotificationDTO(
                 1,
-                "vasya", "interview");
+                "vasya", "interview", 1);
         when(feedbackService.save(token, feedbackDTO, "vasya")).thenReturn(true);
         mockMvc.perform(post("/interview/createFeedback")
                         .flashAttr("feedbackDTO", feedbackDTO)
