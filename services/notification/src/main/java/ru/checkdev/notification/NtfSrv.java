@@ -12,6 +12,6 @@ public class NtfSrv {
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(NtfSrv.class);
         application.addListeners(new ApplicationPidFileWriter("./notification.pid"));
-        application.run();
+        application.run(args);
     }
 }
