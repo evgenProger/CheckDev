@@ -94,7 +94,7 @@ public class FeedbackController {
         var recipientId = submitterId == userId ? agreedWisherId : submitterId;
         if (userId > 0 && recipientId > 0) {
             notificationService.sendFeedbackNotification(token,
-                    new FeedbackNotificationDTO(recipientId, name, interviewTitle));
+                    new FeedbackNotificationDTO(recipientId, name, interviewTitle, feedbackDTO.getInterviewId()));
         }
         return "redirect:/interview/" + feedbackDTO.getInterviewId();
     }

@@ -29,6 +29,7 @@ class CategoriesControlTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("categories/categories"))
                 .andExpect(model().attribute("breadcrumbs", List.of(
-                        new Breadcrumb("Главная", "/index"))));
+                        new Breadcrumb("Главная", "/index"),
+                        new Breadcrumb("Категории", "/categories/"))));
     }
 }
