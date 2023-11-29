@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.dto.CategoryWithTopicDTO;
 import ru.checkdev.notification.dto.FeedbackNotificationDTO;
+import ru.checkdev.notification.dto.WisherApprovedDTO;
 import ru.checkdev.notification.repository.UserTelegramRepository;
 import ru.checkdev.notification.telegram.TgBot;
 
@@ -50,5 +51,21 @@ public class NotificationMessagesService {
                 .interviewId(feedbackNotification.getInterviewId())
                 .build();
         innerMessageService.saveMessage(innerMessage);
+    }
+
+    public void sendApprovedNotification(WisherApprovedDTO wisherApprovedDTO) {
+        var optionalChatId = userTelegramRepository
+                .findChatIdByUserId(wisherApprovedDTO.getWisherUserId());
+        if (optionalChatId.isPresent()) {
+            var chatId = optionalChatId.get();
+            var sendNotification = new SendMessage(String.valueOf(chatId),
+                    String.format("Вы приглашены на собеседование \"[%s](%s)\".%sСвяжитесь с автором: %s",
+                            wisherApprovedDTO.getInterviewTitle(),
+                            wisherApprovedDTO.getInterviewLink(),
+                            System.lineSeparator(),
+                            wisherApprovedDTO.getContactBy()));
+            sendNotification.setParseMode("Markdown");
+            optionalChatId.ifPresent(aLong -> bot.send(sendNotification));
+        }
     }
 }
