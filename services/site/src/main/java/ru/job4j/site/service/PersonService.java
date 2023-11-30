@@ -55,4 +55,10 @@ public class PersonService {
         return webClientAuthCall.doPostMultipart(URL_PERSON_UPDATE, token, builder)
                 .block();
     }
+
+    public void updatePassword(String token, PersonDTO personDTO) throws JsonProcessingException {
+        new RestAuthCall(
+                "http://localhost:9900/person/changePassword")
+                .update(token, new ObjectMapper().writeValueAsString(personDTO));
+    }
 }

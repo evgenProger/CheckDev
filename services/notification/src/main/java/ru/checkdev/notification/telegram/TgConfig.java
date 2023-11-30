@@ -10,7 +10,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.action.*;
 import ru.checkdev.notification.telegram.action.check.CheckAction;
-import ru.checkdev.notification.telegram.action.forget.ForgetAction;
 import ru.checkdev.notification.telegram.action.info.InfoAction;
 import ru.checkdev.notification.telegram.action.notify.NotifyAction;
 import ru.checkdev.notification.telegram.action.notify.UnNotifyAction;
@@ -54,7 +53,6 @@ public class TgConfig {
                         "/start",
                         "/new  зарегистрировать нового пользователя",
                         "/check  получить своё имя и Email",
-                        "/forget  генерация нового пароля",
                         "/notify  подписаться на уведомления",
                         "/unnotify  отписаться от уведомлений"))),
                 "/new", List.of(
@@ -66,7 +64,6 @@ public class TgConfig {
                         new RegSaveUserAction(sessionTg, tgCall, userTelegramService, urlLogin)
                 ),
                 "/check", List.of(new CheckAction(sessionTg, tgCall, userTelegramService)),
-                "/forget", List.of(new ForgetAction(sessionTg, tgCall, userTelegramService)),
                 "/notify", List.of(new NotifyAction(sessionTg, tgCall, userTelegramService)),
                 "/unnotify", List.of(new UnNotifyAction(sessionTg, tgCall, userTelegramService))
         );

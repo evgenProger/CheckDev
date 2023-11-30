@@ -18,6 +18,7 @@ public class PersonDTO {
     private int id;
     private String username;
     private String email;
+    private String password;
     private String experience;
     private String salary;
     private PhotoDTO photo;
