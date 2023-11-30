@@ -41,12 +41,14 @@ class MessagesGeneratorTest {
                 .interviewTitle("titleInterview")
                 .submitterId(2)
                 .userId(3)
+                .userName("Вася")
                 .contactBy("contact")
                 .build();
         String expect = String.format(
-                "На ваше собеседование: %s добавился участник: %s",
+                "На ваше собеседование: %s добавился участник: %s%nСсылка на собеседование: null/interview/%s",
                 wisherNotifyDTO.getInterviewTitle(),
-                wisherNotifyDTO.getContactBy());
+                wisherNotifyDTO.getUserName(),
+                wisherNotifyDTO.getInterviewId());
         String actual = MessagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
         assertThat(actual).isEqualTo(expect);
     }

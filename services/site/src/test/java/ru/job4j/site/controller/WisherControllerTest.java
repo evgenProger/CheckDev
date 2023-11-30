@@ -37,7 +37,7 @@ class WisherControllerTest {
 
     @Test
     void whenCreateWisherThenReturnRedirect() throws Exception {
-        var wisherNotifiDTO = new WisherNotifyDTO(2, "tile", 3, 5, "mail");
+        var wisherNotifiDTO = new WisherNotifyDTO(2, "tile", 3, 5, "Вася", "mail");
         var wisher = new WisherDto(0, wisherNotifiDTO.getInterviewId(), wisherNotifiDTO.getUserId(),
                 wisherNotifiDTO.getContactBy(), false);
         var token = "1234";

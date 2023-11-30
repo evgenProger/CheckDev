@@ -21,6 +21,7 @@ public class WisherNotifyDTO {
     private String interviewTitle;
     private int submitterId;
     private int userId;
+    private String userName;
     private String contactBy;
 }
 
