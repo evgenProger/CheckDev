@@ -7,7 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +32,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-    private final StandardPasswordEncoder encoding = new StandardPasswordEncoder();
+    private final PasswordEncoder encoding = new BCryptPasswordEncoder();
     private final PersonService persons;
     private final RoleService roles;
 
@@ -113,11 +114,7 @@ public class PersonController {
     public void changePassword(@RequestBody Profile profile, Principal user) {
         String email = ((Map<String, String>) ((OAuth2Authentication) user)
                 .getUserAuthentication().getDetails()).get("username");
-        Profile profileDb = persons.findById(profile.getId());
-        if (email.equals(profileDb.getEmail())) {
-            profileDb.setPassword(this.encoding.encode(profile.getPassword()));
-            persons.save(profileDb);
-        }
+        persons.changePassword(profile, email);
     }
 
     @PutMapping("/pass")

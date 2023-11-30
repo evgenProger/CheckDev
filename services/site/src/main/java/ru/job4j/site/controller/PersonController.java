@@ -151,13 +151,33 @@ public class PersonController {
     }
 
     @GetMapping("/changePassword")
-    public String changePassword(Model model) {
+    public String changePassword(Model model, HttpServletRequest request,
+                                 @RequestParam(required = false) String success) {
+
+        var personDTO = getPersonDTO(request);
+        if (personDTO == null) {
+            return "redirect:/login";
+        }
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
-                "Смена пароля", "/changePassword"
+                "Смена пароля", "/persons/changePassword"
         );
-        model.addAttribute("botUserName", botUserName);
+        model.addAttribute("success", success);
         return "persons/changePassword";
+    }
+
+    @PostMapping("/changePassword")
+    public String updatePassword(@ModelAttribute PersonDTO personDTO,
+                                 HttpServletRequest request) {
+
+        var token = getToken(request);
+        try {
+            personService.updatePassword(token, personDTO);
+        } catch (Exception e) {
+            log.error("updatePassword method error: {}", e.getMessage());
+            return "redirect:/persons/changePassword?success=false";
+        }
+        return "redirect:/persons/changePassword?success=true";
     }
 
     /**
