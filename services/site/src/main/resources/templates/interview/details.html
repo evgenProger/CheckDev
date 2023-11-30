@@ -155,7 +155,8 @@
                                 <span class="text-dark" th:text="${wisher.username}"></span>
                             </td>
                             <td>
-                                <form th:if="${!isDismissed && isAuthor}" th:action="@{/wisher/dismissed}"
+                                <form th:if="${userInfo != null && isAuthor && !isDismissed && isAuthor}"
+                                      th:action="@{/wisher/dismissed}"
                                       method="post">
                                     <input type="hidden" th:id="interviewId" th:name="interviewId"
                                            th:value="${wisher.interviewId}">
@@ -165,9 +166,9 @@
                                            th:value="${wisher.userId}">
                                     <input type="hidden" th:id="interviewTitle" th:name="interviewTitle"
                                            th:value="${interview.title}">
-                                    <button th:if="${userInfo != null && isAuthor}"
-                                            type="submit" class="btn btn-primary">Одобрить
-                                    </button>
+                                    <input type="hidden" th:id="contactBy" th:name="contactBy"
+                                           th:value="${interview.contactBy}">
+                                    <button type="submit" class="btn btn-primary">Одобрить</button>
                                 </form>
                             </td>
                         </tr>

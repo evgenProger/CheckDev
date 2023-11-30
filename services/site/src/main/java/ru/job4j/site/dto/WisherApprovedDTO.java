@@ -10,10 +10,9 @@ import lombok.NoArgsConstructor;
 public class WisherApprovedDTO {
 
     private int interviewId;
-
     private int wisherId;
-
     private int wisherUserId;
-
     private String interviewTitle;
+    private String interviewLink;
+    private String contactBy;
 }
