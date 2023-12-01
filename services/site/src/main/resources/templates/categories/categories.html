@@ -33,6 +33,18 @@
 <div class="container" th:if="${categories != null}">
     <div class="row">
         <div class="cell">
+            <div class="alert alert-info" role="alert">
+                Выберите интересующую категорию.
+                Выберите нужную тему и создайте пробное собеседование.
+                Если Вы не нашли нужную категорию,
+                то внеси предложение о новом направлении в <a target="_blank"
+                                                              href="https://github.com/peterarsentev/CheckDev.ru/issues"
+                                                              class="alert-link">баг-трекере</a> проекта.
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="cell">
             <div th:if="${canManage}" class="col-md-12 pull-right">
                 <a th:href="@{/category/createForm}"
                    class="btn mb-2 btn-primary" role="button" aria-pressed="true">

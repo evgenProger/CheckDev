@@ -31,6 +31,13 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
+    <div class="alert alert-info" role="alert">
+        Выберите нужную тему и создайте пробное собеседование.
+        Если Вы не нашли нужную тему,
+        то внеси предложение о новом направлении в <a target="_blank"
+                                                      href="https://github.com/peterarsentev/CheckDev.ru/issues"
+                                                      class="alert-link">баг-трекере</a> проекта.
+    </div>
     <div class="row" th:if="${userInfo != null}">
         <div class="cell">
             <div th:if="${canManage}" class="col-md-12">
