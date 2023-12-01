@@ -69,4 +69,9 @@ public class InnerMessageController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete/{messageId}")
+    public ResponseEntity<Void> deleteMessage(@PathVariable int messageId) {
+        messageService.delete(messageId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
