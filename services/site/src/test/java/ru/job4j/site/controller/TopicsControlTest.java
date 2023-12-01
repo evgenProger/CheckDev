@@ -8,8 +8,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
+import ru.job4j.site.domain.Category;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.AuthService;
+import ru.job4j.site.service.CategoriesService;
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.TopicsService;
 
@@ -34,9 +36,20 @@ public class TopicsControlTest {
     private TopicsService topicsService;
     @MockBean
     private AuthService authService;
+    @MockBean
+    private CategoriesService categoriesService;
 
     @MockBean
     private NotificationService notifications;
+
+    @Test
+    void whenShowTopicsCategoryEmptyThenRedirect() throws Exception {
+        var token = "1410";
+        mockMvc.perform(get("/topics/1").sessionAttr("token", token))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/categories/"));
+    }
 
     @Test
     public void whenShowTopics() throws Exception {
@@ -45,6 +58,8 @@ public class TopicsControlTest {
         var role = new Role();
         role.setId(1);
         role.setValue("ROLE_USER");
+        var categoryDTO = new CategoryDTO(1, String.format("Category_%d", 1));
+        var category = new Category(categoryDTO.getId(), categoryDTO.getName(), 0, 1);
         List<TopicDTO> topics = IntStream.range(0, 3).mapToObj(i -> {
             var topic = new TopicDTO();
             topic.setId(i);
@@ -52,7 +67,7 @@ public class TopicsControlTest {
             topic.setText("Some text");
             topic.setCreated(Calendar.getInstance());
             topic.setUpdated(Calendar.getInstance());
-            topic.setCategory(new CategoryDTO(1, String.format("Category_%d", 1)));
+            topic.setCategory(categoryDTO);
             topic.setCountInterview(1L);
             return topic;
         }).toList();
@@ -62,6 +77,7 @@ public class TopicsControlTest {
         userTopicDto.setSubscribeTopicIds(new ArrayList<>());
         when(topicsService.getTopicsWithCountInterview(1)).thenReturn(topics);
         when(authService.userInfo(token)).thenReturn(userInfo);
+        when(categoriesService.getById(category.getId())).thenReturn(Optional.of(category));
         when(notifications.findTopicByUserId(userInfo.getId())).thenReturn(Optional.of(userTopicDto));
         mockMvc.perform(get("/topics/1").sessionAttr("token", token))
                 .andDo(print())

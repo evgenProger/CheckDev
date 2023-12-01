@@ -10,7 +10,7 @@
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta content="CheckDev - пробные собеседования в IT." name="description">
-    <title>categories</title>
+    <title th:text="${'Темы для ' + category.name}">Темы для ИМЯ_КАТЕГОРИИ</title>
 
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -36,7 +36,7 @@
             <div th:if="${canManage}" class="col-md-12">
                 <a aria-pressed="true" class="btn mb-2 btn-primary"
                    role="button"
-                   th:href="@{/topic/createForm/{id}(id=${categoryId})}">
+                   th:href="@{/topic/createForm/{id}(id=${category.id})}">
                     Создать тему
                 </a>
             </div>
@@ -89,12 +89,12 @@
                     <td th:if="${userTopicDTO != null}">
                         <div>
                             <a class="nav-item nav-link" th:if="${!userTopicDTO.subscribeTopicIds.contains(topic.id)}"
-                               th:href="@{|/notification/subscribeTopic/${userInfo.id}/${categoryId}/${topic.id}|}">
+                               th:href="@{|/notification/subscribeTopic/${userInfo.id}/${category.id}/${topic.id}|}">
                                 <i class="far fa-bell"
                                    title="Подписаться на тему"></i>
                             </a>
                             <a class="nav-item nav-link" th:if="${userTopicDTO.subscribeTopicIds.contains(topic.id)}"
-                               th:href="@{|/notification/unSubscribeTopic/${userInfo.id}/${categoryId}/${topic.id}|}">
+                               th:href="@{|/notification/unSubscribeTopic/${userInfo.id}/${category.id}/${topic.id}|}">
                                 <i class="fa-regular fa-bell-slash"
                                    title="Вы подписаны на тему"></i>
                             </a>
