@@ -55,7 +55,39 @@
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
     <div class="alert alert-info" role="alert">
-        Советы
+
+
+        <span th:if="${userInfo==null}">
+            Нажмите кнопку "Откликнуться", чтобы принять участие в собеседовании
+        </span>
+        <span th:if="${userInfo != null}" >
+            <span th:if="${isAuthor}">
+                <span th:if="${STATUS_IS_NEW_ID==interview.statusId}">
+                    Ожидайте откликов других участников. Когда на Ваше собеседование откликнутся, Вы получите уведомление. Далее Вы можете одобрить одного из участников и с ним провести очное собеседование.
+                </span>
+                <span th:if="${STATUS_IN_PROGRESS_ID==interview.statusId}">
+                    Проведите очное собеседование. Контактные данные находятся в таблице участники - контакты. После собеседования оставьте отзыв-рекомендации участнику собеседования.
+                </span>
+                <span th:if="${STATUS_IS_FEEDBACK_ID==interview.statusId && !feedbackMap.containsKey(interview.submitterId)}">
+                    Оставьте отзыв участнику.
+                </span>
+            </span>
+            <span th:if="${!isAuthor}">
+                <span th:if="${!isWisher}">
+                    Нажмите кнопку "Откликнуться", чтобы принять участие в собеседовании
+                </span>
+                <span th:if="${isWisher}">
+                    <span th:if="${isDismissed && STATUS_IN_PROGRESS_ID==interview.statusId}">
+                        Проведите очное собеседование. Контактные данные находятся в таблице участники - контакты. После собеседования оставьте отзыв-рекомендации участнику собеседования.
+                    </span>
+                    <span th:if="${isDismissed && STATUS_IS_FEEDBACK_ID==interview.statusId && !feedbackMap.containsKey(userInfo.id)}">
+                        Оставьте отзыв автору.
+                    </span>
+                </span>
+            </span>
+        </span>
+
+
     </div>
     <div class="card">
         <div class="card-header">
