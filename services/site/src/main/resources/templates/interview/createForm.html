@@ -10,7 +10,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta name="description" content="CheckDev - пробные собеседования в IT.">
-    <title>interview/createForm</title>
+    <title th:text="${'Создать собеседование '
+                        + category.name
+                        + '\'
+                        + topic.name}">
+        Создание собеседование на тему ИМЯ_КАТЕГОРИИ\ИМЯ_ТЕМЫ</title>
 
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

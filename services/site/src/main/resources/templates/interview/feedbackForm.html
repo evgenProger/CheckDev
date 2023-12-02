@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta name="description" content="CheckDev - пробные собеседования в IT.">
-    <title>index</title>
+    <title th:text="${'Отзыв на собеседование ' + interview.title}">Отзыв на собеседование ИМЯ_СОБЕСЕДОВАНИЕ</title>
 
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -49,7 +49,7 @@
                 <!--/* Форма ввода текста отзыва собеседования textFeedback */-->
 
                 <div class="mb-3">
-                    <label class="form-label h5" for="textFeedback">Собеседование -
+                    <label class="form-label h5" for="textFeedback">
                         <span th:text="*{interview.title}"></span>
                     </label><br/>
                     <label class="form-label h5" for="textFeedback">Отзыв участнику -

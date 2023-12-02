@@ -10,7 +10,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta name="description" content="CheckDev - пробные собеседования в IT.">
-    <title>/interview/{id}</title>
+    <title
+            th:text="${'Собеседование на тему '
+                        + topicLiteDTO.categoryName
+                        + '\'
+                        + topicLiteDTO.name
+                        + '. '
+                        + interview.author}">
+        Собеседование на тему ИМЯ_КАТЕГОРИИ\ИМЯ_ТЕМУ. ИМЯ_АВТОРА</title>
 
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
