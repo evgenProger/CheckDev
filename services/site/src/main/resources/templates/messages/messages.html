@@ -10,7 +10,7 @@
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta name="description" content="CheckDev - пробные собеседования в IT.">
-    <title>messages</title>
+    <title>Сообщения</title>
 
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -27,6 +27,28 @@
     <link th:href="@{/webjars/summernote/0.8.10/summernote-lite.css}" rel="stylesheet">
     <script th:src="@{/webjars/summernote/0.8.10/summernote-lite.js}"></script>
     <script th:src="@{/webjars/summernote/0.8.10/lang/summernote-ru-RU.js}"></script>
+
+    <script th:inline="javascript">
+        function showDialog(element) {
+            var itemId = element.getAttribute('data-item-id');
+            $('#delete_dialog').modal('show');
+            $('#delete_dialog').attr('data-item-id', itemId);
+            $('#confirmDeleteButton').on('click', function() {
+                deleteItem(itemId);
+            });
+        }
+
+        function deleteItem(itemId) {
+            $.ajax({
+                    type: 'DELETE',
+                    url: '/messages_rest/delete/' + itemId,
+                    success: function (result) {
+                        location.reload();
+                    }
+                });
+        }
+    </script>
+
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
@@ -50,6 +72,30 @@
             </td>
             <td>
                 <span th:text="${#dates.format(message.created, 'dd-MM-yyyy HH:mm:ss')}"></span>
+            </td>
+            <td>
+                <i class="fas fa-times"
+                   th:data-item-id="${message.id}"
+                   onclick="showDialog(this)">
+                </i>
+                <div class="modal" id="delete_dialog" tabindex="-1" role="dialog" data-item-id="">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Удаление сообщения</h5>
+                                <button type="button" class="btn-close"
+                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Уверены что хотите навсегда удалить это сообщение?</p>
+                            </div>
+                            <div class="modal-footer">
+                                    <button id="confirmDeleteButton" type="submit"
+                                            class="btn btn-danger btn-sm">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
         </tbody>

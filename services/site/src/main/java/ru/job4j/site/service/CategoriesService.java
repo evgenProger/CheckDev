@@ -4,14 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.job4j.site.domain.Category;
 import ru.job4j.site.dto.CategoryDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class CategoriesService {
     private final TopicsService topicsService;
 
@@ -47,6 +51,7 @@ public class CategoriesService {
                 mapper.writeValueAsString(category)
         );
     }
+
     public List<CategoryDTO> getAllWithTopics() throws JsonProcessingException {
         var categoriesDTO = getAll();
         for (var categoryDTO : categoriesDTO) {
@@ -80,6 +85,7 @@ public class CategoriesService {
 
     /**
      * Метод находит List TopicId для определенной категории
+     *
      * @param categoryDTO categoryDTO
      * @return List TopicId для определенной категории
      * @throws JsonProcessingException
@@ -93,6 +99,7 @@ public class CategoriesService {
 
     /**
      * Метод находит количество интервью для List TopicId
+     *
      * @param intListTopic intListTopic
      * @return количество интервью для List TopicId
      */
@@ -105,5 +112,23 @@ public class CategoriesService {
             }
         }
         return countInt;
+    }
+
+    /**
+     * Метод возвращает категорию по id
+     * @param categoryId int ID Category ID
+     * @return Optional<Category>
+     */
+    public Optional<Category> getById(int categoryId) {
+        Optional<Category> result = Optional.empty();
+        try {
+            var text = new RestAuthCall("http://localhost:9902/category/" + categoryId).get();
+            var mapper = new ObjectMapper();
+            result = Optional.of(mapper.readValue(text, new TypeReference<>() {
+            }));
+        } catch (Exception e) {
+            log.error("API category service not found, error:{}", e.getMessage());
+        }
+        return result;
     }
 }
