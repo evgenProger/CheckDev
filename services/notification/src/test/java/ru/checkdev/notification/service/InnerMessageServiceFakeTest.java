@@ -42,10 +42,14 @@ public class InnerMessageServiceFakeTest {
         var categoryMessages = service.findByUserIdAndReadFalse(1);
         var topicMessages = service.findByUserIdAndReadFalse(2);
         assertThat(1).isEqualTo(categoryMessages.size());
-        assertThat("В категории \"Category_1\" появилось новое собеседование.")
+        assertThat("В категории Category_1 появилось новое собеседование."
+                + System.lineSeparator()
+                + "Ссылка на собеседование: null/interview/1")
                 .isEqualTo(categoryMessages.get(0).getText());
         assertThat(1).isEqualTo(topicMessages.size());
-        assertThat("Появилось новое собеседование по теме Topic_1.")
+        assertThat("Появилось новое собеседование по теме Topic_1."
+                + System.lineSeparator()
+                + "Ссылка на собеседование: null/interview/1")
                 .isEqualTo(topicMessages.get(0).getText());
     }
 }
