@@ -60,10 +60,11 @@ class MessagesGeneratorTest {
                 .wisherId(1)
                 .wisherUserId(2)
                 .interviewTitle("interview")
+                .interviewLink("www")
                 .build();
         String expect = String.format(
-                "Вы одобрены на собеседование: %s ",
-                wisherApprovedDTO.getInterviewTitle());
+                "Вы одобрены на собеседование: %s",
+                wisherApprovedDTO.getInterviewTitle()) + System.lineSeparator() + "Ссылка на собеседование: www";
         String actual = MessagesGenerator.getMessageApprovedWisher(wisherApprovedDTO);
         assertThat(actual).isEqualTo(expect);
     }

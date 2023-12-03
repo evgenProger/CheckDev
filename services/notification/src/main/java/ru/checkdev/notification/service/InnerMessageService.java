@@ -1,6 +1,7 @@
 package ru.checkdev.notification.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.domain.UserTelegram;
@@ -13,11 +14,19 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 public class InnerMessageService {
 
     private final InnerMessageRepository messageRepository;
     private final UserTelegramService userTelegramService;
+
+    public InnerMessageService(InnerMessageRepository messageRepository, UserTelegramService userTelegramService) {
+        this.messageRepository = messageRepository;
+        this.userTelegramService = userTelegramService;
+    }
+
+    @Value("${service.urlSite}")
+    private String urlSite;
 
     public List<InnerMessage> findByUserIdAndReadFalse(int id) {
         return messageRepository.findByUserIdAndReadFalse(id);
@@ -35,17 +44,41 @@ public class InnerMessageService {
                                            List<Integer> categorySubscribersIds,
                                            List<Integer> topicSubscribersIds) {
         categorySubscribersIds.forEach(id ->
-                saveMessage(new InnerMessage(0, id,
-                        String.format("В категории \"%s\" появилось новое собеседование.",
-                                categoryWithTopicDTO.getCategoryName()),
-                        new Timestamp(System.currentTimeMillis()), false,
-                        categoryWithTopicDTO.getInterviewId())));
+                saveMessage(new InnerMessage(
+                                0,
+                                id,
+                                "В категории "
+                                        + categoryWithTopicDTO.getCategoryName()
+                                        + " появилось новое собеседование."
+                                        + System.lineSeparator()
+                                        + "Ссылка на собеседование: "
+                                        + urlSite
+                                        + "/interview/"
+                                        + categoryWithTopicDTO.getInterviewId(),
+                                new Timestamp(System.currentTimeMillis()),
+                                false,
+                                categoryWithTopicDTO.getInterviewId()
+                        )
+                )
+        );
         topicSubscribersIds.forEach(id ->
-                saveMessage(new InnerMessage(0, id,
-                        String.format("Появилось новое собеседование по теме %s.",
-                                categoryWithTopicDTO.getTopicName()),
-                        new Timestamp(System.currentTimeMillis()), false,
-                        categoryWithTopicDTO.getInterviewId())));
+                saveMessage(new InnerMessage(
+                                0,
+                                id,
+                                "Появилось новое собеседование по теме "
+                                        + categoryWithTopicDTO.getTopicName()
+                                        + "."
+                                        + System.lineSeparator()
+                                        + "Ссылка на собеседование: "
+                                        + urlSite
+                                        + "/interview/"
+                                        + categoryWithTopicDTO.getInterviewId(),
+                                new Timestamp(System.currentTimeMillis()),
+                                false,
+                                categoryWithTopicDTO.getInterviewId()
+                        )
+                )
+        );
     }
 
     public void send(InnerMessage innerMessage) {

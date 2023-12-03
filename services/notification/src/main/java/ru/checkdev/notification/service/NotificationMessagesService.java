@@ -1,6 +1,7 @@
 package ru.checkdev.notification.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.checkdev.notification.domain.InnerMessage;
@@ -16,32 +17,59 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 public class NotificationMessagesService {
 
     private final UserTelegramRepository userTelegramRepository;
     private final InnerMessageService innerMessageService;
     private final TgBot bot;
 
+    public NotificationMessagesService(
+            UserTelegramRepository userTelegramRepository,
+            InnerMessageService innerMessageService,
+            TgBot bot
+    ) {
+        this.userTelegramRepository = userTelegramRepository;
+        this.innerMessageService = innerMessageService;
+        this.bot = bot;
+    }
+
+    @Value("${service.urlSite}")
+    private String urlSite;
+
     public void sendMessagesToCategorySubscribers(List<Integer> categorySubscribersIds,
                                                   CategoryWithTopicDTO categoryWithTopicDTO) {
         userTelegramRepository.findChatIdInUserIds(categorySubscribersIds)
                 .forEach(chatId ->
                         sendNotificationToCategorySubscriber(chatId,
-                                categoryWithTopicDTO.getCategoryName()));
+                                categoryWithTopicDTO));
     }
 
-    public void sendNotificationToCategorySubscriber(long chatId, String categoryName) {
-        bot.send(new SendMessage(String.valueOf(chatId),
-                String.format("В категории \"%s\" появилось новое собеседование.", categoryName)));
+    public void sendNotificationToCategorySubscriber(long chatId, CategoryWithTopicDTO categoryWithTopicDTO) {
+        bot.send(new SendMessage(
+                        String.valueOf(chatId),
+                        "В категории "
+                                +   categoryWithTopicDTO.getCategoryName()
+                                + " появилось новое собеседование."
+                                + System.lineSeparator()
+                                + "Ссылка на собеседование: "
+                                + urlSite
+                                + "/interview/" + categoryWithTopicDTO.getInterviewId()
+                )
+        );
     }
 
     public void sendFeedbackNotification(FeedbackNotificationDTO feedbackNotification) {
         var optionalChatId = userTelegramRepository
                 .findChatIdByUserId(feedbackNotification.getRecipientId());
-        var message = String.format("Пользователь %s оставил Вам отзыв о собеседовании на тему \"%s\"",
-                feedbackNotification.getSenderName(),
-                feedbackNotification.getInterviewName());
+        var message = "Пользователь "
+                + feedbackNotification.getSenderName()
+                + " оставил Вам отзыв о собеседовании на тему "
+                + feedbackNotification.getInterviewName()
+                + System.lineSeparator()
+                + "Ссылка на собеседование: "
+                + urlSite
+                + "/interview/" + feedbackNotification.getInterviewId();
         optionalChatId.ifPresent(aLong -> bot.send(new SendMessage(String.valueOf(aLong), message)));
         InnerMessage innerMessage = InnerMessage.of()
                 .userId(feedbackNotification.getRecipientId())

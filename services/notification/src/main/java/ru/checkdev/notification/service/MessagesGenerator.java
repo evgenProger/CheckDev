@@ -61,8 +61,10 @@ public class MessagesGenerator {
     }
 
     public static String getMessageApprovedWisher(WisherApprovedDTO wisherApprovedNotifyDTO) {
-        return String.format(
-                "Вы одобрены на собеседование: %s ",
-                wisherApprovedNotifyDTO.getInterviewTitle());
+        return "Вы одобрены на собеседование: "
+                + wisherApprovedNotifyDTO.getInterviewTitle()
+                + System.lineSeparator()
+                + "Ссылка на собеседование: "
+                + wisherApprovedNotifyDTO.getInterviewLink();
     }
 }
