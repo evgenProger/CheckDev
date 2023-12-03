@@ -99,7 +99,7 @@
     <div class="card">
         <div class="card-header">
             <div>
-                <span class="fw-bold" th:text="${topicLiteDTO.categoryName + ' : ' + topicLiteDTO.name}"></span>
+                <span class="fw-bold" th:text="${topicLiteDTO.categoryName + ' / ' + topicLiteDTO.name}"></span>
                 <span th:if="${userInfo != null}">
                     <a th:if="${isAuthor and !isDismissed}"
                        class="text-decoration-none text-dark"
