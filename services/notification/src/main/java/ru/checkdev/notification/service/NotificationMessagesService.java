@@ -1,6 +1,5 @@
 package ru.checkdev.notification.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -9,7 +8,7 @@ import ru.checkdev.notification.dto.CategoryWithTopicDTO;
 import ru.checkdev.notification.dto.FeedbackNotificationDTO;
 import ru.checkdev.notification.dto.WisherApprovedDTO;
 import ru.checkdev.notification.repository.UserTelegramRepository;
-import ru.checkdev.notification.telegram.TgBot;
+import ru.checkdev.notification.telegram.Bot;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -22,12 +21,12 @@ public class NotificationMessagesService {
 
     private final UserTelegramRepository userTelegramRepository;
     private final InnerMessageService innerMessageService;
-    private final TgBot bot;
+    private final Bot bot;
 
     public NotificationMessagesService(
             UserTelegramRepository userTelegramRepository,
             InnerMessageService innerMessageService,
-            TgBot bot
+            Bot bot
     ) {
         this.userTelegramRepository = userTelegramRepository;
         this.innerMessageService = innerMessageService;

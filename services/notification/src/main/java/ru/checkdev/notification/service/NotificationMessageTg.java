@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.domain.UserTelegram;
-import ru.checkdev.notification.telegram.TgBot;
+import ru.checkdev.notification.telegram.Bot;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class NotificationMessageTg implements NotificationMessage<UserTelegram, String, InnerMessage> {
-    private final TgBot tgBot;
+    private final Bot bot;
 
     /**
      * Метод отправляет сообщения пользователям в телеграмм
@@ -45,7 +45,7 @@ public class NotificationMessageTg implements NotificationMessage<UserTelegram, 
                     .read(true)
                     .build();
             try {
-                tgBot.execute(messageTg);
+                bot.send(messageTg);
             } catch (Exception e) {
                 log.error("Send message by UserID:{}, from telegram Error:{}", user.getUserId(), e);
                 innerMessage.setRead(false);
@@ -72,7 +72,7 @@ public class NotificationMessageTg implements NotificationMessage<UserTelegram, 
                 .read(true)
                 .build();
         try {
-            tgBot.execute(messageTg);
+            bot.send(messageTg);
         } catch (Exception e) {
             log.error("Send message by UserID:{}, from telegram Error:{}", target.getUserId(), e);
             innerMessage.setRead(false);
