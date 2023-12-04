@@ -40,18 +40,19 @@ public class TopicControl {
                 var userInfo = authService.userInfo(token);
                 model.addAttribute("userTopicDTO", notifications.findTopicByUserId(userInfo.getId()).orElse(null));
                 model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+                RequestResponseTools.addAttrCanManage(model, userInfo);
             }
             RequestResponseTools.addAttrBreadcrumbs(model,
                     "Главная", "/index",
                     "Категории", "/categories/",
                     categoryName, String.format("/topics/%d", categoryId),
                     topic.getName(), String.format("/topic/%d", topicId));
-        }  catch (Exception e) {
-        RequestResponseTools.addAttrBreadcrumbs(model,
-                "Главная", "/index",
-                "Категории", "/categories/",
-                categoryName, String.format("/topics/%d", categoryId));
-        log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
+        } catch (Exception e) {
+            RequestResponseTools.addAttrBreadcrumbs(model,
+                    "Главная", "/index",
+                    "Категории", "/categories/",
+                    categoryName, String.format("/topics/%d", categoryId));
+            log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
         }
         return "topic/details";
     }

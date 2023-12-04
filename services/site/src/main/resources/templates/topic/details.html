@@ -40,7 +40,8 @@
                 </a>
             </span>
             <span th:if="${userInfo == null}">
-                <a th:href="@{|/login?redirectUri=/interview/createForm&topicId=${topic.id}|}" class="btn btn-success mb-2"
+                <a th:href="@{|/login?redirectUri=/interview/createForm&topicId=${topic.id}|}"
+                   class="btn btn-success mb-2"
                    role="button" aria-pressed="true">
                     Создать собеседование
                 </a>
@@ -56,7 +57,7 @@
                     <i class="far fa-bell" title="Подписаться"></i>
                 </a>
                 <a class="text-dark text-decoration-none"
-                        th:if="${userTopicDTO.subscribeTopicIds.contains(topic.id)}"
+                   th:if="${userTopicDTO.subscribeTopicIds.contains(topic.id)}"
                    th:href="@{|/notification/unSubscribeTopicFromDetails/${userInfo.id}/${topic.id}|}">
                     <i class="fa-regular fa-bell-slash" title="Отписаться"></i>
                 </a>
@@ -64,6 +65,10 @@
             <span th:if="${canManage}">
                 <span class="mr-3">Позиция : </span>
                 <span class="fw-bold" th:text="${topic.position}"></span>
+                <a class="text-decoration-none text-dark"
+                   th:href="@{|/topic/updateForm/${topic.id}|}">
+                    <i class="fas fa-pencil-alt pl-3"></i>
+                </a>
             </span>
         </div>
         <div class="card-body">
