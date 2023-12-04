@@ -27,6 +27,11 @@
     <link th:href="@{/webjars/summernote/0.8.10/summernote-lite.css}" rel="stylesheet">
     <script th:src="@{/webjars/summernote/0.8.10/summernote-lite.js}"></script>
     <script th:src="@{/webjars/summernote/0.8.10/lang/summernote-ru-RU.js}"></script>
+    <script>
+        function rowClicked(value) {
+            location.href = "/topics/" + value + "";
+        }
+    </script>
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
@@ -64,7 +69,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="category: ${categories}">
+                <tr th:each="category: ${categories}"
+                    th:onclick="'javascript:rowClicked(\'' + ${category.id} + '\');'">
                     <td>
                         <div>
                             <span>
