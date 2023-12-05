@@ -57,7 +57,7 @@
                 <div class="card-body">
                     <form class="needs-validation" th:action="@{/interview/create}" method="post">
                         <input type="hidden" class="form-control mb-3 mt-2" id="title"
-                               name="title" th:value="${category.name + ' : ' + topic.name}">
+                               name="title" th:value="${category.name + ' / ' + topic.name}">
                         <input type="hidden" class="form-control mb-3 mt-2" id="topicId"
                                name="topicId" th:value="${topic.id}">
                         <div class="form-group">

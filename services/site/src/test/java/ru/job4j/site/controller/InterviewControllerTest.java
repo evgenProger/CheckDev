@@ -61,7 +61,7 @@ public class InterviewControllerTest {
                 new Breadcrumb("Главная", "/index"),
                 new Breadcrumb("Собеседования", "/interviews/"),
                 new Breadcrumb(
-                        String.format("%s : %s", topicLiteDTO.getCategoryName(), topicLiteDTO.getName()),
+                        String.format("%s / %s", topicLiteDTO.getCategoryName(), topicLiteDTO.getName()),
                         "/interview/" + interview.getId()));
         when(topicsService.getTopicLiteDTOById(topicLiteDTO.getId())).thenReturn(Optional.of(topicLiteDTO));
         when(authService.userInfo(token)).thenReturn(userInfo);
