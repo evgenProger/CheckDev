@@ -2,6 +2,8 @@ package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.dto.WisherApprovedDTO;
@@ -24,12 +26,14 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/wisher")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class WisherController {
     private final WisherService wisherService;
     private final InterviewService interviewService;
-
     private final NotificationService notificationService;
+
+    @Value("${service.urlSite}")
+    private String url;
 
     /**
      * Подать заявку на участие в собеседовании.
@@ -74,7 +78,7 @@ public class WisherController {
         interviewService.update(token, interviewDto);
         interviewService.updateStatus(token, interviewDto);
         wisherApprovedDTO.setInterviewLink(
-                String.format("https://checkdev.ru/interview/%d", Integer.parseInt(interviewId)));
+                String.format("%sinterview/%d", url, Integer.parseInt(interviewId)));
         notificationService.approvedWisher(token, wisherApprovedDTO);
         return "redirect:/interview/" + interviewId;
     }
