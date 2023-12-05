@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.Optional;
 
 /**
- * 3. Мидл
- *
  * @author Dmitry Stepanov, user Dmitry
  * @since 12.09.2023
  */

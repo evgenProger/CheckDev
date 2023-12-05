@@ -14,9 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 06.10.2023
  */
 class TgConfigTest {
-    private final String prefix = "pr/";
     private final int passSize = 10;
-    private final TgConfig tgConfig = new TgConfig(prefix, passSize);
+    private final TgConfig tgConfig = new TgConfig(passSize);
 
     @Test
     void whenIsEmailThenReturnTrue() {
@@ -39,9 +38,9 @@ class TgConfigTest {
     }
 
     @Test
-    void whenGetPasswordThenStartWishPrefix() {
+    void whenGetPasswordThenNotStartWishPrefix() {
         var pass = tgConfig.getPassword();
-        assertThat(pass.startsWith(prefix)).isTrue();
+        assertThat(pass.startsWith("tg/")).isFalse();
     }
 
     @Test

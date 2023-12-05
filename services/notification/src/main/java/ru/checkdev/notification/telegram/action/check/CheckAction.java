@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.domain.Profile;
+import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
 import ru.checkdev.notification.telegram.action.Action;
@@ -16,8 +16,7 @@ import java.util.Optional;
 
 /**
  * Telegram Action команда /check
- * Получить сове имя и email
- *
+ * Получить свое имя и email
  */
 @AllArgsConstructor
 @Slf4j

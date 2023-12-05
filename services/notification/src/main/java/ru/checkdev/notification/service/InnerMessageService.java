@@ -1,6 +1,5 @@
 package ru.checkdev.notification.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.checkdev.notification.domain.InnerMessage;
@@ -14,19 +13,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-//@AllArgsConstructor
 public class InnerMessageService {
 
     private final InnerMessageRepository messageRepository;
     private final UserTelegramService userTelegramService;
+    @Value("${service.urlSite}")
+    private String urlSite;
 
     public InnerMessageService(InnerMessageRepository messageRepository, UserTelegramService userTelegramService) {
         this.messageRepository = messageRepository;
         this.userTelegramService = userTelegramService;
     }
-
-    @Value("${service.urlSite}")
-    private String urlSite;
 
     public List<InnerMessage> findByUserIdAndReadFalse(int id) {
         return messageRepository.findByUserIdAndReadFalse(id);

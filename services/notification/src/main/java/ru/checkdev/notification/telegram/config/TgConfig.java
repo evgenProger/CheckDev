@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 3. Мидл
  * Класс дополнительных функций телеграм бота, проверка почты, генерация пароля.
  *
  * @author Dmitry Stepanov, user Dmitry
@@ -17,11 +16,9 @@ import java.util.regex.Pattern;
 public class TgConfig {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final Pattern EMAIL_PATTERN = Pattern.compile("\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*\\.\\w{2,4}");
-    private final String prefix;
     private final int passSize;
 
-    public TgConfig(String prefix, int passSize) {
-        this.prefix = prefix;
+    public TgConfig(int passSize) {
         this.passSize = passSize;
     }
 
@@ -37,17 +34,17 @@ public class TgConfig {
     }
 
     /**
-     * метод генерирует пароль для пользователя
+     * Метод генерирует пароль для пользователя
      *
      * @return String
      */
     public String getPassword() {
-        String password = prefix + UUID.randomUUID();
+        String password = String.valueOf(UUID.randomUUID());
         return password.substring(0, passSize);
     }
 
     /**
-     * Метод преобразовывает Object в карту Map<String,String>
+     * Метод преобразовывает Object в Map<String,String>
      *
      * @param object Object or Person(Auth)
      * @return Map
