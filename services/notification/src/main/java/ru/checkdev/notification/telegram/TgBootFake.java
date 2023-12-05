@@ -1,33 +1,30 @@
 package ru.checkdev.notification.telegram;
 
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.checkdev.notification.telegram.action.Action;
 import ru.checkdev.notification.telegram.action.info.UnKnownRequestAction;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Реализация меню телеграм бота.
- * Класс TgBoot для отправки и получения сообщений с телеграмм ботом,
- * используется для профиля default, c использования Telegram API
+ * Класс TgBootFake для имитации связи с телеграмм ботом,
+ * используется для профиля develop, без использования Telegram API
  *
  * @author Dmitry Stepanov, user Dmitry
- * @since 12.09.2023
+ * @since 04.12.2023
  */
-public class TgBot extends TelegramLongPollingBot implements Bot {
+public class TgBootFake implements Bot {
     private final Map<String, Iterator<Action>> bindingBy = new ConcurrentHashMap<>();
     private final Map<String, List<Action>> actions;
     private final String username;
     private final String token;
 
-    public TgBot(Map<String, List<Action>> actions, String username, String token) {
+    public TgBootFake(Map<String, List<Action>> actions, String username, String token) {
         this.actions = actions;
         this.username = username;
         this.token = token;
@@ -43,6 +40,7 @@ public class TgBot extends TelegramLongPollingBot implements Bot {
         return token;
     }
 
+    @Override
     public void onUpdateReceived(Update update) {
         if (!update.hasMessage()) {
             return;
@@ -71,11 +69,8 @@ public class TgBot extends TelegramLongPollingBot implements Bot {
         send(result.get());
     }
 
+    @Override
     public void send(BotApiMethod msg) {
-        try {
-            execute(msg);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        System.out.println(msg);
     }
 }
