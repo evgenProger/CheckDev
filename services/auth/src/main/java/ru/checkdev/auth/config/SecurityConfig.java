@@ -28,6 +28,7 @@ public class SecurityConfig {
                 "/ping",
                 "/registration",
                 "/forgot",
+                "/forgotTg",
                 "/auth/activated/**",
                 "/person/by",
                 "/person/random",

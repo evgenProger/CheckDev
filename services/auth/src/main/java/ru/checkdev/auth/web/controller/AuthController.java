@@ -89,6 +89,25 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/forgotTg")
+    public Object forgotTg(@RequestBody Profile profile) {
+        Optional<Profile> result = this.persons.forgotTg(profile);
+        if (result.isPresent()) {
+            return new Object() {
+                public String getOk() {
+                    return "ok";
+                }
+            };
+        } else {
+            return new Object() {
+                public String getError() {
+                    return "E-mail не найден.";
+                }
+            };
+        }
+    }
+
+
     @GetMapping("/revoke")
     @ResponseStatus(HttpStatus.OK)
     public void logout(HttpServletRequest request) {

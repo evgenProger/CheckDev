@@ -144,6 +144,24 @@ public class PersonService {
         return result;
     }
 
+    public Optional<Profile> forgotTg(Profile profile) {
+        final Optional<Profile> result;
+        Profile find = this.persons.findByEmail(profile.getEmail());
+        if (find == null) {
+            result = Optional.empty();
+        } else {
+            String password = profile.getPassword();
+            find.setPassword(this.encoding.encode(password));
+            find.setUpdated(Calendar.getInstance());
+            this.persons.save(find);
+            Map<String, Object> keys = new HashMap<>();
+            keys.put("password", password);
+            this.msg.send(new Notify(find.getEmail(), keys, Notify.Type.FORGOT.name()));
+            result = Optional.of(find);
+        }
+        return result;
+    }
+
     public List<Profile> findAll(Pageable pageable) {
         return this.persons.findAll(pageable).getContent();
     }
