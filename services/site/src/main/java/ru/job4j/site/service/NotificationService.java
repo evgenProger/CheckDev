@@ -3,8 +3,10 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.*;
 
@@ -16,8 +18,11 @@ import java.util.Optional;
 @Slf4j
 public class NotificationService {
 
-    @Value("${service.notification}")
-    private String urlNtf;
+    private final String urlNtf;
+
+    public NotificationService(@Value("${service.notification}") String urlNtf) {
+        this.urlNtf = urlNtf;
+    }
 
     public void addSubscribeCategory(String token, int userId, int categoryId) {
         SubscribeCategory subscribeCategory = new SubscribeCategory(userId, categoryId);

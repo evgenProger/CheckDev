@@ -1,5 +1,6 @@
 package ru.checkdev.notification.web;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import ru.checkdev.notification.domain.InnerMessage;
@@ -106,7 +107,10 @@ class NotificationInterviewControllerTest {
     }
 
     @Test
-    void whenSendMessageSubmitterInterviewThenReturnStatusNotFound() {
+    void whenUserNotInTgThenSaveInner() {
+        var userTelegramService = new UserTelegramService(userTelegramRepositoryFake);
+        var innerMessageRepositoryFake = new InnerMessageRepositoryFake();
+        var innerMessageService = new InnerMessageService(innerMessageRepositoryFake, userTelegramService);
         var wisherNotifyDTO = WisherNotifyDTO.of()
                 .interviewId(1)
                 .interviewTitle("interview1")
@@ -114,9 +118,9 @@ class NotificationInterviewControllerTest {
                 .userId(3)
                 .contactBy("@contact")
                 .build();
-        var expect = ResponseEntity.notFound().build();
         var controller = new NotificationInterviewController(userTelegramService, innerMessageService, notificationMessage);
         var actual = controller.sendMessageSubmitterInterview(wisherNotifyDTO);
-        assertThat(actual).isEqualTo(expect);
+        var msgs = innerMessageService.findByUserIdAndReadFalse(wisherNotifyDTO.getSubmitterId());
+        assertThat(msgs.iterator().next()).isEqualTo(actual.getBody());
     }
 }

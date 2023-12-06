@@ -61,11 +61,6 @@ public class NotificationInterviewController {
      */
     @PostMapping("/participate/")
     public ResponseEntity<InnerMessage> sendMessageSubmitterInterview(@RequestBody WisherNotifyDTO wisherNotifyDTO) {
-        Optional<UserTelegram> userTelegramSubmitter = userTelegramService
-                .findByUserId(wisherNotifyDTO.getSubmitterId());
-        if (userTelegramSubmitter.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
         var message = MessagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
         InnerMessage innerMessage = InnerMessage.of()
                 .userId(wisherNotifyDTO.getSubmitterId())
@@ -75,7 +70,11 @@ public class NotificationInterviewController {
                 .interviewId(wisherNotifyDTO.getInterviewId())
                 .build();
         innerMessageService.saveMessage(innerMessage);
-        notificationMessage.sendMessage(userTelegramSubmitter.get(), message);
+        userTelegramService
+                .findByUserId(wisherNotifyDTO.getSubmitterId())
+                .ifPresent(
+                        tg ->  notificationMessage.sendMessage(tg, message)
+                );
         return ResponseEntity.ok(innerMessage);
     }
 }
