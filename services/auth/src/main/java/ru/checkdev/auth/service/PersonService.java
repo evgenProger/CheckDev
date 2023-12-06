@@ -1,17 +1,16 @@
 package ru.checkdev.auth.service;
 
 import com.google.common.collect.Lists;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ru.checkdev.auth.domain.Notify;
-import ru.checkdev.auth.domain.Profile;
 import ru.checkdev.auth.domain.Photo;
+import ru.checkdev.auth.domain.Profile;
 import ru.checkdev.auth.domain.Role;
 import ru.checkdev.auth.repository.PersonRepository;
 
@@ -41,18 +40,15 @@ import java.util.*;
  * @author parsentev
  * @since 25.09.2016
  */
+
 @Service
+@AllArgsConstructor
+@Slf4j
 public class PersonService {
-    private final Logger log = LoggerFactory.getLogger(PersonService.class);
+
     private final PasswordEncoder encoding = new BCryptPasswordEncoder();
     private final PersonRepository persons;
     private final Messenger msg;
-
-    @Autowired
-    public PersonService(final PersonRepository persons, final Messenger msg) {
-        this.persons = persons;
-        this.msg = msg;
-    }
 
     public Optional<Profile> reg(Profile profile) {
         Optional<Profile> result = Optional.empty();

@@ -16,12 +16,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
-//@AllArgsConstructor
 public class NotificationMessagesService {
 
     private final UserTelegramRepository userTelegramRepository;
     private final InnerMessageService innerMessageService;
     private final Bot bot;
+    @Value("${service.urlSite}")
+    private String urlSite;
 
     public NotificationMessagesService(
             UserTelegramRepository userTelegramRepository,
@@ -32,9 +33,6 @@ public class NotificationMessagesService {
         this.innerMessageService = innerMessageService;
         this.bot = bot;
     }
-
-    @Value("${service.urlSite}")
-    private String urlSite;
 
     public void sendMessagesToCategorySubscribers(List<Integer> categorySubscribersIds,
                                                   CategoryWithTopicDTO categoryWithTopicDTO) {
@@ -48,7 +46,7 @@ public class NotificationMessagesService {
         bot.send(new SendMessage(
                         String.valueOf(chatId),
                         "В категории "
-                                +   categoryWithTopicDTO.getCategoryName()
+                                + categoryWithTopicDTO.getCategoryName()
                                 + " появилось новое собеседование."
                                 + System.lineSeparator()
                                 + "Ссылка на собеседование: "

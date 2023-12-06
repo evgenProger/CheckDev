@@ -23,7 +23,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class RegCheckEmailAction implements Action {
     private final SessionTg sessionTg;
-    private final TgConfig tgConfig = new TgConfig("tg/", 10);
+    private final TgConfig tgConfig = new TgConfig(10);
 
     @Override
     public Optional<BotApiMethod> handle(Update update) {

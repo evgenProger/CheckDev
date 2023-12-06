@@ -3,7 +3,6 @@ package ru.checkdev.auth.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -15,8 +14,6 @@ import java.util.List;
  */
 @Entity(name = "profile")
 public class Profile {
-    @Transient
-    private final StandardPasswordEncoder encoding = new StandardPasswordEncoder();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

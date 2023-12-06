@@ -1,7 +1,6 @@
 package ru.checkdev.auth.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -14,15 +13,10 @@ import ru.checkdev.auth.repository.PersonRepository;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class UserDetailsDefinition implements org.springframework.security.core.userdetails.UserDetailsService {
 
-    private final Logger log = LoggerFactory.getLogger(UserDetailsDefinition.class);
-
     private final PersonRepository persons;
-
-    public UserDetailsDefinition(PersonRepository persons) {
-        this.persons = persons;
-    }
 
     @Override
     public UserDetails loadUserByUsername(final String email) throws DisabledException {

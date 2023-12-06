@@ -33,7 +33,7 @@ import java.util.Optional;
 public class RegSaveUserAction implements Action {
     private static final String ERROR_OBJECT = "error";
     private static final String URL_AUTH_REGISTRATION = "/registration";
-    private final TgConfig tgConfig = new TgConfig("tg/", 10);
+    private final TgConfig tgConfig = new TgConfig(10);
     private final SessionTg sessionTg;
     private final TgCall tgCall;
     private final UserTelegramService userTelegramService;

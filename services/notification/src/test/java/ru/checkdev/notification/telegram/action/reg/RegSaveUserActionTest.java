@@ -94,7 +94,8 @@ class RegSaveUserActionTest {
     }
 
     private String getPassInMessage(String textMessage, String urlSiteAuth) {
-        int startPassIndex = textMessage.lastIndexOf("tg/");
+        String startDelimiter = "Пароль : ";
+        int startPassIndex = textMessage.indexOf(startDelimiter) + startDelimiter.length();
         int endPassIndex = textMessage.lastIndexOf(System.lineSeparator() + urlSiteAuth);
         return textMessage.substring(startPassIndex, endPassIndex);
     }

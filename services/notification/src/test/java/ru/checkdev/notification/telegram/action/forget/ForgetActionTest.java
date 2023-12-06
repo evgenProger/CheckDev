@@ -88,7 +88,7 @@ class ForgetActionTest {
     }
 
     private String getPassInMessage(String textMessage) {
-        int startPassIndex = textMessage.lastIndexOf("tg/");
-        return textMessage.substring(startPassIndex, textMessage.length());
+        String startPassIndex = "Ваш новый пароль:" + System.lineSeparator();
+        return textMessage.substring(startPassIndex.length());
     }
 }

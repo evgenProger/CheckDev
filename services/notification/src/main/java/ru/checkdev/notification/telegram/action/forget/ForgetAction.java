@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.domain.Profile;
+import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
 import ru.checkdev.notification.telegram.action.Action;
@@ -27,7 +27,7 @@ public class ForgetAction implements Action {
     private final SessionTg sessionTg;
     private final TgCall tgCall;
     private final UserTelegramService userTelegramService;
-    private final TgConfig tgConfig = new TgConfig("tg/", 10);
+    private final TgConfig tgConfig = new TgConfig(10);
 
     @Override
     public Optional<BotApiMethod> handle(Update update) {
