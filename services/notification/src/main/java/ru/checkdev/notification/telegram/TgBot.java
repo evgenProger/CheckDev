@@ -7,11 +7,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.checkdev.notification.telegram.action.Action;
 import ru.checkdev.notification.telegram.action.info.UnKnownRequestAction;
 
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+
+import static java.util.Collections.emptyIterator;
+import static java.util.Collections.emptyList;
 
 /**
  * Реализация меню телеграм бота.
@@ -51,7 +51,7 @@ public class TgBot extends TelegramLongPollingBot implements Bot {
         var chatId = update.getMessage().getChatId().toString();
         if (actions.containsKey(key)) {
             bindingBy.put(chatId, actions.get(key).iterator());
-        } else if (!actions.containsKey(key) && !bindingBy.get(chatId).hasNext()) {
+        } else if (!bindingBy.getOrDefault(chatId, emptyIterator()).hasNext()) {
             var msg = new UnKnownRequestAction().handle(update);
             send(msg.get());
             return;

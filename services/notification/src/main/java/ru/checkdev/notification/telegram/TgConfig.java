@@ -55,12 +55,12 @@ public class TgConfig {
     public Bot initTg() throws TelegramApiException {
         Map<String, List<Action>> actionMap = Map.of(
                 "/start", List.of(new InfoAction(List.of(
-                        "/start",
-                        "/new  зарегистрировать нового пользователя",
-                        "/check  получить своё имя и Email",
-                        "/forget  восстановить пароль",
-                        "/notify  подписаться на уведомления",
-                        "/unnotify  отписаться от уведомлений"))),
+                        "/start - Достунпые команды",
+                        "/new - Зарегистрировать нового пользователя",
+                        "/check - Связанный аккаунт",
+                        "/forget - Восстановить пароль",
+                        "/notify - Подписаться на уведомления",
+                        "/unnotify - Отписаться от уведомлений"))),
                 "/new", List.of(
                         new RegAskNameAction(userTelegramService),
                         new RegPutNameAction(sessionTg),

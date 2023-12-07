@@ -24,7 +24,7 @@ public class InfoAction implements Action {
         var chatId = update.getMessage().getChatId().toString();
         String sl = System.lineSeparator();
         var out = new StringBuilder();
-        out.append("Выберите действие:").append(sl);
+        out.append("Доступные команды:").append(sl);
         for (String action : actions) {
             out.append(action).append(sl);
         }

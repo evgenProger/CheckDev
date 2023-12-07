@@ -29,7 +29,7 @@ class InfoActionTest {
         String actual = sendMessage.getText();
         String ls = System.lineSeparator();
         String expect = new StringJoiner(ls, "", ls)
-                .add("Выберите действие:")
+                .add("Доступные команды:")
                 .add("/start")
                 .add("/new  зарегистрировать нового пользователя").toString();
         assertThat(actual).isEqualTo(expect);
@@ -55,7 +55,7 @@ class InfoActionTest {
         String actual = sendMessage.getText();
         String ls = System.lineSeparator();
         String expect = new StringJoiner(ls, "", ls)
-                .add("Выберите действие:")
+                .add("Доступные команды:")
                 .add("/start")
                 .add("/new  зарегистрировать нового пользователя")
                 .add("/check  получить своё имя и Email")
