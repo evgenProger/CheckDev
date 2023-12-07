@@ -67,7 +67,7 @@
         <span th:if="${userInfo==null}">
             Нажмите кнопку "Откликнуться", чтобы принять участие в собеседовании
         </span>
-        <span th:if="${userInfo != null}" >
+        <span th:if="${userInfo != null}">
             <span th:if="${isAuthor}">
                 <span th:if="${STATUS_IS_NEW_ID==interview.statusId}">
                     Ожидайте откликов других участников. Когда на Ваше собеседование откликнутся, Вы получите уведомление. Далее Вы можете одобрить одного из участников и с ним провести очное собеседование.
@@ -126,7 +126,6 @@
                     <th scope="col">Участники собеседования</th>
                     <th scope="col">Контакт</th>
                     <th scope="col">Роль</th>
-                    <th scope="col">Отзыв</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -141,12 +140,6 @@
                         <span th:if="${interview.mode == 1}">Буду проводить собеседование (задавать вопросы)</span>
                         <span th:if="${interview.mode == 2}">Буду проходить собеседование (отвечать на вопросы)</span>
                     </td>
-                    <td>
-                        <span th:if="${feedbackMap.containsKey(interview.submitterId)}"
-                              th:each="feedback : ${feedbackMap.get(interview.submitterId)}">
-                            <pre th:utext="${feedback.textFeedback}"/>
-                        </span>
-                    </td>
                 </tr>
                 <tr th:each="wisher : ${wishersDetail}" th:if="${wisher.approve}">
                     <td>
@@ -159,9 +152,25 @@
                         <span th:if="${interview.mode == 2}">Буду проводить собеседование (задавать вопросы)</span>
                         <span th:if="${interview.mode == 1}">Буду проходить собеседование (отвечать на вопросы)</span>
                     </td>
+                </tr>
+                <tr th:if="${feedbackMap.containsKey(interview.submitterId)}">
                     <td>
-                        <span th:if="${feedbackMap.containsKey(wisher.userId)}"
-                              th:each="feedback : ${feedbackMap.get(wisher.userId)}">
+                        <span class="text-dark">Отзыв участнику</span>
+                    </td>
+                    <td></td>
+                    <td>
+                        <span th:each="feedback : ${feedbackMap.get(interview.submitterId)}">
+                            <pre th:utext="${feedback.textFeedback}"/>
+                        </span>
+                    </td>
+                </tr>
+                <tr th:if="${feedbackMap.containsKey(wisher.userId)}" th:each="wisher : ${wishersDetail}">
+                    <td>
+                        <span class="text-dark">Отзыв автору</span>
+                    </td>
+                    <td></td>
+                    <td th:if="${wisher.approve}">
+                        <span th:each="feedback : ${feedbackMap.get(wisher.userId)}">
                             <pre th:utext="${feedback.textFeedback}"/>
                         </span>
                     </td>
