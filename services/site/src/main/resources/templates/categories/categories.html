@@ -69,7 +69,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="category: ${categories}"
+                <tr th:each="category: ${categories}" style="cursor: pointer;"
                     th:onclick="'javascript:rowClicked(\'' + ${category.id} + '\');'">
                     <td>
                         <div>
