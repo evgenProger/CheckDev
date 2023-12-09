@@ -65,7 +65,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="topic: ${topics}"
+                <tr th:each="topic: ${topics}" style="cursor: pointer;"
                     th:onclick="'javascript:rowClicked(\'' + ${topic.id} + '\');'">
                     <td>
                         <div>
