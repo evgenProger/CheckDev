@@ -74,4 +74,10 @@ public class InnerMessageController {
         messageService.delete(messageId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("/setRead/{messageId}")
+    public ResponseEntity<Void> setRead(@PathVariable int messageId) {
+        messageService.setRead(messageId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

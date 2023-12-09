@@ -93,4 +93,8 @@ public class InnerMessageService {
     public void delete(int messageId) {
         messageRepository.deleteById(messageId);
     }
+
+    public void setRead(int messageId) {
+        messageRepository.setReadById(messageId);
+    }
 }

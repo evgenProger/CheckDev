@@ -1,8 +1,11 @@
 package ru.checkdev.notification.repository;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.dto.InnerMessageDTO;
 
@@ -17,4 +20,9 @@ public interface InnerMessageRepository extends CrudRepository<InnerMessage, Int
               WHERE m.read = false AND m.userId = :id and m.interviewId > 0
               """)
     List<InnerMessageDTO> findMessageDTOByUserIdAndReadFalse(@Param("id") int userId);
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Modifying
+    @Query("UPDATE cd_message SET read = true WHERE id = :id")
+    void setReadById(@Param("id") int messageId);
 }

@@ -21,4 +21,10 @@ public class MessagesRestController {
             throws JsonProcessingException {
         messageService.delete(getToken(request), messageId);
     }
+
+    @PutMapping("/setRead/{messageId}")
+    public void update(@PathVariable int messageId, HttpServletRequest request)
+            throws JsonProcessingException {
+        messageService.setRead(getToken(request), messageId);
+    }
 }

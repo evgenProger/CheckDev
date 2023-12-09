@@ -26,4 +26,11 @@ public class InnerMessageRepositoryFake
                 .filter(msg -> Objects.equals(msg.getUserId(), userId))
                 .toList();
     }
+
+    @Override
+    public void setReadById(int messageId) {
+        memory.values().stream().
+                filter(msg -> Objects.equals(msg.getId(), messageId))
+                .forEach(msg -> msg.setRead(true));
+    }
 }
