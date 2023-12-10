@@ -4,10 +4,16 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.dto.InterviewDTO;
+import ru.checkdev.mock.dto.UsersApprovedInterviewsDTO;
 import ru.checkdev.mock.dto.WisherDto;
+import ru.checkdev.mock.mapper.InterviewMapper;
 import ru.checkdev.mock.repository.WisherRepository;
 
 import java.util.List;
@@ -64,6 +70,15 @@ public class WisherService {
      */
     public List<WisherDto> findAllWisherDto() {
         return wisherRepository.findAllWiserDto();
+    }
+
+    /**
+     * Метод получает страницу со списком id пользователей с количеством проведенных ими интервью.
+     *
+     * @return List<WisherDTO>
+     */
+    public List<UsersApprovedInterviewsDTO> getUsersIdWithCountedApprovedInterviews() {
+        return wisherRepository.getUsersIdWithCountedApprovedInterviews();
     }
 
     /**

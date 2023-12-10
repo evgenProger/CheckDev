@@ -6,8 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.ProfileDTO;
+import ru.job4j.site.dto.ProfileWithApprowedInterviewsDTO;
+import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 
 /**
@@ -24,6 +28,7 @@ public class ProfilesService {
     private static final String URL_PROFILES = "/profiles/";
     private final WebClientAuthCall webClientAuthCall;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final long ZERO_APPROWED_INTERVIEWS = 0;
 
     /**
      * Метод получает из сервиса Auth один профиль по ID
@@ -49,5 +54,19 @@ public class ProfilesService {
                 .doGetReqParamAll(URL_PROFILES)
                 .block();
         return responseEntity.getBody();
+    }
+    public List<ProfileWithApprowedInterviewsDTO> getAllProfilesWithApprowedInterviews(List<UsersApprovedInterviewsDTO> approwedList) {
+        var profilesList = getAllProfile();
+        List<ProfileWithApprowedInterviewsDTO> profilesWithCountOfInterviews = new ArrayList();
+        for (ProfileDTO profileDTO : profilesList) {
+            ProfileWithApprowedInterviewsDTO profileWAI = new ProfileWithApprowedInterviewsDTO(profileDTO, ZERO_APPROWED_INTERVIEWS);
+            for (UsersApprovedInterviewsDTO uInts : approwedList) {
+                if (profileDTO.getId() == uInts.getUserId()) {
+                    profileWAI.setApprovedInterviews(uInts.getApprovedInterviews());
+                }
+            }
+            profilesWithCountOfInterviews.add(profileWAI);
+        }
+        return profilesWithCountOfInterviews;
     }
 }

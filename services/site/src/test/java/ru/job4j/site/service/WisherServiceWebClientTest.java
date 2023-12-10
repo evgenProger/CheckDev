@@ -13,6 +13,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import ru.job4j.site.dto.InterviewStatistic;
+import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
 import ru.job4j.site.dto.WisherDto;
 
 import java.util.List;
@@ -110,6 +111,23 @@ class WisherServiceWebClientTest {
     }
 
     @Test
+    void whenGetUsersIdWithCountedApprovedInterviewsThenListUsersApprovedInterviewsDTO() {
+        var interviewId = "2";
+        var usersApprovedInterviewsDTO1 = new UsersApprovedInterviewsDTO(1, 1);
+        var usersApprovedInterviewsDTO2 = new UsersApprovedInterviewsDTO(2, 2);
+        var listUsers = List.of(usersApprovedInterviewsDTO1, usersApprovedInterviewsDTO2);
+        String token = "12345";
+        when(webClientMock.get()).thenReturn(requestHeadersUriMock);
+        when(requestHeadersUriMock.uri(urlWishers + "approved/")).thenReturn(requestHeadersMock);
+        when(requestHeadersMock.header("Authorization", "Bearer " + token)).thenReturn(requestBodyMock);
+        when(requestBodyMock.accept(MediaType.APPLICATION_JSON)).thenReturn(requestBodyMock);
+        when(requestBodyMock.retrieve()).thenReturn(responseMock);
+        when(responseMock.toEntityList(UsersApprovedInterviewsDTO.class)).thenReturn(Mono.just(new ResponseEntity<>(listUsers, HttpStatus.OK)));
+        var actual = wisherService.getUsersIdWithCountedApprovedInterviews(token);
+        assertThat(actual).isEqualTo(listUsers);
+    }
+
+    @Test
     void whenGetAllWisherByInterviewIdThenReturnEmptyList() {
         var interviewId = "2";
         String token = "12345";
@@ -120,6 +138,19 @@ class WisherServiceWebClientTest {
         when(requestBodyMock.retrieve()).thenReturn(responseMock);
         when(responseMock.toEntityList(WisherDto.class)).thenReturn(Mono.empty());
         var actual = wisherService.getAllWisherDtoByInterviewId(token, interviewId);
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void whenGetUsersIdWithCountedApprovedInterviewsThenReturnEmptyList() {
+        String token = "12345";
+        when(webClientMock.get()).thenReturn(requestHeadersUriMock);
+        when(requestHeadersUriMock.uri(urlWishers + "approved/")).thenReturn(requestHeadersMock);
+        when(requestHeadersMock.header("Authorization", "Bearer " + token)).thenReturn(requestBodyMock);
+        when(requestBodyMock.accept(MediaType.APPLICATION_JSON)).thenReturn(requestBodyMock);
+        when(requestBodyMock.retrieve()).thenReturn(responseMock);
+        when(responseMock.toEntityList(UsersApprovedInterviewsDTO.class)).thenReturn(Mono.empty());
+        var actual = wisherService.getUsersIdWithCountedApprovedInterviews(token);
         assertThat(actual).isEmpty();
     }
 

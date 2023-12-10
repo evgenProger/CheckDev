@@ -7,7 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.dto.ProfileDTO;
+import ru.job4j.site.dto.ProfileWithApprowedInterviewsDTO;
 import ru.job4j.site.service.ProfilesService;
+import ru.job4j.site.service.WisherService;
 
 import java.util.Calendar;
 import java.util.List;
@@ -21,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * CheckDev пробное собеседование
  * ProfilesControllerTest тесты на контроллер IndexController
+ *
  * @author Dmitry Stepanov, user Dmitry
  * @since 25.09.2023
  */
@@ -31,6 +34,9 @@ class ProfilesControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private ProfilesService profilesService;
+
+    @MockBean
+    private WisherService wisherService;
 
     @Test
     void whenGetProfileByIdThenReturnPageProfileView() throws Exception {
@@ -46,12 +52,13 @@ class ProfilesControllerTest {
     }
 
     @Test
-    void whenGetAllProfilesThenReturnPageProfiles() throws Exception {
+    void whenGetAllProfilesThenReturnPageProfilesWithCountOfApprowedInterviews() throws Exception {
         var profile1 = new ProfileDTO(1, "username1", "experience1", 1, Calendar.getInstance(), Calendar.getInstance());
-        var profile2 = new ProfileDTO(2, "username2", "experience2", 2,
-                Calendar.getInstance(), Calendar.getInstance());
-        var listProfile = List.of(profile1, profile2);
-        when(profilesService.getAllProfile()).thenReturn(listProfile);
+        var profile2 = new ProfileDTO(2, "username2", "experience2", 2, Calendar.getInstance(), Calendar.getInstance());
+        var p1 = new ProfileWithApprowedInterviewsDTO(profile1, 5);
+        var p2 = new ProfileWithApprowedInterviewsDTO(profile2, 10);
+        var listProfile = List.of(p1, p2);
+        when(profilesService.getAllProfilesWithApprowedInterviews(wisherService.getUsersIdWithCountedApprovedInterviews("token"))).thenReturn(listProfile);
         this.mockMvc.perform(get("/profiles/"))
                 .andDo(print())
                 .andExpect(status().isOk())
