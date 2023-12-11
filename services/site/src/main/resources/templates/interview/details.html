@@ -55,15 +55,15 @@
         }
 
 
+
     </style>
 
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
+    <span th:if="${STATUS_IS_COMPLETED_ID != interview.statusId}">
     <div class="alert alert-info" role="alert">
-
-
         <span th:if="${userInfo==null}">
             Нажмите кнопку "Откликнуться", чтобы принять участие в собеседовании
         </span>
@@ -93,9 +93,8 @@
                 </span>
             </span>
         </span>
-
-
     </div>
+    </span>
     <div class="card">
         <div class="card-header">
             <div>
@@ -242,6 +241,7 @@
         </div>
     </div>
 </div>
+
 <div th:insert="fragments/footer :: footer"></div>
 </body>
 </html>

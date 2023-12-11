@@ -114,6 +114,7 @@ public class InterviewController {
         model.addAttribute("STATUS_IS_NEW_ID", StatusInterview.IS_NEW.getId());
         model.addAttribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId());
         model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
+        model.addAttribute("STATUS_IS_COMPLETED_ID", StatusInterview.IS_COMPLETED.getId());
         model.addAttribute("wishersDetail", wishersDetail);
         model.addAttribute("isDismissed", isDismissed);
         model.addAttribute("topicLiteDTO", topicLiteDTO);
