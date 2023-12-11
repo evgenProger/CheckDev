@@ -10,9 +10,11 @@ import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.TopicDTO;
 import ru.job4j.site.service.*;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +43,8 @@ class IndexControllerTest {
     private TopicsService topicsService;
     @MockBean
     private InterviewsService interviewsService;
+    @MockBean
+    private AuthService authService;
 
     @Test
     void injectedNotNull() {
@@ -62,6 +66,10 @@ class IndexControllerTest {
     void whenGetIndexPageExpectModelAttributeThenOk() throws Exception {
         var token = "1410";
         var topicDTO1 = new TopicDTO();
+        var profile1 = new ProfileDTO(1, "username1", "experience", 1,
+                Calendar.getInstance(), Calendar.getInstance());
+        var profile2 = new ProfileDTO(2, "username2", "experience", 2,
+                Calendar.getInstance(), Calendar.getInstance());
         topicDTO1.setId(1);
         topicDTO1.setName("topic1");
         var topicDTO2 = new TopicDTO();
@@ -82,10 +90,13 @@ class IndexControllerTest {
         when(topicsService.getAllTopicLiteDTO()).thenReturn(Collections.emptyList());
         when(categoriesService.getMostPopular()).thenReturn(listCat);
         when(interviewsService.getLast()).thenReturn(listInterviews);
+        when(authService.findById(1)).thenReturn(profile1);
+        when(authService.findById(2)).thenReturn(profile2);
         var listBread = List.of(new Breadcrumb("Главная", "/"));
         mockMvc.perform(get("/index/")
                         .sessionAttr("token", token))
                 .andDo(print())
+                .andExpect(model().attribute("authService", authService))
                 .andExpect(model().attribute("categories", listCat))
                 .andExpect(model().attribute("breadcrumbs", listBread))
                 .andExpect(model().attribute("topicsLiteMap", Collections.emptyMap()))
