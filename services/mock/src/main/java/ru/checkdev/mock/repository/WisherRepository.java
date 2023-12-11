@@ -1,6 +1,7 @@
 package ru.checkdev.mock.repository;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.dto.UsersApprovedInterviewsDTO;
 import ru.checkdev.mock.dto.WisherDto;
 
 import java.util.Collection;
@@ -96,4 +98,15 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
             @Param("userId") int userId,
             @Param("topicsIds") Collection<Integer> topicsIds,
             Pageable pageable);
+    /**
+     * Метод нформирует список id пользователей с количеством их проведенных собеседований
+     *
+     * @return List<UsersApprovedInterviewsDTO>
+     */
+    @Query("""
+            SELECT new ru.checkdev.mock.dto.UsersApprovedInterviewsDTO (w.userId, COUNT(w.approve))
+            FROM wisher w
+            WHERE w.approve = true
+            GROUP BY w.userId""")
+    List<UsersApprovedInterviewsDTO> getUsersIdWithCountedApprovedInterviews();
 }
