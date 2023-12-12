@@ -46,6 +46,7 @@ public class IndexController {
         interviewsService.setCountWishers(newInterviewsDTO, getToken(req));
         model.addAttribute("topicsLiteMap", topicsLiteMap);
         model.addAttribute("new_interviews", newInterviewsDTO);
+        model.addAttribute("authService", authService);
         return "index";
     }
 }
