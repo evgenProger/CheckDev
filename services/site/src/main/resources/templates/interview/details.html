@@ -78,6 +78,9 @@
                 <span th:if="${STATUS_IS_FEEDBACK_ID==interview.statusId && !feedbackMap.containsKey(interview.submitterId)}">
                     Оставьте отзыв участнику.
                 </span>
+                <span th:if="${STATUS_IS_FEEDBACK_ID==interview.statusId && feedbackMap.containsKey(interview.submitterId)}">
+                    Ожидайте, когда участник оставит Вам отзыв.
+                </span>
             </span>
             <span th:if="${!isAuthor}">
                 <span th:if="${!isWisher}">
