@@ -1,4 +1,4 @@
-package ru.checkdev.auth.web.controller;
+package ru.checkdev.auth.filter;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -28,11 +28,4 @@ public class CorsFilter implements Filter {
         }
     }
 
-    @Override
-    public void init(FilterConfig filterConfig) {
-    }
-
-    @Override
-    public void destroy() {
-    }
 }

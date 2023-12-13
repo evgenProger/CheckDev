@@ -1,5 +1,6 @@
 package ru.checkdev.auth.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,8 +19,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableWebSecurity
 @EnableResourceServer
 @EnableAuthorizationServer
+@AllArgsConstructor
 public class SecurityConfig {
-    @Autowired
+
     private UserDetailsService userDetailsService;
 
     @Bean
@@ -35,7 +37,6 @@ public class SecurityConfig {
                 "/person/resume/**",
                 "/person/currentForTg/**",
                 "/person/checkPassword",
-                "/order/save",
                 "/person/by/email",
                 "/img",
                 "/person/profile",
@@ -49,13 +50,11 @@ public class SecurityConfig {
         );
     }
 
-
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(new BCryptPasswordEncoder());
-
     }
 
     @Bean
