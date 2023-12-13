@@ -64,8 +64,14 @@
 <div class="container">
     <span th:if="${STATUS_IS_COMPLETED_ID != interview.statusId}">
     <div class="alert alert-info" role="alert">
+
         <span th:if="${userInfo==null}">
+            <span th:if="${STATUS_IS_NEW_ID!=interview.statusId}">
+            Если Вы не Автор и не одобренный участник, то у Вас уже нет доступа к данному собеседованию
+            </span>
+            <span th:if="${STATUS_IS_NEW_ID==interview.statusId}">
             Нажмите кнопку "Откликнуться", чтобы принять участие в собеседовании
+            </span>
         </span>
         <span th:if="${userInfo != null}">
             <span th:if="${isAuthor}">
@@ -75,23 +81,40 @@
                 <span th:if="${STATUS_IN_PROGRESS_ID==interview.statusId}">
                     Проведите очное собеседование. Контактные данные находятся в таблице участники - контакты. После собеседования оставьте отзыв-рекомендации участнику собеседования.
                 </span>
-                <span th:if="${STATUS_IS_FEEDBACK_ID==interview.statusId && !feedbackMap.containsKey(interview.submitterId)}">
-                    Оставьте отзыв участнику.
-                </span>
-                <span th:if="${STATUS_IS_FEEDBACK_ID==interview.statusId && feedbackMap.containsKey(interview.submitterId)}">
-                    Ожидайте, когда участник оставит Вам отзыв.
+                <span th:if="${STATUS_IS_FEEDBACK_ID==interview.statusId}">
+                    <span th:if="${!feedbackMap.containsKey(interview.submitterId)}">
+                        Оставьте отзыв участнику.
+                    </span>
+                    <span th:if="${feedbackMap.containsKey(interview.submitterId)}">
+                        Ожидайте, когда участник оставит Вам отзыв.
+                    </span>
                 </span>
             </span>
             <span th:if="${!isAuthor}">
                 <span th:if="${!isWisher}">
-                    Нажмите кнопку "Откликнуться", чтобы принять участие в собеседовании
+                    <span th:if="${STATUS_IS_NEW_ID==interview.statusId}">
+                        Нажмите кнопку "Откликнуться", чтобы принять участие в собеседовании
+                    </span>
+                    <span th:if="${STATUS_IS_NEW_ID!=interview.statusId}">
+                        Если Вы не Автор и не одобренный участник, то у Вас уже нет доступа к данному собеседованию
+                    </span>
                 </span>
                 <span th:if="${isWisher}">
-                    <span th:if="${isDismissed && STATUS_IN_PROGRESS_ID==interview.statusId}">
-                        Проведите очное собеседование. Контактные данные находятся в таблице участники - контакты. После собеседования оставьте отзыв-рекомендации участнику собеседования.
+                    <span th:if="${isUserDismissed}">
+                        <span th:if="${STATUS_IN_PROGRESS_ID==interview.statusId}">
+                            Проведите очное собеседование. Контактные данные находятся в таблице участники - контакты. После собеседования оставьте отзыв-рекомендации участнику собеседования.
+                        </span>
+                        <span th:if="${STATUS_IS_FEEDBACK_ID==interview.statusId && !feedbackMap.containsKey(userInfo.id)}">
+                            Оставьте отзыв автору.
+                        </span>
                     </span>
-                    <span th:if="${isDismissed && STATUS_IS_FEEDBACK_ID==interview.statusId && !feedbackMap.containsKey(userInfo.id)}">
-                        Оставьте отзыв автору.
+                    <span th:if="${!isUserDismissed}">
+                        <span th:if="${STATUS_IS_NEW_ID!=interview.statusId}">
+                            Если Вы не Автор и не одобренный участник, то у Вас уже нет доступа к данному собеседованию
+                        </span>
+                        <span th:if="${STATUS_IS_NEW_ID==interview.statusId}">
+                            Ожидайте одобрения автора на Ваше участие в собеседовании.
+                        </span>
                     </span>
                 </span>
             </span>
@@ -99,8 +122,9 @@
     </div>
     </span>
     <div class="card">
-        <div class="card-header">
-            <div>
+        <span th:if="${STATUS_IS_NEW_ID==interview.statusId || isAuthor || isWisher && isUserDismissed}">
+            <div class="card-header">
+                <div>
                 <span class="fw-bold" th:text="${topicLiteDTO.categoryName + ' / ' + topicLiteDTO.name}"></span>
                 <span th:if="${userInfo != null}">
                     <a th:if="${isAuthor and !isDismissed}"
@@ -120,40 +144,40 @@
                 <span class="me-2"
                       th:text="${'Дата и время проведения собеседования: ' + interview.approximateDate}"></span>
             </span>
-        </div>
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Участники собеседования</th>
-                    <th scope="col">Контакт</th>
-                    <th scope="col">Роль</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        <span th:text="${interview.author}"></span>
-                    </td>
-                    <td>
-                        <span th:if="${isAuthor or isUserDismissed}" th:text="${interview.contactBy}"></span>
-                    </td>
-                    <td>
-                        <span th:if="${interview.mode == 1}">Буду проводить собеседование (задавать вопросы)</span>
-                        <span th:if="${interview.mode == 2}">Буду проходить собеседование (отвечать на вопросы)</span>
-                    </td>
-                </tr>
-                <tr th:each="wisher : ${wishersDetail}" th:if="${wisher.approve}">
-                    <td>
-                        <span th:text="${wisher.username}"></span>
-                    </td>
-                    <td>
-                        <span th:if="${isAuthor or isUserDismissed}" th:text="${wisher.contactBy}"></span>
-                    </td>
-                    <td>
-                        <span th:if="${interview.mode == 2}">Буду проводить собеседование (задавать вопросы)</span>
-                        <span th:if="${interview.mode == 1}">Буду проходить собеседование (отвечать на вопросы)</span>
-                    </td>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Участники собеседования</th>
+                        <th scope="col">Контакт</th>
+                        <th scope="col">Роль</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <span th:text="${interview.author}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${isAuthor or isUserDismissed}" th:text="${interview.contactBy}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${interview.mode == 1}">Буду проводить собеседование (задавать вопросы)</span>
+                            <span th:if="${interview.mode == 2}">Буду проходить собеседование (отвечать на вопросы)</span>
+                        </td>
+                    </tr>
+                    <tr th:each="wisher : ${wishersDetail}" th:if="${wisher.approve}">
+                        <td>
+                            <span th:text="${wisher.username}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${isAuthor or isUserDismissed}" th:text="${wisher.contactBy}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${interview.mode == 2}">Буду проводить собеседование (задавать вопросы)</span>
+                            <span th:if="${interview.mode == 1}">Буду проходить собеседование (отвечать на вопросы)</span>
+                        </td>
                 </tr>
                 <tr th:if="${feedbackMap.containsKey(interview.submitterId)}">
                     <td>
@@ -242,6 +266,7 @@
             <p class="fw-bold">Описание</p>
             <pre class="mt-3" th:utext="${topicLiteDTO.text}"></pre>
         </div>
+        </span>
     </div>
 </div>
 
