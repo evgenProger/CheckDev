@@ -1,4 +1,4 @@
-package ru.checkdev.auth.service;
+package ru.checkdev.auth.util;
 
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 

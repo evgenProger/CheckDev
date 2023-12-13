@@ -1,10 +1,11 @@
-package ru.checkdev.auth.service;
+package ru.checkdev.auth.util;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import ru.checkdev.auth.domain.Profile;
@@ -14,13 +15,13 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class UserDetailsDefinition implements org.springframework.security.core.userdetails.UserDetailsService {
+public class UserDetailsDefinition implements UserDetailsService {
 
     private final PersonRepository persons;
 
     @Override
     public UserDetails loadUserByUsername(final String email) throws DisabledException {
-        Profile profile = this.persons.findByEmail(email);
+        Profile profile = persons.findByEmail(email);
         if (profile != null) {
             if (profile.isActive()) {
                 return new User(email,
