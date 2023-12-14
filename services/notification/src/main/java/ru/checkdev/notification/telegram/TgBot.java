@@ -11,7 +11,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Collections.emptyIterator;
-import static java.util.Collections.emptyList;
 
 /**
  * Реализация меню телеграм бота.
@@ -22,7 +21,7 @@ import static java.util.Collections.emptyList;
  * @since 12.09.2023
  */
 public class TgBot extends TelegramLongPollingBot implements Bot {
-    private final Map<String, Iterator<Action>> bindingBy = new ConcurrentHashMap<>();
+    private static final Map<String, Iterator<Action>> BINDING_BY = new ConcurrentHashMap<>();
     private final Map<String, List<Action>> actions;
     private final String username;
     private final String token;
@@ -43,6 +42,10 @@ public class TgBot extends TelegramLongPollingBot implements Bot {
         return token;
     }
 
+    public static Map<String, Iterator<Action>> getBindingBy() {
+        return BINDING_BY;
+    }
+
     public void onUpdateReceived(Update update) {
         if (!update.hasMessage()) {
             return;
@@ -50,18 +53,18 @@ public class TgBot extends TelegramLongPollingBot implements Bot {
         var key = update.getMessage().getText();
         var chatId = update.getMessage().getChatId().toString();
         if (actions.containsKey(key)) {
-            bindingBy.put(chatId, actions.get(key).iterator());
-        } else if (!bindingBy.getOrDefault(chatId, emptyIterator()).hasNext()) {
+            BINDING_BY.put(chatId, actions.get(key).iterator());
+        } else if (!BINDING_BY.getOrDefault(chatId, emptyIterator()).hasNext()) {
             var msg = new UnKnownRequestAction().handle(update);
             send(msg.get());
             return;
         }
-        if (!bindingBy.containsKey(chatId)) {
+        if (!BINDING_BY.containsKey(chatId)) {
             return;
         }
-        var bindingActions = bindingBy.get(chatId);
+        var bindingActions = BINDING_BY.get(chatId);
         if (bindingActions == null || !bindingActions.hasNext()) {
-            bindingBy.remove(chatId);
+            BINDING_BY.remove(chatId);
             return;
         }
         Optional<BotApiMethod> result;

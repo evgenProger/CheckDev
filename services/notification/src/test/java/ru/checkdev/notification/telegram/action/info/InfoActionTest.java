@@ -43,12 +43,14 @@ class InfoActionTest {
         update.setMessage(message);
         message.setChat(chat);
         List<String> actions = List.of(
-                "/start",
-                "/new  зарегистрировать нового пользователя",
-                "/check  получить своё имя и Email",
-                "/forget  генерация нового пароля",
-                "/notify  подписаться на уведомления",
-                "/unnotify  отписаться от уведомлений");
+                "/start    - Доступные команды",
+                "/new      - Зарегистрировать нового пользователя",
+                "/check    - Связанный аккаунт",
+                "/forget   - Восстановить пароль",
+                "/notify   - Подписаться на уведомления",
+                "/unnotify - Отписаться от уведомлений",
+                "/bind     - Привязать аккаунт CheckDev к данному аккаунту Telegram",
+                "/unbind   - Отвязать аккаунт CheckDev от данного аккаунта Telegram");
         InfoAction infoAction = new InfoAction(actions);
         BotApiMethod<Message> botApiMethod = infoAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
@@ -56,12 +58,14 @@ class InfoActionTest {
         String ls = System.lineSeparator();
         String expect = new StringJoiner(ls, "", ls)
                 .add("Доступные команды:")
-                .add("/start")
-                .add("/new  зарегистрировать нового пользователя")
-                .add("/check  получить своё имя и Email")
-                .add("/forget  генерация нового пароля")
-                .add("/notify  подписаться на уведомления")
-                .add("/unnotify  отписаться от уведомлений").toString();
+                .add("/start    - Доступные команды")
+                .add("/new      - Зарегистрировать нового пользователя")
+                .add("/check    - Связанный аккаунт")
+                .add("/forget   - Восстановить пароль")
+                .add("/notify   - Подписаться на уведомления")
+                .add("/unnotify - Отписаться от уведомлений")
+                .add("/bind     - Привязать аккаунт CheckDev к данному аккаунту Telegram")
+                .add("/unbind   - Отвязать аккаунт CheckDev от данного аккаунта Telegram").toString();
         assertThat(actual).isEqualTo(expect);
     }
 }

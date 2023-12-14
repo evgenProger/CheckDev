@@ -2,9 +2,11 @@ package ru.checkdev.notification.telegram.action;
 
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.checkdev.notification.telegram.TgBot;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -14,7 +16,7 @@ import java.util.Optional;
 public interface Action {
     Optional<BotApiMethod> handle(Update update);
 
-    default Iterator<? extends Action> bindingActions() {
-        return new ArrayList<Action>().iterator();
+    default Map<String, Iterator<Action>> bindingActions() {
+        return TgBot.getBindingBy();
     }
 }

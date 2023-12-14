@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.action.Action;
+import ru.checkdev.notification.telegram.action.bind.*;
 import ru.checkdev.notification.telegram.action.check.CheckAction;
 import ru.checkdev.notification.telegram.action.forget.ForgetAction;
 import ru.checkdev.notification.telegram.action.info.InfoAction;
@@ -55,12 +56,14 @@ public class TgConfig {
     public Bot initTg() throws TelegramApiException {
         Map<String, List<Action>> actionMap = Map.of(
                 "/start", List.of(new InfoAction(List.of(
-                        "/start - Достунпые команды",
+                        "/start - Доступные команды",
                         "/new - Зарегистрировать нового пользователя",
                         "/check - Связанный аккаунт",
                         "/forget - Восстановить пароль",
                         "/notify - Подписаться на уведомления",
-                        "/unnotify - Отписаться от уведомлений"))),
+                        "/unnotify - Отписаться от уведомлений",
+                        "/bind - Привязать аккаунт CheckDev к данному аккаунту Telegram",
+                        "/unbind - Отвязать аккаунт CheckDev от данного аккаунта Telegram"))),
                 "/new", List.of(
                         new RegAskNameAction(userTelegramService),
                         new RegPutNameAction(sessionTg),
@@ -72,7 +75,13 @@ public class TgConfig {
                 "/check", List.of(new CheckAction(sessionTg, tgCall, userTelegramService)),
                 "/forget", List.of(new ForgetAction(sessionTg, tgCall, userTelegramService)),
                 "/notify", List.of(new NotifyAction(sessionTg, tgCall, userTelegramService)),
-                "/unnotify", List.of(new UnNotifyAction(sessionTg, tgCall, userTelegramService))
+                "/unnotify", List.of(new UnNotifyAction(sessionTg, tgCall, userTelegramService)),
+                "/bind", List.of(new BindAskEmailAction(userTelegramService),
+                        new BindPutEmailAction(sessionTg),
+                        new BindAskPasswordAction(),
+                        new BindPutPasswordAction(sessionTg),
+                        new BindAccountAction(sessionTg, tgCall, userTelegramService)),
+                "/unbind", List.of(new UnbindAccountAction(userTelegramService))
         );
         TgBot menu = new TgBot(actionMap, username, token);
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
