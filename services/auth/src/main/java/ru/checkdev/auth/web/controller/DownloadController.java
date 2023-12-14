@@ -1,6 +1,6 @@
 package ru.checkdev.auth.web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,20 +14,14 @@ import ru.checkdev.auth.service.PhotoService;
 import java.io.IOException;
 
 /**
- * .
- *
  * @author Hincu Andrei (andreih1981@gmail.com) by 30.05.18;
  * @version $Id$
  * @since 0.1
  */
 @Controller
+@AllArgsConstructor
 public class DownloadController {
     final private PhotoService photoService;
-
-    @Autowired
-    public DownloadController(final PhotoService photoService) {
-        this.photoService = photoService;
-    }
 
     @GetMapping(value = "/img", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<ByteArrayResource> deliveryImage(@RequestParam(value = "id") String id) throws IOException {

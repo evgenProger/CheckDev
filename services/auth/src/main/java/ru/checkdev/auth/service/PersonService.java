@@ -14,13 +14,11 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import ru.checkdev.auth.domain.Notify;
 import ru.checkdev.auth.domain.Photo;
 import ru.checkdev.auth.domain.Profile;
 import ru.checkdev.auth.domain.Role;
@@ -46,9 +44,8 @@ import java.util.*;
 @Slf4j
 public class PersonService {
 
-    private final PasswordEncoder encoding = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
     private final PersonRepository persons;
-    private final Messenger msg;
 
     public Optional<Profile> reg(Profile profile) {
         Optional<Profile> result = Optional.empty();
@@ -57,16 +54,15 @@ public class PersonService {
                 profile.setRoles(null);
                 profile.setActive(true);
                 profile.setKey(
-                        this.encoding.encode(
+                        passwordEncoder.encode(
                                 String.format("%s%s", System.currentTimeMillis(), profile.getPassword())
                         )
                 );
-                profile.setPassword(this.encoding.encode(profile.getPassword()));
+                profile.setPassword(passwordEncoder.encode(profile.getPassword()));
                 profile.setUpdated(Calendar.getInstance());
-                result = Optional.of(this.persons.save(profile));
+                result = Optional.of(persons.save(profile));
                 Map<String, Object> keys = new HashMap<>();
                 keys.put("key", profile.getKey());
-                this.msg.send(new Notify(profile.getEmail(), keys, Notify.Type.REG.name()));
             }
         } catch (DataIntegrityViolationException e) {
             log.error("not unique email {}", profile.getEmail());
@@ -80,12 +76,12 @@ public class PersonService {
             profile.setPrivacy(true);
             profile.setRoles(null);
             profile.setKey(
-                    this.encoding.encode(
+                    passwordEncoder.encode(
                             String.format("%s%s", System.currentTimeMillis(), profile.getPassword())
                     )
             );
-            profile.setPassword(this.encoding.encode(profile.getPassword()));
-            result = Optional.of(this.persons.save(profile));
+            profile.setPassword(passwordEncoder.encode(profile.getPassword()));
+            result = Optional.of(persons.save(profile));
         } catch (DataIntegrityViolationException e) {
             log.error("not unique email {}", profile.getEmail());
         }
@@ -94,7 +90,7 @@ public class PersonService {
 
     public Optional<Profile> findByEmail(String email) {
         final Optional<Profile> result;
-        Profile profile = this.persons.findByEmail(email);
+        Profile profile = persons.findByEmail(email);
         if (profile == null) {
             result = Optional.empty();
         } else {
@@ -113,11 +109,11 @@ public class PersonService {
 
     @Transactional
     public boolean activated(String key) {
-        Profile profile = this.persons.findByKey(key);
+        Profile profile = persons.findByKey(key);
         boolean result = false;
         if (profile != null && !profile.isActive()) {
             profile.setActive(true);
-            this.persons.save(profile);
+            persons.save(profile);
             result = true;
         }
         return result;
@@ -125,16 +121,15 @@ public class PersonService {
 
     public Optional<Profile> forgot(Profile profile) {
         final Optional<Profile> result;
-        Profile find = this.persons.findByEmail(profile.getEmail());
+        Profile find = persons.findByEmail(profile.getEmail());
         if (find == null) {
             result = Optional.empty();
         } else {
             String password = RandomStringUtils.randomAlphabetic(8);
-            find.setPassword(this.encoding.encode(password));
-            this.persons.save(find);
+            find.setPassword(passwordEncoder.encode(password));
+            persons.save(find);
             Map<String, Object> keys = new HashMap<>();
             keys.put("password", password);
-            this.msg.send(new Notify(profile.getEmail(), keys, Notify.Type.FORGOT.name()));
             result = Optional.of(profile);
         }
         return result;
@@ -142,41 +137,40 @@ public class PersonService {
 
     public Optional<Profile> forgotTg(Profile profile) {
         final Optional<Profile> result;
-        Profile find = this.persons.findByEmail(profile.getEmail());
+        Profile find = persons.findByEmail(profile.getEmail());
         if (find == null) {
             result = Optional.empty();
         } else {
             String password = profile.getPassword();
-            find.setPassword(this.encoding.encode(password));
+            find.setPassword(passwordEncoder.encode(password));
             find.setUpdated(Calendar.getInstance());
-            this.persons.save(find);
+            persons.save(find);
             Map<String, Object> keys = new HashMap<>();
             keys.put("password", password);
-            this.msg.send(new Notify(find.getEmail(), keys, Notify.Type.FORGOT.name()));
             result = Optional.of(find);
         }
         return result;
     }
 
     public List<Profile> findAll(Pageable pageable) {
-        return this.persons.findAll(pageable).getContent();
+        return persons.findAll(pageable).getContent();
     }
 
     public Long total() {
-        return this.persons.total();
+        return persons.total();
     }
 
     public Profile findById(int id) {
-        return this.persons.findById(id).get();
+        return persons.findById(id).get();
     }
 
     public void save(Profile profile) {
-        this.persons.save(profile);
+        persons.save(profile);
     }
 
     @Transactional
     public void saveRole(Profile profile) {
-        Profile load = this.persons.findById(profile.getId()).get();
+        Profile load = persons.findById(profile.getId()).get();
         List<Role> roles = new ArrayList<>();
         for (Role role : profile.getRoles()) {
             if (role != null) {
@@ -188,31 +182,31 @@ public class PersonService {
         }
         load.setRoles(roles);
         load.setUpdated(Calendar.getInstance());
-        this.persons.save(load);
+        persons.save(load);
     }
 
     public Profile findByKey(String key) {
-        return this.persons.findByKey(key);
+        return persons.findByKey(key);
     }
 
     public List<Profile> findBySearch(String search, PageRequest email) {
-        return this.persons.findByEmailContainingOrUsernameContaining(search, search, email).getContent();
+        return persons.findByEmailContainingOrUsernameContaining(search, search, email).getContent();
     }
 
     public List<Profile> findByShow(boolean show, int limit) {
-        return this.persons.findByShow(show, PageRequest.of(0, limit));
+        return persons.findByShow(show, PageRequest.of(0, limit));
     }
 
     public List<Profile> findByShow(boolean show) {
-        return this.persons.findByShow(show);
+        return persons.findByShow(show);
     }
 
     public List<Profile> findByShow(boolean show, Pageable pageable) {
-        return this.persons.findByShow(show, pageable);
+        return persons.findByShow(show, pageable);
     }
 
     public Long showed() {
-        return this.persons.showed();
+        return persons.showed();
     }
 
     public Photo compress(MultipartFile multipartFile) {
@@ -327,7 +321,7 @@ public class PersonService {
         Profile profileDb = persons.findById(profile.getId()).get();
         if (email.equals(profileDb.getEmail())) {
             profileDb.setUpdated(Calendar.getInstance());
-            profileDb.setPassword(this.encoding.encode(profile.getPassword()));
+            profileDb.setPassword(passwordEncoder.encode(profile.getPassword()));
             persons.save(profileDb);
         }
     }

@@ -1,13 +1,12 @@
 package ru.checkdev.auth.web.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -31,20 +30,15 @@ import java.util.Optional;
 @Tag(name = "PersonController", description = "Person REST API")
 @RestController
 @RequestMapping("/person")
+@AllArgsConstructor
 public class PersonController {
-    private final PasswordEncoder encoding = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
     private final PersonService persons;
     private final RoleService roles;
 
-    @Autowired
-    public PersonController(final PersonService persons, RoleService roles) {
-        this.persons = persons;
-        this.roles = roles;
-    }
-
     @GetMapping("/current")
     public Profile getCurrent(Principal user) {
-        return this.persons.findByEmail(user.getName()).get();
+        return persons.findByEmail(user.getName()).get();
     }
 
     @PostMapping("/hh")
@@ -57,32 +51,32 @@ public class PersonController {
     public ResponseEntity<HashMap<String, Object>> getAll(@PathVariable int limit, @PathVariable int page, @PathVariable String search, Principal user) throws ServletException {
         HashMap<String, Object> data = new HashMap<>();
         if ("noSearch".equals(search)) {
-            data.put("users", this.persons.findAll(PageRequest.of(page, limit, Sort.Direction.ASC, "email")));
+            data.put("users", persons.findAll(PageRequest.of(page, limit, Sort.Direction.ASC, "email")));
         } else {
-            data.put("users", this.persons.findBySearch(search, PageRequest.of(page, limit, Sort.Direction.ASC, "email")));
+            data.put("users", persons.findBySearch(search, PageRequest.of(page, limit, Sort.Direction.ASC, "email")));
         }
-        data.put("total", this.persons.total());
+        data.put("total", persons.total());
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<HashMap<String, Object>> get(@PathVariable int id, Principal user) throws ServletException {
-        HashMap<String, Object> data = new HashMap<String, Object>();
-        data.put("person", this.persons.findById(id));
-        data.put("roles", this.roles.findAll());
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("person", persons.findById(id));
+        data.put("roles", roles.findAll());
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
     @GetMapping("/profile")
     public Profile loadProfile(@RequestParam String key) throws ServletException {
-        return this.persons.findByKey(key);
+        return persons.findByKey(key);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/")
     public Profile save(@RequestBody Profile profile, Principal user) throws ServletException {
-        this.persons.saveRole(profile);
+        persons.saveRole(profile);
         return profile;
     }
 
@@ -121,8 +115,8 @@ public class PersonController {
     public ResponseEntity<String> changePass(@RequestBody Profile.Password password) {
         Profile profileDb = persons.findById(password.getId());
         String response;
-        if (this.encoding.matches(password.getPassword(), profileDb.getPassword())) {
-            profileDb.setPassword(this.encoding.encode(password.getNewPass()));
+        if (passwordEncoder.matches(password.getPassword(), profileDb.getPassword())) {
+            profileDb.setPassword(passwordEncoder.encode(password.getNewPass()));
             persons.save(profileDb);
             response = "ok";
         } else {
@@ -134,8 +128,8 @@ public class PersonController {
     @GetMapping("/random")
     public ResponseEntity<Map<String, Object>> showRandomPerson() {
         Map<String, Object> map = new HashMap<>();
-        map.put("resume", this.persons.findByShow(true, 5));
-        map.put("countResume", this.persons.showed());
+        map.put("resume", persons.findByShow(true, 5));
+        map.put("countResume", persons.showed());
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 

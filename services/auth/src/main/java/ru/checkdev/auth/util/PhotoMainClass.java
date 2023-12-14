@@ -1,4 +1,4 @@
-package ru.checkdev.auth.service;
+package ru.checkdev.auth.util;
 
 import ru.checkdev.auth.domain.Photo;
 

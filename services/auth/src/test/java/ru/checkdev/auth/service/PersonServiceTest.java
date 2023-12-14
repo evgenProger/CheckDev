@@ -46,6 +46,6 @@ public class PersonServiceTest {
     public void whenSelectAllPersonsThenListContainTestRecord() {
         when(persons.findAll()).thenReturn(List.of(new Profile()));
         List<Profile> profileList = this.service.getAll();
-        assertTrue(profileList.size() > 0);
+        assertFalse(profileList.isEmpty());
     }
 }

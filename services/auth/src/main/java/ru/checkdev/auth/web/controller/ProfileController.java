@@ -1,7 +1,7 @@
 package ru.checkdev.auth.web.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +23,9 @@ import java.util.List;
 @Tag(name = "ProfileController", description = "Profile REST API")
 @RestController
 @RequestMapping("/profiles")
-@Slf4j
+@AllArgsConstructor
 public class ProfileController {
     private final ProfileService profileService;
-
-    public ProfileController(ProfileService profileService) {
-        this.profileService = profileService;
-    }
 
     /**
      * Обрабатывает get запрос на получение профиля пользователя по запрошенному ID.
