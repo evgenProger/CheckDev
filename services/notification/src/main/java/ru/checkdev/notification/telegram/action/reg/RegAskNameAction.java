@@ -33,6 +33,7 @@ public class RegAskNameAction implements Action {
         var chatId = msg.getChatId();
         if (userTelegramService.findByChatId(chatId).isPresent()) {
             text = "Данный аккаунт Telegram уже зарегистрирован на сайте";
+            bindingActions().remove(chatId.toString());
         } else {
             text = "Введите имя для регистрации нового пользователя:";
         }

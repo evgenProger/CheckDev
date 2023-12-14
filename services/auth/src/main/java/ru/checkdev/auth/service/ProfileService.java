@@ -2,7 +2,10 @@ package ru.checkdev.auth.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.checkdev.auth.domain.Profile;
 import ru.checkdev.auth.dto.ProfileDTO;
 import ru.checkdev.auth.dto.ProfileTgDTO;
 import ru.checkdev.auth.repository.PersonRepository;
@@ -23,6 +26,7 @@ import java.util.Optional;
 @Slf4j
 public class ProfileService {
     private final PersonRepository personRepository;
+    private final PasswordEncoder encoding = new BCryptPasswordEncoder();
 
     /**
      * Получить ProfileDTO по ID
@@ -42,6 +46,18 @@ public class ProfileService {
      */
     public Optional<ProfileTgDTO> findProfileTgByID(int id) {
         return Optional.ofNullable(personRepository.findProfileTgById(id));
+    }
+
+    public Optional<ProfileTgDTO> findProfileTgByEmailAndPassword(String email, String password) {
+        Optional<ProfileTgDTO> result = Optional.empty();
+        Profile profile = personRepository.findByEmail(email);
+        if (profile != null && encoding.matches(password, profile.getPassword())) {
+            result = Optional.of(new ProfileTgDTO(
+                    profile.getId(),
+                    profile.getUsername(),
+                    profile.getEmail()));
+        }
+        return result;
     }
 
     /**

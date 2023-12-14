@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.checkdev.auth.domain.Profile;
 import ru.checkdev.auth.dto.ProfileDTO;
 import ru.checkdev.auth.dto.ProfileTgDTO;
 import ru.checkdev.auth.service.ProfileService;
@@ -67,6 +68,15 @@ public class ProfileController {
                 profileDTO.orElse(new ProfileTgDTO()),
                 profileDTO.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
+
+    @PostMapping("/tg/byEmailAndPassword")
+    public ResponseEntity<ProfileTgDTO> getProfileTgByEmailAndPassword(@RequestBody Profile profile) {
+        var profileDTO = profileService.findProfileTgByEmailAndPassword(profile.getEmail(), profile.getPassword());
+        return new ResponseEntity<>(
+                profileDTO.orElse(new ProfileTgDTO()),
+                profileDTO.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
+    }
+
 
     @PostMapping("/tg/notified/{id}")
     public ResponseEntity<HttpStatus> tgNotification(@PathVariable int id) {

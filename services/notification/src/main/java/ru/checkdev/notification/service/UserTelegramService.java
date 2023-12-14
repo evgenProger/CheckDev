@@ -22,8 +22,8 @@ public class UserTelegramService {
         }
     }
 
-    public void delete(int id) {
-        repository.deleteById(id);
+    public void delete(UserTelegram userTelegram) {
+        repository.delete(userTelegram);
     }
 
     /**
