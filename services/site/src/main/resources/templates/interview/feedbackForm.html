@@ -58,9 +58,16 @@
                         <span th:if="${userInfo.id} == ${interviewAuthor.id}"
                               th:text="*{agreedWisher.username}"></span>
                     </label><br/>
+                    <td th:if="${feedbackMap.get(userInfo.id) == null}">
                     <textarea class="form-control" rows="3"
                               id="textFeedback"
                               name="textFeedback" required></textarea>
+                    </td>
+                    <td th:if="${feedbackMap.get(userInfo.id) != null}">
+                        <div class="alert alert-info" role="alert">
+                            Вы уже оставляли свой отзыв!
+                        </div>
+                    </td>
                 </div>
                 <!--/*Временная оценки собеседования поле scope значение 0 issue#402*/ -->
                 <input type="hidden" id="scope" name="scope" th:value="0">
@@ -93,9 +100,11 @@
                     <label class="form-check-label" for="scope5">5</label>
                 </div>
                 */-->
-                <div class="form-group m3">
-                    <button type="submit" class="btn btn-primary">Отправить отзыв</button>
-                </div>
+                <td th:if="${feedbackMap.get(userInfo.id) == null}">
+                    <div class="form-group m3">
+                        <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                    </div>
+                </td>
             </form>
         </div>
     </div>
