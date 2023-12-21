@@ -81,16 +81,24 @@ public class NotificationMessagesService {
     public void sendApprovedNotification(WisherApprovedDTO wisherApprovedDTO) {
         var optionalChatId = userTelegramRepository
                 .findChatIdByUserId(wisherApprovedDTO.getWisherUserId());
+        var message = String.format("Вы приглашены на собеседование \"[%s](%s)\".%sСвяжитесь с автором: %s",
+                wisherApprovedDTO.getInterviewTitle(),
+                wisherApprovedDTO.getInterviewLink(),
+                System.lineSeparator(),
+                wisherApprovedDTO.getContactBy());
         if (optionalChatId.isPresent()) {
             var chatId = optionalChatId.get();
-            var sendNotification = new SendMessage(String.valueOf(chatId),
-                    String.format("Вы приглашены на собеседование \"[%s](%s)\".%sСвяжитесь с автором: %s",
-                            wisherApprovedDTO.getInterviewTitle(),
-                            wisherApprovedDTO.getInterviewLink(),
-                            System.lineSeparator(),
-                            wisherApprovedDTO.getContactBy()));
+            var sendNotification = new SendMessage(String.valueOf(chatId), message);
             sendNotification.setParseMode("Markdown");
-            optionalChatId.ifPresent(aLong -> bot.send(sendNotification));
+            bot.send(sendNotification);
+            InnerMessage innerMessage = InnerMessage.of()
+                    .userId(wisherApprovedDTO.getWisherUserId())
+                    .text(MessagesGenerator.getMessageApprovedWisher(wisherApprovedDTO))
+                    .created(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
+                    .read(false)
+                    .interviewId(wisherApprovedDTO.getInterviewId())
+                    .build();
+            innerMessageService.saveMessage(innerMessage);
         }
     }
 }

@@ -30,7 +30,7 @@ public class MessagesGenerator {
     private static String urlSiteStatic;
 
     @Value("${service.urlSite}")
-    public void setUrlSiteStatic(String urlSite){
+    public void setUrlSiteStatic(String urlSite) {
         MessagesGenerator.urlSiteStatic = urlSite;
     }
 
@@ -49,7 +49,7 @@ public class MessagesGenerator {
      * @return String message.
      */
     public static String getMessageParticipateWisher(WisherNotifyDTO wisherNotifyDTO) {
-        return  "На ваше собеседование: "
+        return "На ваше собеседование: "
                 + wisherNotifyDTO.getInterviewTitle()
                 + " добавился участник: "
                 + wisherNotifyDTO.getUserName()
@@ -61,10 +61,10 @@ public class MessagesGenerator {
     }
 
     public static String getMessageApprovedWisher(WisherApprovedDTO wisherApprovedNotifyDTO) {
-        return "Вы одобрены на собеседование: "
-                + wisherApprovedNotifyDTO.getInterviewTitle()
-                + System.lineSeparator()
-                + "Ссылка на собеседование: "
-                + wisherApprovedNotifyDTO.getInterviewLink();
+        return String.format("Вы приглашены на собеседование: %s.%sСсылка на собеседование: %s",
+                wisherApprovedNotifyDTO.getInterviewTitle(),
+                System.lineSeparator(),
+                wisherApprovedNotifyDTO.getInterviewLink()
+        );
     }
 }
