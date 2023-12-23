@@ -63,7 +63,7 @@ class MessagesGeneratorTest {
                 .interviewLink("www")
                 .build();
         String expect = String.format(
-                "Вы одобрены на собеседование: %s",
+                "Вы приглашены на собеседование: %s.",
                 wisherApprovedDTO.getInterviewTitle()) + System.lineSeparator() + "Ссылка на собеседование: www";
         String actual = MessagesGenerator.getMessageApprovedWisher(wisherApprovedDTO);
         assertThat(actual).isEqualTo(expect);
