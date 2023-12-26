@@ -8,7 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.checkdev.mock.domain.Filter;
 import ru.checkdev.mock.domain.FilterProfile;
-import ru.checkdev.mock.service.FilterProfileService;
+import ru.checkdev.mock.enums.FilterProfileStore;
 import ru.checkdev.mock.service.FilterService;
 
 import java.sql.SQLException;
@@ -21,7 +21,6 @@ import java.util.List;
 public class FilterController {
 
     private final FilterService filterService;
-    private final FilterProfileService filterProfileService;
 
     @PostMapping("/")
     @PreAuthorize("isAuthenticated()")
@@ -54,6 +53,6 @@ public class FilterController {
 
     @GetMapping("/profiles")
     public ResponseEntity<List<FilterProfile>> getProfiles() {
-        return new ResponseEntity<>(filterProfileService.getAll(), HttpStatus.OK);
+        return new ResponseEntity<>(FilterProfileStore.getFilterProfiles(), HttpStatus.OK);
     }
 }

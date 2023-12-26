@@ -2,6 +2,7 @@ package ru.checkdev.mock.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -237,4 +238,6 @@ ORDER BY i.create_date DESC
      * @return LIST из новых интервью
      */
     List<Interview> findAllByStatus(StatusInterview status);
+
+    Page<Interview> findAll(Specification<Interview> specification, Pageable pageable);
 }

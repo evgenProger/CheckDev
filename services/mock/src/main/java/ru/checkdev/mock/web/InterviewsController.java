@@ -1,5 +1,7 @@
 package ru.checkdev.mock.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -7,12 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.checkdev.mock.dto.FilterRequestParams;
 import ru.checkdev.mock.dto.InterviewDTO;
 import ru.checkdev.mock.service.InterviewService;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Tag(name = "InterviewsController", description = "Interviews REST API")
@@ -49,90 +50,6 @@ public class InterviewsController {
                 .body(interviewService.findByMode(mode));
     }
 
-    @GetMapping("/findByTopicId/{topicId}")
-    public ResponseEntity<Page<InterviewDTO>> findByTopicId(
-            @PathVariable int topicId,
-            @RequestParam(required = false, defaultValue = "0") int userId,
-            @RequestParam(required = false, defaultValue = "0") int submitterId,
-            @RequestParam(required = false, defaultValue = "false") boolean not,
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "20") int size) {
-        Page<InterviewDTO> result;
-        if (userId > 0) {
-            result = !not
-                    ? interviewService.findByUserIdAsWisherByTopic(userId, topicId, page, size)
-                    : interviewService.findByUserIdAsNotWisherByTopic(userId, topicId, page, size);
-        } else if (submitterId > 0) {
-            result = !not
-                    ? interviewService.findByTopicIdAndSubmitterId(topicId, submitterId, page, size)
-                    : interviewService.findByTopicIdAndSubmitterIdNot(topicId, submitterId, page, size);
-        } else {
-            result = interviewService.findByTopicId(topicId, page, size);
-        }
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(result);
-    }
-
-    @GetMapping("/findByTopicsIds/{tids}")
-    public ResponseEntity<Page<InterviewDTO>> findByCategory(
-            @PathVariable String tids,
-            @RequestParam(required = false, defaultValue = "0") int userId,
-            @RequestParam(required = false, defaultValue = "0") int submitterId,
-            @RequestParam(required = false, defaultValue = "false") boolean not,
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "20") int size) {
-        var topicIdsArr = tids.split(",");
-        List<Integer> topicIds = new ArrayList<>();
-        for (String id : topicIdsArr) {
-            if (id.matches("^\\d+$")) {
-                topicIds.add(Integer.valueOf(id));
-            }
-        }
-        Page<InterviewDTO> result;
-        if (userId > 0) {
-            result = !not
-                    ? interviewService.findByUserIdAsWisherByTopicList(userId, topicIds, page, size)
-                    : interviewService.findByUserIdAsNotWisherByTopicList(userId, topicIds, page, size);
-        } else if (submitterId > 0) {
-            result = !not
-                    ? interviewService.findByTopicsListIdAndSubmitterId(topicIds, submitterId, page, size)
-                    : interviewService.findByTopicsListIdAndSubmitterIdNot(topicIds, submitterId, page, size);
-        } else {
-            result = interviewService.findByTopicsIds(topicIds, page, size);
-        }
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(result);
-    }
-
-    @GetMapping("/findBySubmitter/{submitterId}")
-    public ResponseEntity<Page<InterviewDTO>> findBySubmitter(
-            @PathVariable int submitterId,
-            @RequestParam(required = false, defaultValue = "false") boolean not,
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "20") int size) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(!not ? interviewService.findBySubmitterId(submitterId, page, size)
-                        : interviewService.findBySubmitterIdNot(submitterId, page, size));
-    }
-
-    @GetMapping("/findByWisher/{userId}")
-    public ResponseEntity<Page<InterviewDTO>> findByWisher(
-            @PathVariable int userId,
-            @RequestParam(required = false, defaultValue = "false") boolean not,
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "20") int size) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(!not ? interviewService.findByUserIdAsWisher(userId, page, size)
-                        : interviewService.findByUserIdAsNotWisher(userId, page, size));
-    }
-
     @GetMapping("/findByUserIdRelated/{userId}")
     public ResponseEntity<Page<InterviewDTO>> findByUserIdRelated(
             @PathVariable int userId,
@@ -141,29 +58,6 @@ public class InterviewsController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(interviewService.findPagingByUserIdRelated(page, size, userId));
-    }
-
-    @GetMapping("/findByUserIdRelatedFiltered/{userId}")
-    public ResponseEntity<Page<InterviewDTO>> findByUserIdRelatedFiltered(// todo
-            @PathVariable int userId,
-            @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "20") int size,
-            @RequestParam(required = false, defaultValue = "") String tids) {
-        if (tids.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(interviewService.findPagingByUserIdRelatedFiltered(page, size, userId));
-        }
-        var topicIdsArr = tids.split(",");
-        List<Integer> topicIds = new ArrayList<>();
-        for (String id : topicIdsArr) {
-            if (id.matches("^\\d+$")) {
-                topicIds.add(Integer.valueOf(id));
-            }
-        }
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(interviewService.findPagingByUserIdRelatedFiltered(page, size, userId, topicIds));
     }
 
     @GetMapping("/noFeedback/{uId}")
@@ -182,5 +76,17 @@ public class InterviewsController {
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(interviews);
+    }
+
+    @GetMapping("/getInterviews")
+    public ResponseEntity<Page<InterviewDTO>> getInterviews(
+            @RequestHeader("filter-request-params") String json,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "20") int size) throws JsonProcessingException {
+        FilterRequestParams filterRequestParams = new ObjectMapper().readValue(json, FilterRequestParams.class);
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(interviewService.getInterviewsWithFilters(page, size, filterRequestParams));
     }
 }

@@ -13,4 +13,5 @@ public class FilterDTO {
     private int categoryId;
     private int topicId;
     private int filterProfile;
+    private int status;
 }

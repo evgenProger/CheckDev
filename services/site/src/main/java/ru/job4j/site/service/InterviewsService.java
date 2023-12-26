@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import ru.job4j.site.dto.FilterRequestParams;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.util.RestPageImpl;
 
@@ -47,27 +49,6 @@ public class InterviewsService {
         return mapper.readValue(text, pageType);
     }
 
-    public Page<InterviewDTO> getAllByUserIdRelatedFiltered(String token, int page, int size, int userId, List<Integer> topicIds)
-            throws JsonProcessingException {
-        var tids = parseIdsListToString(topicIds);
-        var text = new RestAuthCall(String
-                        .format("%s/findByUserIdRelatedFiltered/%s?page=%d&size=%d&tids=%s", URL, userId, page, size, tids))
-                        .get(token);
-        var mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        var pageType = mapper.getTypeFactory()
-                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
-        return mapper.readValue(text, pageType);
-    }
-
-    public List<InterviewDTO> getByType(int type) throws JsonProcessingException {
-        var text = new RestAuthCall(String.format("%s%d", URL, type))
-                .get();
-        var mapper = new ObjectMapper();
-        return mapper.readValue(text, new TypeReference<>() {
-        });
-    }
-
     public List<InterviewDTO> getLast() throws JsonProcessingException {
         String text = new RestAuthCall(String.format("%s%s", URL, "/last"))
                 .get();
@@ -81,115 +62,6 @@ public class InterviewsService {
         var text =
                 new RestAuthCall(String
                         .format("%sfindByTopicId/%d?page=%d&size=%d", URL, topicId, page, size)).get();
-        var mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        var pageType = mapper.getTypeFactory()
-                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
-        return mapper.readValue(text, pageType);
-    }
-
-    public Page<InterviewDTO> getByTopicsIds(List<Integer> topicIds, int page, int size)
-            throws JsonProcessingException {
-        var tids = parseIdsListToString(topicIds);
-        var mapper = new ObjectMapper();
-        var text =
-                new RestAuthCall(String
-                        .format("%sfindByTopicsIds/%s?page=%d&size=%d", URL, tids, page, size)).get();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        var pageType = mapper.getTypeFactory()
-                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
-        return mapper.readValue(text, pageType);
-    }
-
-    public Page<InterviewDTO> getByTopicIdAndSubmitterId(
-            int topicId, int submitterId, boolean not, int page, int size)
-            throws JsonProcessingException {
-        var text =
-                new RestAuthCall(String
-                        .format("%sfindByTopicId/%d?page=%d&size=%d&submitterId=%d&not=%b",
-                                URL, topicId, page, size, submitterId, not)).get();
-        var mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        var pageType = mapper.getTypeFactory()
-                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
-        return mapper.readValue(text, pageType);
-    }
-
-    public Page<InterviewDTO> getByTopicsIdsAndSubmitterId(
-            List<Integer> topicIds, int submitterId, boolean not, int page, int size)
-            throws JsonProcessingException {
-        var tids = parseIdsListToString(topicIds);
-        var mapper = new ObjectMapper();
-        var text =
-                new RestAuthCall(String
-                        .format("%sfindByTopicsIds/%s?page=%d&size=%d&submitterId=%d&not=%b",
-                                URL, tids, page, size, submitterId, not)).get();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        var pageType = mapper.getTypeFactory()
-                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
-        return mapper.readValue(text, pageType);
-    }
-
-    public Page<InterviewDTO> getByTopicIdAndUserIdAsWisher(
-            int topicId, int userId, boolean not, int page, int size)
-            throws JsonProcessingException {
-        var text =
-                new RestAuthCall(String
-                        .format("%sfindByTopicId/%d?page=%d&size=%d&userId=%d&not=%b",
-                                URL, topicId, page, size, userId, not)).get();
-        var mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        var pageType = mapper.getTypeFactory()
-                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
-        return mapper.readValue(text, pageType);
-    }
-
-    public Page<InterviewDTO> getByTopicsIdsAndUserIdAsWisher(
-            List<Integer> topicIds, int userId, boolean not, int page, int size)
-            throws JsonProcessingException {
-        var tids = parseIdsListToString(topicIds);
-        var mapper = new ObjectMapper();
-        var text =
-                new RestAuthCall(String
-                        .format("%sfindByTopicsIds/%s?page=%d&size=%d&userId=%d&not=%b",
-                                URL, tids, page, size, userId, not)).get();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        var pageType = mapper.getTypeFactory()
-                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
-        return mapper.readValue(text, pageType);
-    }
-
-    private String parseIdsListToString(List<Integer> list) {
-        var builder = new StringBuilder();
-        for (int i = 0; i < list.size(); i++) {
-            builder.append(list.get(i));
-            if (i < list.size() - 1) {
-                builder.append(',');
-            }
-        }
-        return builder.toString();
-    }
-
-    public Page<InterviewDTO> getBySubmitterId(
-            int submitterId, boolean not, int page, int size)
-            throws JsonProcessingException {
-        var text =
-                new RestAuthCall(String
-                        .format("%sfindBySubmitter/%d?page=%d&size=%d&not=%b",
-                                URL, submitterId, page, size, not)).get();
-        var mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        var pageType = mapper.getTypeFactory()
-                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
-        return mapper.readValue(text, pageType);
-    }
-
-    public Page<InterviewDTO> getByUserIdAsWisher(int userId, boolean not, int page, int size)
-            throws JsonProcessingException {
-        var text =
-                new RestAuthCall(String
-                        .format("%sfindByWisher/%d?page=%d&size=%d&&not=%b",
-                                URL, userId, page, size, not)).get();
         var mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         var pageType = mapper.getTypeFactory()
@@ -263,5 +135,19 @@ public class InterviewsService {
         List<InterviewDTO> list = getNewInterviews();
        return list.stream().map(interviewDTO -> interviewDTO.getTopicId())
                .filter(integer -> integer.equals(topicId)).count();
+    }
+
+    public Page<InterviewDTO> getAllWithFilters(FilterRequestParams filterRequestParams, int page, int size)
+            throws JsonProcessingException {
+        var mapper = new ObjectMapper();
+        var headers = new HttpHeaders();
+        headers.add("filter-request-params", mapper.writeValueAsString(filterRequestParams));
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        var text = new RestAuthCall(
+                        String.format("%sgetInterviews?page=%d&size=%d", URL,
+                                page, size)).getWithHeaders(headers);
+        var pageType = mapper.getTypeFactory()
+                .constructParametricType(RestPageImpl.class, InterviewDTO.class);
+        return mapper.readValue(text, pageType);
     }
 }
