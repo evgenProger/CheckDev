@@ -156,6 +156,18 @@ public class InterviewControllerTest {
     }
 
     @Test
+    void wenGetCancelInterviewThenReturnInterviewPage() throws Exception {
+        var token = "123456";
+        var interview = new InterviewDTO();
+        interview.setId(1);
+        when(interviewService.getById(token, interview.getId())).thenReturn(interview);
+        mockMvc.perform(get("/interview/cancel/{interviewId}", interview.getId())
+                        .sessionAttr("token", token))
+                .andDo(print())
+                .andExpect(view().name("redirect:/interview/" + interview.getId()));
+    }
+
+    @Test
     void wenGetEditViewThenReturnEditView() throws Exception {
         var token = "123456";
         var userInfo = new UserInfoDTO();

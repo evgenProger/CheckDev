@@ -39,6 +39,7 @@ public class InterviewController {
         if (token != null) {
             var userInfo = authService.userInfo(token);
             var interviewsNoFeedback = interviewsService.findAllIdByNoFeedback(userInfo.getId());
+            interviewsNoFeedback = interviewsNoFeedback.stream().filter(i -> i.getStatusId() != StatusInterview.IS_CANCELED.getId()).toList();
             model.addAttribute("noFeedback", interviewsNoFeedback);
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
@@ -115,6 +116,7 @@ public class InterviewController {
         model.addAttribute("STATUS_IN_PROGRESS_ID", StatusInterview.IN_PROGRESS.getId());
         model.addAttribute("STATUS_IS_FEEDBACK_ID", StatusInterview.IS_FEEDBACK.getId());
         model.addAttribute("STATUS_IS_COMPLETED_ID", StatusInterview.IS_COMPLETED.getId());
+        model.addAttribute("STATUS_IS_CANCELED_ID", StatusInterview.IS_CANCELED.getId());
         model.addAttribute("wishersDetail", wishersDetail);
         model.addAttribute("isDismissed", isDismissed);
         model.addAttribute("topicLiteDTO", topicLiteDTO);
@@ -123,13 +125,34 @@ public class InterviewController {
         if (token != null) {
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
-
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Собеседования", "/interviews/",
                 String.format("%s / %s", topicLiteDTO.getCategoryName(), topicLiteDTO.getName()),
                 String.format("/interview/%d", interviewId));
+        if (interview.getStatusId() == StatusInterview.IS_CANCELED.getId() && !isAuthor) {
+            return "redirect:/interviews/";
+        }
         return "interview/details";
+    }
+
+    /**
+     * Метод отменяет интервью (собеседование).
+     * Для редактирования собеседования авторизованный пользователь должен быть создателем интервью(собеседования).
+     * Метод возвращает страницу отмененного интервью (видно только автору интервью (собеседования)).
+     *
+     * @param interviewId int
+     * @param request     HttpServletRequest
+     * @return String view page
+     */
+    @GetMapping("/cancel/{interviewId}")
+    public String cancelInterview(@PathVariable("interviewId") int interviewId,
+                                  HttpServletRequest request) throws JsonProcessingException {
+        var token = getToken(request);
+        var interviewDTO = interviewService.getById(token, interviewId);
+        interviewDTO.setStatusId(StatusInterview.IS_CANCELED.getId());
+        interviewService.updateStatus(token, interviewDTO);
+        return "redirect:/interview/" + interviewId;
     }
 
     /**

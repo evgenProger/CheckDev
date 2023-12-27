@@ -107,6 +107,7 @@ public class InterviewsController {
             model.addAttribute("filterProfileName", filterProfileName);
             model.addAttribute("statuses", StatusInterview.values());
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userId));
+            model.addAttribute("STATUS_IS_CANCELED_ID", StatusInterview.IS_CANCELED.getId());
             if (token != null) {
                 model.addAttribute("botMessages",
                         notifications.findBotMessageByUserId(token, user.getId()));
