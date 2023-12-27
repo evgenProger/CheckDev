@@ -361,6 +361,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="interview: ${#lists.toList(interviewsPage)}">
+<span th:if="${interview.submitterId == userId || interview.submitterId != userId && STATUS_IS_CANCELED_ID != interview.statusId}">
                     <td>
                         <div>
                             <span class="fw-bold">
@@ -389,6 +390,7 @@
                     <td>
                         <span th:text="${interview.approximateDate}"></span>
                     </td>
+                    </span>
                 </tr>
                 </tbody>
             </table>

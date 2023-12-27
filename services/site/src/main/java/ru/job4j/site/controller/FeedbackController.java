@@ -63,6 +63,9 @@ public class FeedbackController {
         if (authorProfile.isPresent()) {
             authorProfileDTO = authorProfile.get();
         }
+        var feedbacks = feedbackService.findByInterviewId(interviewDTO.getId());
+        var feedbackMap = feedbackService.feedbackDTOSToMap(feedbacks);
+        model.addAttribute("feedbackMap", feedbackMap);
         model.addAttribute("interview", interviewDTO);
         model.addAttribute("agreedWisher", wisherProfileDTO);
         model.addAttribute("interviewAuthor", authorProfileDTO);
@@ -83,12 +86,18 @@ public class FeedbackController {
      */
     @PostMapping("/createFeedback")
     public String saveFeedback(@ModelAttribute FeedbackDTO feedbackDTO,
-                               @ModelAttribute("userName")String name,
+                               @ModelAttribute("userName") String name,
                                @ModelAttribute("userId") int userId,
                                @ModelAttribute("submitterId") int submitterId,
                                @ModelAttribute("agreedWisherId") int agreedWisherId,
                                @ModelAttribute("interviewTitle") String interviewTitle,
                                HttpServletRequest request) {
+        var feedbacks = feedbackService.findByInterviewId(feedbackDTO.getInterviewId());
+        for (FeedbackDTO f : feedbacks) {
+            if (userId == f.getUserId()) {
+                return "redirect:/interview/feedback/" + feedbackDTO.getInterviewId();
+            }
+        }
         var token = RequestResponseTools.getToken(request);
         feedbackService.save(token, feedbackDTO, name);
         var recipientId = submitterId == userId ? agreedWisherId : submitterId;
