@@ -22,6 +22,8 @@ public class Filter {
     private int topicId;
     @Column(name = "filter_profile")
     private int filterProfile;
+    @Column(name = "status")
+    private int status;
 
     @Override
     public boolean equals(Object o) {
@@ -29,12 +31,15 @@ public class Filter {
             return false;
         }
         return userId == filter.userId
-                && categoryId == filter.categoryId && topicId == filter.topicId;
+                && categoryId == filter.categoryId
+                && topicId == filter.topicId
+                && status == filter.status;
     }
 
     @Override
     public int hashCode() {
-        return (((((Objects.hash(userId)) * 31)
-                + Objects.hash(categoryId)) * 31) + Objects.hash(topicId)) * 31;
+        return ((((((Objects.hash(userId)) * 31)
+                + Objects.hash(categoryId)) * 31) + Objects.hash(topicId)) * 31)
+                + Objects.hash(status) * 31;
     }
 }

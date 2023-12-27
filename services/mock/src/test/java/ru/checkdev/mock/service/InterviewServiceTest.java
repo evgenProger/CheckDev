@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.dto.FilterRequestParams;
 import ru.checkdev.mock.dto.InterviewDTO;
 import ru.checkdev.mock.enums.StatusInterview;
 import ru.checkdev.mock.mapper.InterviewMapper;
@@ -22,7 +23,6 @@ import ru.checkdev.mock.repository.WisherRepository;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +43,9 @@ class InterviewServiceTest {
 
     @MockBean
     private WisherRepository wisherRepository;
+
+    @MockBean
+    private InterviewFilterSpecifications interviewFilterSpecifications;
 
     @Autowired
     private InterviewService interviewService;
@@ -207,273 +210,6 @@ class InterviewServiceTest {
     }
 
     @Test
-    public void whenGetByTopicsIds() {
-        List<Interview> oddTopicIdsInterviewList = new ArrayList<>();
-        List<Interview> evenTopicIdsInterviewList = new ArrayList<>();
-        IntStream.range(0, 8).forEach(i -> {
-            var interview = new Interview();
-            interview.setMode(1);
-            interview.setSubmitterId(1);
-            interview.setTitle(String.format("Interview_%d", i));
-            interview.setAdditional(String.format("Some text_%d", i));
-            interview.setContactBy("Some contact");
-            interview.setApproximateDate("30.02.2024");
-            interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
-            interview.setTopicId(i + 1);
-            if (interview.getTopicId() % 2 == 0) {
-                evenTopicIdsInterviewList.add(interview);
-            } else {
-                oddTopicIdsInterviewList.add(interview);
-            }
-        });
-        var evenPage = new PageImpl<>(evenTopicIdsInterviewList);
-        var oddPage = new PageImpl<>(oddTopicIdsInterviewList);
-        when(interviewRepository.findByTopicIdIn(List.of(2, 4, 6), PageRequest.of(0, 5)))
-                .thenReturn(evenPage);
-        when(interviewRepository.findByTopicIdIn(List.of(1, 3, 5, 7), PageRequest.of(0, 5)))
-                .thenReturn(oddPage);
-        var expectEvenPage = evenPage.map(InterviewMapper::getInterviewDTO);
-        var expectOddPage = oddPage.map(InterviewMapper::getInterviewDTO);
-        var actualEvanPage = interviewService.findByTopicsIds(List.of(2, 4, 6), 0, 5);
-        var actualOddPage = interviewService.findByTopicsIds(List.of(1, 3, 5, 7), 0, 5);
-        assertThat(actualEvanPage, is(expectEvenPage));
-        assertThat(actualOddPage, is(expectOddPage));
-    }
-
-    @Test
-    public void whenFindBySubmitterId() {
-        List<Interview> firstSubmitterInterviewList = new ArrayList<>();
-        List<Interview> secondSubmitterInterviewList = new ArrayList<>();
-        inflateListsByInterviewsWith7topicsAnd2Submitters(
-                firstSubmitterInterviewList, secondSubmitterInterviewList);
-        var firstSubmitterPage = new PageImpl<>(secondSubmitterInterviewList);
-        var secondSubmitterPage = new PageImpl<>(firstSubmitterInterviewList);
-        when(interviewRepository.findBySubmitterId(1, PageRequest.of(0, 5)))
-                .thenReturn(firstSubmitterPage);
-        when(interviewRepository.findBySubmitterId(2, PageRequest.of(0, 5)))
-                .thenReturn(secondSubmitterPage);
-        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var actualFirstSubmitterPage = interviewService.findBySubmitterId(1, 0, 5);
-        var actualSecondSubmiterPage = interviewService.findBySubmitterId(2, 0, 5);
-        assertThat(actualFirstSubmitterPage, is(expectFirstSubmitterPage));
-        assertThat(actualSecondSubmiterPage, is(expectSecondSubmiterPage));
-    }
-
-    @Test
-    public void whenFindByExcludeSubmitterId() {
-        List<Interview> firstSubmitterInterviewList = new ArrayList<>();
-        List<Interview> secondSubmitterInterviewList = new ArrayList<>();
-        inflateListsByInterviewsWith7topicsAnd2Submitters(
-                firstSubmitterInterviewList, secondSubmitterInterviewList);
-        var firstSubmitterPage = new PageImpl<>(secondSubmitterInterviewList);
-        var secondSubmitterPage = new PageImpl<>(firstSubmitterInterviewList);
-        when(interviewRepository.findBySubmitterIdNot(1, PageRequest.of(0, 5)))
-                .thenReturn(secondSubmitterPage);
-        when(interviewRepository.findBySubmitterIdNot(2, PageRequest.of(0, 5)))
-                .thenReturn(firstSubmitterPage);
-        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var actualFirstSubmitterPage = interviewService.findBySubmitterIdNot(1, 0, 5);
-        var actualSecondSubmiterPage = interviewService.findBySubmitterIdNot(2, 0, 5);
-        assertThat(actualFirstSubmitterPage, is(expectSecondSubmiterPage));
-        assertThat(actualSecondSubmiterPage, is(expectFirstSubmitterPage));
-    }
-
-    @Test
-    public void whenFindBySubmitterIdAndTopicId() {
-        List<Interview> firstSubmitterInterviewList = new ArrayList<>();
-        List<Interview> secondSubmitterInterviewList = new ArrayList<>();
-        inflateInterviewListsWith2SubmittersAnd2Topics(
-                firstSubmitterInterviewList, secondSubmitterInterviewList);
-        var firstSubmitterPage = new PageImpl<>(secondSubmitterInterviewList);
-        var secondSubmitterPage = new PageImpl<>(firstSubmitterInterviewList);
-        when(interviewRepository.findByTopicIdAndSubmitterId(2, 2,
-                PageRequest.of(0, 5))).thenReturn(firstSubmitterPage);
-        when(interviewRepository.findByTopicIdAndSubmitterId(1, 1,
-                PageRequest.of(0, 5))).thenReturn(secondSubmitterPage);
-        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var actualFirstSubmitterPage = interviewService.findByTopicIdAndSubmitterId(2, 2, 0, 5);
-        var actualSecondSubmiterPage = interviewService.findByTopicIdAndSubmitterId(1, 1, 0, 5);
-        assertThat(actualFirstSubmitterPage, is(expectFirstSubmitterPage));
-        assertThat(actualSecondSubmiterPage, is(expectSecondSubmiterPage));
-    }
-
-    @Test
-    public void whenFindByTopicIdExcludeSubmitterId() {
-        List<Interview> firstSubmitterInterviewList = new ArrayList<>();
-        List<Interview> secondSubmitterInterviewList = new ArrayList<>();
-        inflateInterviewListsWith2SubmittersAnd2Topics(
-                firstSubmitterInterviewList, secondSubmitterInterviewList);
-        var firstSubmitterPage = new PageImpl<>(secondSubmitterInterviewList);
-        var secondSubmitterPage = new PageImpl<>(firstSubmitterInterviewList);
-        when(interviewRepository.findByTopicIdAndSubmitterIdNot(2, 2,
-                PageRequest.of(0, 5))).thenReturn(secondSubmitterPage);
-        when(interviewRepository.findByTopicIdAndSubmitterIdNot(1, 1,
-                PageRequest.of(0, 5))).thenReturn(firstSubmitterPage);
-        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var actualFirstSubmitterPage = interviewService.findByTopicIdAndSubmitterIdNot(1, 1, 0, 5);
-        var actualSecondSubmiterPage = interviewService.findByTopicIdAndSubmitterIdNot(2, 2, 0, 5);
-        assertThat(actualFirstSubmitterPage, is(expectFirstSubmitterPage));
-        assertThat(actualSecondSubmiterPage, is(expectSecondSubmiterPage));
-    }
-
-    private void inflateInterviewListsWith2SubmittersAnd2Topics(
-            List<Interview> firstSubmitterInterviewList,
-            List<Interview> secondSubmitterInterviewList) {
-        IntStream.range(1, 8).forEach(i -> {
-            var interview = new Interview();
-            interview.setMode(1);
-            interview.setSubmitterId(i % 2 == 0 ? 1 : 2);
-            interview.setTitle(String.format("Interview_%d", i));
-            interview.setAdditional(String.format("Some text_%d", i));
-            interview.setContactBy("Some contact");
-            interview.setApproximateDate("30.02.2024");
-            interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
-            interview.setTopicId(i % 2 == 0 ? 1 : 2);
-            if (interview.getSubmitterId() == 1) {
-                firstSubmitterInterviewList.add(interview);
-            } else {
-                secondSubmitterInterviewList.add(interview);
-            }
-        });
-    }
-
-    @Test
-    public void whenFindBySubmitterIdAndTopicsIdsList() {
-        List<Interview> firstSubmitterInterviewList = new ArrayList<>();
-        List<Interview> secondSubmitterInterviewList = new ArrayList<>();
-        inflateListsByInterviewsWith7topicsAnd2Submitters(
-                firstSubmitterInterviewList, secondSubmitterInterviewList);
-        var firstSubmitterPage = new PageImpl<>(secondSubmitterInterviewList);
-        var secondSubmitterPage = new PageImpl<>(firstSubmitterInterviewList);
-        when(interviewRepository.findByTopicIdInAndSubmitterId(
-                List.of(1, 2, 3, 4, 5, 6, 7), 2,
-                PageRequest.of(0, 5))).thenReturn(firstSubmitterPage);
-        when(interviewRepository.findByTopicIdInAndSubmitterId(
-                List.of(1, 2, 3, 4, 5, 6, 7), 1,
-                PageRequest.of(0, 5))).thenReturn(secondSubmitterPage);
-        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var actualFirstSubmitterPage = interviewService.findByTopicsListIdAndSubmitterId(List.of(1, 2, 3, 4, 5, 6, 7), 2, 0, 5);
-        var actualSecondSubmiterPage = interviewService.findByTopicsListIdAndSubmitterId(List.of(1, 2, 3, 4, 5, 6, 7), 1, 0, 5);
-        assertThat(actualFirstSubmitterPage, is(expectFirstSubmitterPage));
-        assertThat(actualSecondSubmiterPage, is(expectSecondSubmiterPage));
-    }
-
-    @Test
-    public void whenFindByTopicsIdsListAndExcludeSubmitterId() {
-        List<Interview> firstSubmitterInterviewList = new ArrayList<>();
-        List<Interview> secondSubmitterInterviewList = new ArrayList<>();
-        inflateListsByInterviewsWith7topicsAnd2Submitters(
-                firstSubmitterInterviewList, secondSubmitterInterviewList);
-        var firstSubmitterPage = new PageImpl<>(secondSubmitterInterviewList);
-        var secondSubmitterPage = new PageImpl<>(firstSubmitterInterviewList);
-        when(interviewRepository.findByTopicIdInAndSubmitterIdNot(
-                List.of(1, 2, 3, 4, 5, 6, 7), 2,
-                PageRequest.of(0, 5))).thenReturn(secondSubmitterPage);
-        when(interviewRepository.findByTopicIdInAndSubmitterIdNot(
-                List.of(1, 2, 3, 4, 5, 6, 7), 1,
-                PageRequest.of(0, 5))).thenReturn(firstSubmitterPage);
-        var expectFirstSubmitterPage = firstSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var expectSecondSubmiterPage = secondSubmitterPage.map(InterviewMapper::getInterviewDTO);
-        var actualFirstSubmitterPage = interviewService.findByTopicsListIdAndSubmitterIdNot(List.of(1, 2, 3, 4, 5, 6, 7), 1, 0, 5);
-        var actualSecondSubmiterPage = interviewService.findByTopicsListIdAndSubmitterIdNot(List.of(1, 2, 3, 4, 5, 6, 7), 2, 0, 5);
-        assertThat(actualFirstSubmitterPage, is(expectFirstSubmitterPage));
-        assertThat(actualSecondSubmiterPage, is(expectSecondSubmiterPage));
-    }
-
-    private void inflateListsByInterviewsWith7topicsAnd2Submitters(
-            List<Interview> firstSubmitterInterviewList,
-            List<Interview> secondSubmitterInterviewList
-    ) {
-        IntStream.range(1, 8).forEach(i -> {
-            var interview = new Interview();
-            interview.setMode(1);
-            interview.setSubmitterId(i % 2 == 0 ? 1 : 2);
-            interview.setTitle(String.format("Interview_%d", i));
-            interview.setAdditional(String.format("Some text_%d", i));
-            interview.setContactBy("Some contact");
-            interview.setApproximateDate("30.02.2024");
-            interview.setCreateDate(new Timestamp(System.currentTimeMillis()));
-            interview.setTopicId(i);
-            if (interview.getSubmitterId() == 1) {
-                firstSubmitterInterviewList.add(interview);
-            } else {
-                secondSubmitterInterviewList.add(interview);
-            }
-        });
-    }
-
-    @Test
-    public void whenFindByUserIdAsWisher() {
-        var page = new PageImpl<>(List.of(interview));
-        when(wisherRepository
-                .findInterviewByUserId(1, PageRequest.of(0, 10)))
-                .thenReturn(page);
-        var expect = page.map(InterviewMapper::getInterviewDTO);
-        var actual = interviewService.findByUserIdAsWisher(1, 0, 10);
-        assertThat(actual, is(expect));
-    }
-
-    @Test
-    public void whenFindByUserIdAsNotWisher() {
-        var page = new PageImpl<>(List.of(interview));
-        when(interviewRepository
-                .findInterviewByUserIdNot(1, PageRequest.of(0, 10)))
-                .thenReturn(page);
-        var expect = page.map(InterviewMapper::getInterviewDTO);
-        var actual = interviewService.findByUserIdAsNotWisher(1, 0, 10);
-        assertThat(actual, is(expect));
-    }
-
-    @Test
-    public void whenFindByUserIdAsWisherAndTopicId() {
-        var page = new PageImpl<>(List.of(interview));
-        when(wisherRepository
-                .findInterviewByUserIdAndByTopicId(1, 1, PageRequest.of(0, 10)))
-                .thenReturn(page);
-        var expect = page.map(InterviewMapper::getInterviewDTO);
-        var actual = interviewService.findByUserIdAsWisherByTopic(1, 1, 0, 10);
-        assertThat(actual, is(expect));
-    }
-
-    @Test
-    public void whenFindByUserIdAsNotWisherAndTopicId() {
-        var page = new PageImpl<>(List.of(interview));
-        when(interviewRepository
-                .findInterviewByUserIdNotAndByTopicId(1, 1, PageRequest.of(0, 10)))
-                .thenReturn(page);
-        var expect = page.map(InterviewMapper::getInterviewDTO);
-        var actual = interviewService.findByUserIdAsNotWisherByTopic(1, 1, 0, 10);
-        assertThat(actual, is(expect));
-    }
-
-    @Test
-    public void whenFindByUserIdAsWisherAndTopicsIdsList() {
-        var page = new PageImpl<>(List.of(interview));
-        when(wisherRepository
-                .findInterviewByUserIdAndByTopicIdIn(1, List.of(1, 2), PageRequest.of(0, 10)))
-                .thenReturn(page);
-        var expect = page.map(InterviewMapper::getInterviewDTO);
-        var actual = interviewService.findByUserIdAsWisherByTopicList(1, List.of(1, 2), 0, 10);
-        assertThat(actual, is(expect));
-    }
-
-    @Test
-    public void whenFindByUserIdAsNotWisherAndTopicsIdsList() {
-        var page = new PageImpl<>(List.of(interview));
-        when(interviewRepository
-                .findInterviewByUserIdNotAndByTopicIdIn(1, List.of(1, 2), PageRequest.of(0, 10)))
-                .thenReturn(page);
-        var expect = page.map(InterviewMapper::getInterviewDTO);
-        var actual = interviewService.findByUserIdAsNotWisherByTopicList(1, List.of(1, 2), 0, 10);
-        assertThat(actual, is(expect));
-    }
-
-    @Test
     void whenFindAllIdByNoFeedbackThenReturnListInterview() {
         int submitterId = 1;
         int wisherUser = 2;
@@ -511,5 +247,19 @@ class InterviewServiceTest {
         when(interviewRepository.findAllByStatus(status)).thenReturn(List.of());
         List<InterviewDTO> actual = interviewService.findNewInterview();
         assertThat(actual.isEmpty()).isTrue();
+    }
+
+    @Test
+    void whenGetAllWithSpecifications() {
+        var filterRequestParams = new FilterRequestParams(
+                List.of(1), 3, 0, 0, 1, false);
+        var specifications =
+                interviewFilterSpecifications.createSpecifications(filterRequestParams);
+        var page = new PageImpl<>(List.of(interview));
+        when(interviewRepository.findAll(specifications, PageRequest.of(0, 1)))
+                .thenReturn(page);
+        assertThat(interviewService
+                .getInterviewsWithFilters(0, 1, filterRequestParams))
+                .isEqualTo(page.map(InterviewMapper::getInterviewDTO));
     }
 }

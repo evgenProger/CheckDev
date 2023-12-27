@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.site.component.FilterRequestParamsManager;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.FilterDTO;
 import ru.job4j.site.dto.InterviewDTO;
@@ -15,10 +16,7 @@ import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.job4j.site.controller.RequestResponseTools.getToken;
@@ -36,6 +34,7 @@ public class InterviewsController {
     private final AuthService authService;
     private final FilterService filterService;
     private final NotificationService notifications;
+    private final FilterRequestParamsManager filterRequestParamsManager;
 
     @GetMapping("/")
     public String getAllInterviews(Model model,
@@ -51,31 +50,32 @@ public class InterviewsController {
                     ? filterService.getByUserId(token, userId)
                     : (FilterDTO) session.getAttribute("filter");
             var isFiltered = filter != null
-                    && (filter.getCategoryId() > 0
-                    || filter.getFilterProfile() > 0);
+                    && (filter.getCategoryId() > 0 || filter.getFilterProfile() > 0 || filter.getStatus() > 0);
             Page<InterviewDTO> interviewsPage;
             List<TopicIdNameDTO> topicIdNameDTOS = new ArrayList<>();
             var categoryName = "";
             var topicName = "";
             var filterProfileName = "";
+            var statusName = "";
             var filterProfiles = filterService.getProfiles();
             var categories = categoriesService.getAll();
             if (isFiltered) {
                 var categoryId = filter.getCategoryId();
                 var topicId = filter.getTopicId();
                 var filterProfileId = filter.getFilterProfile();
+                var statusId = filter.getStatus();
                 if (categoryId > 0) {
                     topicIdNameDTOS = topicsService.getTopicIdNameDtoByCategory(categoryId);
                 }
-                List<Integer> topicIds = topicId != 0 ? List.of(topicId) : topicIdNameDTOS.stream().map(TopicIdNameDTO::getId).toList();
-                if (categoryId > 0 && topicIds.isEmpty()) {
-                    topicIds = List.of(0);
-                }
-                interviewsPage = interviewsService.getAllByUserIdRelatedFiltered(token, page, size, userId, topicIds);
+                var filtersRequestParams = topicId > 0 ? filterRequestParamsManager
+                        .getParams(filter) : filterRequestParamsManager.getParams(filter,
+                        topicIdNameDTOS.stream().map(TopicIdNameDTO::getId).toList());
+                interviewsPage = interviewsService.getAllWithFilters(filtersRequestParams, page, size);
                 categoryName = categoriesService.getNameById(categories, categoryId);
                 topicName = topicId > 0 ? topicsService.getNameById(topicId) : "";
                 filterProfileName = filterProfileId > 0
                         ? filterService.getNameById(filterProfiles, filterProfileId) : "";
+                statusName = statusId > 0 ? StatusInterview.values()[statusId].getInfo() : "";
             } else {
                 interviewsPage = interviewsService.getAllByUserIdRelated(token, page, size, userId);
             }
@@ -91,10 +91,10 @@ public class InterviewsController {
             );
             var topicLiteDTOs = topicsService.getAllTopicLiteDTO();
             var topicsLiteMap = topicsService.liteDTTOSToMap(topicLiteDTOs);
+            var statuses = StatusInterview.values();
             model.addAttribute("authService", authService);
             model.addAttribute("topicsLiteMap", topicsLiteMap);
             model.addAttribute("interviewsPage", interviewsPage);
-            model.addAttribute("statuses", StatusInterview.values());
             model.addAttribute("current_page", "interviews");
             model.addAttribute("users", userList);
             model.addAttribute("categories", categories);
@@ -105,8 +105,9 @@ public class InterviewsController {
             model.addAttribute("topics", topicIdNameDTOS);
             model.addAttribute("filterProfiles", filterProfiles);
             model.addAttribute("filterProfileName", filterProfileName);
-            model.addAttribute("statuses", StatusInterview.values());
+            model.addAttribute("statuses", Arrays.copyOfRange(statuses, 1, statuses.length));
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userId));
+            model.addAttribute("statusName", statusName);
             model.addAttribute("STATUS_IS_CANCELED_ID", StatusInterview.IS_CANCELED.getId());
             if (token != null) {
                 model.addAttribute("botMessages",

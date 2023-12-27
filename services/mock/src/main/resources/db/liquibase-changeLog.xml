@@ -27,4 +27,6 @@
     <include file="changelog/021_dml_update_table_interview.sql" relativeToChangelogFile="true"/>
     <include file="changelog/022_ddl_drop_column_status_table_wisher.sql" relativeToChangelogFile="true"/>
     <include file="changelog/023_ddl_add_constraint_table_wisher.sql" relativeToChangelogFile="true"/>
+    <include file="changelog/024_ddl_add_column_status_id_in_table_filter.sql" relativeToChangelogFile="true"/>
+    <include file="changelog/025_ddl_drop_table_filter_profile.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

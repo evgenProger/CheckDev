@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.checkdev.mock.domain.Interview;
+import ru.checkdev.mock.dto.FilterRequestParams;
 import ru.checkdev.mock.dto.InterviewDTO;
 import ru.checkdev.mock.enums.StatusInterview;
 import ru.checkdev.mock.mapper.InterviewMapper;
@@ -20,7 +21,6 @@ import ru.checkdev.mock.repository.WisherRepository;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +32,7 @@ public class InterviewService {
 
     private final InterviewRepository interviewRepository;
     private final WisherRepository wisherRepository;
+    private final InterviewFilterSpecifications interviewFilterSpecifications;
 
     private static final Logger LOG = LoggerFactory.getLogger(InterviewService.class.getName());
 
@@ -88,20 +89,6 @@ public class InterviewService {
                 .map(InterviewMapper::getInterviewDTO);
     }
 
-    public Page<InterviewDTO> findPagingByUserIdRelatedFiltered(int page, int size, int userId) {
-        var status = StatusInterview.IS_NEW.getId();
-        return interviewRepository.findAllByUserIdRelatedFiltered(userId, status,
-                        PageRequest.of(page, size, Sort.unsorted()))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findPagingByUserIdRelatedFiltered(int page, int size, int userId, List<Integer> topicsIds) {
-        var status = StatusInterview.IS_NEW.getId();
-        return interviewRepository.findAllByUserIdRelatedFiltered(userId, status, topicsIds,
-                        PageRequest.of(page, size, Sort.unsorted()))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
     public Optional<InterviewDTO> findById(Integer id) {
         var interview = interviewRepository.findById(id);
         if (interview.isEmpty()) {
@@ -118,16 +105,6 @@ public class InterviewService {
                     }
                 }).map(InterviewMapper::getInterviewDTO)
                 .toList();
-    }
-
-    public Page<InterviewDTO> findByTopicId(int topicId, int page, int size) {
-        return interviewRepository.findByTopicId(topicId, PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByTopicsIds(List<Integer> topicsIds, int page, int size) {
-        return interviewRepository.findByTopicIdIn(topicsIds, PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
     }
 
     public boolean update(InterviewDTO interviewDTO) {
@@ -161,92 +138,6 @@ public class InterviewService {
         }
     }
 
-    public Page<InterviewDTO> findBySubmitterId(int submitterId, int page, int size) {
-        return interviewRepository
-                .findBySubmitterId(submitterId, PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findBySubmitterIdNot(int submitterId, int page, int size) {
-        return interviewRepository
-                .findBySubmitterIdNot(submitterId, PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByTopicIdAndSubmitterId(int topicId, int submitterId,
-                                                          int page, int size) {
-        return interviewRepository.findByTopicIdAndSubmitterId(topicId, submitterId,
-                        PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByTopicIdAndSubmitterIdNot(int topicId, int submitterId,
-                                                             int page, int size) {
-        return interviewRepository.findByTopicIdAndSubmitterIdNot(topicId, submitterId,
-                        PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByTopicsListIdAndSubmitterId(Collection<Integer> topicsIds,
-                                                               int submitterId,
-                                                               int page, int size) {
-        return interviewRepository.findByTopicIdInAndSubmitterId(topicsIds, submitterId,
-                        PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByTopicsListIdAndSubmitterIdNot(
-            Collection<Integer> topicsIds,
-            int submitterId,
-            int page, int size) {
-        return interviewRepository.findByTopicIdInAndSubmitterIdNot(topicsIds, submitterId,
-                        PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByUserIdAsWisher(int userId, int page, int size) {
-        return wisherRepository.findInterviewByUserId(userId, PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByUserIdAsNotWisher(int userId, int page, int size) {
-        return interviewRepository.findInterviewByUserIdNot(userId, PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByUserIdAsWisherByTopic(int userId, int topicId,
-                                                          int page, int size) {
-        return wisherRepository
-                .findInterviewByUserIdAndByTopicId(userId, topicId, PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByUserIdAsNotWisherByTopic(int userId, int topicId,
-                                                             int page, int size) {
-        return interviewRepository
-                .findInterviewByUserIdNotAndByTopicId(userId, topicId,
-                        PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByUserIdAsWisherByTopicList(int userId,
-                                                              Collection<Integer> topicsIds,
-                                                              int page, int size) {
-        return wisherRepository
-                .findInterviewByUserIdAndByTopicIdIn(userId, topicsIds,
-                        PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
-    public Page<InterviewDTO> findByUserIdAsNotWisherByTopicList(int userId,
-                                                                 Collection<Integer> topicsIds,
-                                                                 int page, int size) {
-        return interviewRepository
-                .findInterviewByUserIdNotAndByTopicIdIn(userId, topicsIds,
-                        PageRequest.of(page, size))
-                .map(InterviewMapper::getInterviewDTO);
-    }
-
     /**
      * Метод возвращает все Interview на которые пользователь должен оставить отзыв
      *
@@ -271,5 +162,13 @@ public class InterviewService {
                 .stream()
                 .map(InterviewMapper::getInterviewDTO)
                 .toList();
+    }
+
+    public Page<InterviewDTO> getInterviewsWithFilters(
+            int page, int size, FilterRequestParams filterRequestParams) {
+        return interviewRepository.findAll(
+                interviewFilterSpecifications
+                        .createSpecifications(filterRequestParams), PageRequest.of(page, size))
+                .map(InterviewMapper::getInterviewDTO);
     }
 }

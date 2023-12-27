@@ -15,8 +15,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.mock.MockSrv;
 import ru.checkdev.mock.domain.Filter;
+import ru.checkdev.mock.domain.FilterProfile;
+import ru.checkdev.mock.enums.FilterProfileStore;
 import ru.checkdev.mock.service.FilterService;
 
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -40,7 +44,7 @@ class FilterControllerTest {
     @Test
     @WithMockUser
     public void whenFilterSaved() throws Exception {
-        var filter = new Filter(1, 1, 1, 0);
+        var filter = new Filter(1, 1, 1, 0, 0);
         when(filterService.save(filter)).thenReturn(Optional.of(filter));
         String json = new GsonBuilder().serializeNulls().create().toJson(filter);
         mockMvc.perform(post("/filter/")
@@ -53,7 +57,7 @@ class FilterControllerTest {
 
     @Test
     public void whenFilterSavedIsUnauthorized() throws Exception {
-        var filter = new Filter(1, 1, 1, 0);
+        var filter = new Filter(1, 1, 1, 0, 0);
         when(filterService.save(filter)).thenReturn(Optional.of(filter));
         String json = new GsonBuilder().serializeNulls().create().toJson(filter);
         mockMvc.perform(post("/filter/")
@@ -65,7 +69,7 @@ class FilterControllerTest {
 
     @Test
     public void whenFilterFindByUserId() throws Exception {
-        var filter = new Filter(1, 1, 1, 0);
+        var filter = new Filter(1, 1, 1, 0, 0);
         when(filterService.findByUserId(1)).thenReturn(Optional.of(filter));
         String json = new GsonBuilder().serializeNulls().create().toJson(filter);
         mockMvc.perform(get("/filter/1"))
@@ -93,7 +97,7 @@ class FilterControllerTest {
     @Test
     @WithMockUser
     public void whenFilterDeleted() throws Exception {
-        var filter = new Filter(1, 1, 1, 0);
+        var filter = new Filter(1, 1, 1, 0, 0);
         when(filterService.deleteByUserId(1)).thenReturn(1);
         mockMvc.perform(delete("/filter/delete/1"))
                 .andDo(print())
@@ -103,7 +107,7 @@ class FilterControllerTest {
 
     @Test
     public void whenFilterDeletedIsUnauthorized() throws Exception {
-        var filter = new Filter(1, 1, 1, 0);
+        var filter = new Filter(1, 1, 1, 0, 0);
         when(filterService.deleteByUserId(1)).thenReturn(1);
         mockMvc.perform(delete("/filter/delete/1"))
                 .andDo(print())
@@ -119,5 +123,19 @@ class FilterControllerTest {
                 .andDo(print())
                 .andExpectAll(status().isNotFound(),
                         content().string("false"));
+    }
+
+    @Test
+    void whenGetFilterProfiles() throws Exception {
+        List<FilterProfile> profiles = FilterProfileStore.getFilterProfiles();
+        String expectedJson = new GsonBuilder().serializeNulls().create().toJson(profiles);
+        byte[] utf8Json = expectedJson.getBytes(StandardCharsets.UTF_8);
+        mockMvc.perform(get("/filter/profiles"))
+                .andDo(print())
+                .andExpectAll(
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        content().bytes(utf8Json),
+                        content().json(expectedJson));
     }
 }

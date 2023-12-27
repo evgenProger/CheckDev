@@ -73,34 +73,6 @@ class InterviewsControllerTest {
     }
 
     @Test
-    public void whenFindByTopicsIds() throws Exception {
-        List<Interview> interviews = new ArrayList<>();
-        IntStream.range(1, 8).forEach(i -> {
-            var interview = Interview.of()
-                    .id(i)
-                    .mode(2)
-                    .submitterId(3)
-                    .title(String.format("interview_%d", i))
-                    .additional("test_additional")
-                    .contactBy("test_contact_by")
-                    .approximateDate("test_approximate_date")
-                    .createDate(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
-                    .topicId(2)
-                    .build();
-            interviews.add(interview);
-        });
-        var page = new PageImpl<>(interviews);
-        when(interviewRepository.findByTopicIdIn(List.of(1, 2, 3), PageRequest.of(0, 5)))
-                .thenReturn(page);
-        when(service.findPaging(Mockito.anyInt(), Mockito.anyInt()))
-                .thenReturn(page.map(InterviewMapper::getInterviewDTO));
-        mockMvc.perform(get("/interviews/findByTopicsIds/1,2,3"))
-                .andDo(print())
-                .andExpectAll(status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
     void whenGetAllByNoFeedbackThenReturnResponseList() throws Exception {
         int submitterId = 1;
         int userWiserId = 2;

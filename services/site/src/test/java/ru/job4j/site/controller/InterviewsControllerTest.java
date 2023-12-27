@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.job4j.site.enums.StatusInterview.*;
 
 @SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
@@ -31,16 +32,22 @@ public class InterviewsControllerTest {
 
     @MockBean
     private InterviewsService interviewsService;
+
     @MockBean
     private AuthService authService;
+
     @MockBean
     private ProfilesService profilesService;
+
     @MockBean
     private CategoriesService categoriesService;
+
     @MockBean
     private FilterService filterService;
+
     @MockBean
     private TopicsService topicsService;
+
     @MockBean
     private NotificationService notificationService;
 
@@ -80,12 +87,14 @@ public class InterviewsControllerTest {
         List<TopicIdNameDTO> topicIdNameDTOS = IntStream.range(1, 8).mapToObj(
                 i -> new TopicIdNameDTO(i, String.format("topic_id_name_%d", i))
         ).toList();
-        var filter = new FilterDTO(1, 1, 1, 0);
+        var filter = new FilterDTO(1, 1, 1, 0, 1);
         var page = new PageImpl<>(interviews);
         var messages = List.of(new InnerMessageDTO(1, id,
                 "message", new Timestamp(System.currentTimeMillis()), 1));
-        when(interviewsService.getAllByUserIdRelated(token, 1, 5, userInfo.getId())).thenReturn(page);
-        when(interviewsService.getAllByUserIdRelatedFiltered(token, 1, 5, userInfo.getId(), List.of(1))).thenReturn(page);
+        var filterRequestParams = new FilterRequestParams(
+                List.of(1), 0, 0, 0, 1, false);
+        when(interviewsService.getAllByUserIdRelated(token, 0, 5, userInfo.getId())).thenReturn(page);
+        when(interviewsService.getAllWithFilters(filterRequestParams, 0, 5)).thenReturn(page);
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(authService.findById(1)).thenReturn(profile);
         when(profilesService.getProfileById(id)).thenReturn(Optional.of(profile));
@@ -99,11 +108,10 @@ public class InterviewsControllerTest {
         when(notificationService.findBotMessageByUserId(token, id)).thenReturn(messages);
         mockMvc.perform(get("/interviews/")
                         .sessionAttr("token", token)
-                        .param("page", "1")
+                        .param("page", "0")
                         .param("size", "5"))
                 .andDo(print())
                 .andExpectAll(model().attribute("interviewsPage", page),
-                        model().attribute("statuses", StatusInterview.values()),
                         model().attribute("authService", authService),
                         model().attribute("current_page", "interviews"),
                         model().attribute("userInfo", userInfo),
@@ -115,6 +123,8 @@ public class InterviewsControllerTest {
                         model().attribute("filter", filter),
                         model().attribute("topics", topicIdNameDTOS),
                         model().attribute("innerMessages", messages),
+                        model().attribute("statuses", new StatusInterview[]{
+                                IS_NEW, IN_PROGRESS, IS_FEEDBACK, IS_COMPLETED, IS_CANCELED}),
                         view().name("interview/interviews"));
     }
 }

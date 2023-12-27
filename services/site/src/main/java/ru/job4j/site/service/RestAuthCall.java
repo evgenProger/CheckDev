@@ -52,6 +52,26 @@ public class RestAuthCall {
         ).getBody();
     }
 
+    public String getWithHeaders(HttpHeaders headers) {
+        var restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(
+                new DefaultResponseErrorHandler() {
+                    @Override
+                    public void handleError(ClientHttpResponse response) throws IOException {
+                        var respValue = response.getStatusCode().value();
+                        if (respValue != 401 && respValue != 404) {
+                            log.error("Call: " + url, response.getStatusText());
+                        }
+                    }
+                }
+        );
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        return restTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<>(headers), new ParameterizedTypeReference<String>() {
+                }
+        ).getBody();
+    }
+
     public String token(Map<String, String> params) {
         var restTemplate = new RestTemplate();
         var headers = new HttpHeaders();
