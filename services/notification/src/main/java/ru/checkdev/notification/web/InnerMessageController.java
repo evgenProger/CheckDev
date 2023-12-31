@@ -80,4 +80,10 @@ public class InnerMessageController {
         messageService.setRead(messageId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("/setReadAll/{userId}")
+    public ResponseEntity<Void> setReadAllMessagesOfUser(@PathVariable int userId) {
+        messageService.setReadAll(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

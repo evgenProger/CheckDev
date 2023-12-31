@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.job4j.site.dto.InnerMessageDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.NotificationService;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -45,7 +46,10 @@ public class MessagesController {
         if (token != null) {
             var userInfo = authService.userInfo(token);
             innerMessages = notifications.findBotMessageByUserId(token, userInfo.getId());
-        model.addAttribute("innerMessages", innerMessages);
+            model.addAttribute("innerMessages", innerMessages);
+            model.addAttribute("userId", userInfo.getId());
+            model.addAttribute("listIsEmpty", innerMessages.isEmpty());
+            model.addAttribute("listIsNotEmpty", !innerMessages.isEmpty());
         }
         return "messages/messages";
     }

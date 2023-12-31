@@ -97,4 +97,8 @@ public class InnerMessageService {
     public void setRead(int messageId) {
         messageRepository.setReadById(messageId);
     }
+
+    public void setReadAll(int userId) {
+        messageRepository.setReadAll(userId);
+    }
 }
