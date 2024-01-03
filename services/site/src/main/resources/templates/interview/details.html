@@ -110,6 +110,9 @@
                         <span th:if="${STATUS_IS_FEEDBACK_ID==interview.statusId && !feedbackMap.containsKey(userInfo.id)}">
                             Оставьте отзыв автору.
                         </span>
+                        <span th:if="${STATUS_IS_FEEDBACK_ID==interview.statusId && feedbackMap.containsKey(userInfo.id)}">
+                            Ожидайте, когда автор собеседования оставит Вам отзыв.
+                        </span>
                     </span>
                     <span th:if="${!isUserDismissed}">
                         <span th:if="${STATUS_IS_NEW_ID!=interview.statusId}">
