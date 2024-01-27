@@ -3,7 +3,9 @@ package ru.job4j.site.controller.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.MessageService;
+import ru.job4j.site.service.RestAuthCall;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,5 +28,10 @@ public class MessagesRestController {
     public void update(@PathVariable int messageId, HttpServletRequest request)
             throws JsonProcessingException {
         messageService.setRead(getToken(request), messageId);
+    }
+
+    @PutMapping("/setReadAll/{userId}")
+    public void setReadAll(@PathVariable int userId, HttpServletRequest request) {
+        messageService.setReadAll(getToken(request), userId);
     }
 }

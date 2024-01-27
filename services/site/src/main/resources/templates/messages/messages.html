@@ -59,12 +59,31 @@
                     url: '/messages_rest/setRead/' + itemId
                 });
         }
+
+        function setReadAll(element) {
+            var userId = element.getAttribute('user-id');
+            $.ajax({
+                     type: 'PUT',
+                     url: '/messages_rest/setReadAll/' + userId,
+                     success: function () {
+                        location.reload();
+                     }
+                   });
+        }
     </script>
 
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
 <div class="container">
+    <span th:if="${listIsEmpty}">
+        <div class="alert alert-info" role="alert">
+            У вас нет новых сообщений.
+        </div>
+    </span>
+    <div th:if="${listIsNotEmpty}">
+        <button class="btn btn-primary" style="float: right;" th:user-id="${userId}" onclick="setReadAll(this)">Прочитать все сообщения</button>
+    </div>
     <table class="table table-hover">
         <thead>
         <tr>
@@ -78,7 +97,7 @@
             <span>
                 <a class="text-decoration-none text-dark"
                    th:href="@{|/interview/${message.interviewId}|}"
-                    th:data-item-id="${message.id}" onclick="messagesOnclick(this)">
+                   th:data-item-id="${message.id}" onclick="messagesOnclick(this)">
                     <span th:text="${message.text}"></span>
                 </a>
             </span>
@@ -103,8 +122,9 @@
                                 <p>Уверены что хотите навсегда удалить это сообщение?</p>
                             </div>
                             <div class="modal-footer">
-                                    <button id="confirmDeleteButton" type="submit"
-                                            class="btn btn-danger btn-sm">Удалить</button>
+                                <button id="confirmDeleteButton" type="submit"
+                                        class="btn btn-danger btn-sm">Удалить
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -113,6 +133,9 @@
         </tr>
         </tbody>
     </table>
+    <div th:if="${listIsNotEmpty}">
+        <button class="btn btn-primary" style="float: right;" th:user-id="${userId}" onclick="setReadAll(this)">Прочитать все сообщения</button>
+    </div>
 </div>
 <div th:insert="fragments/footer :: footer"></div>
 </body>

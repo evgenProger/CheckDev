@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
+
 import java.util.List;
 
 
@@ -29,6 +30,7 @@ class CategoriesControlTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("categories/categories"))
                 .andExpect(model().attribute("breadcrumbs", List.of(
-                        new Breadcrumb("Главная", "/index"))));
+                        new Breadcrumb("Главная", "/index")
+                )));
     }
 }

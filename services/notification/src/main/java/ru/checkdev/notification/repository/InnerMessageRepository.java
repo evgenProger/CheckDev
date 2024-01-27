@@ -25,4 +25,9 @@ public interface InnerMessageRepository extends CrudRepository<InnerMessage, Int
     @Modifying
     @Query("UPDATE cd_message SET read = true WHERE id = :id")
     void setReadById(@Param("id") int messageId);
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Modifying
+    @Query("UPDATE cd_message SET read = true WHERE userId = :userId")
+    void setReadAll(@Param("userId") int userId);
 }
