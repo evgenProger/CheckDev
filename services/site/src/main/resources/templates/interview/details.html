@@ -234,9 +234,11 @@
                         </thead>
                         <tbody>
                         <tr th:each="wisher : ${wishersDetail}" th:if="${!wisher.approve}">
-                            <td>
-                                <span class="text-dark" th:text="${wisher.username}"></span>
-                            </td>
+                                <td>
+                                    <a th:href="@{|/profiles/${wisher.userId}|}">
+                                        <span class="fw-bold" th:text="${wisher.username}"></span>
+                                    </a>
+                                </td>
                             <td>
                                 <form th:if="${userInfo != null && isAuthor && !isDismissed && isAuthor}"
                                       th:action="@{/wisher/dismissed}"
