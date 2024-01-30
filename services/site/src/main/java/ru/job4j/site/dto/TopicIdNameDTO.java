@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TopicIdNameDTO {
 
-     private int id;
-     private String name;
+    private int id;
+    private String name;
 }

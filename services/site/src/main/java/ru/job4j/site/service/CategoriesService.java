@@ -116,6 +116,7 @@ public class CategoriesService {
 
     /**
      * Метод возвращает категорию по id
+     *
      * @param categoryId int ID Category ID
      * @return Optional<Category>
      */

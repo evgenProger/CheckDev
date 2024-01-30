@@ -5,11 +5,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.dto.WisherDetailDTO;
 import ru.job4j.site.dto.WisherDto;
+import ru.job4j.site.enums.StatusInterview;
 
 import java.util.ArrayList;
 import java.util.List;

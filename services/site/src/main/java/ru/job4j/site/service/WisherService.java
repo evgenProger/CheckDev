@@ -1,7 +1,5 @@
 package ru.job4j.site.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.data.domain.Page;
 import ru.job4j.site.dto.InterviewStatistic;
 import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
 import ru.job4j.site.dto.WisherDto;
@@ -34,5 +32,8 @@ public interface WisherService {
     Map<Integer, InterviewStatistic> getInterviewStatistic(List<WisherDto> wishers);
 
     Long countWishers(List<WisherDto> wishers, int interviewId);
+
     List<UsersApprovedInterviewsDTO> getUsersIdWithCountedApprovedInterviews(String token);
+
+    UsersApprovedInterviewsDTO getUserIdWithCountedApprovedInterviews(String token, String userId);
 }

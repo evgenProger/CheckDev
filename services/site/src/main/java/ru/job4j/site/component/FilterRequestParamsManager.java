@@ -39,7 +39,8 @@ public class FilterRequestParamsManager {
                 filterRequestParams.setExclude(true);
             }
             case 5 -> filterRequestParams.setWisherId(filter.getUserId());
-            default -> {}
+            default -> {
+            }
         }
     }
 }

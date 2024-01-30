@@ -11,11 +11,10 @@ import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.mapper.FeedbackMapper;
 
 import javax.persistence.EntityManager;
-
 import java.sql.Timestamp;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * FeedbackRepository test

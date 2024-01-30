@@ -12,7 +12,10 @@ import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.TopicDTO;
-import ru.job4j.site.service.*;
+import ru.job4j.site.service.AuthService;
+import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.InterviewsService;
+import ru.job4j.site.service.TopicsService;
 
 import java.util.Calendar;
 import java.util.Collections;

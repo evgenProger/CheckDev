@@ -9,7 +9,7 @@ import ru.job4j.site.dto.UserInfoDTO;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Dmitry Stepanov, user Dmitry

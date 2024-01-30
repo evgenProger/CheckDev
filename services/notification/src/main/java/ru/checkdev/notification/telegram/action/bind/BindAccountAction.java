@@ -31,7 +31,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Slf4j
 public class BindAccountAction implements Action {
-    private static final String URL_PROFILE_BY_EMAIL_AND_PASS= "/profiles/tg/byEmailAndPassword";
+    private static final String URL_PROFILE_BY_EMAIL_AND_PASS = "/profiles/tg/byEmailAndPassword";
     private final TgConfig tgConfig = new TgConfig(0);
     private final SessionTg sessionTg;
     private final TgCall tgCall;
@@ -55,7 +55,7 @@ public class BindAccountAction implements Action {
             } else {
                 var profileTg = tgConfig.getMapper().convertValue(result, ProfileTgDTO.class);
                 boolean alreadyExist = !userTelegramService.save(new UserTelegram(0, profileTg.getId(), chatId));
-                text = alreadyExist? "Данный аккаунт CheckDev уже привязан к другому аккаунту Telegram"
+                text = alreadyExist ? "Данный аккаунт CheckDev уже привязан к другому аккаунту Telegram"
                         : "Ваш аккаунт CheckDev успешно привязан к данному аккаунту Telegram";
             }
         } catch (Exception e) {

@@ -22,10 +22,8 @@ import ru.checkdev.mock.service.InterviewService;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;

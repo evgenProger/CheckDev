@@ -14,6 +14,7 @@ import java.util.Optional;
 public class SaveInnerMessageAction implements Action {
     private final SessionTg sessionTg;
     private final InnerMessageService messageService;
+
     @Override
     public Optional<BotApiMethod> handle(Update update) {
         var chatId = update.getMessage().getChatId();

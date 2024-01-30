@@ -151,6 +151,7 @@ class WishersControllerTest {
                 .andExpect(jsonPath("$[0].id", Matchers.is(wisherDto1.getId())))
                 .andExpect(status().isOk());
     }
+
     @Disabled
     @Test
     void setWisherApproveThenReturnStatusOk() throws Exception {

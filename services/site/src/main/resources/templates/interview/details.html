@@ -56,6 +56,9 @@
 
 
 
+
+
+
     </style>
 
 </head>
@@ -209,7 +212,7 @@
                 </tr>
                 </tbody>
             </table>
-            <!--/*Кнопки оставить отзыв. Доступна если статус IN_PROGRESS*/-->
+                <!--/*Кнопки оставить отзыв. Доступна если статус IN_PROGRESS*/-->
             <div th:if="${userInfo != null && (STATUS_IN_PROGRESS_ID==interview.statusId || STATUS_IS_FEEDBACK_ID==interview.statusId)}">
                 <!--Кнопка оставляет отзыв АВТОР собеседования. Доступна если isAuthor=true-->
                 <form th:action="@{|/interview/feedback/${interview.id}|}" method="get">

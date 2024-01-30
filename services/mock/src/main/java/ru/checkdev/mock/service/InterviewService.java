@@ -167,8 +167,8 @@ public class InterviewService {
     public Page<InterviewDTO> getInterviewsWithFilters(
             int page, int size, FilterRequestParams filterRequestParams) {
         return interviewRepository.findAll(
-                interviewFilterSpecifications
-                        .createSpecifications(filterRequestParams), PageRequest.of(page, size))
+                        interviewFilterSpecifications
+                                .createSpecifications(filterRequestParams), PageRequest.of(page, size))
                 .map(InterviewMapper::getInterviewDTO);
     }
 }

@@ -11,10 +11,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.dto.PersonDTO;
 import ru.job4j.site.dto.UserInfoDTO;
-import ru.job4j.site.service.AuthService;
-import ru.job4j.site.service.ImageCompressorService;
-import ru.job4j.site.service.NotificationService;
-import ru.job4j.site.service.PersonService;
+import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
+import ru.job4j.site.service.*;
 
 import java.io.IOException;
 
@@ -45,6 +43,8 @@ class PersonControllerTest {
     private AuthService authService;
     @MockBean
     private NotificationService notificationService;
+    @MockBean
+    private WisherService wisherService;
 
     @Test
     void whenGetViewPersonThenReturnPersonViewPage() throws Exception {
@@ -55,13 +55,16 @@ class PersonControllerTest {
         person.setEmail("email");
         var userInfo = new UserInfoDTO();
         userInfo.setId(1);
+        var usersApprovedInterviewsDTO = new UsersApprovedInterviewsDTO(person.getId(), 99);
         when(personService.getPerson(token)).thenReturn(person);
         when(authService.userInfo(token)).thenReturn(userInfo);
+        when(wisherService.getUserIdWithCountedApprovedInterviews(token, String.valueOf(person.getId()))).thenReturn(usersApprovedInterviewsDTO);
         this.mockMvc.perform(get("/persons/")
                         .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("personDto", person))
+                .andExpect(model().attribute("approvedInterviews", usersApprovedInterviewsDTO.getApprovedInterviews()))
                 .andExpect(view().name("persons/personView"));
     }
 

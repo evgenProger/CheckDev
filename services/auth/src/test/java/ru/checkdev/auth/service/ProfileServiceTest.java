@@ -6,9 +6,11 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.checkdev.auth.dto.ProfileDTO;
 import ru.checkdev.auth.repository.PersonRepository;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;

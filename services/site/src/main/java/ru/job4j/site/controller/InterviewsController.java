@@ -7,11 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.component.FilterRequestParamsManager;
-import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.FilterDTO;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.TopicIdNameDTO;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
 
 import javax.servlet.http.HttpServletRequest;

@@ -70,6 +70,9 @@
                      }
                    });
         }
+
+
+
     </script>
 
 </head>
@@ -82,7 +85,9 @@
         </div>
     </span>
     <div th:if="${listIsNotEmpty}">
-        <button class="btn btn-primary" style="float: right;" th:user-id="${userId}" onclick="setReadAll(this)">Прочитать все сообщения</button>
+        <button class="btn btn-primary" style="float: right;" th:user-id="${userId}" onclick="setReadAll(this)">
+            Прочитать все сообщения
+        </button>
     </div>
     <table class="table table-hover">
         <thead>
@@ -134,7 +139,9 @@
         </tbody>
     </table>
     <div th:if="${listIsNotEmpty}">
-        <button class="btn btn-primary" style="float: right;" th:user-id="${userId}" onclick="setReadAll(this)">Прочитать все сообщения</button>
+        <button class="btn btn-primary" style="float: right;" th:user-id="${userId}" onclick="setReadAll(this)">
+            Прочитать все сообщения
+        </button>
     </div>
 </div>
 <div th:insert="fragments/footer :: footer"></div>

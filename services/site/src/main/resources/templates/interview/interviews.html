@@ -229,6 +229,9 @@
             });
         }
     }
+
+
+
     </script>
 
 </head>
@@ -260,8 +263,8 @@
                                     th:data-user_id="${userInfo != null ? userInfo.getId() : 0}">
                                 </ul>
                             </li>
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
                     <div th:if="${filter != null && filter.categoryId > 0}" id="category_patch_div" class="ms-1">
                         <button class="btn btn-light btn-sm" onclick="onCategoryPatchCancelClick(this)"
                                 th:data-user_id="${userId}">

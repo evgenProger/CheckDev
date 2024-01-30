@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.site.dto.ProfileWithApprowedInterviewsDTO;
 import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
 import ru.job4j.site.service.AuthService;
@@ -16,7 +15,6 @@ import ru.job4j.site.service.ProfilesService;
 import ru.job4j.site.service.WisherService;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.List;
 
 import static ru.job4j.site.controller.RequestResponseTools.getToken;
@@ -48,8 +46,9 @@ public class ProfilesController {
     /**
      * Отображение вида одного ProfileDTO
      *
-     * @param id    ID Profile
-     * @param model Model
+     * @param id      ID Profile
+     * @param model   Model
+     * @param request HttpServletRequest
      * @return String "oneProfile" page
      */
     @GetMapping("/{id}")
@@ -65,6 +64,8 @@ public class ProfilesController {
             var userInfo = authService.userInfo(token);
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
+        long approvedInterviews = wisherService.getUserIdWithCountedApprovedInterviews(token, String.valueOf(id)).getApprovedInterviews();
+        model.addAttribute("approvedInterviews", approvedInterviews);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
                 "Профили", "/profiles/",
@@ -79,15 +80,15 @@ public class ProfilesController {
      * @param model Model
      * @return String "/profiles" pge
      */
-        @GetMapping("/")
+    @GetMapping("/")
     public String getAllProfiles(Model model, HttpServletRequest request) throws JsonProcessingException {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/",
                 "Профили", "/profiles/"
         );
-            var token = getToken(request);
-            List<UsersApprovedInterviewsDTO> usersApprovedInterviewsList = wisherService.getUsersIdWithCountedApprovedInterviews(token);
-            List<ProfileWithApprowedInterviewsDTO> profileWithApprowedInterviewsDTO = profilesService.getAllProfilesWithApprowedInterviews(usersApprovedInterviewsList);
+        var token = getToken(request);
+        List<UsersApprovedInterviewsDTO> usersApprovedInterviewsList = wisherService.getUsersIdWithCountedApprovedInterviews(token);
+        List<ProfileWithApprowedInterviewsDTO> profileWithApprowedInterviewsDTO = profilesService.getAllProfilesWithApprowedInterviews(usersApprovedInterviewsList);
         model.addAttribute("profiles", profileWithApprowedInterviewsDTO);
         model.addAttribute("current_page", "profiles");
         if (token != null) {

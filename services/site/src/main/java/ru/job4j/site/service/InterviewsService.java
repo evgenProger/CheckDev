@@ -128,13 +128,14 @@ public class InterviewsService {
 
     /**
      * Метод выполняет подсчет количества интервью по topicId
+     *
      * @param topicId topicId
      * @return количество интервью по topicId
      */
-    public Long  countNewInterviewsByTopic(int topicId) {
+    public Long countNewInterviewsByTopic(int topicId) {
         List<InterviewDTO> list = getNewInterviews();
-       return list.stream().map(interviewDTO -> interviewDTO.getTopicId())
-               .filter(integer -> integer.equals(topicId)).count();
+        return list.stream().map(interviewDTO -> interviewDTO.getTopicId())
+                .filter(integer -> integer.equals(topicId)).count();
     }
 
     public Page<InterviewDTO> getAllWithFilters(FilterRequestParams filterRequestParams, int page, int size)
@@ -144,8 +145,8 @@ public class InterviewsService {
         headers.add("filter-request-params", mapper.writeValueAsString(filterRequestParams));
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         var text = new RestAuthCall(
-                        String.format("%sgetInterviews?page=%d&size=%d", URL,
-                                page, size)).getWithHeaders(headers);
+                String.format("%sgetInterviews?page=%d&size=%d", URL,
+                        page, size)).getWithHeaders(headers);
         var pageType = mapper.getTypeFactory()
                 .constructParametricType(RestPageImpl.class, InterviewDTO.class);
         return mapper.readValue(text, pageType);

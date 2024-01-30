@@ -26,7 +26,7 @@ import java.util.Map;
  * Инициализация телеграм бот,
  * username = берем из properties
  * token = берем из properties
- *
+ * <p>
  * Класс создание экземпляр класса TgBot для профиля default c использованием Telegram API
  *
  * @author Dmitry Stepanov, user Dmitry

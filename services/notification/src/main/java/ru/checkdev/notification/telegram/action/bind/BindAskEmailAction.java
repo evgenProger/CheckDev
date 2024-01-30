@@ -19,6 +19,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class BindAskEmailAction implements Action {
     private final UserTelegramService userTelegramService;
+
     @Override
     public Optional<BotApiMethod> handle(Update update) {
         var chatId = update.getMessage().getChatId();

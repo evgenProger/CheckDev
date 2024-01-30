@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RestPageImpl<T> extends PageImpl<T> {
- 
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public RestPageImpl(@JsonProperty("content") List<T> content,
                         @JsonProperty("number") int number,
@@ -23,18 +23,18 @@ public class RestPageImpl<T> extends PageImpl<T> {
                         @JsonProperty("sort") JsonNode sort,
                         @JsonProperty("first") boolean first,
                         @JsonProperty("numberOfElements") int numberOfElements) {
- 
+
         super(content, PageRequest.of(number, size), totalElements);
     }
- 
+
     public RestPageImpl(List<T> content, Pageable pageable, long total) {
         super(content, pageable, total);
     }
- 
+
     public RestPageImpl(List<T> content) {
         super(content);
     }
- 
+
     public RestPageImpl() {
         super(new ArrayList<>());
     }
