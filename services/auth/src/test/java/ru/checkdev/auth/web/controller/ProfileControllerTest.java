@@ -13,14 +13,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.auth.AuthSrv;
 import ru.checkdev.auth.dto.ProfileDTO;
 import ru.checkdev.auth.service.ProfileService;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * CheckDev пробное собеседование
@@ -48,7 +51,7 @@ public class ProfileControllerTest {
     public void whenGetProfileByIdThenReturnStatusOK() throws Exception {
         when(profileService.findProfileByID(profileDTO1.getId())).thenReturn(Optional.of(profileDTO1));
         mockMvc.perform(get("/profiles/{id}", profileDTO1.getId())
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(profileDTO1.getId()))
                 .andExpect(jsonPath("$.username").value(profileDTO1.getUsername()))
@@ -62,7 +65,7 @@ public class ProfileControllerTest {
     public void whenGetProfileByIdProfileNotFoundThenReturnStatusNotFound() throws Exception {
         when(profileService.findProfileByID(profileDTO1.getId())).thenReturn(Optional.empty());
         mockMvc.perform(get("/profiles/{id}/", anyInt())
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());
     }
@@ -73,7 +76,7 @@ public class ProfileControllerTest {
         var profiles = List.of(profileDTO1, profileDTO2);
         when(profileService.findProfilesOrderByCreatedDesc()).thenReturn(profiles);
         mockMvc.perform(get("/profiles/")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(profiles.size()))
                 .andDo(print());
@@ -84,7 +87,7 @@ public class ProfileControllerTest {
     public void whenGetAllProfilesOrderByCreateDescListEmptyThenReturnStatusNoContent() throws Exception {
         when(profileService.findProfilesOrderByCreatedDesc()).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/profiles/")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());
     }

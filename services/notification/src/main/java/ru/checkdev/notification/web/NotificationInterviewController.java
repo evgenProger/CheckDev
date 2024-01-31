@@ -20,7 +20,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Dmitry Stepanov, user Dmitry
@@ -73,7 +72,7 @@ public class NotificationInterviewController {
         userTelegramService
                 .findByUserId(wisherNotifyDTO.getSubmitterId())
                 .ifPresent(
-                        tg ->  notificationMessage.sendMessage(tg, message)
+                        tg -> notificationMessage.sendMessage(tg, message)
                 );
         return ResponseEntity.ok(innerMessage);
     }

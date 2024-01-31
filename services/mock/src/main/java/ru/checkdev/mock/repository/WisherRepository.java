@@ -97,8 +97,9 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
             @Param("userId") int userId,
             @Param("topicsIds") Collection<Integer> topicsIds,
             Pageable pageable);
+
     /**
-     * Метод нформирует список id пользователей с количеством их проведенных собеседований
+     * Метод формирует список id пользователей с количеством их проведенных собеседований
      *
      * @return List<UsersApprovedInterviewsDTO>
      */
@@ -108,4 +109,17 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
             WHERE w.approve = true
             GROUP BY w.userId""")
     List<UsersApprovedInterviewsDTO> getUsersIdWithCountedApprovedInterviews();
+
+    /**
+     * Метод формирует список с id пользователя с количеством проведенных собеседований
+     *
+     * @param userId int
+     * @return List<UsersApprovedInterviewsDTO>
+     */
+    @Query("""
+            SELECT new ru.checkdev.mock.dto.UsersApprovedInterviewsDTO (w.userId, COUNT(w.approve))
+            FROM wisher w
+            WHERE w.approve = true AND w.userId = :userId
+            GROUP BY w.userId""")
+    List<UsersApprovedInterviewsDTO> getUserIdWithCountedApprovedInterviews(@Param("userId") int userId);
 }

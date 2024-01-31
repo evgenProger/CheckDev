@@ -9,7 +9,7 @@ import ru.checkdev.notification.telegram.SessionTg;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Dmitry Stepanov, user Dmitry

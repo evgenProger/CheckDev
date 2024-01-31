@@ -47,5 +47,5 @@ public interface FeedbackRepository extends CrudRepository<Feedback, Integer> {
             WHERE fe.interview.id=:interviewId AND fe.userId=:userId
             """)
     List<FeedbackDTO> findByInterviewIdAndUserId(@Param("interviewId") int interviewId,
-                                           @Param("userId") int userId);
+                                                 @Param("userId") int userId);
 }

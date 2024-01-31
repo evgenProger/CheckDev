@@ -2,7 +2,6 @@ package ru.checkdev.mock.web;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +16,6 @@ import ru.checkdev.mock.service.WisherService;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,11 +55,19 @@ public class WishersController {
                 .status(HttpStatus.OK)
                 .body(wisherService.findAllWisherDto());
     }
+
     @GetMapping("/approved/")
     public ResponseEntity<List<UsersApprovedInterviewsDTO>> getUsersIdWithCountedApprovedInterviews() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(wisherService.getUsersIdWithCountedApprovedInterviews());
+    }
+
+    @GetMapping("/approved/{id}")
+    public ResponseEntity<UsersApprovedInterviewsDTO> getUserIdWithCountedApprovedInterviews(@Valid @PathVariable int id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(wisherService.getUserIdWithCountedApprovedInterviews(id));
     }
 
     @GetMapping("/dto/{id}")

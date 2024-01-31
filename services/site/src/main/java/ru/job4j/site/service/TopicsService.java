@@ -11,6 +11,7 @@ import ru.job4j.site.dto.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 @AllArgsConstructor
 @Service
 @Slf4j
@@ -144,6 +145,7 @@ public class TopicsService {
 
     /**
      * Метод получает List Topic, c передачей в поле количеств интервью для определенного Topic Id.
+     *
      * @param categoryId categoryId
      * @return List Topic
      * @throws JsonProcessingException

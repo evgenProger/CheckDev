@@ -5,8 +5,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.checkdev.mock.domain.Filter;
 
-import java.util.Optional;
-
 public interface FilterRepository extends CrudRepository<Filter, Integer> {
 
     Filter getByUserId(int userId);

@@ -12,12 +12,11 @@ import ru.job4j.site.SiteSrv;
 import ru.job4j.site.dto.FilterDTO;
 import ru.job4j.site.service.FilterService;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
@@ -39,7 +38,7 @@ public class FilterRestControllerTest {
         var filter = new FilterDTO(1, 1, 0, 0, 0);
         when(filterService.getByUserId(token, userId)).thenReturn(filter);
         mockMvc.perform(get("/filter/1")
-                .sessionAttr("token", token))
+                        .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(filter)));
@@ -51,8 +50,8 @@ public class FilterRestControllerTest {
         var filter = new FilterDTO(1, 1, 0, 0, 0);
         when(filterService.save(token, filter)).thenReturn(filter);
         mockMvc.perform(post("/filter/create")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(filter)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filter)))
                 .andExpect(status().isOk());
     }
 

@@ -10,10 +10,10 @@ import java.util.Calendar;
  * DTO модель класса Person сервиса Auth.
  *
  * @author parsentev
- * @since 25.09.2016
- *
- * переделал в Profile
  * @author Arcady555
+ * @since 25.09.2016
+ * <p>
+ * переделал в Profile
  * @since 01.11.2023
  */
 @Data

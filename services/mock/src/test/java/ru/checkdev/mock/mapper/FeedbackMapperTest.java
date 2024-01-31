@@ -7,7 +7,7 @@ import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.dto.FeedbackDTO;
 import ru.checkdev.mock.enums.StatusInterview;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * FeedbackMapper test

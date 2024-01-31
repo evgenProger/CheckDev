@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
 import ru.checkdev.notification.service.InnerMessageService;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 

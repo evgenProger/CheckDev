@@ -18,9 +18,9 @@ import java.util.Optional;
 public interface InterviewRepository extends JpaRepository<Interview, Integer> {
 
     @Query("SELECT i FROM interview i"
-           + " WHERE i.submitterId=:userId"
-           + " OR i.status=:status"
-           + " OR i.id IN (:interviewIds)"
+            + " WHERE i.submitterId=:userId"
+            + " OR i.status=:status"
+            + " OR i.id IN (:interviewIds)"
     )
     Page<Interview> findAllByUserIdRelated(@Param("userId") int userId,
                                            @Param("status") StatusInterview status,
@@ -28,61 +28,61 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
                                            Pageable pageable);
 
     @Query(value = """
-WITH filter AS (SELECT * FROM cd_filter WHERE user_id = :userId)
-SELECT i.* FROM interview i
-WHERE (i.submitter_id=:userId
-    OR i.status=:statusId
-    OR i.id IN (SELECT DISTINCT w.interview_id FROM wisher w WHERE w.user_id=:userId AND w.approve IS TRUE)) AND
-    CASE
-        WHEN (SELECT filter_profile FROM filter) > 0 -- topic and profile
-            THEN CASE
-            -- 1 author
-                     WHEN (SELECT filter_profile FROM filter)=1 THEN i.submitter_id = :userId
-            -- 2 participant
-                     WHEN (SELECT filter_profile FROM filter)=2 THEN i.id IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
-            -- 3 not author
-                     WHEN (SELECT filter_profile FROM filter)=3 THEN i.submitter_id <> :userId
-            -- 4 not participant
-                     WHEN (SELECT filter_profile FROM filter)=4 THEN i.id NOT IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
-            END
-        END
-ORDER BY i.create_date DESC
-    """, nativeQuery = true)
+            WITH filter AS (SELECT * FROM cd_filter WHERE user_id = :userId)
+            SELECT i.* FROM interview i
+            WHERE (i.submitter_id=:userId
+                OR i.status=:statusId
+                OR i.id IN (SELECT DISTINCT w.interview_id FROM wisher w WHERE w.user_id=:userId AND w.approve IS TRUE)) AND
+                CASE
+                    WHEN (SELECT filter_profile FROM filter) > 0 -- topic and profile
+                        THEN CASE
+                        -- 1 author
+                                 WHEN (SELECT filter_profile FROM filter)=1 THEN i.submitter_id = :userId
+                        -- 2 participant
+                                 WHEN (SELECT filter_profile FROM filter)=2 THEN i.id IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
+                        -- 3 not author
+                                 WHEN (SELECT filter_profile FROM filter)=3 THEN i.submitter_id <> :userId
+                        -- 4 not participant
+                                 WHEN (SELECT filter_profile FROM filter)=4 THEN i.id NOT IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
+                        END
+                    END
+            ORDER BY i.create_date DESC
+                """, nativeQuery = true)
     Page<Interview> findAllByUserIdRelatedFiltered(@Param("userId") int userId,
                                                    @Param("statusId") int statusId,
                                                    Pageable pageable);
 
     @Query(value = """
-WITH filter AS (SELECT * FROM cd_filter WHERE user_id = :userId)
-SELECT i.* FROM interview i
-WHERE CASE
-          WHEN exists(SELECT user_id FROM filter)  -- когда есть фильтр
-          THEN (i.submitter_id=:userId
-              OR i.status=:statusId
-              OR i.id IN (SELECT DISTINCT w.interview_id FROM wisher w WHERE w.user_id=:userId AND w.approve IS TRUE)) AND
-                   CASE
-                       WHEN (SELECT filter_profile FROM filter) > 0 -- topic и profile
-                       THEN (i.topic_id IN (:topicIds)) AND
-                                CASE
-                                    -- 1 author
-                                    WHEN (SELECT filter_profile FROM filter)=1 THEN i.submitter_id = :userId
-                                    -- 2 participant
-                                    WHEN (SELECT filter_profile FROM filter)=2 THEN i.id IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
-                                    -- 3 not author
-                                    WHEN (SELECT filter_profile FROM filter)=3 THEN i.submitter_id <> :userId
-                                    -- 4 not participant
-                                    WHEN (SELECT filter_profile FROM filter)=4 THEN i.id NOT IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
-                                    END
-                       ELSE i.topic_id IN (:topicIds) -- только topic
-                       END
-          ELSE i.status=:statusId AND i.topic_id IN (:topicIds)
-          END
-ORDER BY i.create_date DESC
-    """, nativeQuery = true)
+            WITH filter AS (SELECT * FROM cd_filter WHERE user_id = :userId)
+            SELECT i.* FROM interview i
+            WHERE CASE
+                      WHEN exists(SELECT user_id FROM filter)  -- когда есть фильтр
+                      THEN (i.submitter_id=:userId
+                          OR i.status=:statusId
+                          OR i.id IN (SELECT DISTINCT w.interview_id FROM wisher w WHERE w.user_id=:userId AND w.approve IS TRUE)) AND
+                               CASE
+                                   WHEN (SELECT filter_profile FROM filter) > 0 -- topic и profile
+                                   THEN (i.topic_id IN (:topicIds)) AND
+                                            CASE
+                                                -- 1 author
+                                                WHEN (SELECT filter_profile FROM filter)=1 THEN i.submitter_id = :userId
+                                                -- 2 participant
+                                                WHEN (SELECT filter_profile FROM filter)=2 THEN i.id IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
+                                                -- 3 not author
+                                                WHEN (SELECT filter_profile FROM filter)=3 THEN i.submitter_id <> :userId
+                                                -- 4 not participant
+                                                WHEN (SELECT filter_profile FROM filter)=4 THEN i.id NOT IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
+                                                END
+                                   ELSE i.topic_id IN (:topicIds) -- только topic
+                                   END
+                      ELSE i.status=:statusId AND i.topic_id IN (:topicIds)
+                      END
+            ORDER BY i.create_date DESC
+                """, nativeQuery = true)
     Page<Interview> findAllByUserIdRelatedFiltered(@Param("userId") int userId,
-                                           @Param("statusId") int statusId,
-                                           @Param("topicIds") List<Integer> topicIds,
-                                           Pageable pageable);
+                                                   @Param("statusId") int statusId,
+                                                   @Param("topicIds") List<Integer> topicIds,
+                                                   Pageable pageable);
 
     Optional<Interview> findById(int id);
 
@@ -167,7 +167,7 @@ ORDER BY i.create_date DESC
      * @return интервью, в которых пользователь НЕ участвует
      */
     @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-           + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)")
+            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)")
     Page<Interview> findInterviewByUserIdNot(@Param("userId") int userId, Pageable pageable);
 
     /**
@@ -177,8 +177,8 @@ ORDER BY i.create_date DESC
      * @return интервью определённой темы, в которых пользователь НЕ участвует
      */
     @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-           + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
-           + " AND i.topicId = :topicId")
+            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
+            + " AND i.topicId = :topicId")
     Page<Interview> findInterviewByUserIdNotAndByTopicId(@Param("userId") int userId,
                                                          @Param("topicId") int topicId,
                                                          Pageable pageable);
@@ -190,8 +190,8 @@ ORDER BY i.create_date DESC
      * @return интервью определённой категории, в которых пользователь НЕ участвует
      */
     @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-           + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
-           + " AND i.topicId IN :topicsIds")
+            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
+            + " AND i.topicId IN :topicsIds")
     Page<Interview> findInterviewByUserIdNotAndByTopicIdIn(
             @Param("userId") int userId,
             @Param("topicsIds") Collection<Integer> topicsIds,

@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileWithApprowedInterviewsDTO {
-        private ProfileDTO profileDTO;
-        private long approvedInterviews;
+    private ProfileDTO profileDTO;
+    private long approvedInterviews;
 }

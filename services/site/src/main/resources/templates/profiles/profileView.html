@@ -57,7 +57,10 @@
                                 </div>
                                 <div class="mb-3">
                                     <p th:text="'На проекте с: ' + ${#dates.format(profile.created.time, 'dd.MM.yyyy')}">
-                                        Опыт</p>
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <p th:text="'Количество проведенных собеседований: ' + ${approvedInterviews}"></p>
                                 </div>
                             </div>
                         </div>

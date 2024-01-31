@@ -566,8 +566,8 @@ class InterviewRepositoryTest {
                         PageRequest.of(0, 10));
         var submitter2Interviews =
                 interviewRepository.findByTopicIdInAndSubmitterId(
-                List.of(1, 2, 3, 4, 5, 6, 7), 2,
-                PageRequest.of(0, 10));
+                        List.of(1, 2, 3, 4, 5, 6, 7), 2,
+                        PageRequest.of(0, 10));
         var submitter3Interviews =
                 interviewRepository.findByTopicIdInAndSubmitterId(
                         List.of(1, 2, 3, 4, 5, 6, 7), 1349,

@@ -1,8 +1,5 @@
 package ru.checkdev.auth.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,8 +7,13 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.checkdev.auth.domain.Profile;
 import ru.checkdev.auth.repository.PersonRepository;
+
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 /**
  * @author parsentev

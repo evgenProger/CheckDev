@@ -10,7 +10,7 @@ import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
 import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
 import ru.checkdev.notification.service.UserTelegramService;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Dmitry Stepanov, user Dmitry

@@ -11,7 +11,6 @@ import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 
 /**
@@ -55,6 +54,7 @@ public class ProfilesService {
                 .block();
         return responseEntity.getBody();
     }
+
     public List<ProfileWithApprowedInterviewsDTO> getAllProfilesWithApprowedInterviews(List<UsersApprovedInterviewsDTO> approwedList) {
         var profilesList = getAllProfile();
         List<ProfileWithApprowedInterviewsDTO> profilesWithCountOfInterviews = new ArrayList();

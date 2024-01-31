@@ -42,7 +42,8 @@ public class FilterService {
     public List<FilterProfile> getProfiles() throws JsonProcessingException {
         var mapper = new ObjectMapper();
         var text = new RestAuthCall(URL + "/profiles").get();
-        return mapper.readValue(text, new TypeReference<>() {});
+        return mapper.readValue(text, new TypeReference<>() {
+        });
     }
 
     public String getNameById(Collection<FilterProfile> filterProfiles, int id) {

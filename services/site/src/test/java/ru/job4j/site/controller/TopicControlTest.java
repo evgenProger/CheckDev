@@ -159,7 +159,7 @@ public class TopicControlTest {
         topic.setCategory(category);
         mockMvc.perform(post("/topic/update")
                         .requestAttr("topic", topic)
-                .param("id", String.valueOf(topic.getId())))
+                        .param("id", String.valueOf(topic.getId())))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/topic/" + topic.getId()));

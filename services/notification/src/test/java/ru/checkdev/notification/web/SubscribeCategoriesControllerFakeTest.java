@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.SubscribeCategory;
 import ru.checkdev.notification.repository.SubscribeCategoryRepositoryFake;
 import ru.checkdev.notification.service.SubscribeCategoryService;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubscribeCategoriesControllerFakeTest {

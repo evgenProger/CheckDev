@@ -3,8 +3,6 @@ package ru.job4j.site.domain;
 import lombok.*;
 import ru.job4j.site.enums.StatusInterview;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**

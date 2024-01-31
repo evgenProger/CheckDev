@@ -33,10 +33,12 @@ public class GlobalExceptionHandler {
     public void handleException(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
-            put("message", "Some of fields empty");
-            put("details", e.getMessage());
-        }}));
+        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() {
+            {
+                put("message", "Some of fields empty");
+                put("details", e.getMessage());
+            }
+        }));
         LOGGER.error(e.getMessage());
     }
 
@@ -56,10 +58,12 @@ public class GlobalExceptionHandler {
     public void sqlException(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
-            put("message", "Error when saving or retrieving data");
-            put("details", e.getMessage());
-        }}));
+        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() {
+            {
+                put("message", "Error when saving or retrieving data");
+                put("details", e.getMessage());
+            }
+        }));
         LOGGER.error(e.getMessage());
     }
 
@@ -69,11 +73,13 @@ public class GlobalExceptionHandler {
                                         HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.NOT_FOUND.value());
         response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
-            put("message", "Not found");
-            put("details", e.getMessage());
-            put("request URI", request.getRequestURI());
-        }}));
+        response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() {
+            {
+                put("message", "Not found");
+                put("details", e.getMessage());
+                put("request URI", request.getRequestURI());
+            }
+        }));
         LOGGER.error(e.getMessage());
     }
 }

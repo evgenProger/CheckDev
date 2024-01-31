@@ -3,10 +3,8 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.*;
 
@@ -175,6 +173,7 @@ public class NotificationService {
             log.error("API notification not found, error: {}", e);
         }
     }
+
     public void approvedWisher(String token, WisherApprovedDTO wisherApprovedDTO) {
         var url = String.format("%s/notificationWisher/approvedWisher/", urlNtf);
         var mapper = new ObjectMapper();

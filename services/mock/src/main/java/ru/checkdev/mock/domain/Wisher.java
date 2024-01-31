@@ -1,6 +1,7 @@
 package ru.checkdev.mock.domain;
 
 import lombok.*;
+
 import javax.persistence.*;
 
 @Entity(name = "wisher")
@@ -20,14 +21,14 @@ public class Wisher {
     @JoinColumn(name = "interview_id")
     private Interview interview;
 
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private int userId;
 
-    @Column(name="contact_by")
+    @Column(name = "contact_by")
     private String contactBy;
     /**
      * Поле определяет одобрен участник на собеседование или нет.
      */
-    @Column(name="approve")
+    @Column(name = "approve")
     private boolean approve;
 }

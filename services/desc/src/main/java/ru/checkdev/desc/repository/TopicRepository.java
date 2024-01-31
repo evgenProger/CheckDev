@@ -28,9 +28,9 @@ public interface TopicRepository extends CrudRepository<Topic, Integer> {
     Optional<String> getNameById(@Param("id") int id);
 
     @Query("""
-              SELECT new ru.checkdev.desc.dto.TopicDTO(t.id, t.name)
-              FROM cd_topic t WHERE t.category.id = :categoryId
-              """)
+            SELECT new ru.checkdev.desc.dto.TopicDTO(t.id, t.name)
+            FROM cd_topic t WHERE t.category.id = :categoryId
+            """)
     List<TopicDTO> findIdAndNameByCategoryId(@Param("categoryId") Integer categoryId);
 
     @Query("""

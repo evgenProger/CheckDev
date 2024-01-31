@@ -9,8 +9,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
-import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.*;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
 
 import java.sql.Timestamp;
@@ -20,7 +20,8 @@ import java.util.stream.IntStream;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static ru.job4j.site.enums.StatusInterview.*;
 
 @SpringBootTest(classes = SiteSrv.class)

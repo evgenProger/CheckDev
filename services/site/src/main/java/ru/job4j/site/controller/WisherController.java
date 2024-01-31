@@ -1,16 +1,18 @@
 package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.WisherApprovedDTO;
+import ru.job4j.site.dto.WisherDto;
 import ru.job4j.site.dto.WisherNotifyDTO;
 import ru.job4j.site.enums.StatusInterview;
-import ru.job4j.site.dto.InterviewDTO;
-import ru.job4j.site.dto.WisherDto;
 import ru.job4j.site.service.InterviewService;
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.WisherService;
@@ -39,7 +41,7 @@ public class WisherController {
      * Подать заявку на участие в собеседовании.
      *
      * @param wisherNotifyDTO WisherNotifyDTO
-     * @param request   HttpServletRequest
+     * @param request         HttpServletRequest
      * @return String page.
      */
     @PostMapping("/create")

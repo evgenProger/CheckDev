@@ -3,9 +3,7 @@ package ru.job4j.site.controller.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.MessageService;
-import ru.job4j.site.service.RestAuthCall;
 
 import javax.servlet.http.HttpServletRequest;
 

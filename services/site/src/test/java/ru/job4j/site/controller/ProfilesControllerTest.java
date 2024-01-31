@@ -8,6 +8,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.ProfileWithApprowedInterviewsDTO;
+import ru.job4j.site.dto.UserInfoDTO;
+import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
+import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.ProfilesService;
 import ru.job4j.site.service.WisherService;
 
@@ -34,20 +37,30 @@ class ProfilesControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private ProfilesService profilesService;
-
     @MockBean
     private WisherService wisherService;
+    @MockBean
+    private AuthService authService;
+
 
     @Test
     void whenGetProfileByIdThenReturnPageProfileView() throws Exception {
+        var token = "123";
         var id = 1;
         var profile = new ProfileDTO(id, "username", "experience", 1,
                 Calendar.getInstance(), Calendar.getInstance());
-        when(this.profilesService.getProfileById(id)).thenReturn(Optional.of(profile));
-        this.mockMvc.perform(get("/profiles/{id}", profile.getId()))
+        var userInfo = new UserInfoDTO();
+        userInfo.setId(1);
+        var usersApprovedInterviewsDTO = new UsersApprovedInterviewsDTO(profile.getId(), 99);
+        when(profilesService.getProfileById(id)).thenReturn(Optional.of(profile));
+        when(authService.userInfo(token)).thenReturn(userInfo);
+        when(wisherService.getUserIdWithCountedApprovedInterviews(token, String.valueOf(profile.getId()))).thenReturn(usersApprovedInterviewsDTO);
+        this.mockMvc.perform(get("/profiles/{id}", profile.getId())
+                        .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("profile", profile))
+                .andExpect(model().attribute("approvedInterviews", usersApprovedInterviewsDTO.getApprovedInterviews()))
                 .andExpect(view().name("profiles/profileView"));
     }
 

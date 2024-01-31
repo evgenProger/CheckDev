@@ -9,14 +9,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
-import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.dto.*;
+import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
 
 import java.util.*;
 import java.util.stream.IntStream;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

@@ -10,10 +10,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.site.dto.PersonDTO;
-import ru.job4j.site.service.AuthService;
-import ru.job4j.site.service.ImageCompress;
-import ru.job4j.site.service.NotificationService;
-import ru.job4j.site.service.PersonService;
+import ru.job4j.site.service.*;
 import ru.job4j.site.util.MultipartFileImpl;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,19 +37,22 @@ public class PersonController {
     private final AuthService authService;
     private final NotificationService notifications;
 
+    private final WisherService wisherService;
+
     @Value("${botUserName}")
     private String botUserName;
 
     public PersonController(@Value("${server.site.maxSizeLoadFile}") String maxSizeFile,
                             @Value("${server.site.contentTypeFile}") String contentTypeFile,
                             PersonService personService, ImageCompress imageCompress,
-                            AuthService authService, NotificationService notifications) {
+                            AuthService authService, NotificationService notifications, WisherService wisherService) {
         this.maxSizeFile = maxSizeFile;
         this.contentTypeFile = contentTypeFile;
         this.personService = personService;
         this.imageCompress = imageCompress;
         this.authService = authService;
         this.notifications = notifications;
+        this.wisherService = wisherService;
     }
 
     /**
@@ -77,6 +77,8 @@ public class PersonController {
             var userInfo = authService.userInfo(token);
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
+        long approvedInterviews = wisherService.getUserIdWithCountedApprovedInterviews(token, String.valueOf(personDTO.getId())).getApprovedInterviews();
+        model.addAttribute("approvedInterviews", approvedInterviews);
         model.addAttribute("personDto", personDTO);
         model.addAttribute("photoId", getPhotoIdByPersonDTO(personDTO));
         return "persons/personView";

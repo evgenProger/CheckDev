@@ -10,8 +10,8 @@ import ru.checkdev.notification.telegram.action.Action;
 import java.util.Optional;
 
 /**
- *  Команда телеграм бота /unbind -
- *  отвязать аккаунт CheckDev от текущего аккаунта Telegram
+ * Команда телеграм бота /unbind -
+ * отвязать аккаунт CheckDev от текущего аккаунта Telegram
  */
 
 @AllArgsConstructor

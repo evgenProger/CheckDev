@@ -3,7 +3,8 @@ package ru.checkdev.notification.repository;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.dto.InnerMessageDTO;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 public class InnerMessageRepositoryFake
         extends CrudRepositoryFake<InnerMessage>

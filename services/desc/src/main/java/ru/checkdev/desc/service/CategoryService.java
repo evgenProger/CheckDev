@@ -33,7 +33,7 @@ public class CategoryService {
     }
 
     public List<CategoryDTO> getAllCategoryDTO() {
-       return categoryRepository.getAllCategoryDTO();
+        return categoryRepository.getAllCategoryDTO();
     }
 
     public List<CategoryDTO> getMostPopular() {

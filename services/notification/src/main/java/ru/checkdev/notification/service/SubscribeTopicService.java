@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.checkdev.notification.domain.SubscribeTopic;
 import ru.checkdev.notification.repository.SubscribeTopicRepository;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

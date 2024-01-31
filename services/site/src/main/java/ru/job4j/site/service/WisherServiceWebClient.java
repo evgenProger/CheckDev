@@ -1,12 +1,7 @@
 package ru.job4j.site.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,11 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.InterviewStatistic;
 import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
 import ru.job4j.site.dto.WisherDto;
-import ru.job4j.site.util.RestPageImpl;
 
 import java.util.*;
 
@@ -108,17 +101,40 @@ public class WisherServiceWebClient implements WisherService {
                 .toEntityList(UsersApprovedInterviewsDTO.class)
                 .doOnError(err -> log.error("API MOCK not found: {}", err.getMessage()))
                 .blockOptional();
-        return  listResponseEntity
+        return listResponseEntity
                 .map(HttpEntity::getBody)
                 .orElse(new ArrayList<>());
     }
+
+    /**
+     * Метод возвращает пользователя с количеством проведенных им интервью.
+     *
+     * @param userId ID user ID
+     * @return UsersApprovedInterviewsDTO
+     */
+    @Override
+    public UsersApprovedInterviewsDTO getUserIdWithCountedApprovedInterviews(String token, String userId) {
+        Optional<ResponseEntity<UsersApprovedInterviewsDTO>> responseEntity = this.webClientWisher
+                .get()
+                .uri(URL_WISHERS + "approved/" + userId)
+                .header("Authorization", "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .toEntity(UsersApprovedInterviewsDTO.class)
+                .doOnError(err -> log.error("API MOCK not found: {}", err.getMessage()))
+                .blockOptional();
+        return responseEntity
+                .map(HttpEntity::getBody)
+                .orElse(new UsersApprovedInterviewsDTO());
+    }
+
     /**
      * Метод по устанавливает новый статус участниках интервью
      *
      * @param token       User token
      * @param interviewId ID Interview
      * @param wisherId    ID select Wisher
-     * @param newApprove new Status ID select Wisher
+     * @param newApprove  new Status ID select Wisher
      * @return boolean true / false
      */
     @Override

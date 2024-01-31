@@ -10,11 +10,9 @@ import ru.job4j.site.domain.Breadcrumb;
 
 import java.util.List;
 
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc

@@ -1,6 +1,5 @@
 package ru.checkdev.notification.web;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import ru.checkdev.notification.domain.InnerMessage;
@@ -11,7 +10,10 @@ import ru.checkdev.notification.dto.WisherNotifyDTO;
 import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
 import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
 import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
-import ru.checkdev.notification.service.*;
+import ru.checkdev.notification.service.InnerMessageService;
+import ru.checkdev.notification.service.MessagesGenerator;
+import ru.checkdev.notification.service.NotificationMessageTgFake;
+import ru.checkdev.notification.service.UserTelegramService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -19,7 +21,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Dmitry Stepanov, user Dmitry
