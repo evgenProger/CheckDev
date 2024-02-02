@@ -10,7 +10,7 @@ import ru.job4j.site.service.NotificationService;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
 @Controller
 @AllArgsConstructor

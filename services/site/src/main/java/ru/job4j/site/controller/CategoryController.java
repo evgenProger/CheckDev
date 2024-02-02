@@ -9,15 +9,16 @@ import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
 import ru.job4j.site.service.NotificationService;
+import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
 @Controller
 @RequestMapping("/category")
 @AllArgsConstructor
-public class CategoryControl {
+public class CategoryController {
     private final CategoriesService categoriesService;
     private final AuthService authService;
     private final NotificationService notifications;

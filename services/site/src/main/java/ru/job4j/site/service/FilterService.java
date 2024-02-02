@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.domain.FilterProfile;
 import ru.job4j.site.dto.FilterDTO;
+import ru.job4j.site.util.RestAuthCall;
 
 import java.util.Collection;
 import java.util.List;

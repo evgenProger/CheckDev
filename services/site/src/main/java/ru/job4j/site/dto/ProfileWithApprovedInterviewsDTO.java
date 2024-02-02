@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileWithApprowedInterviewsDTO {
+public class ProfileWithApprovedInterviewsDTO {
     private ProfileDTO profileDTO;
     private long approvedInterviews;
 }

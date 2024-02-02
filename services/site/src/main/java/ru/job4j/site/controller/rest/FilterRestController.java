@@ -11,7 +11,7 @@ import ru.job4j.site.service.FilterService;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
 @Tag(name = "FilterRestController", description = "Filter REST API")
 @RestController

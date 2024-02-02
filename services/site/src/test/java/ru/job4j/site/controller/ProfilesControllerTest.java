@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.dto.ProfileDTO;
-import ru.job4j.site.dto.ProfileWithApprowedInterviewsDTO;
+import ru.job4j.site.dto.ProfileWithApprovedInterviewsDTO;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
 import ru.job4j.site.service.AuthService;
@@ -42,7 +42,6 @@ class ProfilesControllerTest {
     @MockBean
     private AuthService authService;
 
-
     @Test
     void whenGetProfileByIdThenReturnPageProfileView() throws Exception {
         var token = "123";
@@ -65,13 +64,13 @@ class ProfilesControllerTest {
     }
 
     @Test
-    void whenGetAllProfilesThenReturnPageProfilesWithCountOfApprowedInterviews() throws Exception {
+    void whenGetAllProfilesThenReturnPageProfilesWithCountOfApprovedInterviews() throws Exception {
         var profile1 = new ProfileDTO(1, "username1", "experience1", 1, Calendar.getInstance(), Calendar.getInstance());
         var profile2 = new ProfileDTO(2, "username2", "experience2", 2, Calendar.getInstance(), Calendar.getInstance());
-        var p1 = new ProfileWithApprowedInterviewsDTO(profile1, 5);
-        var p2 = new ProfileWithApprowedInterviewsDTO(profile2, 10);
+        var p1 = new ProfileWithApprovedInterviewsDTO(profile1, 5);
+        var p2 = new ProfileWithApprovedInterviewsDTO(profile2, 10);
         var listProfile = List.of(p1, p2);
-        when(profilesService.getAllProfilesWithApprowedInterviews(wisherService.getUsersIdWithCountedApprovedInterviews("token"))).thenReturn(listProfile);
+        when(profilesService.getAllProfilesWithApprovedInterviews(wisherService.getUsersIdWithCountedApprovedInterviews("token"))).thenReturn(listProfile);
         this.mockMvc.perform(get("/profiles/"))
                 .andDo(print())
                 .andExpect(status().isOk())

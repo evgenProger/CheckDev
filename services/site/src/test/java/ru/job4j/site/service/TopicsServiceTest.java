@@ -15,8 +15,8 @@ import static org.mockito.Mockito.mock;
  * @since 09.11.2023
  */
 class TopicsServiceTest {
-    private InterviewsService interviewsService = mock(InterviewsService.class);
-    private TopicsService topicsService = new TopicsService(interviewsService);
+    private final InterviewsService interviewsService = mock(InterviewsService.class);
+    private final TopicsService topicsService = new TopicsService(interviewsService);
 
     @Test
     void injectedNotNull() {

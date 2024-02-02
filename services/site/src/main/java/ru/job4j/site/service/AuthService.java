@@ -8,15 +8,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.UserInfoDTO;
+import ru.job4j.site.util.RestAuthCall;
 
 import java.util.Map;
 
 @Service
 @Slf4j
 public class AuthService {
-    @Value("${security.oauth2.resource.userInfoUri}")
-    private String oauth2Url;
-
     @Value("${security.oauth2.tokenUri}")
     private String oauth2Token;
     @Value("${server.auth.ping}")

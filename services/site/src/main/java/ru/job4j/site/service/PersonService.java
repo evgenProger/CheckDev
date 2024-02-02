@@ -10,6 +10,7 @@ import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.site.dto.PersonDTO;
+import ru.job4j.site.util.RestAuthCall;
 
 /**
  * CheckDev пробное собеседование

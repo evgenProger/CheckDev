@@ -12,16 +12,17 @@ import ru.job4j.site.dto.TopicLiteDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.TopicsService;
+import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
 @Controller
 @RequestMapping("/topic")
 @AllArgsConstructor
 @Slf4j
-public class TopicControl {
+public class TopicController {
     private final TopicsService topicsService;
     private final AuthService authService;
     private final NotificationService notifications;

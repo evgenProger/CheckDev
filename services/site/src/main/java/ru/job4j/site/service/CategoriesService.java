@@ -8,13 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.domain.Category;
 import ru.job4j.site.dto.CategoryDTO;
+import ru.job4j.site.util.RestAuthCall;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 @Slf4j
 public class CategoriesService {
     private final TopicsService topicsService;

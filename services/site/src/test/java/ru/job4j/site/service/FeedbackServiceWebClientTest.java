@@ -56,8 +56,6 @@ class FeedbackServiceWebClientTest {
     @MockBean
     private InterviewService interviewService;
     @MockBean
-    private ProfilesService profilesService;
-    @MockBean
     private NotificationService notificationService;
 
     private FeedbackServiceWebClient feedbackService;

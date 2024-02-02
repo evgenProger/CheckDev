@@ -1,4 +1,4 @@
-package ru.job4j.site.controller;
+package ru.job4j.site.controller.rest;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -24,7 +24,7 @@ import ru.job4j.site.service.PhotoServices;
 @RequestMapping("/photo")
 @AllArgsConstructor
 @Slf4j
-public class PhotoController {
+public class PhotoRestController {
     private final PhotoServices photoServices;
 
     @GetMapping("/{id}")

@@ -11,19 +11,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.FilterRequestParams;
 import ru.job4j.site.dto.InterviewDTO;
+import ru.job4j.site.util.RestAuthCall;
 import ru.job4j.site.util.RestPageImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 @Slf4j
 public class InterviewsService {
-
-    private final WisherService wisherService;
-
     private static final String URL = "http://localhost:9912/interviews/";
+    private final WisherService wisherService;
 
     public Page<InterviewDTO> getAll(String token, int page, int size)
             throws JsonProcessingException {

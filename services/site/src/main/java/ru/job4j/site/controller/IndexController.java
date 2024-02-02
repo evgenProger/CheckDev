@@ -7,10 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.job4j.site.service.*;
+import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
 @Controller
 @AllArgsConstructor

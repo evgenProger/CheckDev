@@ -1,22 +1,16 @@
 package ru.job4j.site.util;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
+@RequiredArgsConstructor
 public class MultipartFileImpl implements MultipartFile {
-
-    private byte[] content;
-    private String name;
-    private String originalFilename;
-    private String contentType;
-
-    public MultipartFileImpl(byte[] content, String name, String originalFilename, String contentType) {
-        this.content = content;
-        this.name = name;
-        this.originalFilename = originalFilename;
-        this.contentType = contentType;
-    }
+    private final byte[] content;
+    private final String name;
+    private final String originalFilename;
+    private final String contentType;
 
     @Override
     public String getName() {

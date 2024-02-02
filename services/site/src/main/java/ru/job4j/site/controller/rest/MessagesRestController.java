@@ -1,14 +1,16 @@
 package ru.job4j.site.controller.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.site.service.MessageService;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
+@Tag(name = "MessagesRestController", description = "Messages REST API")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/messages_rest")

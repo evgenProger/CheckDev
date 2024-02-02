@@ -7,13 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.*;
+import ru.job4j.site.util.RestAuthCall;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 @Slf4j
 public class TopicsService {
 

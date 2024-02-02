@@ -34,26 +34,12 @@
     <table class="table table-hover">
         <thead>
         <tr>
-            <!--            <th scope="col">Фото</th>-->
             <th scope="col" class="text-start">Имя</th>
             <th scope="col" class="text-end">Проведено собеседований</th>
         </tr>
         </thead>
         <tbody>
         <tr style="cursor: pointer;" th:each="profile: ${profiles}">
-
-            <!--                                Временно закомментировано-->
-
-            <!--            <td>-->
-            <!--                <div>-->
-            <!--                    <i class="fas fa-image" style="font-size: 3em;"-->
-            <!--                       th:if="${#strings.isEmpty(profile.photoId)}"></i>-->
-            <!--                    <img alt="No image"-->
-            <!--                         class="w-25"-->
-            <!--                         th:if="${not #strings.isEmpty(profile.photoId)}"-->
-            <!--                         th:src="@{http://localhost:9900/img(id=*{profile.photoId})}">-->
-            <!--                </div>-->
-            <!--            </td>-->
             <td class="text-start">
                 <div>
                     <a th:href="@{|/profiles/${profile.profileDTO.id}|}">

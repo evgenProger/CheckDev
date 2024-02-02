@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
-class CategoriesControlTest {
+class CategoriesControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
