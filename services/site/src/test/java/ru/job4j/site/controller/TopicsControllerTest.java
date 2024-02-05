@@ -28,8 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
-public class TopicsControlTest {
-
+public class TopicsControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -38,7 +37,6 @@ public class TopicsControlTest {
     private AuthService authService;
     @MockBean
     private CategoriesService categoriesService;
-
     @MockBean
     private NotificationService notifications;
 

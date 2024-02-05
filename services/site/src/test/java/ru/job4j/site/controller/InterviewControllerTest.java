@@ -40,8 +40,6 @@ public class InterviewControllerTest {
     @MockBean
     private WisherService wisherService;
     @MockBean
-    private NotificationService notifications;
-    @MockBean
     private FeedbackService feedbackService;
 
     @Test
@@ -55,7 +53,7 @@ public class InterviewControllerTest {
         interview.setAdditional("Some description");
         interview.setMode(4);
         interview.setTopicId(1);
-        List<WisherDto> wisherDtos = new ArrayList<>();
+        List<WisherDto> wishersDto = new ArrayList<>();
         TopicLiteDTO topicLiteDTO = new TopicLiteDTO(1, "nameTopic", "text",
                 2, "categoryName", 15);
         var breadcrumbs = List.of(
@@ -70,9 +68,9 @@ public class InterviewControllerTest {
         when(interviewService.getById(token, 1)).thenReturn(interview);
         when(interviewService.isAuthor(userInfo, interview)).thenReturn(false);
         when(wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId())))
-                .thenReturn(wisherDtos);
-        when(wisherService.getInterviewStatistic(wisherDtos)).thenReturn(new HashMap<>());
-        when(wisherService.isWisher(userInfo.getId(), interview.getId(), wisherDtos)).thenReturn(false);
+                .thenReturn(wishersDto);
+        when(wisherService.getInterviewStatistic(wishersDto)).thenReturn(new HashMap<>());
+        when(wisherService.isWisher(userInfo.getId(), interview.getId(), wishersDto)).thenReturn(false);
         when(feedbackService.findByInterviewId(interview.getId())).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/interview/{id}", interview.getId())
                         .sessionAttr("token", token))

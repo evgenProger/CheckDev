@@ -1,12 +1,11 @@
 package ru.job4j.site.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.ProfileDTO;
-import ru.job4j.site.dto.ProfileWithApprowedInterviewsDTO;
+import ru.job4j.site.dto.ProfileWithApprovedInterviewsDTO;
 import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
 
 import java.util.ArrayList;
@@ -21,13 +20,12 @@ import java.util.Optional;
  * @version 23.09.2023T03:05
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class ProfilesService {
     private static final String URL_PROFILES = "/profiles/";
+    private static final long ZERO_APPROVED_INTERVIEWS = 0;
     private final WebClientAuthCall webClientAuthCall;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final long ZERO_APPROWED_INTERVIEWS = 0;
 
     /**
      * Метод получает из сервиса Auth один профиль по ID
@@ -36,9 +34,8 @@ public class ProfilesService {
      * @return Optional<ProfileDTO>
      */
     public Optional<ProfileDTO> getProfileById(int id) {
-        var uri = URL_PROFILES + id;
         ResponseEntity<ProfileDTO> profile = webClientAuthCall
-                .doGetReqParam(uri)
+                .doGetReqParam(URL_PROFILES + id)
                 .block();
         return Optional.ofNullable(profile.getBody());
     }
@@ -48,25 +45,34 @@ public class ProfilesService {
      *
      * @return List<ProfileDTO>
      */
-    public List<ProfileDTO> getAllProfile() {
+    private List<ProfileDTO> getAllProfile() {
         var responseEntity = webClientAuthCall
                 .doGetReqParamAll(URL_PROFILES)
                 .block();
         return responseEntity.getBody();
     }
 
-    public List<ProfileWithApprowedInterviewsDTO> getAllProfilesWithApprowedInterviews(List<UsersApprovedInterviewsDTO> approwedList) {
-        var profilesList = getAllProfile();
-        List<ProfileWithApprowedInterviewsDTO> profilesWithCountOfInterviews = new ArrayList();
-        for (ProfileDTO profileDTO : profilesList) {
-            ProfileWithApprowedInterviewsDTO profileWAI = new ProfileWithApprowedInterviewsDTO(profileDTO, ZERO_APPROWED_INTERVIEWS);
-            for (UsersApprovedInterviewsDTO uInts : approwedList) {
-                if (profileDTO.getId() == uInts.getUserId()) {
-                    profileWAI.setApprovedInterviews(uInts.getApprovedInterviews());
+    /**
+     * Возвращаем все профили с информацией о количестве проведенных собеседованиях.
+     * Сортировка списка идет по количеству проеденных собеседований от большего к меньшему.
+     *
+     * @param users List<UsersApprovedInterviewsDTO>
+     * @return List<ProfileWithApprovedInterviewsDTO>
+     */
+    public List<ProfileWithApprovedInterviewsDTO> getAllProfilesWithApprovedInterviews(List<UsersApprovedInterviewsDTO> users) {
+        var profiles = getAllProfile();
+        List<ProfileWithApprovedInterviewsDTO> profilesWithCountOfInterviews = new ArrayList<>();
+        for (ProfileDTO profile : profiles) {
+            ProfileWithApprovedInterviewsDTO profileDto = new ProfileWithApprovedInterviewsDTO(profile, ZERO_APPROVED_INTERVIEWS);
+            for (UsersApprovedInterviewsDTO user : users) {
+                if (profile.getId() == user.getUserId()) {
+                    profileDto.setApprovedInterviews(user.getApprovedInterviews());
                 }
             }
-            profilesWithCountOfInterviews.add(profileWAI);
+            profilesWithCountOfInterviews.add(profileDto);
         }
+        profilesWithCountOfInterviews.sort(
+                (a, b) -> Long.compare(b.getApprovedInterviews(), a.getApprovedInterviews()));
         return profilesWithCountOfInterviews;
     }
 }

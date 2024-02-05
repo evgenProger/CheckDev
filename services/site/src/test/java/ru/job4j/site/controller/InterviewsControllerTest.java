@@ -27,28 +27,20 @@ import static ru.job4j.site.enums.StatusInterview.*;
 @SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
 public class InterviewsControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private InterviewsService interviewsService;
-
     @MockBean
     private AuthService authService;
-
     @MockBean
     private ProfilesService profilesService;
-
     @MockBean
     private CategoriesService categoriesService;
-
     @MockBean
     private FilterService filterService;
-
     @MockBean
     private TopicsService topicsService;
-
     @MockBean
     private NotificationService notificationService;
 
@@ -62,7 +54,7 @@ public class InterviewsControllerTest {
         userInfo.setId(1);
         var breadcrumbs = List.of(
                 new Breadcrumb("Главная", "/index"),
-                new Breadcrumb("Собеседования", "/interviews/"));
+                new Breadcrumb("Собеседования", "/interviews/?page=0&?size=5"));
         List<InterviewDTO> interviews = IntStream.range(0, 3).mapToObj(i -> {
             var interviewDTO = new InterviewDTO();
             interviewDTO.setId(i);

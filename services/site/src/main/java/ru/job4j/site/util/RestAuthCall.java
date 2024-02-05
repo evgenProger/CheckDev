@@ -1,4 +1,4 @@
-package ru.job4j.site.service;
+package ru.job4j.site.util;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

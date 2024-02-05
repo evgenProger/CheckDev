@@ -1,23 +1,25 @@
 package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.job4j.site.dto.ProfileWithApprowedInterviewsDTO;
+import ru.job4j.site.dto.ProfileWithApprovedInterviewsDTO;
 import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.ProfilesService;
 import ru.job4j.site.service.WisherService;
+import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
 /**
  * CheckDev пробное собеседование
@@ -28,20 +30,13 @@ import static ru.job4j.site.controller.RequestResponseTools.getToken;
  */
 @Controller
 @RequestMapping("/profiles")
+@RequiredArgsConstructor
 @Slf4j
 public class ProfilesController {
     private final ProfilesService profilesService;
     private final AuthService authService;
     private final NotificationService notifications;
-
     private final WisherService wisherService;
-
-    public ProfilesController(ProfilesService profilesService, AuthService authService, NotificationService notifications, WisherService wisherService) {
-        this.profilesService = profilesService;
-        this.authService = authService;
-        this.notifications = notifications;
-        this.wisherService = wisherService;
-    }
 
     /**
      * Отображение вида одного ProfileDTO
@@ -87,13 +82,16 @@ public class ProfilesController {
                 "Профили", "/profiles/"
         );
         var token = getToken(request);
-        List<UsersApprovedInterviewsDTO> usersApprovedInterviewsList = wisherService.getUsersIdWithCountedApprovedInterviews(token);
-        List<ProfileWithApprowedInterviewsDTO> profileWithApprowedInterviewsDTO = profilesService.getAllProfilesWithApprowedInterviews(usersApprovedInterviewsList);
-        model.addAttribute("profiles", profileWithApprowedInterviewsDTO);
+        List<UsersApprovedInterviewsDTO> usersApprovedInterviewsList =
+                wisherService.getUsersIdWithCountedApprovedInterviews(token);
+        List<ProfileWithApprovedInterviewsDTO> profileWithApprovedInterviewsDTO =
+                profilesService.getAllProfilesWithApprovedInterviews(usersApprovedInterviewsList);
+        model.addAttribute("profiles", profileWithApprovedInterviewsDTO);
         model.addAttribute("current_page", "profiles");
         if (token != null) {
             var userInfo = authService.userInfo(token);
-            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(
+                    token, userInfo.getId()));
         }
         return "profiles/profiles";
     }

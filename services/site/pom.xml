@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>ru.job4j</groupId>
+    <groupId>ru.checkdev</groupId>
     <artifactId>site</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -87,7 +87,6 @@
             <artifactId>summernote</artifactId>
             <version>0.8.10</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.webjars/font-awesome -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>

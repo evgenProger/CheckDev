@@ -12,13 +12,14 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.site.dto.PersonDTO;
 import ru.job4j.site.service.*;
 import ru.job4j.site.util.MultipartFileImpl;
+import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Objects;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
 /**
  * CheckDev пробное собеседование
@@ -36,7 +37,6 @@ public class PersonController {
     private final ImageCompress imageCompress;
     private final AuthService authService;
     private final NotificationService notifications;
-
     private final WisherService wisherService;
 
     @Value("${botUserName}")

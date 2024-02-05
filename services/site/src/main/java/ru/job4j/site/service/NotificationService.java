@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.*;
+import ru.job4j.site.util.RestAuthCall;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,7 @@ public class NotificationService {
             new RestAuthCall("http://localhost:9920/subscribeCategory/add").post(
                     token, mapper.writeValueAsString(subscribeCategory));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
         }
     }
 
@@ -40,7 +41,7 @@ public class NotificationService {
             new RestAuthCall("http://localhost:9920/subscribeCategory/delete").post(
                     token, mapper.writeValueAsString(subscribeCategory));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
         }
     }
 
@@ -52,7 +53,7 @@ public class NotificationService {
             });
             return Optional.of(new UserDTO(id, list));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -64,7 +65,7 @@ public class NotificationService {
             new RestAuthCall("http://localhost:9920/subscribeTopic/add").post(
                     token, mapper.writeValueAsString(subscribeTopicDTO));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
         }
     }
 
@@ -75,7 +76,7 @@ public class NotificationService {
             new RestAuthCall("http://localhost:9920/subscribeTopic/delete").post(
                     token, mapper.writeValueAsString(subscribeTopic));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
         }
     }
 
@@ -87,7 +88,7 @@ public class NotificationService {
             });
             return Optional.of(new UserTopicDTO(id, list));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -100,7 +101,7 @@ public class NotificationService {
             return mapper.readValue(text, new TypeReference<>() {
             });
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -111,7 +112,7 @@ public class NotificationService {
             new RestAuthCall(String.format("%s%s", urlNtf, "/messages/newInterview"))
                     .post(token, mapper.writeValueAsString(categoryAndTopicIds));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
         }
     }
 
@@ -122,7 +123,7 @@ public class NotificationService {
             new RestAuthCall(url).post(
                     token, mapper.writeValueAsString(innerMessage));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
         }
     }
 
@@ -133,7 +134,7 @@ public class NotificationService {
             new RestAuthCall(url).post(
                     token, mapper.writeValueAsString(feedbackNotification));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
         }
     }
 
@@ -152,7 +153,7 @@ public class NotificationService {
             new RestAuthCall(url).post(
                     token, mapper.writeValueAsString(interviewNotifiDTO));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
         }
     }
 
@@ -170,7 +171,7 @@ public class NotificationService {
             new RestAuthCall(url).post(
                     token, mapper.writeValueAsString(wisherNotifyDTO));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
         }
     }
 
@@ -181,7 +182,7 @@ public class NotificationService {
             var out = new RestAuthCall(url).post(
                     token, mapper.writeValueAsString(wisherApprovedDTO));
         } catch (Exception e) {
-            log.error("API notification not found, error: {}", e);
+            log.error("API notification not found, error: {}", e.getMessage());
         }
     }
 }

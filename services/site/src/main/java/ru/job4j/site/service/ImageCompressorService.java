@@ -1,15 +1,15 @@
 package ru.job4j.site.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
+import ru.job4j.site.util.MultipartFileImpl;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * ImageCompressorService
@@ -49,8 +49,8 @@ public class ImageCompressorService implements ImageCompress {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
         bufferedImage.getGraphics().dispose();
-        return new SimpleMultipartFile(file.getName(), file.getOriginalFilename(),
-                file.getContentType(), byteArrayOutputStream.toByteArray());
+        return new MultipartFileImpl(byteArrayOutputStream.toByteArray(), file.getName(),
+                file.getOriginalFilename(), file.getContentType());
     }
 
     /**
@@ -79,64 +79,4 @@ public class ImageCompressorService implements ImageCompress {
         return result;
     }
 
-    /**
-     * Вложенный класс для модификации результата в MultipartFile
-     */
-    static class SimpleMultipartFile implements MultipartFile {
-        private final String name;
-
-        private final String originalFilename;
-
-        @Nullable
-        private final String contentType;
-
-        private final byte[] content;
-
-        public SimpleMultipartFile(String name, String originalFilename, @Nullable String contentType, byte[] content) {
-            this.name = name;
-            this.originalFilename = originalFilename;
-            this.contentType = contentType;
-            this.content = content;
-        }
-
-        @Override
-        public String getName() {
-            return this.name;
-        }
-
-        @Override
-        public String getOriginalFilename() {
-            return this.originalFilename;
-        }
-
-        @Override
-        public String getContentType() {
-            return this.contentType;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return this.content.length == 0;
-        }
-
-        @Override
-        public long getSize() {
-            return this.content.length;
-        }
-
-        @Override
-        public byte[] getBytes() {
-            return this.content;
-        }
-
-        @Override
-        public InputStream getInputStream() {
-            return new ByteArrayInputStream(this.content);
-        }
-
-        @Override
-        public void transferTo(File dest) throws IOException, IllegalStateException {
-            FileCopyUtils.copy(this.content, dest);
-        }
-    }
 }

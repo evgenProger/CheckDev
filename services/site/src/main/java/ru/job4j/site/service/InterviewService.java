@@ -3,6 +3,7 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.InterviewDTO;
@@ -10,19 +11,17 @@ import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.dto.WisherDetailDTO;
 import ru.job4j.site.dto.WisherDto;
 import ru.job4j.site.enums.StatusInterview;
+import ru.job4j.site.util.RestAuthCall;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class InterviewService {
     private static final String URL_MOCK = "http://localhost:9912/interview/";
     private final ProfilesService profilesService;
-
-    public InterviewService(ProfilesService profilesService) {
-        this.profilesService = profilesService;
-    }
 
     public InterviewDTO create(String token, InterviewDTO interviewDTO) throws JsonProcessingException {
         interviewDTO.setStatusId(StatusInterview.IS_NEW.getId());
@@ -61,7 +60,7 @@ public class InterviewService {
                     token,
                     mapper.writeValueAsString(interviewDTO));
         } catch (Exception e) {
-            log.error("API service MOCK not found, error: {}", e);
+            log.error("API service MOCK not found, error: {}", e.getMessage());
         }
     }
 

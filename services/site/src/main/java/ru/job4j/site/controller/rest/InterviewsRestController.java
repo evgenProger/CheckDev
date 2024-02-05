@@ -12,7 +12,7 @@ import ru.job4j.site.service.InterviewsService;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
 @Tag(name = "InterviewsRestController", description = "Interviews REST API")
 @RestController

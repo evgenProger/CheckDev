@@ -13,13 +13,14 @@ import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.TopicIdNameDTO;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
+import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
 @Controller
 @RequestMapping("/interviews")

@@ -10,10 +10,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
+import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static ru.job4j.site.controller.RequestResponseTools.getToken;
+import static ru.job4j.site.util.RequestResponseTools.getToken;
 
 @Controller
 @RequestMapping("/interview")

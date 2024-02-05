@@ -1,6 +1,7 @@
 package ru.job4j.site.service;
 
 import org.springframework.stereotype.Service;
+import ru.job4j.site.util.RestAuthCall;
 
 @Service
 public class MessageService {

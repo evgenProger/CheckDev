@@ -2,7 +2,6 @@ package ru.checkdev.auth.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.checkdev.auth.domain.Profile;
@@ -26,7 +25,7 @@ import java.util.Optional;
 @Slf4j
 public class ProfileService {
     private final PersonRepository personRepository;
-    private final PasswordEncoder encoding = new BCryptPasswordEncoder();
+    private final PasswordEncoder encoding;
 
     /**
      * Получить ProfileDTO по ID

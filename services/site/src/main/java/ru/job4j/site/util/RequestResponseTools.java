@@ -1,4 +1,4 @@
-package ru.job4j.site.controller;
+package ru.job4j.site.util;
 
 import org.springframework.ui.Model;
 import ru.job4j.site.domain.Breadcrumb;

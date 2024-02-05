@@ -32,17 +32,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
-class LoginControlTest {
+class LoginControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private AuthService authService;
-
-    private LoginControl loginControl;
+    private LoginController loginController;
 
     @BeforeEach
     void initTest() {
-        loginControl = new LoginControl(authService);
+        loginController = new LoginController(authService);
     }
 
     @Test
@@ -123,7 +122,7 @@ class LoginControlTest {
     void whenLogoutPageThenSessionInvalidate() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.getSession().setAttribute("token", 123456);
-        var actualPage = loginControl.logout(request);
+        var actualPage = loginController.logout(request);
         String token = (String) request.getSession().getAttribute("token");
         assertThat(actualPage).isEqualTo("redirect:/");
         assertThat(token).isNull();

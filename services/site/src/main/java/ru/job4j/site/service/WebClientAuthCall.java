@@ -22,8 +22,8 @@ import java.util.List;
  * @since 19.09.2023
  */
 @Service
-@Slf4j
 @AllArgsConstructor
+@Slf4j
 public class WebClientAuthCall {
     private final WebClient webClient;
 
