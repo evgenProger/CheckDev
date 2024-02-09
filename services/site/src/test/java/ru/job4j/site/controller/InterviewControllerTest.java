@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.*;
@@ -16,8 +19,10 @@ import ru.job4j.site.service.*;
 import java.util.*;
 import java.util.stream.IntStream;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -157,15 +162,70 @@ public class InterviewControllerTest {
     }
 
     @Test
-    void wenGetCancelInterviewThenReturnInterviewPage() throws Exception {
+    void whenPostCancelInterviewThenReturnInterviewsPage() throws Exception {
+        InterviewDTO interviewDTO = new InterviewDTO();
+        interviewDTO.setId(1);
+        interviewDTO.setCancelBy("User");
+        given(interviewService.getById(any(), anyInt())).willReturn(interviewDTO);
+        mockMvc.perform(MockMvcRequestBuilders.post("/interview/cancel")
+                        .flashAttr("interviewDTO", interviewDTO)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/interviews/"));
+        verify(interviewService).update(any(), any());
+    }
+
+    @Test
+    void whenGetCancelInterviewPageThenReturnPageToCommentCanceling() throws Exception {
         var token = "123456";
-        var interview = new InterviewDTO();
-        interview.setId(1);
-        when(interviewService.getById(token, interview.getId())).thenReturn(interview);
-        mockMvc.perform(get("/interview/cancel/{interviewId}", interview.getId())
+        var interviewId = 999;
+        var userInfo = new UserInfoDTO();
+        var interviewDTO = new InterviewDTO();
+        interviewDTO.setStatusId(StatusInterview.IS_NEW.getId());
+        interviewDTO.setId(interviewId);
+        when(authService.userInfo(token)).thenReturn(userInfo);
+        when(interviewService.getById(token, interviewId)).thenReturn(interviewDTO);
+        when(interviewService.isAuthor(userInfo, interviewDTO)).thenReturn(true);
+        when(interviewService.getById(token, interviewDTO.getId())).thenReturn(interviewDTO);
+        mockMvc.perform(get("/interview/cancel/reason/{interviewId}", interviewDTO.getId())
                         .sessionAttr("token", token))
                 .andDo(print())
-                .andExpect(view().name("redirect:/interview/" + interview.getId()));
+                .andExpect(view().name("interview/reasonOfCancel"));
+    }
+
+    @Test
+    void whenGetCancelInterviewPageAndYouAreNotAuthor() throws Exception {
+        var token = "123456";
+        var interviewId = 999;
+        var userInfo = new UserInfoDTO();
+        var interviewDTO = new InterviewDTO();
+        interviewDTO.setStatusId(StatusInterview.IS_NEW.getId());
+        interviewDTO.setId(interviewId);
+        when(authService.userInfo(token)).thenReturn(userInfo);
+        when(interviewService.getById(token, interviewId)).thenReturn(interviewDTO);
+        when(interviewService.isAuthor(userInfo, interviewDTO)).thenReturn(false);
+        when(interviewService.getById(token, interviewDTO.getId())).thenReturn(interviewDTO);
+        mockMvc.perform(get("/interview/cancel/reason/{interviewId}", interviewDTO.getId())
+                        .sessionAttr("token", token))
+                .andDo(print())
+                .andExpect(view().name("redirect:/"));
+    }
+
+    @Test
+    void whenGetCancelInterviewPageAndInterviewStatusIsNotNewNeitherInProgress() throws Exception {
+        var token = "123456";
+        var interviewId = 999;
+        var userInfo = new UserInfoDTO();
+        var interviewDTO = new InterviewDTO();
+        interviewDTO.setStatusId(StatusInterview.IS_FEEDBACK.getId());
+        interviewDTO.setId(interviewId);
+        when(authService.userInfo(token)).thenReturn(userInfo);
+        when(interviewService.getById(token, interviewId)).thenReturn(interviewDTO);
+        when(interviewService.isAuthor(userInfo, interviewDTO)).thenReturn(true);
+        when(interviewService.getById(token, interviewDTO.getId())).thenReturn(interviewDTO);
+        mockMvc.perform(get("/interview/cancel/reason/{interviewId}", interviewDTO.getId())
+                        .sessionAttr("token", token))
+                .andDo(print())
+                .andExpect(view().name("redirect:/"));
     }
 
     @Test

@@ -57,7 +57,7 @@ class FeedbackControllerTest {
     void whenGetFeedbackFormThenReturnFeedbackPage() throws Exception {
         var interviewDTO = new InterviewDTO(1, 1, 2, "status2", 2, 1,
                 "title", "additional", "contactBy",
-                null, null, 0, "author", 1L);
+                null, null, 0, "author", 1L, "");
         var token = "1234";
         when(interviewService.getById(token, interviewDTO.getId())).thenReturn(interviewDTO);
         var breadcrumbs = List.of(

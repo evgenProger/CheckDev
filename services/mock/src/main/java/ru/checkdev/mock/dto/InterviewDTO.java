@@ -37,4 +37,8 @@ public class InterviewDTO {
      * поле автор собеседования (тот кто создал собеседование)
      */
     private String author;
+    /**
+     * поле причины отмены собеседования
+     */
+    private String cancelBy;
 }

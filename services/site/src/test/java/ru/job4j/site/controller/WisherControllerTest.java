@@ -54,7 +54,7 @@ class WisherControllerTest {
         var token = "1234";
         var interviewDTO = new InterviewDTO(1, 1, 22, "status22", 2, 1,
                 "title", "additional", "contactBy",
-                null, null, 0, "author", 1L);
+                null, null, 0, "author", 1L, "");
         var wisherId = 2;
         var wisherUserId = 13;
         doNothing().when(interviewService).updateStatus(token, interviewDTO);

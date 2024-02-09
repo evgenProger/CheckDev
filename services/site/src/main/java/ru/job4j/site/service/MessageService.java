@@ -18,7 +18,6 @@ public class MessageService {
     }
 
     public void setReadAll(String token, int userId) {
-        System.out.println("FROM MESSAGE SERVICE USERID" + userId);
         new RestAuthCall(
                 String.format("http://localhost:9920/messages/setReadAll/%d", userId))
                 .put(token, "");
