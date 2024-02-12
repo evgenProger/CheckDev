@@ -34,6 +34,8 @@ class NotificationInterviewControllerTest {
     private final InnerMessageRepositoryFake innerMessageRepositoryFake = new InnerMessageRepositoryFake();
     private final InnerMessageService innerMessageService = new InnerMessageService(innerMessageRepositoryFake, userTelegramService);
     private final NotificationMessageTgFake notificationMessage = new NotificationMessageTgFake();
+    private final MessagesGenerator messagesGenerator = new MessagesGenerator();
+    private final NotificationInterviewController notifyController = new NotificationInterviewController(userTelegramService, innerMessageService, notificationMessage, messagesGenerator);
 
     @Test
     void whenSendMessageSubscribeTopicThenReturnStatusOkBodyListOneMessage() {
@@ -52,7 +54,7 @@ class NotificationInterviewControllerTest {
         subscribeTopicRepositoryFake.save(new SubscribeTopic(0, userTelegramSubmit.getUserId(), interviewNotify.getTopicId()));
         userTelegramService.save(userTelegram);
         userTelegramService.save(userTelegramSubmit);
-        var messageExpect = MessagesGenerator.getMessageSubscribeTopic(interviewNotify);
+        var messageExpect = messagesGenerator.getMessageSubscribeTopic(interviewNotify);
         var innerMessageExpect = InnerMessage.of()
                 .userId(userTelegram.getUserId())
                 .text(messageExpect)
@@ -60,7 +62,6 @@ class NotificationInterviewControllerTest {
                 .read(true)
                 .build();
         var expect = ResponseEntity.ok(List.of(innerMessageExpect));
-        var notifyController = new NotificationInterviewController(userTelegramService, innerMessageService, notificationMessage);
         var actual = notifyController.sendMessageSubscribeTopic(interviewNotify);
         assertThat(actual).isEqualTo(expect);
     }
@@ -77,7 +78,6 @@ class NotificationInterviewControllerTest {
                 .categoryName("category2")
                 .build();
         var expect = ResponseEntity.ok(emptyList());
-        var notifyController = new NotificationInterviewController(userTelegramService, innerMessageService, notificationMessage);
         var actual = notifyController.sendMessageSubscribeTopic(interviewNotify);
         assertThat(actual).isEqualTo(expect);
     }
@@ -93,7 +93,7 @@ class NotificationInterviewControllerTest {
                 .build();
         var userTelegramSubmit = new UserTelegram(0, wisherNotifyDTO.getSubmitterId(), wisherNotifyDTO.getSubmitterId());
         userTelegramRepositoryFake.save(userTelegramSubmit);
-        var messageExpect = MessagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
+        var messageExpect = messagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
         InnerMessage innerMessageExpect = InnerMessage.of()
                 .id(1)
                 .userId(wisherNotifyDTO.getSubmitterId())
@@ -103,8 +103,7 @@ class NotificationInterviewControllerTest {
                 .interviewId(wisherNotifyDTO.getInterviewId())
                 .build();
         var expect = ResponseEntity.ok(innerMessageExpect);
-        var controller = new NotificationInterviewController(userTelegramService, innerMessageService, notificationMessage);
-        var actual = controller.sendMessageSubmitterInterview(wisherNotifyDTO);
+        var actual = notifyController.sendMessageSubmitterInterview(wisherNotifyDTO);
         assertThat(actual).isEqualTo(expect);
     }
 
@@ -120,7 +119,7 @@ class NotificationInterviewControllerTest {
                 .userId(3)
                 .contactBy("@contact")
                 .build();
-        var controller = new NotificationInterviewController(userTelegramService, innerMessageService, notificationMessage);
+        var controller = new NotificationInterviewController(userTelegramService, innerMessageService, notificationMessage, messagesGenerator);
         var actual = controller.sendMessageSubmitterInterview(wisherNotifyDTO);
         var msgs = innerMessageService.findByUserIdAndReadFalse(wisherNotifyDTO.getSubmitterId());
         assertThat(msgs.iterator().next()).isEqualTo(actual.getBody());

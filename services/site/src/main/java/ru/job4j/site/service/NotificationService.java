@@ -174,6 +174,24 @@ public class NotificationService {
         }
     }
 
+    /**
+     * Метод оправляет запрос в сервис Notification.
+     * Запрос для отправки сообщения участнику собеседования о том что автор собеседования удалил собеседование.
+     *
+     * @param token              String
+     * @param cancelInterviewDTO CancelInterviewNotificationDTO
+     */
+    public void sendParticipateCancelInterview(String token, CancelInterviewNotificationDTO cancelInterviewDTO) {
+        var url = String.format("%s/notification/cancelInterview/", urlNtf);
+        var mapper = new ObjectMapper();
+        try {
+            new RestAuthCall(url).post(
+                    token, mapper.writeValueAsString(cancelInterviewDTO));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
+    }
+
     public void approvedWisher(String token, WisherApprovedDTO wisherApprovedDTO) {
         var url = String.format("%s/notificationWisher/approvedWisher/", urlNtf);
         var mapper = new ObjectMapper();

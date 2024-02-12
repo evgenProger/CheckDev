@@ -21,17 +21,20 @@ public class NotificationMessagesService {
     private final UserTelegramRepository userTelegramRepository;
     private final InnerMessageService innerMessageService;
     private final Bot bot;
+    private final MessagesGenerator messagesGenerator;
     @Value("${service.urlSite}")
     private String urlSite;
 
     public NotificationMessagesService(
             UserTelegramRepository userTelegramRepository,
             InnerMessageService innerMessageService,
-            Bot bot
+            Bot bot,
+            MessagesGenerator messagesGenerator
     ) {
         this.userTelegramRepository = userTelegramRepository;
         this.innerMessageService = innerMessageService;
         this.bot = bot;
+        this.messagesGenerator = messagesGenerator;
     }
 
     public void sendMessagesToCategorySubscribers(List<Integer> categorySubscribersIds,
@@ -93,7 +96,7 @@ public class NotificationMessagesService {
             bot.send(sendNotification);
             InnerMessage innerMessage = InnerMessage.of()
                     .userId(wisherApprovedDTO.getWisherUserId())
-                    .text(MessagesGenerator.getMessageApprovedWisher(wisherApprovedDTO))
+                    .text(messagesGenerator.getMessageApprovedWisher(wisherApprovedDTO))
                     .created(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
                     .read(false)
                     .interviewId(wisherApprovedDTO.getInterviewId())
