@@ -138,22 +138,54 @@ public class InterviewController {
     }
 
     /**
-     * Метод отменяет интервью (собеседование).
-     * Для редактирования собеседования авторизованный пользователь должен быть создателем интервью(собеседования).
-     * Метод возвращает страницу отмененного интервью (видно только автору интервью (собеседования)).
+     * Метод пост отменяет интервью (собеседование) и сораняет текстовый комментарий и с причиной его отмены.
+     *
+     * @param interviewDTO InterviewDTO
+     * @param request      HttpServletRequest
+     * @return String page.
+     */
+    @PostMapping("/cancel")
+    public String cancelInterview(@ModelAttribute InterviewDTO interviewDTO,
+                                  HttpServletRequest request) throws JsonProcessingException {
+        var token = getToken(request);
+        var interviewDTOfromDB = interviewService.getById(token, interviewDTO.getId());
+        interviewDTOfromDB.setStatusId(StatusInterview.IS_CANCELED.getId());
+        interviewDTOfromDB.setCancelBy(interviewDTO.getCancelBy());
+        interviewService.update(token, interviewDTOfromDB);
+        return "redirect:/interviews/";
+    }
+
+    /**
+     * Метод отображает страницу с возможностью оставления комментария с причиной отмены интервью.
+     * Для редактирования собеседования авторизованный пользователь должен быть создателем интервью(собеседования),
+     * а само собеседование должно быть в статусе "Новое" или "В процессе"
      *
      * @param interviewId int
      * @param request     HttpServletRequest
      * @return String view page
      */
-    @GetMapping("/cancel/{interviewId}")
-    public String cancelInterview(@PathVariable("interviewId") int interviewId,
-                                  HttpServletRequest request) throws JsonProcessingException {
+    @GetMapping("/cancel/reason/{interviewId}")
+    public String reasonOfCancelInterview(@PathVariable("interviewId") int interviewId, Model model,
+                                          HttpServletRequest request) throws JsonProcessingException {
         var token = getToken(request);
-        var interviewDTO = interviewService.getById(token, interviewId);
-        interviewDTO.setStatusId(StatusInterview.IS_CANCELED.getId());
-        interviewService.updateStatus(token, interviewDTO);
-        return "redirect:/interview/" + interviewId;
+        var interviewDTO = new InterviewDTO();
+        try {
+            interviewDTO = interviewService.getById(token, interviewId);
+        } catch (Exception e) {
+            log.error("InterviewService.class method getById error: {}", e.getMessage());
+            return "redirect:/";
+        }
+        var userInfo = authService.userInfo(token);
+        var isAuthor = interviewService.isAuthor(userInfo, interviewDTO);
+        if (interviewDTO.getStatusId() != StatusInterview.IS_NEW.getId()
+                & interviewDTO.getStatusId() != StatusInterview.IN_PROGRESS.getId()) {
+            return "redirect:/";
+        }
+        if (!isAuthor) {
+            return "redirect:/";
+        }
+        model.addAttribute("interview", interviewDTO);
+        return "interview/reasonOfCancel";
     }
 
     /**

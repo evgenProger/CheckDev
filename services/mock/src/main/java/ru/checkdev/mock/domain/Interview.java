@@ -46,4 +46,6 @@ public class Interview {
     private String author;
     @JoinColumn(name = "agreed_wisher_id")
     private int agreedWisherId;
+    @JoinColumn(name = "cancel_by")
+    private String cancelBy;
 }

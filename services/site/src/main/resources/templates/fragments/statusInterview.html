@@ -18,7 +18,7 @@
               th:case="${T(ru.job4j.site.enums.StatusInterview).IS_COMPLETED.id}"
               th:text="${T(ru.job4j.site.enums.StatusInterview).IS_COMPLETED.info}">Статус интервью завершено</span>
         <!--/*Отменено*/-->
-        <span class="badge bg-light pr-3 me-2"
+        <span class="badge bg-danger pr-3 me-2"
               th:case="${T(ru.job4j.site.enums.StatusInterview).IS_CANCELED.id}"
               th:text="${T(ru.job4j.site.enums.StatusInterview).IS_CANCELED.info}">Статус интервью отменено</span>
         <!--/*Неизвестен*/-->

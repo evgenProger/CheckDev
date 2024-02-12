@@ -34,4 +34,8 @@ public class InterviewDTO {
      * поле количество откликов(желающих участвовать в интервью)
      */
     private Long countWishers;
+    /**
+     * поле причины отмены собеседования
+     */
+    private String cancelBy;
 }

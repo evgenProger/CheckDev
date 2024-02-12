@@ -29,4 +29,5 @@ public class Interview {
     private Integer topicId;
     private String author;
     private int agreedWisherId;
+    private String cancelBy;
 }

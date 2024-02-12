@@ -13,8 +13,9 @@ package ru.checkdev.mock.enums;
  * 0 - Неизвестен IS_UNKNOWN.
  * 1 - Новое IS_NEW.
  * 2 - В процессе IN_PROGRESS.
- * 3 - Завершено IS_COMPLETED.
- * 4 - Отменено IS_CANCELED.
+ * 3 - Ожидает отзыв IS_FEEDBACK.
+ * 4 - Завершено IS_COMPLETED.
+ * 5 - Отменено IS_CANCELED.
  *
  * @author Dmitry Stepanov
  * @version 20.11.2023 15:23

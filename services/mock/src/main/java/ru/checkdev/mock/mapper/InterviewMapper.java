@@ -29,6 +29,7 @@ public class InterviewMapper {
                 .topicId(interviewDTO.getTopicId())
                 .author(interviewDTO.getAuthor())
                 .agreedWisherId(interviewDTO.getAgreedWisherId())
+                .cancelBy(interviewDTO.getCancelBy())
                 .build();
     }
 
@@ -49,6 +50,7 @@ public class InterviewMapper {
                 .createDate(interview.getCreateDate().toString())
                 .topicId(interview.getTopicId())
                 .author(interview.getAuthor())
+                .cancelBy(interview.getCancelBy())
                 .build();
     }
 
