@@ -92,6 +92,7 @@
         var filterProfileName = element.getAttribute('data-name');
         showPatch('filterProfile_patch_div', 'filterProfilePatchTextSpan', filterProfileName);
         currentFilterProfile = filterProfileId;
+        currentStatus = 0;
         createFilter();
     }
 
@@ -100,6 +101,7 @@
         var statusName = element.getAttribute('data-name');
         showPatch('status_patch_div', 'statusPatchTextSpan', statusName);
         currentStatus = status;
+        currentFilterProfile = 0;
         createFilter();
     }
 
