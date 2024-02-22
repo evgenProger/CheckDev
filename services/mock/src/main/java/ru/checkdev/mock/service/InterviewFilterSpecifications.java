@@ -42,7 +42,7 @@ public class InterviewFilterSpecifications {
             if (wisherId > 0) {
                 if (exclude) {
                     predicates.add(criteriaBuilder.not(root.get("id")
-                            .in(getInterviewsIdsFromWisherWisher(wisherId, criteriaBuilder, query))));
+                            .in(getInterviewsIdsFromWisher(wisherId, criteriaBuilder, query))));
                 } else {
                     predicates.add(root.get("id")
                             .in(getInterviewsFromWisher(wisherId, criteriaBuilder, query)));
@@ -56,7 +56,7 @@ public class InterviewFilterSpecifications {
         };
     }
 
-    private Subquery<Integer> getInterviewsIdsFromWisherWisher(
+    private Subquery<Integer> getInterviewsIdsFromWisher(
             int userId, CriteriaBuilder cb, CriteriaQuery<?> query) {
         Subquery<Integer> subQuery = query.subquery(Integer.class);
         Root<Wisher> subWisher = subQuery.from(Wisher.class);

@@ -85,7 +85,7 @@ public class InterviewsControllerTest {
         var messages = List.of(new InnerMessageDTO(1, id,
                 "message", new Timestamp(System.currentTimeMillis()), 1));
         var filterRequestParams = new FilterRequestParams(
-                List.of(1), 0, 0, 0, 1, false);
+                List.of(1), 1, 0, 0, 1, false);
         when(interviewsService.getAllByUserIdRelated(token, 0, 5, userInfo.getId())).thenReturn(page);
         when(interviewsService.getAllWithFilters(filterRequestParams, 0, 5)).thenReturn(page);
         when(authService.userInfo(token)).thenReturn(userInfo);
