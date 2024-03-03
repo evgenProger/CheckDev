@@ -28,14 +28,14 @@ public class FilterServiceTest {
 
     @Test
     public void whenFilterSaved() {
-        var filter = new Filter(1, 1, 1, 0, 0);
+        var filter = new Filter(1, 1, 1, 0, 0, 0);
         when(filterRepository.save(filter)).thenReturn(filter);
         assertThat(filterService.save(filter), is(Optional.of(filter)));
     }
 
     @Test
     public void whenFilterFindByUserId() {
-        var filter = new Filter(1, 1, 1, 0, 0);
+        var filter = new Filter(1, 1, 1, 0, 0, 0);
         when(filterRepository.getByUserId(1)).thenReturn(filter);
         assertThat(filterService.findByUserId(1), is(Optional.of(filter)));
     }
@@ -47,7 +47,7 @@ public class FilterServiceTest {
 
     @Test
     public void whenFilterDeletedByUserId() {
-        var filter = new Filter(1, 1, 1, 0, 0);
+        var filter = new Filter(1, 1, 1, 0, 0, 0);
         when(filterRepository.deleteByUserId(1)).thenReturn(1);
         assertThat(filterService.deleteByUserId(1), is(1));
     }

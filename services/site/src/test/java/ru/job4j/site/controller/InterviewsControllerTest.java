@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.*;
+import ru.job4j.site.enums.InterviewMode;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
 
@@ -22,6 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static ru.job4j.site.enums.InterviewMode.ANSWER;
+import static ru.job4j.site.enums.InterviewMode.ASK;
 import static ru.job4j.site.enums.StatusInterview.*;
 
 @SpringBootTest(classes = SiteSrv.class)
@@ -80,12 +83,12 @@ public class InterviewsControllerTest {
         List<TopicIdNameDTO> topicIdNameDTOS = IntStream.range(1, 8).mapToObj(
                 i -> new TopicIdNameDTO(i, String.format("topic_id_name_%d", i))
         ).toList();
-        var filter = new FilterDTO(1, 1, 1, 0, 1);
+        var filter = new FilterDTO(1, 1, 1, 1, 1, 0);
         var page = new PageImpl<>(interviews);
         var messages = List.of(new InnerMessageDTO(1, id,
-                "message", new Timestamp(System.currentTimeMillis()), 1));
+                "message", new Timestamp(System.currentTimeMillis()), 0));
         var filterRequestParams = new FilterRequestParams(
-                List.of(1), 1, 0, 0, 1, false);
+                List.of(1), 1, 0, 0, 1, 0, false);
         when(interviewsService.getAllByUserIdRelated(token, 0, 5, userInfo.getId())).thenReturn(page);
         when(interviewsService.getAllWithFilters(filterRequestParams, 0, 5)).thenReturn(page);
         when(authService.userInfo(token)).thenReturn(userInfo);
@@ -118,6 +121,8 @@ public class InterviewsControllerTest {
                         model().attribute("innerMessages", messages),
                         model().attribute("statuses", new StatusInterview[]{
                                 IS_NEW, IN_PROGRESS, IS_FEEDBACK, IS_COMPLETED, IS_CANCELED}),
+                        model().attribute("modes", new InterviewMode[]{ASK, ANSWER}),
+                        model().attribute("modeName", ""),
                         view().name("interview/interviews"));
     }
 }

@@ -19,6 +19,7 @@ public class InterviewFilterSpecifications {
         int agreedWisherId = filterRequestParams.getAgreedWisherId();
         int wisherId = filterRequestParams.getWisherId();
         int status = filterRequestParams.getStatus();
+        int mode = filterRequestParams.getMode();
         boolean exclude = filterRequestParams.isExclude();
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -50,6 +51,9 @@ public class InterviewFilterSpecifications {
             }
             if (status > 0) {
                 predicates.add(criteriaBuilder.equal(root.get("status"), status));
+            }
+            if (mode > 0) {
+                predicates.add(criteriaBuilder.equal(root.get("mode"), mode));
             }
             query.orderBy(List.of(criteriaBuilder.desc(root.get("createDate"))));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

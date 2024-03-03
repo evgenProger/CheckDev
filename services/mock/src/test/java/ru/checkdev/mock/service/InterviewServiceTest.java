@@ -248,7 +248,7 @@ class InterviewServiceTest {
     @Test
     void whenGetAllWithSpecifications() {
         var filterRequestParams = new FilterRequestParams(
-                List.of(1), 3, 0, 0, 1, false);
+                List.of(1), 3, 0, 0, 1, 0, false);
         var specifications =
                 interviewFilterSpecifications.createSpecifications(filterRequestParams);
         var page = new PageImpl<>(List.of(interview));

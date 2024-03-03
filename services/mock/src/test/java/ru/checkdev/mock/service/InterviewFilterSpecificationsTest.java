@@ -34,7 +34,7 @@ public class InterviewFilterSpecificationsTest {
     @Test
     public void testCreateSpecifications() {
         var filterRequestParams = new FilterRequestParams(
-                List.of(1), 1, 1, 1, 1, false);
+                List.of(1), 1, 1, 1, 1, 0, false);
         Specification<Interview> specification =
                 interviewFilterSpecifications.createSpecifications(filterRequestParams);
         assertNotNull(specification);

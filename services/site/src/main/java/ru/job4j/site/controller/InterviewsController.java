@@ -11,6 +11,7 @@ import ru.job4j.site.dto.FilterDTO;
 import ru.job4j.site.dto.InterviewDTO;
 import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.TopicIdNameDTO;
+import ru.job4j.site.enums.InterviewMode;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
 import ru.job4j.site.util.RequestResponseTools;
@@ -51,13 +52,15 @@ public class InterviewsController {
                     ? filterService.getByUserId(token, userId)
                     : (FilterDTO) session.getAttribute("filter");
             var isFiltered = filter != null
-                    && (filter.getCategoryId() > 0 || filter.getFilterProfile() > 0 || filter.getStatus() > 0);
+                    && (filter.getCategoryId() > 0 || filter.getFilterProfile() > 0
+                    || filter.getStatus() > 0 || filter.getMode() > 0);
             Page<InterviewDTO> interviewsPage;
             List<TopicIdNameDTO> topicIdNameDTOS = new ArrayList<>();
             var categoryName = "";
             var topicName = "";
             var filterProfileName = "";
             var statusName = "";
+            var modeName = "";
             var filterProfiles = filterService.getProfiles();
             var categories = categoriesService.getAll();
             if (isFiltered) {
@@ -65,6 +68,7 @@ public class InterviewsController {
                 var topicId = filter.getTopicId();
                 var filterProfileId = filter.getFilterProfile();
                 var statusId = filter.getStatus();
+                var modeId = filter.getMode();
                 if (categoryId > 0) {
                     topicIdNameDTOS = topicsService.getTopicIdNameDtoByCategory(categoryId);
                 }
@@ -77,6 +81,7 @@ public class InterviewsController {
                 filterProfileName = filterProfileId > 0
                         ? filterService.getNameById(filterProfiles, filterProfileId) : "";
                 statusName = statusId > 0 ? StatusInterview.values()[statusId].getInfo() : "";
+                modeName = modeId > 0 ? InterviewMode.values()[modeId - 1].getInfo() : "";
             } else {
                 interviewsPage = interviewsService.getAllByUserIdRelated(token, page, size, userId);
             }
@@ -107,8 +112,10 @@ public class InterviewsController {
             model.addAttribute("filterProfiles", filterProfiles);
             model.addAttribute("filterProfileName", filterProfileName);
             model.addAttribute("statuses", Arrays.copyOfRange(statuses, 1, statuses.length));
+            model.addAttribute("modes", InterviewMode.values());
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userId));
             model.addAttribute("statusName", statusName);
+            model.addAttribute("modeName", modeName);
             model.addAttribute("STATUS_IS_CANCELED_ID", StatusInterview.IS_CANCELED.getId());
             if (token != null) {
                 model.addAttribute("botMessages",

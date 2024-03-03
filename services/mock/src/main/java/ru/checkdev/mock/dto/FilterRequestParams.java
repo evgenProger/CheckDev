@@ -17,6 +17,7 @@ public class FilterRequestParams {
     private Integer wisherId;
     private Integer agreedWisherId;
     private Integer status;
+    private Integer mode;
     private boolean exclude;
 
     @Override
