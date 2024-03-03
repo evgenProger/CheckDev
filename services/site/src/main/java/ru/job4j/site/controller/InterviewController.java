@@ -13,6 +13,8 @@ import ru.job4j.site.service.*;
 import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static ru.job4j.site.util.RequestResponseTools.getToken;
 
@@ -138,7 +140,8 @@ public class InterviewController {
     }
 
     /**
-     * Метод пост отменяет интервью (собеседование) и сораняет текстовый комментарий и с причиной его отмены.
+     * Метод пост отменяет интервью (собеседование), сохраняет текстовый комментарий с причиной его отмены
+     * и отправляет уведомление об отмене откликнувшемуся участнику собеседования, если такой имелся.
      *
      * @param interviewDTO InterviewDTO
      * @param request      HttpServletRequest
@@ -151,7 +154,27 @@ public class InterviewController {
         var interviewDTOfromDB = interviewService.getById(token, interviewDTO.getId());
         interviewDTOfromDB.setStatusId(StatusInterview.IS_CANCELED.getId());
         interviewDTOfromDB.setCancelBy(interviewDTO.getCancelBy());
-        interviewService.update(token, interviewDTOfromDB);
+        CompletableFuture.runAsync(() -> {
+            try {
+                interviewService.update(token, interviewDTOfromDB);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        List<WisherDto> wisherList = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interviewDTOfromDB.getId()));
+        if (wisherList.size() > 0) {
+            wisherList.forEach(wisherDto -> {
+                CancelInterviewNotificationDTO cancelInterviewDTO = new CancelInterviewNotificationDTO(
+                        interviewDTOfromDB.getId(),
+                        interviewDTOfromDB.getTitle(),
+                        interviewDTOfromDB.getSubmitterId(),
+                        interviewDTOfromDB.getAuthor(),
+                        interviewDTOfromDB.getCancelBy(),
+                        wisherDto.getUserId()
+                );
+                notifications.sendParticipateCancelInterview(token, cancelInterviewDTO);
+            });
+        }
         return "redirect:/interviews/";
     }
 

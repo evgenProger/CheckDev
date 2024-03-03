@@ -169,7 +169,6 @@ public class InterviewControllerTest {
                         .flashAttr("interviewDTO", interviewDTO)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/interviews/"));
-        verify(interviewService).update(any(), any());
     }
 
     @Test

@@ -2,9 +2,12 @@ package ru.checkdev.notification.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.checkdev.notification.dto.CancelInterviewNotificationDTO;
 import ru.checkdev.notification.dto.InterviewNotifyDTO;
 import ru.checkdev.notification.dto.WisherApprovedDTO;
 import ru.checkdev.notification.dto.WisherNotifyDTO;
+
+import java.util.StringJoiner;
 
 /**
  * CheckDev пробное собеседование
@@ -34,7 +37,7 @@ public class MessagesGenerator {
         MessagesGenerator.urlSiteStatic = urlSite;
     }
 
-    public static String getMessageSubscribeTopic(InterviewNotifyDTO interviewNotifyDTO) {
+    public String getMessageSubscribeTopic(InterviewNotifyDTO interviewNotifyDTO) {
         return String.format(
                 "Вы подписаны на тему:%s, из категории:%s.%s"
                         + "По вашей подписке создана новое собеседование.",
@@ -48,7 +51,7 @@ public class MessagesGenerator {
      * @param wisherNotifyDTO WisherNotifyDTO
      * @return String message.
      */
-    public static String getMessageParticipateWisher(WisherNotifyDTO wisherNotifyDTO) {
+    public String getMessageParticipateWisher(WisherNotifyDTO wisherNotifyDTO) {
         return "На ваше собеседование: "
                 + wisherNotifyDTO.getInterviewTitle()
                 + " добавился участник: "
@@ -60,7 +63,24 @@ public class MessagesGenerator {
                 + wisherNotifyDTO.getInterviewId();
     }
 
-    public static String getMessageApprovedWisher(WisherApprovedDTO wisherApprovedNotifyDTO) {
+    /**
+     * Генерация сообщения для отправки участнику при отмене собеседования его автором.
+     *
+     * @param cancelInterviewDTO CancelInterviewNotificationDTO
+     * @return String message.
+     */
+    public String getMessageCancelInterview(CancelInterviewNotificationDTO cancelInterviewDTO) {
+        StringJoiner joiner = new StringJoiner("");
+        return joiner.add("Собеседование ")
+                .add(cancelInterviewDTO.getInterviewTitle())
+                .add(", на которое вы откликнулись, было отменено создателем ")
+                .add(cancelInterviewDTO.getSubmitterName())
+                .add(". Причина отмены собеседования: \"")
+                .add(cancelInterviewDTO.getReasonOfCancel())
+                .add("\". Данное собеседование вам больше недоступно.").toString();
+    }
+
+    public String getMessageApprovedWisher(WisherApprovedDTO wisherApprovedNotifyDTO) {
         return String.format("Вы приглашены на собеседование: %s.%sСсылка на собеседование: %s",
                 wisherApprovedNotifyDTO.getInterviewTitle(),
                 System.lineSeparator(),

@@ -1,6 +1,7 @@
 package ru.checkdev.notification.service;
 
 import org.junit.jupiter.api.Test;
+import ru.checkdev.notification.dto.CancelInterviewNotificationDTO;
 import ru.checkdev.notification.dto.InterviewNotifyDTO;
 import ru.checkdev.notification.dto.WisherApprovedDTO;
 import ru.checkdev.notification.dto.WisherNotifyDTO;
@@ -14,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @version 18.11.2023 00:41
  */
 class MessagesGeneratorTest {
+    private final MessagesGenerator messagesGenerator = new MessagesGenerator();
 
     @Test
     void generatorMessageSubscribeTopic() {
@@ -30,7 +32,7 @@ class MessagesGeneratorTest {
                         + "По вашей подписке создана новое собеседование.",
                 interviewNotifDTO.getTopicName(), interviewNotifDTO.getCategoryName(),
                 System.lineSeparator());
-        var actual = MessagesGenerator.getMessageSubscribeTopic(interviewNotifDTO);
+        var actual = messagesGenerator.getMessageSubscribeTopic(interviewNotifDTO);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -49,7 +51,26 @@ class MessagesGeneratorTest {
                 wisherNotifyDTO.getInterviewTitle(),
                 wisherNotifyDTO.getUserName(),
                 wisherNotifyDTO.getInterviewId());
-        String actual = MessagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
+        String actual = messagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    @Test
+    void whenGenerateMessageCancelInterview() {
+        CancelInterviewNotificationDTO cancelInterviewDTO = CancelInterviewNotificationDTO.of()
+                .interviewId(11)
+                .interviewTitle("JPA")
+                .submitterId(22)
+                .submitterName("IVAN")
+                .reasonOfCancel("Нет личного времени")
+                .userId(33)
+                .build();
+        String expect = String.format(
+                "Собеседование %s, на которое вы откликнулись, было отменено создателем %s. Причина отмены собеседования: \"%s\". Данное собеседование вам больше недоступно.",
+                cancelInterviewDTO.getInterviewTitle(),
+                cancelInterviewDTO.getSubmitterName(),
+                cancelInterviewDTO.getReasonOfCancel());
+        String actual = messagesGenerator.getMessageCancelInterview(cancelInterviewDTO);
         assertThat(actual).isEqualTo(expect);
     }
 
@@ -65,7 +86,7 @@ class MessagesGeneratorTest {
         String expect = String.format(
                 "Вы приглашены на собеседование: %s.",
                 wisherApprovedDTO.getInterviewTitle()) + System.lineSeparator() + "Ссылка на собеседование: www";
-        String actual = MessagesGenerator.getMessageApprovedWisher(wisherApprovedDTO);
+        String actual = messagesGenerator.getMessageApprovedWisher(wisherApprovedDTO);
         assertThat(actual).isEqualTo(expect);
     }
 }
