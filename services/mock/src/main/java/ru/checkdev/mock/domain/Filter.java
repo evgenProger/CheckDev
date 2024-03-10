@@ -26,6 +26,8 @@ public class Filter {
     private int filterProfile;
     @Column(name = "status")
     private int status;
+    @Column(name = "_mode")
+    private int mode;
 
     @Override
     public boolean equals(Object o) {

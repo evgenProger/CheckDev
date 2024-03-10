@@ -27,7 +27,7 @@ public class FilterRepositoryTest {
 
     @Test
     public void whenFilterSaved() {
-        var filter = new Filter(1, 1, 1, 0, 0);
+        var filter = new Filter(1, 1, 1, 0, 0, 0);
         entityManager.persist(filter);
         var saved = filterRepository.save(filter);
         assertThat(filter).isEqualTo(saved);
@@ -35,7 +35,7 @@ public class FilterRepositoryTest {
 
     @Test
     public void whenFilterFindByUserId() {
-        var filter = new Filter(1, 1, 1, 0, 0);
+        var filter = new Filter(1, 1, 1, 0, 0, 0);
         entityManager.persist(filter);
         var optionalFilter = filterRepository.getByUserId(1);
         assertNotNull(optionalFilter);
@@ -50,7 +50,7 @@ public class FilterRepositoryTest {
 
     @Test
     public void whenFilterSavedThenDeleteByUserId() {
-        var filter = new Filter(1, 1, 1, 0, 0);
+        var filter = new Filter(1, 1, 1, 0, 0, 0);
         entityManager.persist(filter);
         var optionalFilter = filterRepository.findById(1);
         assertTrue(optionalFilter.isPresent());

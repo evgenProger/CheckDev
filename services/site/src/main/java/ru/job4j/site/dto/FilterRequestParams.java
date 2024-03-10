@@ -16,5 +16,6 @@ public class FilterRequestParams {
     private int wisherId;
     private int agreedWisherId;
     private int status;
+    private int mode;
     private boolean exclude;
 }

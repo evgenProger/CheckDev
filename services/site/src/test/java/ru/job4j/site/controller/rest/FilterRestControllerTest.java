@@ -35,7 +35,7 @@ public class FilterRestControllerTest {
     public void whenGetByUserId() throws Exception {
         int userId = 1;
         String token = "123";
-        var filter = new FilterDTO(1, 1, 0, 0, 0);
+        var filter = new FilterDTO(1, 1, 0, 0, 0, 0);
         when(filterService.getByUserId(token, userId)).thenReturn(filter);
         mockMvc.perform(get("/filter/1")
                         .sessionAttr("token", token))
@@ -47,7 +47,7 @@ public class FilterRestControllerTest {
     @Test
     public void whenSave() throws Exception {
         String token = "123";
-        var filter = new FilterDTO(1, 1, 0, 0, 0);
+        var filter = new FilterDTO(1, 1, 0, 0, 0, 0);
         when(filterService.save(token, filter)).thenReturn(filter);
         mockMvc.perform(post("/filter/create")
                         .contentType(MediaType.APPLICATION_JSON)

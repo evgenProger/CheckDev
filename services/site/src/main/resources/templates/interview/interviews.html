@@ -39,6 +39,7 @@
     var currentTopicId;
     var currentFilterProfile;
     var currentStatus;
+    var currentMode;
 
     function init() {
         if (filter != null) {
@@ -46,6 +47,7 @@
             currentTopicId = filter.topicId;
             currentFilterProfile = filter.filterProfile;
             currentStatus = filter.status;
+            currentMode = filter.mode;
             if (currentCategoryId > 0) {
                 inflateTopicList(topics);
             }
@@ -54,6 +56,7 @@
             currentTopicId = 0;
             currentFilterProfile = 0;
             currentStatus = 0;
+            currentMode = 0;
         }
     }
 
@@ -92,7 +95,6 @@
         var filterProfileName = element.getAttribute('data-name');
         showPatch('filterProfile_patch_div', 'filterProfilePatchTextSpan', filterProfileName);
         currentFilterProfile = filterProfileId;
-        currentStatus = 0;
         createFilter();
     }
 
@@ -101,7 +103,14 @@
         var statusName = element.getAttribute('data-name');
         showPatch('status_patch_div', 'statusPatchTextSpan', statusName);
         currentStatus = status;
-        currentFilterProfile = 0;
+        createFilter();
+    }
+
+    function onModeItemClick(element) {
+        var mode = element.getAttribute('data-id');
+        var modeName = element.getAttribute('data-name');
+        showPatch('mode_patch_div', 'modePatchTextSpan', modeName);
+        currentMode = mode;
         createFilter();
     }
 
@@ -113,7 +122,7 @@
         $('#topics_select').html('');
         currentTopicId = 0;
         currentCategoryId = 0;
-        if (currentFilterProfile < 1 && userId > 0 && currentStatus < 1) {
+        if (currentFilterProfile < 1 && userId > 0 && currentStatus < 1 && currentMode < 1) {
             deleteFilter(userId);
         } else {
             createFilter();
@@ -132,7 +141,7 @@
         hideElement(container.id);
         var userId = element.getAttribute('data-user_id');
         currentFilterProfile = 0;
-        if (currentCategoryId < 1 && currentStatus < 1) {
+        if (currentCategoryId < 1 && currentStatus < 1 && currentMode < 1) {
             deleteFilter(userId);
         } else {
             createFilter();
@@ -144,6 +153,18 @@
         hideElement(container.id);
         var userId = element.getAttribute('data-user_id');
         currentStatus = 0;
+        if (currentCategoryId < 1 && currentFilterProfile < 1 && currentMode < 1) {
+            deleteFilter(userId);
+        } else {
+            createFilter();
+        }
+    }
+
+    function onModePatchCancelClick(element) {
+        var container = element.parentNode;
+        hideElement(container.id);
+        var userId = element.getAttribute('data-user_id');
+        currentMode = 0;
         if (currentCategoryId < 1 && currentFilterProfile < 1) {
             deleteFilter(userId);
         } else {
@@ -175,7 +196,8 @@
             categoryId: currentCategoryId,
             topicId: currentTopicId,
             filterProfile: currentFilterProfile,
-            status: currentStatus
+            status: currentStatus,
+            mode: currentMode
         };
         if (userId > 0) {
             $.ajax({
@@ -218,7 +240,8 @@
                 categoryId: 0,
                 topicId: 0,
                 filterProfile: 0,
-                status: 0
+                status: 0,
+                mode: 0
             };
             $.ajax({
                 type: "POST",
@@ -327,7 +350,7 @@
                     </div>
                 </div>
 
-                <div class="btn-group border border-start me-2">
+                <div th:if="${userId > 0}" class="btn-group border border-start me-2">
                     <div class="dropdown" id="status_select">
                         <button class="btn btn-light btn-sm dropdown-toggle"
                                 type="button" id="dropdownMenuButton4"
@@ -349,6 +372,33 @@
                         <button class="btn btn-light btn-sm" onclick="onStatusPatchCancelClick(this)"
                                 th:data-user_id="${userId}">
                             <span id="statusPatchTextSpan" th:text="${statusName}"></span>
+                            <span class="fas fa-times"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div th:if="${userId > 0}" class="btn-group border border-start me-2">
+                    <div class="dropdown" id="mode_select">
+                        <button class="btn btn-light btn-sm dropdown-toggle"
+                                type="button" id="dropdownMenuButton5"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            Роль
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
+                            <li class="dropdown-item" th:each="mode: ${modes}">
+                                <ul onclick="onModeItemClick(this)"
+                                    th:text="${mode.info}"
+                                    th:data-id="${mode.id}"
+                                    th:data-name="${mode.info}"
+                                    th:data-user_id="${userInfo != null ? userInfo.getId() : 0}">
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div th:if="${filter != null && filter.mode > 0}" id="mode_patch_div" class="ms-1">
+                        <button class="btn btn-light btn-sm" onclick="onModePatchCancelClick(this)"
+                                th:data-user_id="${userId}">
+                            <span id="modePatchTextSpan" th:text="${modeName}"></span>
                             <span class="fas fa-times"></span>
                         </button>
                     </div>

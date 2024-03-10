@@ -29,4 +29,5 @@
     <include file="changelog/024_ddl_add_column_status_id_in_table_filter.sql" relativeToChangelogFile="true"/>
     <include file="changelog/025_ddl_drop_table_filter_profile.sql" relativeToChangelogFile="true"/>
     <include file="changelog/026_ddl_update_table_interview.sql" relativeToChangelogFile="true"/>
+    <include file="changelog/027_ddl_add_column_mode_in_table_filter.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
