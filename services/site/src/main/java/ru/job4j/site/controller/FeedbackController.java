@@ -2,6 +2,7 @@ package ru.job4j.site.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -100,6 +101,7 @@ public class FeedbackController {
             }
         }
         var token = RequestResponseTools.getToken(request);
+        feedbackDTO.setTextFeedback(StringEscapeUtils.escapeHtml4(feedbackDTO.getTextFeedback()));
         feedbackService.save(token, feedbackDTO, name);
         var recipientId = submitterId == userId ? agreedWisherId : submitterId;
         if (userId > 0 && recipientId > 0) {

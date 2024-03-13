@@ -3,6 +3,7 @@ package ru.job4j.site.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,9 @@ public class CategoriesController {
     @GetMapping("/")
     public String categories(Model model, HttpServletRequest req) throws JsonProcessingException {
         try {
-            model.addAttribute("categories", categoriesService.getAllWithTopics());
+            var categories = categoriesService.getAllWithTopics();
+            categories.forEach(c -> c.setName(StringEscapeUtils.unescapeHtml4(c.getName())));
+            model.addAttribute("categories", categories);
             var token = getToken(req);
             if (token != null) {
                 var userInfo = authService.userInfo(token);

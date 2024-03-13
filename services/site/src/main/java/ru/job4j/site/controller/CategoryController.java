@@ -2,6 +2,7 @@ package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,7 @@ public class CategoryController {
     @PostMapping("/")
     public String createCategory(@ModelAttribute CategoryDTO category, HttpServletRequest req)
             throws JsonProcessingException {
+        category.setName(StringEscapeUtils.escapeHtml4(category.getName()));
         categoriesService.create(getToken(req), category);
         return "redirect:/categories/";
     }
@@ -69,6 +71,7 @@ public class CategoryController {
     public String updateCategory(@ModelAttribute CategoryDTO category,
                                  HttpServletRequest req) throws JsonProcessingException {
         var token = getToken(req);
+        category.setName(StringEscapeUtils.escapeHtml4(category.getName()));
         categoriesService.update(token, category);
         return "redirect:/categories/";
     }
