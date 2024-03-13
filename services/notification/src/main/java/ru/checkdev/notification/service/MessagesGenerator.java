@@ -2,10 +2,7 @@ package ru.checkdev.notification.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.checkdev.notification.dto.CancelInterviewNotificationDTO;
-import ru.checkdev.notification.dto.InterviewNotifyDTO;
-import ru.checkdev.notification.dto.WisherApprovedDTO;
-import ru.checkdev.notification.dto.WisherNotifyDTO;
+import ru.checkdev.notification.dto.*;
 
 import java.util.StringJoiner;
 
@@ -78,6 +75,21 @@ public class MessagesGenerator {
                 .add(". Причина отмены собеседования: \"")
                 .add(cancelInterviewDTO.getReasonOfCancel())
                 .add("\". Данное собеседование вам больше недоступно.").toString();
+    }
+
+    /**
+     * Генерация сообщения для отправки участнику при выборе автором собеседования другого собеседника.
+     *
+     * @param wisherDismissedDTO WisherDismissedDTO
+     * @return String message.
+     */
+    public String getMessageDismissedWisher(WisherDismissedDTO wisherDismissedDTO) {
+        StringJoiner joiner = new StringJoiner("");
+        return joiner.add("Пользователь ")
+                .add(wisherDismissedDTO.getSubmitterName())
+                .add(" одобрил на собеседование ")
+                .add(wisherDismissedDTO.getInterviewTitle())
+                .add(" другого собеседника. Данное собеседование вам больше недоступно.").toString();
     }
 
     public String getMessageApprovedWisher(WisherApprovedDTO wisherApprovedNotifyDTO) {

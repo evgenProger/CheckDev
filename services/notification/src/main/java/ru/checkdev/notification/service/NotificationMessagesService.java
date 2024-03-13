@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class NotificationMessagesService {
@@ -89,19 +90,19 @@ public class NotificationMessagesService {
                 wisherApprovedDTO.getInterviewLink(),
                 System.lineSeparator(),
                 wisherApprovedDTO.getContactBy());
+        InnerMessage innerMessage = InnerMessage.of()
+                .userId(wisherApprovedDTO.getWisherUserId())
+                .text(messagesGenerator.getMessageApprovedWisher(wisherApprovedDTO))
+                .created(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
+                .read(false)
+                .interviewId(wisherApprovedDTO.getInterviewId())
+                .build();
+        CompletableFuture.supplyAsync(() -> innerMessageService.saveMessage(innerMessage));
         if (optionalChatId.isPresent()) {
             var chatId = optionalChatId.get();
             var sendNotification = new SendMessage(String.valueOf(chatId), message);
             sendNotification.setParseMode("Markdown");
             bot.send(sendNotification);
-            InnerMessage innerMessage = InnerMessage.of()
-                    .userId(wisherApprovedDTO.getWisherUserId())
-                    .text(messagesGenerator.getMessageApprovedWisher(wisherApprovedDTO))
-                    .created(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
-                    .read(false)
-                    .interviewId(wisherApprovedDTO.getInterviewId())
-                    .build();
-            innerMessageService.saveMessage(innerMessage);
         }
     }
 }
