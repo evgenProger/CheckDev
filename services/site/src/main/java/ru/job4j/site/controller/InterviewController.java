@@ -3,6 +3,7 @@ package ru.job4j.site.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,8 @@ public class InterviewController {
         if (token != null) {
             var userInfo = authService.userInfo(token);
             var interviewsNoFeedback = interviewsService.findAllIdByNoFeedback(userInfo.getId());
-            interviewsNoFeedback = interviewsNoFeedback.stream().filter(i -> i.getStatusId() != StatusInterview.IS_CANCELED.getId()).toList();
+            interviewsNoFeedback = interviewsNoFeedback.stream()
+                    .filter(i -> i.getStatusId() != StatusInterview.IS_CANCELED.getId()).toList();
             model.addAttribute("noFeedback", interviewsNoFeedback);
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
@@ -72,6 +74,9 @@ public class InterviewController {
             interviewDTO.setAuthor(userInfo.getUsername());
         }
         interviewDTO.setTopicId(topicId);
+        interviewDTO.setContactBy(StringEscapeUtils.escapeHtml4(interviewDTO.getContactBy()));
+        interviewDTO.setAdditional(StringEscapeUtils.escapeHtml4(interviewDTO.getAdditional()));
+        interviewDTO.setTitle(StringEscapeUtils.escapeHtml4(interviewDTO.getTitle()));
         InterviewDTO createInterview = interviewService.create(getToken(req), interviewDTO);
         var categoryIdName = topicsService.getCategoryIdNameDTOByTopicId(topicId);
         var topicName = topicsService.getNameById(topicId);
@@ -107,6 +112,7 @@ public class InterviewController {
         var wishersDetail = interviewService.getAllWisherDetail(wishers);
         boolean isDismissed = wisherService.isDismissed(interviewId, wishers);
         var topicLiteDTO = topicsService.getTopicLiteDTOById(interview.getTopicId()).orElse(new TopicLiteDTO());
+        topicLiteDTO.setText(StringEscapeUtils.unescapeHtml4(topicLiteDTO.getText()));
         boolean isUserDismissed = wisherService.isUserDismissed(interviewId, userInfo.getId(), wishers);
         var feedbacks = feedbackService.findByInterviewId(interview.getId());
         var feedbackMap = feedbackService.feedbackDTOSToMap(feedbacks);
@@ -126,7 +132,8 @@ public class InterviewController {
         model.addAttribute("isUserDismissed", isUserDismissed);
         model.addAttribute("feedbackMap", feedbackMap);
         if (token != null) {
-            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+            model.addAttribute("innerMessages",
+                    notifications.findBotMessageByUserId(token, userInfo.getId()));
         }
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
@@ -161,7 +168,8 @@ public class InterviewController {
                 throw new RuntimeException(e);
             }
         });
-        List<WisherDto> wisherList = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interviewDTOfromDB.getId()));
+        List<WisherDto> wisherList = wisherService
+                .getAllWisherDtoByInterviewId(token, String.valueOf(interviewDTOfromDB.getId()));
         if (wisherList.size() > 0) {
             wisherList.forEach(wisherDto -> {
                 CancelInterviewNotificationDTO cancelInterviewDTO = new CancelInterviewNotificationDTO(
@@ -230,6 +238,7 @@ public class InterviewController {
         try {
             userInfoDTO = authService.userInfo(token);
             interview = interviewService.getById(token, interviewId);
+            interview.setAdditional(StringEscapeUtils.unescapeHtml4(interview.getAdditional()));
             if (interview.getSubmitterId() != userInfoDTO.getId()) {
                 return "redirect:/interview/" + interviewId;
             }
@@ -262,6 +271,9 @@ public class InterviewController {
                                       RedirectAttributes redirectAttributes) {
         var token = getToken(request);
         try {
+            interview.setContactBy(StringEscapeUtils.escapeHtml4(interview.getContactBy()));
+            interview.setAdditional(StringEscapeUtils.escapeHtml4(interview.getAdditional()));
+            interview.setTitle(StringEscapeUtils.escapeHtml4(interview.getTitle()));
             interviewService.update(token, interview);
         } catch (Exception e) {
             log.error("Remote application not responding. Error, {}. {}, ", e.getCause(), e.getMessage());
@@ -279,11 +291,13 @@ public class InterviewController {
         var userInfoDTO = authService.userInfo(token);
         var interview = interviewService.getById(token, interviewId);
         if (token != null) {
-            model.addAttribute("botMessages", notifications.findBotMessageByUserId(token, userInfoDTO.getId()));
+            model.addAttribute("botMessages",
+                    notifications.findBotMessageByUserId(token, userInfoDTO.getId()));
         }
         var result = "interview/participate";
         if (userInfoDTO != null && interview.getSubmitterId() != userInfoDTO.getId()) {
-            var wishers = wisherService.getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
+            var wishers = wisherService
+                    .getAllWisherDtoByInterviewId(token, String.valueOf(interview.getId()));
             var isWisher = wisherService.isWisher(userInfoDTO.getId(), interview.getId(), wishers);
             var statisticMap = wisherService.getInterviewStatistic(wishers);
             var countWishers = wisherService.countWishers(wishers, interviewId);

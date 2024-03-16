@@ -3,6 +3,7 @@ package ru.job4j.site.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,8 @@ public class TopicController {
                           Model model,
                           HttpServletRequest req) throws JsonProcessingException {
         var topic = topicsService.getById(topicId);
+        topic.setName(StringEscapeUtils.unescapeHtml4(topic.getName()));
+        topic.setText(StringEscapeUtils.unescapeHtml4(topic.getText()));
         String categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();
         model.addAttribute("topic", topic);
@@ -79,6 +82,9 @@ public class TopicController {
     public String createTopic(@ModelAttribute TopicLiteDTO topic, HttpServletRequest req,
                               RedirectAttributes redirectAttributes)
             throws JsonProcessingException {
+        topic.setName(StringEscapeUtils.escapeHtml4(topic.getName()));
+        topic.setText(StringEscapeUtils.escapeHtml4(topic.getText()));
+        topic.setCategoryName(StringEscapeUtils.escapeHtml4(topic.getCategoryName()));
         var createdTopic = topicsService.create(getToken(req), topic);
         var notNull = createdTopic != null;
         if (notNull) {
@@ -98,6 +104,8 @@ public class TopicController {
         if (token != null) {
             var userInfo = authService.userInfo(token);
             topic = topicsService.getById(topicId);
+            topic.setName(StringEscapeUtils.unescapeHtml4(topic.getName()));
+            topic.setText(StringEscapeUtils.unescapeHtml4(topic.getText()));
             RequestResponseTools.addAttrCanManage(model, userInfo);
             model.addAttribute("userInfo", userInfo);
             model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
@@ -114,6 +122,8 @@ public class TopicController {
 
     @PostMapping("/update")
     public String updateTopic(TopicDTO topic, HttpServletRequest req) throws JsonProcessingException {
+        topic.setName(StringEscapeUtils.escapeHtml4(topic.getName()));
+        topic.setText(StringEscapeUtils.escapeHtml4(topic.getText()));
         topicsService.update(getToken(req), topic);
         return "redirect:/topic/" + topic.getId();
     }

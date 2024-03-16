@@ -2,6 +2,7 @@ package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -51,6 +52,7 @@ public class WisherController {
         var token = RequestResponseTools.getToken(request);
         int interviewId = wisherNotifyDTO.getInterviewId();
         int userId = wisherNotifyDTO.getUserId();
+        wisherNotifyDTO.setContactBy(StringEscapeUtils.escapeHtml4(wisherNotifyDTO.getContactBy()));
         var contactBy = wisherNotifyDTO.getContactBy();
         var wisherDto = new WisherDto(0, interviewId, userId, contactBy, false);
         wisherService.saveWisherDto(token, wisherDto);
