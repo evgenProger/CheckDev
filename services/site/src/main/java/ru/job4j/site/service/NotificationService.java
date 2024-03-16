@@ -193,6 +193,24 @@ public class NotificationService {
         }
     }
 
+    /**
+     * Метод оправляет запрос в сервис Notification.
+     * Запрос для отправки сообщения участнику собеседования о том что автор собеседования одобрил другого участника.
+     *
+     * @param token                  String
+     * @param wisherDismissedDTOList List<WisherDismissedDTO>
+     */
+    public void sendParticipantIsDismissed(String token, List<WisherDismissedDTO> wisherDismissedDTOList) {
+        var url = String.format("%s/notification/participantIsDismissed/", urlNtf);
+        var mapper = new ObjectMapper();
+        try {
+            new RestAuthCall(url).post(
+                    token, mapper.writeValueAsString(wisherDismissedDTOList));
+        } catch (Exception e) {
+            log.error("API notification not found, error: {}", e);
+        }
+    }
+
     public void approvedWisher(String token, WisherApprovedDTO wisherApprovedDTO) {
         var url = String.format("%s/notificationWisher/approvedWisher/", urlNtf);
         var mapper = new ObjectMapper();

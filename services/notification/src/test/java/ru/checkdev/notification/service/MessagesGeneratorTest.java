@@ -1,10 +1,7 @@
 package ru.checkdev.notification.service;
 
 import org.junit.jupiter.api.Test;
-import ru.checkdev.notification.dto.CancelInterviewNotificationDTO;
-import ru.checkdev.notification.dto.InterviewNotifyDTO;
-import ru.checkdev.notification.dto.WisherApprovedDTO;
-import ru.checkdev.notification.dto.WisherNotifyDTO;
+import ru.checkdev.notification.dto.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,7 +72,24 @@ class MessagesGeneratorTest {
     }
 
     @Test
-    void generatorMessagepublicApprovedWisherWisher() {
+    void whenGenerateMessageDismissedWisher() {
+        WisherDismissedDTO wisherDismissedDTO = WisherDismissedDTO.of()
+                .interviewId(11)
+                .interviewTitle("JPA")
+                .submitterId(11)
+                .submitterName("IVAN")
+                .userId(33)
+                .build();
+        String expect = String.format(
+                "Пользователь %s одобрил на собеседование %s другого собеседника. Данное собеседование вам больше недоступно.",
+                wisherDismissedDTO.getSubmitterName(),
+                wisherDismissedDTO.getInterviewTitle());
+        String actual = messagesGenerator.getMessageDismissedWisher(wisherDismissedDTO);
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    @Test
+    void generatorMessagePublicApprovedWisherWisher() {
         WisherApprovedDTO wisherApprovedDTO = WisherApprovedDTO.of()
                 .interviewId(1)
                 .wisherId(1)

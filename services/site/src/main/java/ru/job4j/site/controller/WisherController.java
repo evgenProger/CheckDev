@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.job4j.site.dto.InterviewDTO;
-import ru.job4j.site.dto.WisherApprovedDTO;
-import ru.job4j.site.dto.WisherDto;
-import ru.job4j.site.dto.WisherNotifyDTO;
+import ru.job4j.site.dto.*;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.InterviewService;
 import ru.job4j.site.service.NotificationService;
@@ -20,7 +17,10 @@ import ru.job4j.site.service.WisherService;
 import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Контроллер обработки запросов на подписку на собеседование.
@@ -84,7 +84,22 @@ public class WisherController {
         interviewService.updateStatus(token, interviewDto);
         wisherApprovedDTO.setInterviewLink(
                 String.format("%sinterview/%d", url, Integer.parseInt(interviewId)));
-        notificationService.approvedWisher(token, wisherApprovedDTO);
+        CompletableFuture.runAsync(() -> notificationService.approvedWisher(token, wisherApprovedDTO));
+        List<WisherDto> wisherDtoList = wisherService.getAllWisherDtoByInterviewId(token, interviewId)
+                .stream().filter(x -> x.getId() != wisherApprovedDTO.getWisherId()).toList();
+        if (!wisherDtoList.isEmpty()) {
+            List<WisherDismissedDTO> wisherDismissedDTOList = new ArrayList<>();
+            wisherDtoList.parallelStream().forEach(w -> {
+                WisherDismissedDTO wisherDismissedDTO = new WisherDismissedDTO(
+                        interviewDto.getId(),
+                        interviewDto.getTitle(),
+                        interviewDto.getSubmitterId(),
+                        interviewDto.getAuthor(),
+                        w.getUserId());
+                wisherDismissedDTOList.add(wisherDismissedDTO);
+            });
+            notificationService.sendParticipantIsDismissed(token, wisherDismissedDTOList);
+        }
         return "redirect:/interview/" + interviewId;
     }
 }

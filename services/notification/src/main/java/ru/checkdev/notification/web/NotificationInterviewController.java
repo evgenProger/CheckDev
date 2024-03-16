@@ -11,6 +11,7 @@ import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.dto.CancelInterviewNotificationDTO;
 import ru.checkdev.notification.dto.InterviewNotifyDTO;
+import ru.checkdev.notification.dto.WisherDismissedDTO;
 import ru.checkdev.notification.dto.WisherNotifyDTO;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.service.MessagesGenerator;
@@ -20,6 +21,7 @@ import ru.checkdev.notification.service.UserTelegramService;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -104,5 +106,36 @@ public class NotificationInterviewController {
                         tg -> notificationMessage.sendMessage(tg, message)
                 );
         return ResponseEntity.ok(innerMessage);
+    }
+
+
+    /**
+     * Метод обрабатывает пост запрос для отправки уведомления участнику собеседования,
+     * о том что автор собеседования одобрил другого участника.
+     *
+     * @param wisherDtoList List<WisherDto>
+     * @return ResponseEntity.
+     */
+    @PostMapping("/participantIsDismissed/")
+    public ResponseEntity<List<InnerMessage>> sendMessageCancelInterview(@RequestBody List<WisherDismissedDTO> wisherDtoList) {
+        List<InnerMessage> innerMessageList = new ArrayList<>();
+        wisherDtoList.parallelStream().forEach(wisher -> {
+                    var message = messagesGenerator.getMessageDismissedWisher(wisher);
+                    InnerMessage innerMessage = InnerMessage.of()
+                            .userId(wisher.getUserId())
+                            .text(message)
+                            .created(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
+                            .read(false)
+                            .interviewId(wisher.getInterviewId())
+                            .build();
+                    CompletableFuture.supplyAsync(() -> innerMessageService.saveMessage(innerMessage));
+                    userTelegramService
+                            .findByUserId(wisher.getUserId())
+                            .ifPresent(
+                                    tg -> notificationMessage.sendMessage(tg, message)
+                            );
+                }
+        );
+        return ResponseEntity.ok(innerMessageList);
     }
 }
