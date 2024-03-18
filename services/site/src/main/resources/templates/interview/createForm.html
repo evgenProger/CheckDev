@@ -31,6 +31,49 @@
     <link th:href="@{/webjars/summernote/0.8.10/summernote-lite.css}" rel="stylesheet">
     <script th:src="@{/webjars/summernote/0.8.10/summernote-lite.js}"></script>
     <script th:src="@{/webjars/summernote/0.8.10/lang/summernote-ru-RU.js}"></script>
+
+    <!-- Bootstrap DateTimePicker CSS -->
+    <link th:href="@{https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/css/tempusdominus-bootstrap-4.min.css}"
+          rel="stylesheet">
+    <!-- Bootstrap JS -->
+    <script th:src="@{https://code.jquery.com/jquery-3.5.1.slim.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js}"></script>
+    <script th:src="@{https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+
+    <!-- Moment.js -->
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js}"></script>
+
+    <!-- Bootstrap DateTimePicker JS -->
+    <script th:src="@{https://cdn.jsdelivr.net/npm/tempusdominus-bootstrap-4@5.39.0/build/js/tempusdominus-bootstrap-4.min.js}"></script>
+    <style>
+    .input-group-text {
+        height: 100%;
+    }
+    .fa-calendar {
+        font-size: 1em; /* Размер значка календаря */
+    }
+
+    </style>
+    <script>
+    $(document).ready(function() {
+        $('#datetimepicker').datetimepicker({
+            format: 'DD.MM.YYYY HH:mm',
+            icons: {
+                time: 'fa fa-clock',
+                date: 'fa fa-calendar',
+                up: 'fa fa-chevron-up',
+                down: 'fa fa-chevron-down',
+                previous: 'fa fa-chevron-left',
+                next: 'fa fa-chevron-right',
+                today: 'fa fa-crosshairs',
+                clear: 'fa fa-trash',
+                close: 'fa fa-times'
+            }
+        });
+    });
+
+    </script>
+
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
@@ -61,63 +104,67 @@
                         <input type="hidden" class="form-control mb-3 mt-2" id="topicId"
                                name="topicId" th:value="${topic.id}">
                         <div class="form-group">
-                            <div class="mb-3">
-                                <label class="fw-bold" for="approximateDate">Удобное время для собеседования</label>
-                                <input type="text" class="form-control" id="approximateDate"
-                                       name="approximateDate"
-                                       placeholder="Введите удобное время для собеседования" required>
-                                <small class="text-muted"><span>Например, Могу в любой день после 18.00 по Москве.</span>
-                                </small>
+                            <label class="fw-bold" for="approximateDate">Удобное время для собеседования</label>
+                            <div class="alert alert-info" role="alert">
+                                Воспользуйтесь календарем и часами в правой части от поля ввода времени.
                             </div>
-                            <!--/* Поля contactBy */-->
-                            <div class="mb-3">
-                                <label class="fw-bold" for="contactBy">Связаться со мной по telegram</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="inputGroupPrepend3">@</span>
-                                    <input type="text" class="form-control" id="contactBy"
-                                           name="contactBy"
-                                           placeholder="Способ связи" required>
+                            <div class="input-group date" id="datetimepicker" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" id="approximateDate"
+                                       name="approximateDate" data-target="#datetimepicker" required/>
+                                <div class="input-group-append" data-target="#datetimepicker"
+                                     data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
-                            <!--/* Заполнение поля description */-->
-                            <div class="mb-3">
-                                <label class="form-label" for="additional">Описание</label>
-                                <textarea class="form-control" rows="3"
-                                          id="additional"
-                                          name="additional"
-                                          placeholder="Введите дополнительную информацию"></textarea>
-                            </div>
-                            <!-- /* Выбор типа собеседования поел typeInterview */-->
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="mode" id="1" value="1">
-                                <label class="form-check-label" for="1">
-                                    Буду проводить собеседование (задавать вопросы)
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="mode" id="2" value="2" checked>
-                                <label class="form-check-label" for="2">
-                                    Буду проходить собеседование (отвечать на вопросы)
-                                </label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold" for="contactBy">Связаться со мной по telegram</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="inputGroupPrepend3">@</span>
+                                <input type="text" class="form-control" id="contactBy"
+                                       name="contactBy"
+                                       placeholder="Способ связи" required>
                             </div>
                         </div>
-                        <button class="btn btn-light mt-3" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                            Описание <i class="fa-solid fa-caret-down"></i>
-                        </button>
-                        <div class="collapse pt-3" id="collapseExample">
-                            <div class="card card-body">
-                                <pre th:utext="${topic.text}"></pre>
-                            </div>
+                        <!--/* Заполнение поля description */-->
+                        <div class="mb-3">
+                            <label class="form-label" for="additional">Описание</label>
+                            <textarea class="form-control" rows="3"
+                                      id="additional"
+                                      name="additional"
+                                      placeholder="Введите дополнительную информацию"></textarea>
                         </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-success mt-3">Сохранить</button>
+                        <!-- /* Выбор типа собеседования поел typeInterview */-->
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mode" id="1" value="1">
+                            <label class="form-check-label" for="1">
+                                Буду проводить собеседование (задавать вопросы)
+                            </label>
                         </div>
-                    </form>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mode" id="2" value="2" checked>
+                            <label class="form-check-label" for="2">
+                                Буду проходить собеседование (отвечать на вопросы)
+                            </label>
+                        </div>
                 </div>
+                <button class="btn btn-light mt-3" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Описание <i class="fa-solid fa-caret-down"></i>
+                </button>
+                <div class="collapse pt-3" id="collapseExample">
+                    <div class="card card-body">
+                        <pre th:utext="${topic.text}"></pre>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success mt-3">Сохранить</button>
+                </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 </div>
 <div th:insert="fragments/footer :: footer"></div>
 </body>
