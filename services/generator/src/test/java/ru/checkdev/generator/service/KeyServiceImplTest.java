@@ -1,9 +1,11 @@
 package ru.checkdev.generator.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.generator.GeneratorSrv;
 import ru.checkdev.generator.domain.Key;
 import ru.checkdev.generator.repository.KeyRepository;
@@ -14,7 +16,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@SpringBootTest(classes = GeneratorSrv.class)
+@RunWith(SpringRunner.class)
 class KeyServiceImplTest {
     @MockBean
     private KeyRepository repository;
