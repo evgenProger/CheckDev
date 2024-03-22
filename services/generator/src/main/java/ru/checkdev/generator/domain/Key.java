@@ -1,6 +1,7 @@
 package ru.checkdev.generator.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -11,23 +12,24 @@ import java.util.Objects;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class Key {
 
     @Id
     @Column(name = "id", nullable = false)
     private int id;
-    private String value;
+    private String name;
 
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Key key)) {
             return false;
         }
-        return id == key.id && value.equals(key.value);
+        return id == key.id && name.equals(key.name);
     }
 
     @Override
     public int hashCode() {
-        return (Objects.hash(id) * 31) + value.hashCode();
+        return (Objects.hash(id) * 31) + name.hashCode();
     }
 }
