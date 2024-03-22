@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = GeneratorSrv.class)
+@SpringBootTest
 class KeyServiceImplTest {
     @MockBean
     private KeyRepository repository;
