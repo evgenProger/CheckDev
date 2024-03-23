@@ -32,15 +32,26 @@
             location.href = "/topics/" + value + "";
         }
 
+        function showDialog(element) {
+            var itemId = element.getAttribute('data-item-id');
+            $('#delete_dialog').modal('show');
+            $('#delete_dialog').attr('data-item-id', itemId);
+            $('#confirmDeleteButton').on('click', function() {
+                deleteItem(itemId);
+            });
+        }
 
-
-
-
-
-
-
-
+        function deleteItem(itemId) {
+            $.ajax({
+                 type: 'DELETE',
+                 url: '/statistic/delete/' + itemId,
+                 success: function () {
+                        location.reload();
+                     }
+            });
+        }
     </script>
+
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
@@ -95,7 +106,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row pb-3">
         <div class="cell">
             <div class="card">
                 <h5 class="card-header">Популярные категории</h5>
@@ -134,6 +145,93 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="row pb-3">
+        <div class="cell">
+            <div class="card">
+                <h5 class="card-header">Статистика по вакансиям</h5>
+                <div class="card-body">
+                    <table class="table table-hover">
+
+                        <thead>
+                        <tr>
+                            <th scope="col">Направление</th>
+                            <th scope="col">Количество</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="statistic: ${vacancyStatistic}">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <h5 th:text="${statistic.name}"></h5>
+                                    <a th:if="${canManage}"
+                                       class="text-decoration-none text-dark"
+                                       th:href="@{|/statistic/editForm/${statistic.id}/${statistic.name}|}">
+                                        <i class="fas fa-pencil-alt ms-2"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="fw-bold" th:text="${statistic.count}"></span>
+                                <span th:if="${statistic.countChanges > 0}" class="mr-3"
+                                      th:text="'+' + ${statistic.countChanges}"
+                                      style="color: green">
+                                </span>
+                                <span th:if="${statistic.countChanges < 0}" class="mr-3"
+                                      th:text="${statistic.countChanges}"
+                                      style="color: red">
+                                </span>
+                            </td>
+                            <td th:if="${canManage}">
+                                <i class="fas fa-times"
+                                   th:data-item-id="${statistic.id}"
+                                   onclick="showDialog(this)">
+                                </i>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="modal" id="delete_dialog" tabindex="-1" role="dialog" data-item-id="">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Удаление ключа</h5>
+                                    <button type="button" class="btn-close"
+                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Уверены что хотите удалить этот пункт?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button id="confirmDeleteButton" type="submit"
+                                            class="btn btn-danger btn-sm">Удалить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${canManage}" class="row ms-3">
+                        <div class="col-md-6">
+                            <div>
+                                <a th:href="@{/statistic/createForm}" class="btn btn-primary btn-sm btn-block">
+                                    Добавить
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <a th:href="@{/indexRenew}" class="btn btn-primary btn-sm btn-block">
+                                    Обновить
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 <div th:insert="fragments/footer :: footer"></div>

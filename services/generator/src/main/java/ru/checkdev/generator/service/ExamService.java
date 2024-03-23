@@ -4,5 +4,5 @@ import java.util.Collection;
 
 public interface ExamService<T, K> {
 
-    public Collection<T> create(Collection<K> keys);
+    Collection<T> create(Collection<K> keys);
 }

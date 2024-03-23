@@ -1,0 +1,57 @@
+package ru.job4j.site.service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import ru.job4j.site.domain.VacancyStatistic;
+import ru.job4j.site.dto.DirectionKey;
+import ru.job4j.site.util.RestAuthCall;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+@Slf4j
+public class VacancyStatisticService {
+
+    private static final String URL = "http://localhost:9903/statistic/";
+
+    public void create(String token, DirectionKey directionKey) throws JsonProcessingException {
+        String uri = String.format("%s%s", URL, "create");
+        new RestAuthCall(uri).post(token, new ObjectMapper().writeValueAsString(directionKey));
+    }
+
+    public List<VacancyStatistic> getAll() {
+        return getRequest(String.format("%s%s", URL, "get"));
+    }
+
+    public void update(String token, DirectionKey directionKey) throws JsonProcessingException {
+        var json = new ObjectMapper()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(directionKey);
+        new RestAuthCall(String.format("%s%s", URL, "update")).update(token, json);
+    }
+
+    public List<VacancyStatistic> renew() {
+        return getRequest(String.format("%s%s", URL, "renew"));
+    }
+
+    public void delete(int id) {
+        new RestTemplate().delete(String.format("%s%s%d", URL, "delete/", id));
+    }
+
+    private List<VacancyStatistic> getRequest(String uri) {
+        List<VacancyStatistic> result = new ArrayList<>();
+        var text = new RestAuthCall(uri).get();
+        try {
+            result = new ObjectMapper().readValue(text, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+        }
+        return result;
+    }
+}
