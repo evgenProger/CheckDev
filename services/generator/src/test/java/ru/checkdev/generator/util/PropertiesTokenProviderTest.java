@@ -1,10 +1,13 @@
 package ru.checkdev.generator.util;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import ru.checkdev.generator.GeneratorSrv;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+@SpringBootTest(classes = GeneratorSrv.class)
 public class PropertiesTokenProviderTest {
 
     @Test
