@@ -8,13 +8,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.job4j.site.domain.VacancyURL;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
 import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import static ru.job4j.site.util.RequestResponseTools.getToken;
@@ -31,8 +34,8 @@ public class InterviewController {
     private final InterviewsService interviewsService;
     private final WisherService wisherService;
     private final NotificationService notifications;
-
     private final FeedbackService feedbackService;
+    private final ExamService examService;
 
     @GetMapping("/createForm")
     public String createForm(@ModelAttribute("topicId") int topicId,
@@ -51,8 +54,10 @@ public class InterviewController {
         var topic = topicsService.getById(topicId);
         var categoryName = topic.getCategory().getName();
         int categoryId = topic.getCategory().getId();
+        Set<String> examSet = new HashSet<>();
         model.addAttribute("category", topic.getCategory());
         model.addAttribute("topic", topic);
+        model.addAttribute("examSet", examSet);
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/index",
                 "Категории", "/categories/",
@@ -184,6 +189,63 @@ public class InterviewController {
             });
         }
         return "redirect:/interviews/";
+    }
+
+    /**
+     * Метод отображает страницу с возможностью вставки ссылки на вакансию с целью генерации Собеседования и
+     * вопросов на основе ключевых слов из вакансии.
+     *
+     * @return String view page
+     */
+    @GetMapping("/getVacancyLink")
+    public String createInterviewByLink(HttpServletRequest request, Model model
+    ) throws JsonProcessingException {
+        var token = getToken(request);
+        VacancyURL vacancyURL = new VacancyURL();
+        model.addAttribute("vacancyURL", vacancyURL);
+        return "interview/getVacancyLink";
+    }
+
+    /**
+     * Метод пост отправляет ссылку на вакансию для генерации вопросов для собеседования.
+     *
+     * @param vacancyURL VacancyURL
+     * @param request    HttpServletRequest
+     * @return String view page
+     */
+    @PostMapping("/createInterviewByLink")
+    public String createInterviewByLink(@ModelAttribute VacancyURL vacancyURL, Model model,
+                                        HttpServletRequest request) throws JsonProcessingException {
+        var token = getToken(request);
+        Set<String> examSet = new HashSet<>();
+        if (token != null) {
+            var userInfo = authService.userInfo(token);
+            var interviewsNoFeedback = interviewsService.findAllIdByNoFeedback(userInfo.getId());
+            interviewsNoFeedback = interviewsNoFeedback.stream()
+                    .filter(i -> i.getStatusId() != StatusInterview.IS_CANCELED.getId()).toList();
+            model.addAttribute("noFeedback", interviewsNoFeedback);
+            model.addAttribute("innerMessages", notifications.findBotMessageByUserId(token, userInfo.getId()));
+            examSet = examService.create(token, vacancyURL.getVacancyLink()).getQuestions();
+        }
+        var topicLiteDTO = topicsService.getAllTopicLiteDTO().stream()
+                .filter(x -> x.getName().equals("Основанное на описании вакансии"))
+                .toList()
+                .get(0);
+        var topic = topicsService.getById(topicLiteDTO.getId());
+        var topicId = topic.getId();
+        var categoryName = topic.getCategory().getName();
+        int categoryId = topic.getCategory().getId();
+        model.addAttribute("category", topic.getCategory());
+        model.addAttribute("topic", topic);
+        model.addAttribute("topicId", topic.getId());
+        model.addAttribute("examSet", examSet);
+        RequestResponseTools.addAttrBreadcrumbs(model,
+                "Главная", "/index",
+                "Категории", "/categories/",
+                categoryName, String.format("/topics/%d", categoryId),
+                topic.getName(), String.format("/topic/%d", topicId),
+                "Создание собеседования", String.format("/interview/createForm?topicId=%d", topicId));
+        return "interview/createForm";
     }
 
     /**

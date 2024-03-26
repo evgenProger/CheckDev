@@ -403,7 +403,13 @@
                         </button>
                     </div>
                 </div>
-
+                <span th:if="${userInfo != null}">
+                <form th:if="${userInfo != null}" th:action="@{/interview/getVacancyLink}"
+                      method="get">
+                        <button type="submit"
+                                class="btn btn-primary align-middle d-inline-block">Сгенерировать на основе вакансии</button>
+                </form>
+                </span>
             </div>
         </div>
     </div>
