@@ -123,4 +123,14 @@ public class RestAuthCall {
                 url, new HttpEntity<>(json, headers), String.class
         );
     }
+
+    public void patch(String token, String value) {
+        var restTemplate = new RestTemplate();
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        headers.set("Authorization", "Bearer " + token);
+        restTemplate.put(
+                url, new HttpEntity<>(value, headers), String.class
+        );
+    }
 }
