@@ -22,7 +22,8 @@ import java.util.stream.IntStream;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -391,5 +392,14 @@ public class InterviewControllerTest {
                         .sessionAttr("token", token))
                 .andDo(print()).andExpectAll(status().is3xxRedirection(),
                         view().name(String.format("redirect:/interview/%d", interviewId)));
+    }
+
+    @Test
+    void whenGetGetVacancyLinkPageThenReturnPagePostVacancylink() throws Exception {
+        var token = "123456";
+        mockMvc.perform(get("/interview/getVacancyLink")
+                        .sessionAttr("token", token))
+                .andDo(print())
+                .andExpect(view().name("interview/getVacancyLink"));
     }
 }

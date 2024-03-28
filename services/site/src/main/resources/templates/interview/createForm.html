@@ -127,13 +127,28 @@
                             </div>
                         </div>
                         <!--/* Заполнение поля description */-->
-                        <div class="mb-3">
-                            <label class="form-label" for="additional">Описание</label>
-                            <textarea class="form-control" rows="3"
-                                      id="additional"
-                                      name="additional"
-                                      placeholder="Введите дополнительную информацию"></textarea>
-                        </div>
+                        <td th:if="${examSet.isEmpty()}">
+                            <div class="mb-3">
+                                <label class="form-label" for="additional">Описание</label>
+                                <textarea class="form-control" rows="3"
+                                          id="additional"
+                                          name="additional"
+                                          placeholder="Введите дополнительную информацию">
+                                </textarea>
+                            </div>
+                        </td>
+                        <td th:if="${!examSet.isEmpty()}">
+                            <div class="mb-3">
+                                <label class="form-label" for="additional">Описание</label>
+                                <textarea class="form-control" rows="3"
+                                          id="additional"
+                                          name="additional">
+<th:block th:each="question : ${examSet}">
+<th:block th:text="${question} "></th:block>
+</th:block>
+                                </textarea>
+                            </div>
+                        </td>
                         <!-- /* Выбор типа собеседования поел typeInterview */-->
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="mode" id="1" value="1">
