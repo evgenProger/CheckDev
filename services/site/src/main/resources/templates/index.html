@@ -70,93 +70,14 @@
     <div class="row pb-3">
         <div class="cell">
             <div class="card">
-                <h5 class="card-header">Новые собеседования</h5>
-                <div class="card-body">
-                    <table class="table">
-                        <tbody class="table-hover">
-                        <tr th:each="interview: ${new_interviews}" style="cursor: pointer;">
-                            <td>
-                                <div>
-                                    <a class="fw-bold text-dark text-decoration-none"
-                                       th:href="@{|/interview/${interview.id}|}">
-                                        <h5 th:if="${topicsLiteMap.containsKey(interview.topicId)}"
-                                            th:text="${topicsLiteMap.get(interview.topicId).categoryName + ' / ' + topicsLiteMap.get(interview.topicId).name}"></h5>
-                                    </a>
-                                </div>
-                                <div class="pb-2">
-                                    <span class="mb-2 text-muted">
-                                        <span th:insert="fragments/statusInterview::status"></span>
-                                        <i class="far fa-clock pl-3"></i>
-                                        <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
-                                        <i class="far fa-user pl-3"></i>
-                                        <span th:text="${authService.findById(interview.submitterId).username}"></span>
-                                        <i class="fa fa-comments pl-3" aria-hidden="true"></i>
-                                        <span>Откликов:</span>
-                                        <span th:text="${interview.countWishers}"></span>
-                                        <i class="fa fa-calendar-check pl-3"></i>
-                                        <span>Удобное время:</span>
-                                        <span th:text="${interview.approximateDate}"></span>
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row pb-3">
-        <div class="cell">
-            <div class="card">
-                <h5 class="card-header">Популярные категории</h5>
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">Категория</th>
-                            <th scope="col">Собеседования</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="category: ${categories}" style="cursor: pointer;"
-                            th:onclick="'javascript:rowClicked(\'' + ${category.id} + '\');'">
-                            <td>
-                                <div>
-                                    <a class="fw-bold text-dark text-decoration-none"
-                                       th:href="@{|/topics/${category.id}|}">
-                                        <h5 th:text="${category.name}"></h5>
-                                    </a>
-                                </div>
-                                <small class="mb-2 text-muted">
-                                    <span><i class="fas fa-eye pr-3"></i> : </span>
-                                    <span class="fw-bold" th:text="${category.total}"></span>
-                                    <span class="mr-3">Тем : </span>
-                                    <span class="fw-bold" th:text="${category.topicsSize}"></span>
-                                </small>
-                            </td>
-                            <td>
-                                <span class="badge bg-success"
-                                      th:text="'Новых:' + ${category.countInterview}"></span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row pb-3">
-        <div class="cell">
-            <div class="card">
-                <h5 class="card-header">Статистика по вакансиям</h5>
+                <h5 class="card-header">Аналитика рынка от hh.ru</h5>
                 <div class="card-body">
                     <table class="table table-hover">
 
                         <thead>
                         <tr>
-                            <th scope="col">Направление</th>
-                            <th scope="col">Количество</th>
+                            <th scope="col">Ключевые слова</th>
+                            <th scope="col">Вакансий</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -232,6 +153,85 @@
             </div>
         </div>
 
+    </div>
+    <div class="row pb-3">
+        <div class="cell">
+            <div class="card">
+                <h5 class="card-header">Новые собеседования</h5>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody class="table-hover">
+                        <tr th:each="interview: ${new_interviews}" style="cursor: pointer;">
+                            <td>
+                                <div>
+                                    <a class="fw-bold text-dark text-decoration-none"
+                                       th:href="@{|/interview/${interview.id}|}">
+                                        <h5 th:if="${topicsLiteMap.containsKey(interview.topicId)}"
+                                            th:text="${topicsLiteMap.get(interview.topicId).categoryName + ' / ' + topicsLiteMap.get(interview.topicId).name}"></h5>
+                                    </a>
+                                </div>
+                                <div class="pb-2">
+                                    <span class="mb-2 text-muted">
+                                        <span th:insert="fragments/statusInterview::status"></span>
+                                        <i class="far fa-clock pl-3"></i>
+                                        <span th:text="${#strings.substring(interview.createDate, 0, 10)}"></span>
+                                        <i class="far fa-user pl-3"></i>
+                                        <span th:text="${authService.findById(interview.submitterId).username}"></span>
+                                        <i class="fa fa-comments pl-3" aria-hidden="true"></i>
+                                        <span>Откликов:</span>
+                                        <span th:text="${interview.countWishers}"></span>
+                                        <i class="fa fa-calendar-check pl-3"></i>
+                                        <span>Удобное время:</span>
+                                        <span th:text="${interview.approximateDate}"></span>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <div class="cell">
+            <div class="card">
+                <h5 class="card-header">Популярные категории</h5>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Категория</th>
+                            <th scope="col">Собеседования</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="category: ${categories}" style="cursor: pointer;"
+                            th:onclick="'javascript:rowClicked(\'' + ${category.id} + '\');'">
+                            <td>
+                                <div>
+                                    <a class="fw-bold text-dark text-decoration-none"
+                                       th:href="@{|/topics/${category.id}|}">
+                                        <h5 th:text="${category.name}"></h5>
+                                    </a>
+                                </div>
+                                <small class="mb-2 text-muted">
+                                    <span><i class="fas fa-eye pr-3"></i> : </span>
+                                    <span class="fw-bold" th:text="${category.total}"></span>
+                                    <span class="mr-3">Тем : </span>
+                                    <span class="fw-bold" th:text="${category.topicsSize}"></span>
+                                </small>
+                            </td>
+                            <td>
+                                <span class="badge bg-success"
+                                      th:text="'Новых:' + ${category.countInterview}"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div th:insert="fragments/footer :: footer"></div>
