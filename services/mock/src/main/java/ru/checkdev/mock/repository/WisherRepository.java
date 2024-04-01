@@ -12,7 +12,6 @@ import ru.checkdev.mock.domain.Wisher;
 import ru.checkdev.mock.dto.UsersApprovedInterviewsDTO;
 import ru.checkdev.mock.dto.WisherDto;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface WisherRepository extends CrudRepository<Wisher, Integer> {
@@ -56,47 +55,10 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
     /**
      * @param userId   int
      * @param pageable Pageable
-     * @return интервью, в которых пользователь участвует
-     */
-    @Query("SELECT i FROM wisher w JOIN w.interview i WHERE w.userId = :userId")
-    Page<Interview> findInterviewByUserId(@Param("userId") int userId, Pageable pageable);
-
-    /**
-     * @param userId   int
-     * @param pageable Pageable
      * @return интервью, в которых пользователь участвует и одобрен к участию
      */
     @Query("SELECT i FROM wisher w JOIN w.interview i WHERE w.userId = :userId AND w.approve IS TRUE")
     Page<Interview> findInterviewByUserIdApproved(@Param("userId") int userId, Pageable pageable);
-
-    /**
-     * @param userId   int
-     * @param topicId  int
-     * @param pageable Pageable
-     * @return интервью определённой темы, в которых пользователь участвует
-     */
-    @Query("SELECT i FROM wisher w "
-            + "JOIN w.interview i "
-            + "WHERE w.userId = :userId"
-            + " AND i.topicId = :topicId")
-    Page<Interview> findInterviewByUserIdAndByTopicId(@Param("userId") int userId,
-                                                      @Param("topicId") int topicId,
-                                                      Pageable pageable);
-
-    /**
-     * @param userId    int
-     * @param topicsIds Collection<Integer>
-     * @param pageable  Pageable
-     * @return интервью определённой категории, в которых пользователь участвует
-     */
-    @Query("SELECT i FROM wisher w "
-            + "JOIN w.interview i "
-            + "WHERE w.userId = :userId "
-            + "AND i.topicId IN :topicsIds")
-    Page<Interview> findInterviewByUserIdAndByTopicIdIn(
-            @Param("userId") int userId,
-            @Param("topicsIds") Collection<Integer> topicsIds,
-            Pageable pageable);
 
     /**
      * Метод формирует список id пользователей с количеством их проведенных собеседований
