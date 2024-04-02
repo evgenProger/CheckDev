@@ -11,9 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.enums.StatusInterview;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public interface InterviewRepository extends JpaRepository<Interview, Integer> {
 
@@ -27,68 +25,7 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
                                            @Param("interviewIds") List<Integer> interviewIds,
                                            Pageable pageable);
 
-    @Query(value = """
-            WITH filter AS (SELECT * FROM cd_filter WHERE user_id = :userId)
-            SELECT i.* FROM interview i
-            WHERE (i.submitter_id=:userId
-                OR i.status=:statusId
-                OR i.id IN (SELECT DISTINCT w.interview_id FROM wisher w WHERE w.user_id=:userId AND w.approve IS TRUE)) AND
-                CASE
-                    WHEN (SELECT filter_profile FROM filter) > 0 -- topic and profile
-                        THEN CASE
-                        -- 1 author
-                                 WHEN (SELECT filter_profile FROM filter)=1 THEN i.submitter_id = :userId
-                        -- 2 participant
-                                 WHEN (SELECT filter_profile FROM filter)=2 THEN i.id IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
-                        -- 3 not author
-                                 WHEN (SELECT filter_profile FROM filter)=3 THEN i.submitter_id <> :userId
-                        -- 4 not participant
-                                 WHEN (SELECT filter_profile FROM filter)=4 THEN i.id NOT IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
-                        END
-                    END
-            ORDER BY i.create_date DESC
-                """, nativeQuery = true)
-    Page<Interview> findAllByUserIdRelatedFiltered(@Param("userId") int userId,
-                                                   @Param("statusId") int statusId,
-                                                   Pageable pageable);
-
-    @Query(value = """
-            WITH filter AS (SELECT * FROM cd_filter WHERE user_id = :userId)
-            SELECT i.* FROM interview i
-            WHERE CASE
-                      WHEN exists(SELECT user_id FROM filter)  -- когда есть фильтр
-                      THEN (i.submitter_id=:userId
-                          OR i.status=:statusId
-                          OR i.id IN (SELECT DISTINCT w.interview_id FROM wisher w WHERE w.user_id=:userId AND w.approve IS TRUE)) AND
-                               CASE
-                                   WHEN (SELECT filter_profile FROM filter) > 0 -- topic и profile
-                                   THEN (i.topic_id IN (:topicIds)) AND
-                                            CASE
-                                                -- 1 author
-                                                WHEN (SELECT filter_profile FROM filter)=1 THEN i.submitter_id = :userId
-                                                -- 2 participant
-                                                WHEN (SELECT filter_profile FROM filter)=2 THEN i.id IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
-                                                -- 3 not author
-                                                WHEN (SELECT filter_profile FROM filter)=3 THEN i.submitter_id <> :userId
-                                                -- 4 not participant
-                                                WHEN (SELECT filter_profile FROM filter)=4 THEN i.id NOT IN (SELECT DISTINCT interview_id FROM wisher WHERE user_id=:userId AND approve IS TRUE)
-                                                END
-                                   ELSE i.topic_id IN (:topicIds) -- только topic
-                                   END
-                      ELSE i.status=:statusId AND i.topic_id IN (:topicIds)
-                      END
-            ORDER BY i.create_date DESC
-                """, nativeQuery = true)
-    Page<Interview> findAllByUserIdRelatedFiltered(@Param("userId") int userId,
-                                                   @Param("statusId") int statusId,
-                                                   @Param("topicIds") List<Integer> topicIds,
-                                                   Pageable pageable);
-
-    Optional<Interview> findById(int id);
-
     List<Interview> findByMode(int mode);
-
-    Page<Interview> findByTopicId(int topicId, Pageable pageable);
 
     /**
      * Метод обновляет статус собеседования.
@@ -100,102 +37,6 @@ public interface InterviewRepository extends JpaRepository<Interview, Integer> {
     @Transactional
     @Query(value = "UPDATE interview i SET i.status=:status WHERE i.id=:id")
     void updateStatus(@Param("id") int id, @Param("status") StatusInterview status);
-
-    Page<Interview> findByTopicIdIn(Collection<Integer> topicIds, Pageable pageable);
-
-    /**
-     * @param submitterId int
-     * @param pageable    Pageable
-     * @return интервью, автором которых является пользователь
-     */
-    Page<Interview> findBySubmitterId(int submitterId, Pageable pageable);
-
-    /**
-     * @param submitterId int
-     * @param pageable    Pageable
-     * @return интервью, автором которых пользователь НЕ является
-     */
-    Page<Interview> findBySubmitterIdNot(int submitterId, Pageable pageable);
-
-    /**
-     * @param topicId     int
-     * @param submitterId int
-     * @param pageable    Pageable
-     * @return интервью определённой темы, автором которых является пользователь
-     */
-    Page<Interview> findByTopicIdAndSubmitterId(
-            int topicId,
-            int submitterId,
-            Pageable pageable);
-
-    /**
-     * @param topicIds    Collection<Integer>
-     * @param submitterId int
-     * @param pageable    Pageable
-     * @return интервью определённой категории, автором которых является пользователь
-     */
-    Page<Interview> findByTopicIdInAndSubmitterId(
-            Collection<Integer> topicIds,
-            int submitterId,
-            Pageable pageable);
-
-    /**
-     * @param topicId     int
-     * @param submitterId int
-     * @param pageable    Pageable
-     * @return интервью определённой темы, автором которых пользователь НЕ является
-     */
-    Page<Interview> findByTopicIdAndSubmitterIdNot(
-            int topicId,
-            int submitterId,
-            Pageable pageable);
-
-    /**
-     * @param topicIds    Collection<Integer>
-     * @param submitterId int
-     * @param pageable    Pageable
-     * @return интервью определённой категории, автором которых пользователь НЕ является
-     */
-    Page<Interview> findByTopicIdInAndSubmitterIdNot(
-            Collection<Integer> topicIds,
-            int submitterId,
-            Pageable pageable);
-
-    /**
-     * @param userId   int
-     * @param pageable Pageable
-     * @return интервью, в которых пользователь НЕ участвует
-     */
-    @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)")
-    Page<Interview> findInterviewByUserIdNot(@Param("userId") int userId, Pageable pageable);
-
-    /**
-     * @param userId   int
-     * @param topicId  int
-     * @param pageable Pageable
-     * @return интервью определённой темы, в которых пользователь НЕ участвует
-     */
-    @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
-            + " AND i.topicId = :topicId")
-    Page<Interview> findInterviewByUserIdNotAndByTopicId(@Param("userId") int userId,
-                                                         @Param("topicId") int topicId,
-                                                         Pageable pageable);
-
-    /**
-     * @param userId    int
-     * @param topicsIds Collection<Integer>
-     * @param pageable  Pageable
-     * @return интервью определённой категории, в которых пользователь НЕ участвует
-     */
-    @Query("SELECT i FROM interview i WHERE i.id NOT IN"
-            + " (SELECT w.interview.id FROM wisher w WHERE w.userId = :userId)"
-            + " AND i.topicId IN :topicsIds")
-    Page<Interview> findInterviewByUserIdNotAndByTopicIdIn(
-            @Param("userId") int userId,
-            @Param("topicsIds") Collection<Integer> topicsIds,
-            Pageable pageable);
 
     /**
      * Возвращает все собеседования на который пользователь должен оставить отзыв.

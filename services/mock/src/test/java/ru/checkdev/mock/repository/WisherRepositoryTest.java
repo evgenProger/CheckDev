@@ -156,31 +156,6 @@ class WisherRepositoryTest {
     }
 
     @Test
-    void whenFindInterviewsFromWisherByUserId() {
-        entityManager.persist(
-                new Wisher(0, interview1, 1, "user_Mail1", false));
-        entityManager.persist(
-                new Wisher(0, interview2, 1, "user_Mail1", false));
-        entityManager.persist(
-                new Wisher(0, interview3, 1, "user_Mail1", false));
-        entityManager.persist(
-                new Wisher(0, interview3, 2, "user_Mail2", false));
-        entityManager.clear();
-
-        var page1 =
-                wisherRepository.findInterviewByUserId(1, PageRequest.of(0, 10));
-        var page2 =
-                wisherRepository.findInterviewByUserId(2, PageRequest.of(0, 10));
-        var page3 =
-                wisherRepository.findInterviewByUserId(1349, PageRequest.of(0, 10));
-
-        MatcherAssert.assertThat(page1.toList().size(), is(3));
-        MatcherAssert.assertThat(page1.toList().get(0), is(interview1));
-        MatcherAssert.assertThat(page2.toList().size(), is(1));
-        MatcherAssert.assertThat(page3.toList().size(), is(0));
-    }
-
-    @Test
     void whenFindInterviewsFromWisherByUserIdApproved() {
         entityManager.persist(
                 new Wisher(0, interview1, 1, "user_Mail1", true));
@@ -229,66 +204,4 @@ class WisherRepositoryTest {
         MatcherAssert.assertThat(page3.toList().size(), is(0));
     }
 
-    @Test
-    public void whenFindInterviewsFromWisherByUserIdAndByTopicId() {
-        entityManager.persist(
-                new Wisher(0, interview1, 1, "user_Mail1", false));
-        entityManager.persist(
-                new Wisher(0, interview2, 1, "user_Mail1", false));
-        entityManager.persist(
-                new Wisher(0, interview3, 1, "user_Mail1", false));
-        entityManager.persist(
-                new Wisher(0, interview3, 2, "user_Mail2", false));
-        entityManager.clear();
-
-        var page1 =
-                wisherRepository.findInterviewByUserIdAndByTopicId(1, 2,
-                        PageRequest.of(0, 10));
-        var page2 =
-                wisherRepository.findInterviewByUserIdAndByTopicId(2, 2,
-                        PageRequest.of(0, 10));
-        var page3 =
-                wisherRepository.findInterviewByUserIdAndByTopicId(1349, 1,
-                        PageRequest.of(0, 10));
-        var page4 =
-                wisherRepository.findInterviewByUserIdAndByTopicId(2, 1349,
-                        PageRequest.of(0, 10));
-
-        MatcherAssert.assertThat(page1.toList().size(), is(2));
-        MatcherAssert.assertThat(page1.toList().get(0), is(interview2));
-        MatcherAssert.assertThat(page2.toList().size(), is(1));
-        MatcherAssert.assertThat(page3.toList().size(), is(0));
-        MatcherAssert.assertThat(page4.toList().size(), is(0));
-    }
-
-    @Test
-    public void whenFindInterviewsFromWisherByTopicsIdsListAndUserId() {
-        entityManager.persist(
-                new Wisher(0, interview1, 1, "user_Mail1", false));
-        entityManager.persist(
-                new Wisher(0, interview2, 1, "user_Mail1", false));
-        entityManager.persist(
-                new Wisher(0, interview3, 1, "user_Mail1", false));
-        entityManager.persist(
-                new Wisher(0, interview3, 2, "user_Mail2", false));
-        entityManager.clear();
-
-        var page1 =
-                wisherRepository.findInterviewByUserIdAndByTopicIdIn(1,
-                        List.of(1, 2, 3), PageRequest.of(0, 10));
-        var page2 =
-                wisherRepository.findInterviewByUserIdAndByTopicIdIn(2,
-                        List.of(1, 2, 3), PageRequest.of(0, 10));
-        var page3 =
-                wisherRepository.findInterviewByUserIdAndByTopicIdIn(1349,
-                        List.of(1, 2, 3, 4, 5, 6, 7), PageRequest.of(0, 10));
-        var page4 =
-                wisherRepository.findInterviewByUserIdAndByTopicIdIn(1,
-                        List.of(17, 28, 39, 50, 61, 72), PageRequest.of(0, 10));
-
-        MatcherAssert.assertThat(page1.toList().size(), is(3));
-        MatcherAssert.assertThat(page2.toList().size(), is(1));
-        MatcherAssert.assertThat(page3.toList().size(), is(0));
-        MatcherAssert.assertThat(page4.toList().size(), is(0));
-    }
 }
