@@ -16,6 +16,10 @@ if test -f "notification.pid"; then
     kill -9 $(cat notification.pid)
 fi
 
+if test -f "generator.pid"; then
+    kill -9 $(cat generator.pid)
+fi
+
 if test -f "site.pid"; then
     kill -9 $(cat site.pid)
 fi

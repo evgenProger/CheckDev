@@ -11,6 +11,8 @@ nohup java "-Dspring.config.location=file:./etc/mock.properties" -jar services/m
 
 nohup java "-Dspring.config.location=file:./etc/notification.properties" -jar services/notification/target/notification-1.0.0.jar > /dev/null 2>&1&
 
+nohup java "-Dspring.config.location=file:./etc/generator.properties" -jar services/generator/target/generator-1.0.0.jar > /dev/null 2>&1&
+
 nohup java "-Dspring.config.location=file:./etc/site.properties" -jar services/site/target/site-1.0.0.jar > /dev/null 2>&1&
 
 ps aux | grep services
