@@ -13,6 +13,7 @@ import ru.checkdev.mock.dto.UsersApprovedInterviewsDTO;
 import ru.checkdev.mock.dto.WisherDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WisherRepository extends CrudRepository<Wisher, Integer> {
 
@@ -73,15 +74,15 @@ public interface WisherRepository extends CrudRepository<Wisher, Integer> {
     List<UsersApprovedInterviewsDTO> getUsersIdWithCountedApprovedInterviews();
 
     /**
-     * Метод формирует список с id пользователя с количеством проведенных собеседований
+     * Метод формирует DTO с id пользователя и с количеством проведенных собеседований
      *
      * @param userId int
-     * @return List<UsersApprovedInterviewsDTO>
+     * @return Optional<UsersApprovedInterviewsDTO>
      */
     @Query("""
             SELECT new ru.checkdev.mock.dto.UsersApprovedInterviewsDTO (w.userId, COUNT(w.approve))
             FROM wisher w
             WHERE w.approve = true AND w.userId = :userId
             GROUP BY w.userId""")
-    List<UsersApprovedInterviewsDTO> getUserIdWithCountedApprovedInterviews(@Param("userId") int userId);
+    Optional<UsersApprovedInterviewsDTO> getUserIdWithCountedApprovedInterviews(@Param("userId") int userId);
 }

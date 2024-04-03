@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.dto.UsersApprovedInterviewsDTO;
 import ru.checkdev.mock.dto.WisherDto;
 
 import javax.persistence.EntityManager;
@@ -202,6 +203,63 @@ class WisherRepositoryTest {
         MatcherAssert.assertThat(page1.toList().size(), is(0));
         MatcherAssert.assertThat(page2.toList().size(), is(0));
         MatcherAssert.assertThat(page3.toList().size(), is(0));
+    }
+
+    @Test
+    void whenGetUsersIdWithCountedApprovedInterviewsAndDatabaseEmptyThenGetEmptyList() {
+        var actual = wisherRepository.getUsersIdWithCountedApprovedInterviews();
+        assertThat(actual, is(Collections.emptyList()));
+    }
+
+    @Test
+    void whenGetUsersIdWithCountedApprovedInterviewsThenGetListOfDtoOnlyWithApprovedInterviews() {
+        entityManager.persist(
+                new Wisher(0, interview1, 1, "user_Mail1", false));
+        entityManager.persist(
+                new Wisher(0, interview2, 1, "user_Mail1", true));
+        entityManager.persist(
+                new Wisher(0, interview3, 1, "user_Mail1", true));
+        entityManager.persist(
+                new Wisher(0, interview3, 2, "user_Mail2", true));
+        entityManager.clear();
+
+        var expected = List.of(
+                new UsersApprovedInterviewsDTO(1, 2),
+                new UsersApprovedInterviewsDTO(2, 1)
+        );
+        var actual = wisherRepository.getUsersIdWithCountedApprovedInterviews();
+
+        assertThat(actual, is(expected));
+    }
+
+
+    @Test
+    void whenGetUserIdWithCountedApprovedInterviewsAndDatabaseEmptyThenGetOptionalEmpty() {
+        var actual = wisherRepository.getUserIdWithCountedApprovedInterviews(1);
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    void whenGetUserIdWithCountedApprovedInterviewsAndInterviewNotApprovedThenGetOptionalEmpty() {
+        entityManager.persist(
+                new Wisher(0, interview1, 1, "user_Mail1", false));
+        entityManager.clear();
+        var actual = wisherRepository.getUserIdWithCountedApprovedInterviews(1);
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    void whenGetUserIdWithCountedApprovedInterviewsThenGetOptionalOfOfDtoOnlyWithApprovedInterviews() {
+        entityManager.persist(
+                new Wisher(0, interview1, 1, "user_Mail1", false));
+        entityManager.persist(
+                new Wisher(0, interview2, 1, "user_Mail1", true));
+        entityManager.clear();
+
+        var expected = Optional.of(new UsersApprovedInterviewsDTO(1, 1));
+        var actual = wisherRepository.getUserIdWithCountedApprovedInterviews(1);
+
+        assertThat(actual, is(expected));
     }
 
 }
