@@ -9,6 +9,7 @@ import ru.checkdev.generator.domain.VacancyStatistic;
 import ru.checkdev.generator.dto.DirectionKey;
 import ru.checkdev.generator.service.vacancy.statistic.VacancyStatisticService;
 import ru.checkdev.generator.service.vacancy.statistic.mapper.StatisticMapper;
+import ru.checkdev.generator.util.StatisticCountComparator;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class StatisticController {
 
     private final VacancyStatisticService<VacancyStatistic, Integer> vacancyStatisticService;
     private final StatisticMapper<DirectionKey, VacancyStatistic> mapper;
+    private final StatisticCountComparator statisticComparator;
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
@@ -30,6 +32,7 @@ public class StatisticController {
     @GetMapping("/get")
     public ResponseEntity<List<VacancyStatistic>> getAll() {
         var result = vacancyStatisticService.getStatistic();
+        result.sort(statisticComparator.reversed());
         return ResponseEntity.status(result.size() > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON).body(result);
     }
