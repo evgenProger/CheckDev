@@ -83,7 +83,8 @@ public class WisherService {
      * @return UsersApprovedInterviewsDTO
      */
     public UsersApprovedInterviewsDTO getUserIdWithCountedApprovedInterviews(int userId) {
-        return wisherRepository.getUserIdWithCountedApprovedInterviews(userId).get(0);
+        return wisherRepository.getUserIdWithCountedApprovedInterviews(userId)
+                .orElse(new UsersApprovedInterviewsDTO(userId, 0));
     }
 
     /**

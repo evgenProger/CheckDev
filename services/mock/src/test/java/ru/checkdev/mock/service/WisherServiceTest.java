@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.checkdev.mock.domain.Interview;
 import ru.checkdev.mock.domain.Wisher;
+import ru.checkdev.mock.dto.UsersApprovedInterviewsDTO;
 import ru.checkdev.mock.dto.WisherDto;
 import ru.checkdev.mock.repository.WisherRepository;
 
@@ -158,6 +159,24 @@ class WisherServiceTest {
         when(wisherRepository.findWisherDTOByInterviewId(interview.getId())).thenReturn(wishers);
         var actual = wisherService.findWisherDtoByInterviewId(interview.getId());
         assertThat(actual, is(wishers));
+    }
+
+    @Test
+    void whenGetUserIdWithCountedApprovedInterviewsAndUserExistsThenGetDtoWithCountedInterviews() {
+        var dto = new UsersApprovedInterviewsDTO(1, 2);
+        when(wisherRepository.getUserIdWithCountedApprovedInterviews(dto.getUserId()))
+                .thenReturn(Optional.of(dto));
+        var actual = wisherService.getUserIdWithCountedApprovedInterviews(dto.getUserId());
+        assertThat(actual, is(dto));
+    }
+
+    @Test
+    void whenGetUserIdWithCountedApprovedInterviewsAndUserNotExistsThenGetDtoWithCountZero() {
+        var dto = new UsersApprovedInterviewsDTO(1, 0);
+        when(wisherRepository.getUserIdWithCountedApprovedInterviews(dto.getUserId()))
+                .thenReturn(Optional.empty());
+        var actual = wisherService.getUserIdWithCountedApprovedInterviews(dto.getUserId());
+        assertThat(actual, is(dto));
     }
 
 }
