@@ -15,6 +15,7 @@ import ru.job4j.site.service.*;
 import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -215,7 +216,7 @@ public class InterviewController {
      */
     @PostMapping("/createInterviewByLink")
     public String createInterviewByLink(@ModelAttribute VacancyURL vacancyURL, Model model,
-                                        HttpServletRequest request) throws JsonProcessingException {
+                                        HttpServletRequest request) throws JsonProcessingException, UnsupportedEncodingException {
         var token = getToken(request);
         Set<String> examSet = new HashSet<>();
         if (token != null) {
