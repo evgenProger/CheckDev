@@ -25,17 +25,19 @@ public class UserTelegramRepositoryFake
     }
 
     @Override
-    public List<Long> findChatIdInUserIds(List<Integer> userIds) {
+    public List<Long> findChatIdInUserIdsIfNotifiable(List<Integer> userIds) {
         return memory.values().stream()
                 .filter(userTelegram -> userIds.contains(userTelegram.getUserId()))
+                .filter(UserTelegram::isNotifiable)
                 .map(UserTelegram::getChatId)
                 .toList();
     }
 
     @Override
-    public Optional<Long> findChatIdByUserId(int userId) {
+    public Optional<Long> findChatIdByUserIdIfNotifiable(int userId) {
         return memory.values().stream()
                 .filter(u -> u.getUserId() == userId)
+                .filter(UserTelegram::isNotifiable)
                 .map(u -> Optional.of(u.getChatId())).findFirst().orElse(Optional.empty());
     }
 
@@ -62,4 +64,12 @@ public class UserTelegramRepositoryFake
         }
         return result;
     }
+
+    @Override
+    public void setNotifiable(long chatId, boolean notify) {
+        memory.values().stream()
+                .filter(userTelegram -> userTelegram.getChatId() == chatId)
+                .forEach(userTelegram -> userTelegram.setNotifiable(notify));
+    }
+
 }

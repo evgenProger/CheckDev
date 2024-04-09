@@ -54,7 +54,7 @@ public class BindAccountAction implements Action {
                 text = "Пользователь не найден";
             } else {
                 var profileTg = tgConfig.getMapper().convertValue(result, ProfileTgDTO.class);
-                boolean alreadyExist = !userTelegramService.save(new UserTelegram(0, profileTg.getId(), chatId));
+                boolean alreadyExist = !userTelegramService.save(new UserTelegram(0, profileTg.getId(), chatId, false));
                 text = alreadyExist ? "Данный аккаунт CheckDev уже привязан к другому аккаунту Telegram"
                         : "Ваш аккаунт CheckDev успешно привязан к данному аккаунту Telegram";
             }

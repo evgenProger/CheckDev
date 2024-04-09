@@ -81,7 +81,7 @@ public class InnerMessageService {
     public void send(InnerMessage innerMessage) {
         Optional<UserTelegram> userOptional = userTelegramService.findByUserId(innerMessage.getUserId());
         if (userOptional.isEmpty()) {
-            System.out.println("Пользователь не найден!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println("Пользователь не найден!");
         } else {
             UserTelegram user = userOptional.get();
             Long chatId = user.getChatId();

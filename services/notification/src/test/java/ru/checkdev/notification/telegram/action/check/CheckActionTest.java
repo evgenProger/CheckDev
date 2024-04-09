@@ -45,7 +45,7 @@ class CheckActionTest {
         update.setMessage(message);
         message.setChat(chat);
         SessionTg sessionTg = new SessionTg();
-        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId());
+        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId(), false);
         userTelegramService.save(userTelegram);
         message.setChat(chat);
         CheckAction checkAction = new CheckAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
@@ -67,7 +67,7 @@ class CheckActionTest {
         update.setMessage(message);
         message.setChat(chat);
         SessionTg sessionTg = new SessionTg();
-        UserTelegram userTelegram = new UserTelegram(0, -23, chat.getId());
+        UserTelegram userTelegram = new UserTelegram(0, -23, chat.getId(), false);
         userTelegramService.save(userTelegram);
         message.setChat(chat);
         CheckAction checkAction = new CheckAction(sessionTg, new FakeTgCallConsole(), userTelegramService);

@@ -50,4 +50,21 @@ public class UserTelegramService {
     public List<UserTelegram> findAllByTopicIdAndUserIdNot(int topicId, int userId) {
         return repository.findAllByTopicIdAndUserIdNot(topicId, userId);
     }
+
+    /**
+     * Метод устанавливает флаг notifiable пользователя в состояние true;
+     * @param chatId id чата пользователя.
+     */
+    public void setNotifiableByChatId(long chatId) {
+        repository.setNotifiable(chatId, true);
+    }
+
+    /**
+     * Метод устанавливает флаг notifiable пользователя в состояние false;
+     * @param chatId id чата пользователя.
+     */
+    public void setUnNotifiableByChatId(long chatId) {
+        repository.setNotifiable(chatId, false);
+    }
+
 }

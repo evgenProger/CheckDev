@@ -27,7 +27,7 @@ public class NotificationMessageTg implements NotificationMessage<UserTelegram, 
     private final Bot bot;
 
     /**
-     * Метод отправляет сообщения пользователям в телеграмм
+     * Метод отправляет сообщения подписанным на оповещения пользователям в телеграмм.
      *
      * @param targets List<UserTelegram>
      * @param message String message
@@ -37,18 +37,20 @@ public class NotificationMessageTg implements NotificationMessage<UserTelegram, 
     public List<InnerMessage> sendMessage(List<UserTelegram> targets, String message) {
         List<InnerMessage> innerMessages = new ArrayList<>();
         for (UserTelegram user : targets) {
-            var messageTg = getSendMessage(user.getChatId(), message);
             var innerMessage = InnerMessage.of()
                     .userId(user.getUserId())
                     .text(message)
                     .created(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
-                    .read(true)
+                    .read(false)
                     .build();
-            try {
-                bot.send(messageTg);
-            } catch (Exception e) {
-                log.error("Send message by UserID:{}, from telegram Error:{}", user.getUserId(), e);
-                innerMessage.setRead(false);
+            if (user.isNotifiable()) {
+                var messageTg = getSendMessage(user.getChatId(), message);
+                try {
+                    bot.send(messageTg);
+                    innerMessage.setRead(true);
+                } catch (Exception e) {
+                    log.error("Send message by UserID:{}, from telegram Error:{}", user.getUserId(), e);
+                }
             }
             innerMessages.add(innerMessage);
         }
@@ -56,7 +58,7 @@ public class NotificationMessageTg implements NotificationMessage<UserTelegram, 
     }
 
     /**
-     * Метод отправляет сообщения одному пользователю в телеграмм
+     * Метод отправляет сообщение одному пользователю в телеграмм, если он подписан на сообщения.
      *
      * @param target  UserTelegram
      * @param message String
@@ -64,18 +66,20 @@ public class NotificationMessageTg implements NotificationMessage<UserTelegram, 
      */
     @Override
     public InnerMessage sendMessage(UserTelegram target, String message) {
-        var messageTg = getSendMessage(target.getChatId(), message);
         var innerMessage = InnerMessage.of()
                 .userId(target.getUserId())
                 .text(message)
                 .created(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
-                .read(true)
+                .read(false)
                 .build();
-        try {
-            bot.send(messageTg);
-        } catch (Exception e) {
-            log.error("Send message by UserID:{}, from telegram Error:{}", target.getUserId(), e);
-            innerMessage.setRead(false);
+        if (target.isNotifiable()) {
+            var messageTg = getSendMessage(target.getChatId(), message);
+            try {
+                bot.send(messageTg);
+                innerMessage.setRead(true);
+            } catch (Exception e) {
+                log.error("Send message by UserID:{}, from telegram Error:{}", target.getUserId(), e);
+            }
         }
         return innerMessage;
     }

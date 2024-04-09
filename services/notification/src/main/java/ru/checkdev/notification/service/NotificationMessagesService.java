@@ -38,14 +38,28 @@ public class NotificationMessagesService {
         this.messagesGenerator = messagesGenerator;
     }
 
+
+    /**
+     * Метод находит chatId всех пользователей, подписанных на категорию и согласившихся на получение оповещений в телеграмм,
+     * и передаёт каждый в метод sendNotificationToCategorySubscriber для рассылки оповещений.
+     *
+     * @param categorySubscribersIds список id подписчиков на категорию.
+     * @param categoryWithTopicDTO DTO категории и темы собеседования для оповещения.
+     */
     public void sendMessagesToCategorySubscribers(List<Integer> categorySubscribersIds,
                                                   CategoryWithTopicDTO categoryWithTopicDTO) {
-        userTelegramRepository.findChatIdInUserIds(categorySubscribersIds)
+        userTelegramRepository.findChatIdInUserIdsIfNotifiable(categorySubscribersIds)
                 .forEach(chatId ->
                         sendNotificationToCategorySubscriber(chatId,
                                 categoryWithTopicDTO));
     }
 
+    /**
+     * Метод формирует сообщение об обновлении в категории и отправляет пользователю телеграмм по указанному chatId.
+     *
+     * @param chatId id чата пользователя.
+     * @param categoryWithTopicDTO DTO с данными для формирования сообщения.
+     */
     public void sendNotificationToCategorySubscriber(long chatId, CategoryWithTopicDTO categoryWithTopicDTO) {
         bot.send(new SendMessage(
                         String.valueOf(chatId),
@@ -60,9 +74,14 @@ public class NotificationMessagesService {
         );
     }
 
+    /**
+     * Метод формирует сообщение об отзыве и отправляет пользователю, которому оставлен отзыв.
+     *
+     * @param feedbackNotification данные для формирования отзыва конкретному пользователю.
+     */
     public void sendFeedbackNotification(FeedbackNotificationDTO feedbackNotification) {
         var optionalChatId = userTelegramRepository
-                .findChatIdByUserId(feedbackNotification.getRecipientId());
+                .findChatIdByUserIdIfNotifiable(feedbackNotification.getRecipientId());
         var message = "Пользователь "
                 + feedbackNotification.getSenderName()
                 + " оставил Вам отзыв о собеседовании на тему "
@@ -82,9 +101,14 @@ public class NotificationMessagesService {
         innerMessageService.saveMessage(innerMessage);
     }
 
+    /**
+     * Метод формирует сообщение о приглашении на собеседование и отправляет пользователю.
+     *
+      * @param wisherApprovedDTO данные для формирования и отправки приглашения на собеседование.
+     */
     public void sendApprovedNotification(WisherApprovedDTO wisherApprovedDTO) {
         var optionalChatId = userTelegramRepository
-                .findChatIdByUserId(wisherApprovedDTO.getWisherUserId());
+                .findChatIdByUserIdIfNotifiable(wisherApprovedDTO.getWisherUserId());
         var message = String.format("Вы приглашены на собеседование \"[%s](%s)\".%sСвяжитесь с автором: %s",
                 wisherApprovedDTO.getInterviewTitle(),
                 wisherApprovedDTO.getInterviewLink(),

@@ -77,16 +77,4 @@ public class ProfileController {
                 profileDTO.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
 
-
-    @PostMapping("/tg/notified/{id}")
-    public ResponseEntity<HttpStatus> tgNotification(@PathVariable int id) {
-        profileService.notification(id);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @PostMapping("/tg/unnotified/{id}")
-    public ResponseEntity<HttpStatus> tgUnNotification(@PathVariable int id) {
-        profileService.unNotification(id);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
 }

@@ -68,23 +68,4 @@ public class ProfileService {
         return personRepository.findProfileOrderByCreatedDesc();
     }
 
-    /**
-     * Разрешить подписки для пользователя с ID
-     * Profile.notification = true
-     *
-     * @param id int
-     */
-    public void notification(int id) {
-        personRepository.setNotification(id, true);
-    }
-
-    /**
-     * Запретить подписки для пользователя с ID
-     * Profile.notification = false
-     *
-     * @param id int
-     */
-    public void unNotification(int id) {
-        personRepository.setNotification(id, false);
-    }
 }

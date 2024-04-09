@@ -75,7 +75,7 @@ public class RegSaveUserAction implements Action {
                 .append("Email: ").append(profile.getEmail()).append(ls)
                 .append("Пароль : ").append(password).append(ls)
                 .append(urlSiteAuth).toString();
-        userTelegramService.save(new UserTelegram(0, profile.getId(), chatId));
+        userTelegramService.save(new UserTelegram(0, profile.getId(), chatId, false));
         return Optional.of(new SendMessage(chatId.toString(), text));
     }
 }
