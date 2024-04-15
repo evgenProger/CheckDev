@@ -10,28 +10,40 @@ class UserTelegramTest {
 
     @BeforeEach
     public void setUp() {
-        userTelegram = new UserTelegram(1, 10, 555L);
+        userTelegram = new UserTelegram(1, 10, 555L, false);
     }
 
     @Test
     void getId() {
-        assertThat(1).isEqualTo(userTelegram.getId());
+        assertThat(userTelegram.getId()).isEqualTo(1);
     }
 
     @Test
     void getChatId() {
-        assertThat(555L).isEqualTo(userTelegram.getChatId());
+        assertThat(userTelegram.getChatId()).isEqualTo(555L);
     }
 
     @Test
     void setId() {
         userTelegram.setId(2);
-        assertThat(2).isEqualTo(userTelegram.getId());
+        assertThat(userTelegram.getId()).isEqualTo(2);
     }
 
     @Test
     void setChatId() {
         userTelegram.setChatId(333L);
-        assertThat(333L).isEqualTo(userTelegram.getChatId());
+        assertThat(userTelegram.getChatId()).isEqualTo(333L);
     }
+
+    @Test
+    void isNotifiable() {
+        assertThat(userTelegram.isNotifiable()).isFalse();
+    }
+
+    @Test
+    void setNotifiable() {
+        userTelegram.setNotifiable(true);
+        assertThat(userTelegram.isNotifiable()).isTrue();
+    }
+
 }

@@ -52,7 +52,7 @@ class ForgetActionTest {
         update.setMessage(message);
         message.setChat(chat);
         SessionTg sessionTg = new SessionTg();
-        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId());
+        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId(), false);
         userTelegramService.save(userTelegram);
         message.setChat(chat);
         message.setText("password");
@@ -75,7 +75,7 @@ class ForgetActionTest {
         update.setMessage(message);
         message.setChat(chat);
         SessionTg sessionTg = new SessionTg();
-        UserTelegram userTelegram = new UserTelegram(0, Integer.parseInt(ERROR_ID), chat.getId());
+        UserTelegram userTelegram = new UserTelegram(0, Integer.parseInt(ERROR_ID), chat.getId(), false);
         userTelegramService.save(userTelegram);
         message.setChat(chat);
         message.setText("password");

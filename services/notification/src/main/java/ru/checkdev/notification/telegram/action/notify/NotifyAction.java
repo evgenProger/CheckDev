@@ -9,41 +9,40 @@ import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
 import ru.checkdev.notification.telegram.action.Action;
-import ru.checkdev.notification.telegram.service.TgCall;
 
 import java.util.Optional;
 
 /**
  * Telegram Action команда /notify
- * Подписаться на уведомление
+ * Подписаться на уведомления в телеграмм.
  */
 @AllArgsConstructor
 @Slf4j
 public class NotifyAction implements Action {
-    private static final String URL_AUTH_NOTIFIED = "/profiles/tg/notified/";
     private final SessionTg sessionTg;
-    private final TgCall tgCall;
     private final UserTelegramService userTelegramService;
 
     @Override
     public Optional<BotApiMethod> handle(Update update) {
         var chatId = update.getMessage().getChatId();
-        var text = "";
-        Optional<UserTelegram> chatIdOptional = userTelegramService.findByChatId(chatId);
-        if (chatIdOptional.isEmpty()) {
-            text = "Данный аккаунт Telegram на сайте не зарегистрирован";
-            return Optional.of(new SendMessage(chatId.toString(), text));
+        var out = new StringBuilder();
+        String ls = System.lineSeparator();
+        Optional<UserTelegram> tgUserOptional = userTelegramService.findByChatId(chatId);
+        if (tgUserOptional.isEmpty()) {
+            out.append("Данный аккаунт Telegram не зарегистрирован на сайте.").append(ls)
+                    .append("Для регистрации, пожалуйста, воспользуйтесь командой /start");
+            return Optional.of(new SendMessage(chatId.toString(), out.toString()));
         }
-        try {
-            UserTelegram userTelegram = chatIdOptional.get();
-            sessionTg.put(chatId.toString(), "userId", Long.toString(userTelegram.getUserId()));
-            tgCall.doPost(URL_AUTH_NOTIFIED + userTelegram.getUserId()).block();
-            text = "Вы подписаны на уведомления";
-        } catch (Exception e) {
-            log.error("WebClient doPost error: {}", e.getMessage());
-            text = "Сервис не доступен попробуйте позже";
-            return Optional.of(new SendMessage(chatId.toString(), text));
+
+        UserTelegram userTelegram = tgUserOptional.get();
+        sessionTg.put(chatId.toString(), "userId", Integer.toString(userTelegram.getUserId()));
+        if (userTelegram.isNotifiable()) {
+            out.append("Уведомления в телеграмм уже включены.");
+            return Optional.of(new SendMessage(chatId.toString(), out.toString()));
         }
-        return Optional.of(new SendMessage(chatId.toString(), text));
+
+        userTelegramService.setNotifiableByChatId(userTelegram.getChatId());
+        out.append("Вы подписались на уведомления с сайта телеграмм бота.");
+        return Optional.of(new SendMessage(chatId.toString(), out.toString()));
     }
 }

@@ -21,4 +21,6 @@ public class UserTelegram implements Base {
     private int userId;
     @Column(name = "chat_id", nullable = false, unique = true)
     private long chatId;
+    private boolean notifiable;
+
 }

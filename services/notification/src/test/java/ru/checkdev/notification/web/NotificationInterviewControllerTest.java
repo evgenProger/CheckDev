@@ -48,8 +48,8 @@ class NotificationInterviewControllerTest {
                 .categoryId(2)
                 .categoryName("category2")
                 .build();
-        var userTelegram = new UserTelegram(0, 5, 5L);
-        var userTelegramSubmit = new UserTelegram(0, interviewNotify.getSubmitterId(), interviewNotify.getSubmitterId());
+        var userTelegram = new UserTelegram(0, 5, 5L, false);
+        var userTelegramSubmit = new UserTelegram(0, interviewNotify.getSubmitterId(), interviewNotify.getSubmitterId(), false);
         subscribeTopicRepositoryFake.save(new SubscribeTopic(0, userTelegram.getUserId(), interviewNotify.getTopicId()));
         subscribeTopicRepositoryFake.save(new SubscribeTopic(0, userTelegramSubmit.getUserId(), interviewNotify.getTopicId()));
         userTelegramService.save(userTelegram);
@@ -91,7 +91,7 @@ class NotificationInterviewControllerTest {
                 .userId(3)
                 .contactBy("@contact")
                 .build();
-        var userTelegramSubmit = new UserTelegram(0, wisherNotifyDTO.getSubmitterId(), wisherNotifyDTO.getSubmitterId());
+        var userTelegramSubmit = new UserTelegram(0, wisherNotifyDTO.getSubmitterId(), wisherNotifyDTO.getSubmitterId(), false);
         userTelegramRepositoryFake.save(userTelegramSubmit);
         var messageExpect = messagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
         InnerMessage innerMessageExpect = InnerMessage.of()

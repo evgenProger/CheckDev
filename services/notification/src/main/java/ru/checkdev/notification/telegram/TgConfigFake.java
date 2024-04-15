@@ -65,8 +65,8 @@ public class TgConfigFake {
                         new RegSaveUserAction(sessionTg, tgCall, userTelegramService, urlLogin)
                 ),
                 "/check", List.of(new CheckAction(sessionTg, tgCall, userTelegramService)),
-                "/notify", List.of(new NotifyAction(sessionTg, tgCall, userTelegramService)),
-                "/unnotify", List.of(new UnNotifyAction(sessionTg, tgCall, userTelegramService)),
+                "/notify", List.of(new NotifyAction(sessionTg, userTelegramService)),
+                "/unnotify", List.of(new UnNotifyAction(sessionTg, userTelegramService)),
                 "/bind", List.of(new BindAskEmailAction(userTelegramService),
                         new BindPutEmailAction(sessionTg),
                         new BindAskPasswordAction(),

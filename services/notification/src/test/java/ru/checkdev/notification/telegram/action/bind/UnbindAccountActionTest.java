@@ -26,7 +26,7 @@ class UnbindAccountActionTest {
         Message message = new Message();
         message.setChat(chat);
         update.setMessage(message);
-        UserTelegram userTelegram = new UserTelegram(0, 0, 1L);
+        UserTelegram userTelegram = new UserTelegram(0, 0, 1L, false);
         userTelegramService.save(userTelegram);
         UnbindAccountAction unbindAccountAction = new UnbindAccountAction(userTelegramService);
         BotApiMethod botApiMethod = unbindAccountAction.handle(update).get();

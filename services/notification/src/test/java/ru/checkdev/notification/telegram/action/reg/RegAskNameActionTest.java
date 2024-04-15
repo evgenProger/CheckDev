@@ -29,7 +29,7 @@ class RegAskNameActionTest {
         message.setChat(chat);
         Update update = new Update();
         update.setMessage(message);
-        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId());
+        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId(), false);
         userTelegramService.save(userTelegram);
         SendMessage sendMessage = (SendMessage) regAskNameAction.handle(update).get();
         String expect = "Данный аккаунт Telegram уже зарегистрирован на сайте";

@@ -36,7 +36,7 @@ class SaveInnerMessageActionTest {
                         new SubscribeTopicRepositoryFake()
                 ));
         InnerMessageService innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
-        NotifyAction notifyAction = new NotifyAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
+        NotifyAction notifyAction = new NotifyAction(sessionTg, userTelegramService);
         SaveInnerMessageAction saveInnerMessageAction = new SaveInnerMessageAction(
                 sessionTg,
                 innerMessageService

@@ -7,6 +7,7 @@ import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
 import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -15,9 +16,9 @@ class UserTelegramServiceFakeTest {
     void save() {
         var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
         var chatId = 333L;
-        service.save(new UserTelegram(11, 10, chatId));
+        service.save(new UserTelegram(11, 10, chatId, false));
         var userTg = service.findByChatId(chatId);
-        assertThat(userTg.isPresent()).isTrue();
+        assertThat(userTg).isPresent();
         assertThat(userTg.get().getUserId()).isEqualTo(10);
     }
 
@@ -33,11 +34,11 @@ class UserTelegramServiceFakeTest {
     void whenfindByChatIdThenReturnOptionalUserID() {
         var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
         var chatId = 333L;
-        var userTg = new UserTelegram(11, 10, chatId);
+        var userTg = new UserTelegram(11, 10, chatId, false);
         service.save(userTg);
         var actual = service.findByChatId(chatId);
         assertThat(actual).isPresent();
-        assertThat(actual.get()).isEqualTo(userTg);
+        assertThat(actual).contains(userTg);
     }
 
     @Test
@@ -51,11 +52,11 @@ class UserTelegramServiceFakeTest {
     void whenFindByUserIdThenOptionalUserTg() {
         var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
         var chatId = 333L;
-        var userTg = new UserTelegram(11, 10, chatId);
+        var userTg = new UserTelegram(11, 10, chatId, false);
         service.save(userTg);
         var actual = service.findByUserId(userTg.getUserId());
         assertThat(actual).isPresent();
-        assertThat(actual.get()).isEqualTo(userTg);
+        assertThat(actual).contains(userTg);
     }
 
     @Test
@@ -69,9 +70,9 @@ class UserTelegramServiceFakeTest {
     void whenFindAllByTopicIdAndUserIdNotWhenList() {
         var topicSubFake = new SubscribeTopicRepositoryFake();
         var userTgFake = new UserTelegramRepositoryFake(topicSubFake);
-        var user1 = new UserTelegram(0, 1, 1111L);
-        var user2 = new UserTelegram(0, 2, 2222L);
-        var user3 = new UserTelegram(0, 3, 3333L);
+        var user1 = new UserTelegram(0, 1, 1111L, false);
+        var user2 = new UserTelegram(0, 2, 2222L, false);
+        var user3 = new UserTelegram(0, 3, 3333L, false);
         userTgFake.save(user1);
         userTgFake.save(user2);
         userTgFake.save(user3);
@@ -86,4 +87,29 @@ class UserTelegramServiceFakeTest {
         var actual = service.findAllByTopicIdAndUserIdNot(topicSub1.getTopicId(), -1);
         assertThat(actual).isEqualTo(expect);
     }
+
+    @Test
+    void whenSetNotifiableThenNotifiableValueChangedToTrue() {
+        var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
+        var user = new UserTelegram(0, 1, 1111L, false);
+        var expectedUser = new UserTelegram(1, 1, 1111L, true);
+
+        service.save(user);
+        service.setNotifiableByChatId(user.getChatId());
+
+        assertThat(service.findByUserId(user.getUserId())).isEqualTo(Optional.of(expectedUser));
+    }
+
+    @Test
+    void whenSetUnNotifiableThenNotifiableValueChangedToFalse() {
+        var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
+        var user = new UserTelegram(0, 1, 1111L, true);
+        var expectedUser = new UserTelegram(1, 1, 1111L, false);
+
+        service.save(user);
+        service.setUnNotifiableByChatId(user.getChatId());
+
+        assertThat(service.findByUserId(user.getUserId())).isEqualTo(Optional.of(expectedUser));
+    }
+
 }
