@@ -14,4 +14,5 @@
     <include file="changelog/07_dml_cd_topic_insert.xml" relativeToChangelogFile="true"/>
     <include file="changelog/08_dml_cd_category_insert.xml" relativeToChangelogFile="true"/>
     <include file="changelog/09_dml_cd_topic_insert.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/10_dml_cd_category_delete.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
