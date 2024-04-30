@@ -5,13 +5,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.checkdev.generator.domain.LastStatisticUpdateDateTime;
 import ru.checkdev.generator.domain.VacancyStatistic;
 import ru.checkdev.generator.dto.DirectionKey;
+import ru.checkdev.generator.dto.VacancyStatisticWithDates;
+import ru.checkdev.generator.service.vacancy.statistic.StatisticUpdateTimeService;
 import ru.checkdev.generator.service.vacancy.statistic.VacancyStatisticService;
 import ru.checkdev.generator.service.vacancy.statistic.mapper.StatisticMapper;
 import ru.checkdev.generator.util.StatisticCountComparator;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/statistic")
@@ -21,6 +24,7 @@ public class StatisticController {
     private final VacancyStatisticService<VacancyStatistic, Integer> vacancyStatisticService;
     private final StatisticMapper<DirectionKey, VacancyStatistic> mapper;
     private final StatisticCountComparator statisticComparator;
+    private final StatisticUpdateTimeService statisticUpdateTimeService;
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
@@ -30,10 +34,14 @@ public class StatisticController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<VacancyStatistic>> getAll() {
-        var result = vacancyStatisticService.getStatistic();
-        result.sort(statisticComparator.reversed());
-        return ResponseEntity.status(result.size() > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+    public ResponseEntity<VacancyStatisticWithDates> getAll() {
+        var vacancyStatisticList = vacancyStatisticService.getStatistic();
+        vacancyStatisticList.sort(statisticComparator.reversed());
+        VacancyStatisticWithDates result =
+                new VacancyStatisticWithDates(vacancyStatisticList,
+                        statisticUpdateTimeService.getDates());
+        return ResponseEntity.status(vacancyStatisticList.size() > 0
+                        ? HttpStatus.OK : HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON).body(result);
     }
 
@@ -44,10 +52,17 @@ public class StatisticController {
     }
 
     @GetMapping("/renew")
-    public ResponseEntity<List<VacancyStatistic>> renew() {
-        var result = vacancyStatisticService.renewStatistic();
-        vacancyStatisticService.saveStatistic(result);
-        return ResponseEntity.status(result.size() > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND)
+    public ResponseEntity<VacancyStatisticWithDates> renew() {
+        var vacancyStatisticList = vacancyStatisticService.renewStatistic();
+        vacancyStatisticService.saveStatistic(vacancyStatisticList);
+        statisticUpdateTimeService.saveTime(
+                new LastStatisticUpdateDateTime(1, LocalDateTime.now()));
+        vacancyStatisticList.sort(statisticComparator.reversed());
+        VacancyStatisticWithDates result =
+                new VacancyStatisticWithDates(vacancyStatisticList,
+                        statisticUpdateTimeService.getDates());
+        return ResponseEntity.status(vacancyStatisticList.size() > 0
+                        ? HttpStatus.OK : HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON).body(result);
     }
 
