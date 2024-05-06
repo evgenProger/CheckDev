@@ -7,13 +7,14 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.job4j.site.domain.VacancyStatistic;
 import ru.job4j.site.dto.CategoryDTO;
+import ru.job4j.site.dto.VacancyStatisticWithDates;
 import ru.job4j.site.service.*;
 import ru.job4j.site.util.RequestResponseTools;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static ru.job4j.site.util.RequestResponseTools.getToken;
@@ -43,14 +44,15 @@ public class IndexController {
     }
 
     private void setMain(Model model, HttpServletRequest req,
-                         List<VacancyStatistic> vacancyStatistic)
+                         VacancyStatisticWithDates vacancyStatistic)
             throws JsonProcessingException {
         RequestResponseTools.addAttrBreadcrumbs(model,
                 "Главная", "/"
         );
         try {
             List<CategoryDTO> mostPopularCategories = categoriesService.getMostPopular();
-            mostPopularCategories.forEach(c -> c.setName(StringEscapeUtils.unescapeHtml4(c.getName())));
+            mostPopularCategories.forEach(c ->
+                    c.setName(StringEscapeUtils.unescapeHtml4(c.getName())));
             model.addAttribute("categories", mostPopularCategories);
             var token = getToken(req);
             if (token != null) {
@@ -63,7 +65,8 @@ public class IndexController {
                 RequestResponseTools.addAttrCanManage(model, userInfo);
             }
         } catch (Exception e) {
-            log.error("Remote application not responding. Error: {}. {}, ", e.getCause(), e.getMessage());
+            log.error("Remote application not responding. Error: {}. {}, ",
+                    e.getCause(), e.getMessage());
         }
         var topicLiteDTOs = topicsService.getAllTopicLiteDTO();
         var topicsLiteMap = topicsService.liteDTTOSToMap(topicLiteDTOs);
@@ -73,9 +76,19 @@ public class IndexController {
             i.setAdditional(StringEscapeUtils.unescapeHtml4(i.getAdditional()));
         });
         interviewsService.setCountWishers(newInterviewsDTO, getToken(req));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        var vacancyStatisticDates = vacancyStatistic.getDates();
+        var vacancyStatisticLastUpdateDate =
+                vacancyStatisticDates.getLastUpdate().format(formatter);
+        var vacancyStatisticNextUpdateDate =
+                vacancyStatisticDates.getNextUpdate().format(formatter);
+
         model.addAttribute("topicsLiteMap", topicsLiteMap);
         model.addAttribute("new_interviews", newInterviewsDTO);
         model.addAttribute("authService", authService);
-        model.addAttribute("vacancyStatistic", vacancyStatistic);
+        model.addAttribute("vacancyStatistic", vacancyStatistic.getStatisticList());
+        model.addAttribute("vacancyStatisticLastUpdateDate", vacancyStatisticLastUpdateDate);
+        model.addAttribute("vacancyStatisticNextUpdateDate", vacancyStatisticNextUpdateDate);
     }
 }

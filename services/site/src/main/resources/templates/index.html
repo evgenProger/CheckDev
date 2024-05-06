@@ -70,10 +70,17 @@
     <div class="row pb-3">
         <div class="cell">
             <div class="card">
-                <h5 class="card-header">Аналитика рынка от hh.ru</h5>
+                <div class="card-header" style="display: inline-flex; align-items: center;">
+                    <span>
+                        <h5 class="card-header">Аналитика рынка от hh.ru</h5>
+                    </span>
+                    <span style="font-size: smaller; margin-left: 10px;"
+                          th:text="'обновлено: ' + ${vacancyStatisticLastUpdateDate}"></span>
+                    <span style="font-size: smaller; margin-left: 10px;"
+                          th:text=" 'обновится: ' + ${vacancyStatisticNextUpdateDate}"></span>
+                </div>
                 <div class="card-body">
                     <table class="table table-hover">
-
                         <thead>
                         <tr>
                             <th scope="col">Ключевые слова</th>

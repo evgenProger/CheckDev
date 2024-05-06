@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.job4j.site.domain.VacancyStatistic;
 import ru.job4j.site.dto.DirectionKey;
+import ru.job4j.site.dto.VacancyStatisticWithDates;
 import ru.job4j.site.util.RestAuthCall;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class VacancyStatisticService {
         new RestAuthCall(uri).post(token, new ObjectMapper().writeValueAsString(directionKey));
     }
 
-    public List<VacancyStatistic> getAll() {
+    public VacancyStatisticWithDates getAll() {
         return getRequest(String.format("%s%s%s",
                 uriProvider.getUri(SERVICE_ID), DIRECT, "get"));
     }
@@ -42,7 +44,7 @@ public class VacancyStatisticService {
                 .update(token, json);
     }
 
-    public List<VacancyStatistic> renew() {
+    public VacancyStatisticWithDates renew() {
         return getRequest(String
                 .format("%s%s%s", uriProvider.getUri(SERVICE_ID), DIRECT, "renew"));
     }
@@ -52,11 +54,15 @@ public class VacancyStatisticService {
                 .format("%s%s%s%d", uriProvider.getUri(SERVICE_ID), DIRECT, "delete/", id));
     }
 
-    private List<VacancyStatistic> getRequest(String uri) {
-        List<VacancyStatistic> result = new ArrayList<>();
+    private VacancyStatisticWithDates getRequest(String uri) {
+        VacancyStatisticWithDates result =
+                new VacancyStatisticWithDates(List.of(), new VacancyStatisticWithDates.Dates());
         var text = new RestAuthCall(uri).get();
         try {
-            result = new ObjectMapper().readValue(text, new TypeReference<>() {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JavaTimeModule javaTimeModule = new JavaTimeModule();
+            objectMapper.registerModule(javaTimeModule);
+            result = objectMapper.readValue(text, new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());

@@ -11,9 +11,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.checkdev.generator.domain.VacancyStatistic;
 import ru.checkdev.generator.dto.DirectionKey;
+import ru.checkdev.generator.service.vacancy.statistic.StatisticUpdateTimeService;
 import ru.checkdev.generator.service.vacancy.statistic.VacancyStatisticService;
 import ru.checkdev.generator.service.vacancy.statistic.mapper.StatisticMapper;
+import ru.checkdev.generator.util.StatisticCountComparator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,11 +39,19 @@ public class StatisticControllerTest {
     @MockBean
     private StatisticMapper<DirectionKey, VacancyStatistic> mapper;
 
+    @MockBean
+    private StatisticCountComparator statisticComparator;
+
+    @MockBean
+    private StatisticUpdateTimeService statisticUpdateTimeService;
+
     @Test
     public void checkStuff() {
         assertThat(mockMvc != null).isTrue();
         assertThat(vacancyStatisticService != null).isTrue();
         assertThat(mapper != null).isTrue();
+        assertThat(statisticComparator != null).isTrue();
+        assertThat(statisticUpdateTimeService != null).isTrue();
     }
 
     @Test
@@ -59,7 +70,9 @@ public class StatisticControllerTest {
     @Test
     public void whenGet() throws Exception {
         VacancyStatistic statistic = new VacancyStatistic();
-        given(vacancyStatisticService.getStatistic()).willReturn(List.of(statistic));
+        List<VacancyStatistic> statisticList = new ArrayList<>();
+        statisticList.add(statistic);
+        given(vacancyStatisticService.getStatistic()).willReturn(statisticList);
         mockMvc.perform(get("/statistic/get"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -82,7 +95,9 @@ public class StatisticControllerTest {
     public void whenRenew() throws Exception {
         DirectionKey directionKey = new DirectionKey(1, "Example");
         VacancyStatistic statistic = new VacancyStatistic();
-        when(vacancyStatisticService.renewStatistic()).thenReturn(List.of(statistic));
+        List<VacancyStatistic> statisticList = new ArrayList<>();
+        statisticList.add(statistic);
+        when(vacancyStatisticService.renewStatistic()).thenReturn(statisticList);
         given(mapper.map(directionKey)).willReturn(statistic);
         mockMvc.perform(get("/statistic/renew")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -97,8 +112,9 @@ public class StatisticControllerTest {
     public void whenTryToRenewWithEmpty() throws Exception {
         DirectionKey directionKey = new DirectionKey(1, "Example");
         VacancyStatistic statistic = new VacancyStatistic();
+        List<VacancyStatistic> statisticList = new ArrayList<>();
+        when(vacancyStatisticService.renewStatistic()).thenReturn(statisticList);
         given(mapper.map(directionKey)).willReturn(statistic);
-        when(vacancyStatisticService.renewStatistic()).thenReturn(List.of());
         mockMvc.perform(get("/statistic/renew")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
