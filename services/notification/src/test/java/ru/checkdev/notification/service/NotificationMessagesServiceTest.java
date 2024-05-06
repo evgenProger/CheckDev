@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.checkdev.notification.domain.InnerMessage;
@@ -37,13 +39,15 @@ class NotificationMessagesServiceTest {
     private Bot mockBot;
     @Mock
     private MessagesGenerator messagesGenerator;
+    @Mock EurekaUriProvider uriProvider;
+
     private NotificationMessagesService service;
 
     @BeforeEach
     void setUp() {
         service = new NotificationMessagesService(
-                userTelegramRepository, innerMessageService, mockBot, messagesGenerator
-        );
+                userTelegramRepository, innerMessageService, mockBot, messagesGenerator,
+                uriProvider);
     }
 
     @Test
@@ -66,6 +70,7 @@ class NotificationMessagesServiceTest {
                 + "null/interview/"
                 + dto.getInterviewId();
 
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("null");
         ArgumentCaptor<SendMessage> captor = ArgumentCaptor.forClass(SendMessage.class);
         service.sendNotificationToCategorySubscriber(chatId, dto);
 
@@ -92,7 +97,7 @@ class NotificationMessagesServiceTest {
                 dto.getInterviewId());
         when(userTelegramRepository.findChatIdByUserIdIfNotifiable(any(Integer.class)))
                 .thenReturn(Optional.of(chatId));
-
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("null");
         ArgumentCaptor<SendMessage> sMessageCaptor = ArgumentCaptor.forClass(SendMessage.class);
         ArgumentCaptor<InnerMessage> iMessageCaptor = ArgumentCaptor.forClass(InnerMessage.class);
         service.sendFeedbackNotification(dto);

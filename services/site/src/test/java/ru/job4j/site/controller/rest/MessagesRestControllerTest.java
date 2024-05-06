@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.service.MessageService;
+import ru.job4j.site.service.EurekaUriProvider;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,6 +24,9 @@ public class MessagesRestControllerTest {
 
     @MockBean
     private MessageService messageService;
+
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     @Test
     public void testDeleteMessage() throws Exception {

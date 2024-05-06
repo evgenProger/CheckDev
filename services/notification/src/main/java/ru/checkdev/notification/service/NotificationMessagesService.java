@@ -1,6 +1,6 @@
 package ru.checkdev.notification.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.checkdev.notification.domain.InnerMessage;
@@ -17,27 +17,15 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
+@RequiredArgsConstructor
 public class NotificationMessagesService {
 
     private final UserTelegramRepository userTelegramRepository;
     private final InnerMessageService innerMessageService;
     private final Bot bot;
     private final MessagesGenerator messagesGenerator;
-    @Value("${service.urlSite}")
-    private String urlSite;
-
-    public NotificationMessagesService(
-            UserTelegramRepository userTelegramRepository,
-            InnerMessageService innerMessageService,
-            Bot bot,
-            MessagesGenerator messagesGenerator
-    ) {
-        this.userTelegramRepository = userTelegramRepository;
-        this.innerMessageService = innerMessageService;
-        this.bot = bot;
-        this.messagesGenerator = messagesGenerator;
-    }
-
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "site";
 
     /**
      * Метод находит chatId всех пользователей, подписанных на категорию и согласившихся на получение оповещений в телеграмм,
@@ -68,7 +56,7 @@ public class NotificationMessagesService {
                                 + " появилось новое собеседование."
                                 + System.lineSeparator()
                                 + "Ссылка на собеседование: "
-                                + urlSite
+                                + uriProvider.getUri(SERVICE_ID)
                                 + "/interview/" + categoryWithTopicDTO.getInterviewId()
                 )
         );
@@ -88,7 +76,7 @@ public class NotificationMessagesService {
                 + feedbackNotification.getInterviewName()
                 + System.lineSeparator()
                 + "Ссылка на собеседование: "
-                + urlSite
+                + uriProvider.getUri(SERVICE_ID)
                 + "/interview/" + feedbackNotification.getInterviewId();
         optionalChatId.ifPresent(aLong -> bot.send(new SendMessage(String.valueOf(aLong), message)));
         InnerMessage innerMessage = InnerMessage.of()

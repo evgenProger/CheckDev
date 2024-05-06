@@ -1,6 +1,6 @@
 package ru.checkdev.notification.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.domain.UserTelegram;
@@ -13,17 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class InnerMessageService {
 
     private final InnerMessageRepository messageRepository;
     private final UserTelegramService userTelegramService;
-    @Value("${service.urlSite}")
-    private String urlSite;
-
-    public InnerMessageService(InnerMessageRepository messageRepository, UserTelegramService userTelegramService) {
-        this.messageRepository = messageRepository;
-        this.userTelegramService = userTelegramService;
-    }
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "site";
 
     public List<InnerMessage> findByUserIdAndReadFalse(int id) {
         return messageRepository.findByUserIdAndReadFalse(id);
@@ -49,7 +45,7 @@ public class InnerMessageService {
                                         + " появилось новое собеседование."
                                         + System.lineSeparator()
                                         + "Ссылка на собеседование: "
-                                        + urlSite
+                                        + uriProvider.getUri(SERVICE_ID)
                                         + "/interview/"
                                         + categoryWithTopicDTO.getInterviewId(),
                                 new Timestamp(System.currentTimeMillis()),
@@ -67,7 +63,7 @@ public class InnerMessageService {
                                         + "."
                                         + System.lineSeparator()
                                         + "Ссылка на собеседование: "
-                                        + urlSite
+                                        + uriProvider.getUri(SERVICE_ID)
                                         + "/interview/"
                                         + categoryWithTopicDTO.getInterviewId(),
                                 new Timestamp(System.currentTimeMillis()),

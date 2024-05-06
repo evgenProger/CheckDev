@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.site.SiteSrv;
 import ru.job4j.site.dto.FilterDTO;
 import ru.job4j.site.service.FilterService;
+import ru.job4j.site.service.EurekaUriProvider;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -30,6 +31,9 @@ public class FilterRestControllerTest {
 
     @MockBean
     private FilterService filterService;
+
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     @Test
     public void whenGetByUserId() throws Exception {

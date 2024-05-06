@@ -1,9 +1,23 @@
 package ru.checkdev.notification.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import ru.checkdev.notification.dto.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * CheckDev пробное собеседование
@@ -11,8 +25,25 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Dmitry Stepanov
  * @version 18.11.2023 00:41
  */
+
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class MessagesGeneratorTest {
-    private final MessagesGenerator messagesGenerator = new MessagesGenerator();
+
+    @Mock
+    private DiscoveryClient discoveryClient;
+
+    private EurekaUriProvider uriProvider;
+
+    private MessagesGenerator messagesGenerator;
+
+    @BeforeEach
+    void setUp() {
+        discoveryClient = Mockito.mock(DiscoveryClient.class);
+        uriProvider = new EurekaUriProvider(discoveryClient);
+        messagesGenerator =
+                new MessagesGenerator(uriProvider);
+    }
 
     @Test
     void generatorMessageSubscribeTopic() {
@@ -34,7 +65,7 @@ class MessagesGeneratorTest {
     }
 
     @Test
-    void generatorMessagepublicParticipateWisher() {
+    void generatorMessagePublicParticipateWisher() throws URISyntaxException {
         WisherNotifyDTO wisherNotifyDTO = WisherNotifyDTO.of()
                 .interviewId(1)
                 .interviewTitle("titleInterview")
@@ -43,6 +74,12 @@ class MessagesGeneratorTest {
                 .userName("Вася")
                 .contactBy("contact")
                 .build();
+
+        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
+        List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
+        when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
+        when(serviceInstance.getUri()).thenReturn(new URI("null"));
+
         String expect = String.format(
                 "На ваше собеседование: %s добавился участник: %s%nСсылка на собеседование: null/interview/%s",
                 wisherNotifyDTO.getInterviewTitle(),

@@ -1,5 +1,6 @@
 package ru.checkdev.notification.telegram;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.checkdev.notification.service.EurekaUriProvider;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.action.Action;
 import ru.checkdev.notification.telegram.action.bind.*;
@@ -35,6 +37,7 @@ import java.util.Map;
 @Component
 @Profile("default")
 @Slf4j
+@RequiredArgsConstructor
 public class TgConfig {
     private final SessionTg sessionTg = new SessionTg();
     private final TgCall tgCall;
@@ -43,14 +46,9 @@ public class TgConfig {
     private String username;
     @Value("${tg.token}")
     private String token;
-    @Value("${server.site.url.login}")
-    private String urlLogin;
 
-    public TgConfig(TgCall tgCall,
-                    UserTelegramService userTelegramService) {
-        this.tgCall = tgCall;
-        this.userTelegramService = userTelegramService;
-    }
+    private static final String SERVICE_ID = "site";
+    private final EurekaUriProvider uriProvider;
 
     @Bean
     public Bot initTg() throws TelegramApiException {
@@ -70,7 +68,8 @@ public class TgConfig {
                         new RegAskEmailAction(userTelegramService),
                         new RegPutEmailAction(sessionTg),
                         new RegCheckEmailAction(sessionTg),
-                        new RegSaveUserAction(sessionTg, tgCall, userTelegramService, urlLogin)
+                        new RegSaveUserAction(sessionTg, tgCall, userTelegramService,
+                                uriProvider.getUri(SERVICE_ID))
                 ),
                 "/check", List.of(new CheckAction(sessionTg, tgCall, userTelegramService)),
                 "/forget", List.of(new ForgetAction(sessionTg, tgCall, userTelegramService)),

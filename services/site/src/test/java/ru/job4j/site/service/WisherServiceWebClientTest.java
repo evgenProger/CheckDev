@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +31,11 @@ import static org.mockito.Mockito.when;
  * @author Dmitry Stepanov, user Dmitry
  * @since 13.10.2023
  */
+@SpringBootTest(classes = FeedbackServiceWebClient.class)
+@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 class WisherServiceWebClientTest {
 
-    private static final String URL = "http://testurl:1005000";
     private final String urlWisher = "/wisher/";
     private final String urlWishers = "/wishers/";
 
@@ -47,17 +51,26 @@ class WisherServiceWebClientTest {
     private WebClient.RequestBodyUriSpec requestBodyUriMock;
     @Mock
     private WebClient.ResponseSpec responseMock;
+    @MockBean
+    private InterviewService interviewService;
+    @MockBean
+    private NotificationService notificationService;
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     private WisherServiceWebClient wisherService;
 
     @BeforeEach
     void setUp() {
-        wisherService = new WisherServiceWebClient(URL);
+        wisherService = new WisherServiceWebClient(uriProvider);
         wisherService.setWebClientWisher(webClientMock);
     }
 
     @Test
     void whenWisherServiceNotNull() {
+        assertThat(interviewService).isNotNull();
+        assertThat(notificationService).isNotNull();
+        assertThat(uriProvider).isNotNull();
         assertThat(wisherService).isNotNull();
     }
 
@@ -112,7 +125,6 @@ class WisherServiceWebClientTest {
 
     @Test
     void whenGetUsersIdWithCountedApprovedInterviewsThenListUsersApprovedInterviewsDTO() {
-        var interviewId = "2";
         var usersApprovedInterviewsDTO1 = new UsersApprovedInterviewsDTO(1, 1);
         var usersApprovedInterviewsDTO2 = new UsersApprovedInterviewsDTO(2, 2);
         var listUsers = List.of(usersApprovedInterviewsDTO1, usersApprovedInterviewsDTO2);

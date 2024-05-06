@@ -21,13 +21,16 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class InterviewsService {
-    private static final String URL = "http://localhost:9912/interviews/";
+
     private final WisherService wisherService;
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "mock";
+    private static final String DIRECT = "/interviews/";
 
     public Page<InterviewDTO> getAll(String token, int page, int size)
             throws JsonProcessingException {
         var text = new RestAuthCall(String
-                .format("%s?page=%d&?size=%d", URL, page, size))
+                .format("%s%s?page=%d&?size=%d", uriProvider.getUri(SERVICE_ID), DIRECT, page, size))
                 .get(token);
         var mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -39,7 +42,8 @@ public class InterviewsService {
     public Page<InterviewDTO> getAllByUserIdRelated(String token, int page, int size, int userId)
             throws JsonProcessingException {
         var text = new RestAuthCall(String
-                .format("%s/findByUserIdRelated/%s?page=%d&?size=%d", URL, userId, page, size))
+                .format("%s%s/findByUserIdRelated/%s?page=%d&?size=%d",
+                        uriProvider.getUri(SERVICE_ID), DIRECT, userId, page, size))
                 .get(token);
         var mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -49,7 +53,7 @@ public class InterviewsService {
     }
 
     public List<InterviewDTO> getLast() throws JsonProcessingException {
-        String text = new RestAuthCall(String.format("%s%s", URL, "/last"))
+        String text = new RestAuthCall(String.format("%s%s/last", uriProvider.getUri(SERVICE_ID), DIRECT))
                 .get();
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>() {
@@ -60,7 +64,8 @@ public class InterviewsService {
             throws JsonProcessingException {
         var text =
                 new RestAuthCall(String
-                        .format("%sfindByTopicId/%d?page=%d&size=%d", URL, topicId, page, size)).get();
+                        .format("%s%sfindByTopicId/%d?page=%d&size=%d",
+                                uriProvider.getUri(SERVICE_ID), DIRECT, topicId, page, size)).get();
         var mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         var pageType = mapper.getTypeFactory()
@@ -94,7 +99,7 @@ public class InterviewsService {
      */
     public List<InterviewDTO> findAllIdByNoFeedback(int userId) {
         List<InterviewDTO> result = new ArrayList<>();
-        String url = String.format("http://localhost:9912/interviews/noFeedback/%d", userId);
+        String url = String.format("%s%snoFeedback/%d", uriProvider.getUri(SERVICE_ID), DIRECT, userId);
         ObjectMapper mapper = new ObjectMapper();
         try {
             String jsonText = new RestAuthCall(url).get();
@@ -113,7 +118,7 @@ public class InterviewsService {
      */
     public List<InterviewDTO> getNewInterviews() {
         List<InterviewDTO> result = new ArrayList<>();
-        String url = String.format("http://localhost:9912/interviews/interviewStatusNew");
+        String url = String.format("%s%sinterviewStatusNew", uriProvider.getUri(SERVICE_ID), DIRECT);
         ObjectMapper mapper = new ObjectMapper();
         try {
             String jsonText = new RestAuthCall(url).get();
@@ -133,19 +138,20 @@ public class InterviewsService {
      */
     public Long countNewInterviewsByTopic(int topicId) {
         List<InterviewDTO> list = getNewInterviews();
-        return list.stream().map(interviewDTO -> interviewDTO.getTopicId())
+        return list.stream().map(InterviewDTO::getTopicId)
                 .filter(integer -> integer.equals(topicId)).count();
     }
 
-    public Page<InterviewDTO> getAllWithFilters(FilterRequestParams filterRequestParams, int page, int size)
+    public Page<InterviewDTO> getAllWithFilters(
+            FilterRequestParams filterRequestParams, int page, int size)
             throws JsonProcessingException {
         var mapper = new ObjectMapper();
         var headers = new HttpHeaders();
         headers.add("filter-request-params", mapper.writeValueAsString(filterRequestParams));
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         var text = new RestAuthCall(
-                String.format("%sgetInterviews?page=%d&size=%d", URL,
-                        page, size)).getWithHeaders(headers);
+                String.format("%s%sgetInterviews?page=%d&size=%d",
+                        uriProvider.getUri(SERVICE_ID), DIRECT, page, size)).getWithHeaders(headers);
         var pageType = mapper.getTypeFactory()
                 .constructParametricType(RestPageImpl.class, InterviewDTO.class);
         return mapper.readValue(text, pageType);

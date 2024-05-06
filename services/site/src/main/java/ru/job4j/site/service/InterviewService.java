@@ -20,13 +20,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class InterviewService {
-    private static final String URL_MOCK = "http://localhost:9912/interview/";
+
     private final ProfilesService profilesService;
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "mock";
+    private static final String DIRECT = "/interview/";
 
     public InterviewDTO create(String token, InterviewDTO interviewDTO) throws JsonProcessingException {
         interviewDTO.setStatusId(StatusInterview.IS_NEW.getId());
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall(URL_MOCK).post(
+        var out = new RestAuthCall(String
+                .format("%s%s", uriProvider.getUri(SERVICE_ID), DIRECT)).post(
                 token,
                 mapper.writeValueAsString(interviewDTO)
         );
@@ -34,7 +38,8 @@ public class InterviewService {
     }
 
     public InterviewDTO getById(String token, int id) throws JsonProcessingException {
-        var text = new RestAuthCall(String.format("%s%d", URL_MOCK, id))
+        var text = new RestAuthCall(String
+                .format("%s%s%d", uriProvider.getUri(SERVICE_ID), DIRECT, id))
                 .get(token);
         return new ObjectMapper().readValue(text, new TypeReference<>() {
         });
@@ -42,7 +47,8 @@ public class InterviewService {
 
     public void update(String token, InterviewDTO interviewDTO) throws JsonProcessingException {
         var mapper = new ObjectMapper();
-        new RestAuthCall(URL_MOCK).update(
+        new RestAuthCall(String
+                .format("%s%s", uriProvider.getUri(SERVICE_ID), DIRECT)).update(
                 token,
                 mapper.writeValueAsString(interviewDTO));
     }
@@ -56,7 +62,8 @@ public class InterviewService {
     public void updateStatus(String token, InterviewDTO interviewDTO) {
         try {
             var mapper = new ObjectMapper();
-            new RestAuthCall(String.format("%sstatus/", URL_MOCK)).put(
+            new RestAuthCall(String
+                    .format("%s%sstatus/", uriProvider.getUri(SERVICE_ID), DIRECT)).put(
                     token,
                     mapper.writeValueAsString(interviewDTO));
         } catch (Exception e) {

@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.ApplicationPidFileWriter;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 @OpenAPIDefinition(info = @Info(title = "Site service", description = "Description"))
 @SpringBootApplication
+@EnableEurekaClient
 @Slf4j
 public class SiteSrv {
     private static final String SITE = "http://localhost:8080";

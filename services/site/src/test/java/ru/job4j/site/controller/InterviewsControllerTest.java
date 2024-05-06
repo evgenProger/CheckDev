@@ -13,6 +13,7 @@ import ru.job4j.site.dto.*;
 import ru.job4j.site.enums.InterviewMode;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
+import ru.job4j.site.service.EurekaUriProvider;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -46,6 +47,8 @@ public class InterviewsControllerTest {
     private TopicsService topicsService;
     @MockBean
     private NotificationService notificationService;
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     @Test
     public void whenShowAllInterviews() throws Exception {

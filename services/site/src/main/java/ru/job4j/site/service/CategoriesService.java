@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.domain.Category;
 import ru.job4j.site.dto.CategoryDTO;
+import ru.job4j.site.dto.TopicIdNameDTO;
 import ru.job4j.site.util.RestAuthCall;
 
 import java.util.List;
@@ -18,19 +19,27 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Slf4j
 public class CategoriesService {
-    private final TopicsService topicsService;
 
+    private final TopicsService topicsService;
     private final InterviewsService interviewsService;
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "desc";
+    private static final String DIRECT_SINGLE = "/category/";
+    private static final String DIRECT_MULTIPLE = "/categories/";
 
     public List<CategoryDTO> getAll() throws JsonProcessingException {
-        var text = new RestAuthCall("http://localhost:9902/categories/").get();
+        var text = new RestAuthCall(String
+                .format("%s%s", uriProvider.getUri(SERVICE_ID), DIRECT_MULTIPLE))
+                .get();
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>() {
         });
     }
 
     public List<CategoryDTO> getPopularFromDesc() throws JsonProcessingException {
-        var text = new RestAuthCall("http://localhost:9902/categories/most_pop").get();
+        var text = new RestAuthCall(String
+                .format("%s%smost_pop", uriProvider.getUri(SERVICE_ID), DIRECT_MULTIPLE))
+                .get();
         var mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>() {
         });
@@ -38,7 +47,9 @@ public class CategoriesService {
 
     public CategoryDTO create(String token, CategoryDTO category) throws JsonProcessingException {
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall("http://localhost:9902/category/").post(
+        var out = new RestAuthCall(String
+                .format("%s%s", uriProvider.getUri(SERVICE_ID), DIRECT_SINGLE))
+                .post(
                 token,
                 mapper.writeValueAsString(category)
         );
@@ -47,7 +58,8 @@ public class CategoriesService {
 
     public void update(String token, CategoryDTO category) throws JsonProcessingException {
         var mapper = new ObjectMapper();
-        new RestAuthCall("http://localhost:9902/category/").put(
+        new RestAuthCall(String.format("%s%s", uriProvider.getUri(SERVICE_ID), DIRECT_SINGLE))
+                .put(
                 token,
                 mapper.writeValueAsString(category)
         );
@@ -94,7 +106,7 @@ public class CategoriesService {
     public List<Integer> getAllWithTopicsCount(CategoryDTO categoryDTO) throws JsonProcessingException {
         return topicsService.getTopicIdNameDtoByCategory(categoryDTO.getId())
                 .stream()
-                .map(topicDTO -> topicDTO.getId())
+                .map(TopicIdNameDTO::getId)
                 .collect(Collectors.toList());
     }
 
@@ -124,7 +136,9 @@ public class CategoriesService {
     public Optional<Category> getById(int categoryId) {
         Optional<Category> result = Optional.empty();
         try {
-            var text = new RestAuthCall("http://localhost:9902/category/" + categoryId).get();
+            var text = new RestAuthCall(String
+                    .format("%s%s%d", uriProvider.getUri(SERVICE_ID), DIRECT_SINGLE, categoryId))
+                    .get();
             var mapper = new ObjectMapper();
             result = Optional.of(mapper.readValue(text, new TypeReference<>() {
             }));

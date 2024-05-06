@@ -1,10 +1,12 @@
 package ru.checkdev.notification.telegram;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import ru.checkdev.notification.service.EurekaUriProvider;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.action.Action;
 import ru.checkdev.notification.telegram.action.bind.*;
@@ -27,7 +29,9 @@ import java.util.Map;
 @Component
 @Profile("develop")
 @Slf4j
+@RequiredArgsConstructor
 public class TgConfigFake {
+
     private final SessionTg sessionTg = new SessionTg();
     private final TgCall tgCall;
     private final UserTelegramService userTelegramService;
@@ -35,14 +39,9 @@ public class TgConfigFake {
     private String username;
     @Value("${tg.token}")
     private String token;
-    @Value("${server.site.url.login}")
-    private String urlLogin;
 
-    public TgConfigFake(TgCall tgCall,
-                        UserTelegramService userTelegramService) {
-        this.tgCall = tgCall;
-        this.userTelegramService = userTelegramService;
-    }
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "site";
 
     @Bean
     public Bot initTg() {
@@ -62,7 +61,8 @@ public class TgConfigFake {
                         new RegAskEmailAction(userTelegramService),
                         new RegPutEmailAction(sessionTg),
                         new RegCheckEmailAction(sessionTg),
-                        new RegSaveUserAction(sessionTg, tgCall, userTelegramService, urlLogin)
+                        new RegSaveUserAction(sessionTg, tgCall, userTelegramService,
+                                String.format("%s/login", uriProvider.getUri(SERVICE_ID)))
                 ),
                 "/check", List.of(new CheckAction(sessionTg, tgCall, userTelegramService)),
                 "/notify", List.of(new NotifyAction(sessionTg, userTelegramService)),

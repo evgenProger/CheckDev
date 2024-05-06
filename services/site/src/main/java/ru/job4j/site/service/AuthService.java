@@ -3,8 +3,8 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.dto.UserInfoDTO;
@@ -14,18 +14,16 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AuthService {
-    @Value("${security.oauth2.tokenUri}")
-    private String oauth2Token;
-    @Value("${server.auth.ping}")
-    private String authServicePing;
-    @Value("${server.auth}")
-    private String serverAuth;
+
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "auth";
 
     public UserInfoDTO userInfo(String token) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(new RestAuthCall(
-                serverAuth + "/person/current"
+        return mapper.readValue(new RestAuthCall(String
+                .format("%s/person/current", uriProvider.getUri(SERVICE_ID))
         ).get(token), UserInfoDTO.class);
     }
 
@@ -34,7 +32,9 @@ public class AuthService {
         String result = "";
         try {
             result = mapper.readTree(
-                    new RestAuthCall(oauth2Token).token(params)
+                    new RestAuthCall(String
+                            .format("%s/oauth/token", uriProvider.getUri(SERVICE_ID)))
+                            .token(params)
             ).get("access_token").asText();
         } catch (Exception e) {
             log.error("Get token from service Auth error: {}", e.getMessage());
@@ -50,7 +50,9 @@ public class AuthService {
     public boolean getPing() {
         var result = false;
         try {
-            result = !new RestAuthCall(authServicePing).get().isEmpty();
+            result = !new RestAuthCall(String
+                    .format("%s/ping", uriProvider.getUri(SERVICE_ID)))
+                    .get().isEmpty();
         } catch (Exception e) {
             log.error("Get PING from API Auth error: {}", e.getMessage());
         }
@@ -58,7 +60,8 @@ public class AuthService {
     }
 
     public ProfileDTO findById(int id) throws JsonProcessingException {
-        var text = new RestAuthCall(serverAuth + "/profiles/" + id).get();
+        var text = new RestAuthCall(String
+                .format("%s/profiles/%d", uriProvider.getUri(SERVICE_ID), id)).get();
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(text, new TypeReference<>() {
         });

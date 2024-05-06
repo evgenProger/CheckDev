@@ -16,7 +16,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import ru.job4j.site.dto.FeedbackDTO;
 import ru.job4j.site.dto.InterviewDTO;
-import ru.job4j.site.dto.ProfileDTO;
 import ru.job4j.site.enums.StatusInterview;
 
 import java.util.Collections;
@@ -24,8 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * CheckDev пробное собеседование
@@ -38,7 +36,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class FeedbackServiceWebClientTest {
 
-    private static final String URL = "http://testurl:1005000";
     private final String urlFeedback = "/feedback/";
 
     @Mock
@@ -57,19 +54,24 @@ class FeedbackServiceWebClientTest {
     private InterviewService interviewService;
     @MockBean
     private NotificationService notificationService;
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     private FeedbackServiceWebClient feedbackService;
 
+
     @BeforeEach
     void setUp() {
-        feedbackService = new FeedbackServiceWebClient(URL, interviewService, notificationService);
+        feedbackService = new FeedbackServiceWebClient(interviewService, notificationService, uriProvider);
         feedbackService.setWebClientFeedback(webClientMock);
     }
 
     @Test
     void initInjectedNotNul() {
         assertThat(interviewService).isNotNull();
+        assertThat(notificationService).isNotNull();
         assertThat(feedbackService).isNotNull();
+        assertThat(uriProvider).isNotNull();
     }
 
     @Test
@@ -83,7 +85,6 @@ class FeedbackServiceWebClientTest {
                 .build();
         var feedbackDto1 = new FeedbackDTO(1, interviewDto.getId(), interviewDto.getSubmitterId(), 0, "text", 5);
         var token = "1234";
-        var profile = new ProfileDTO();
         when(webClientMock.get()).thenReturn(requestHeadersUriMock);
         when(requestHeadersUriMock
                 .uri(

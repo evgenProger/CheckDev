@@ -1,7 +1,6 @@
 package ru.job4j.site.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,15 +25,14 @@ import java.util.*;
 @Service
 @Slf4j
 public class WisherServiceWebClient implements WisherService {
-    private final String urlMock;
+
     private WebClient webClientWisher;
-    private static final String URL_WISHER = "/wisher/";
-    private static final String URL_WISHERS = "/wishers/";
+    private static final String SERVICE_ID = "mock";
+    private static final String DIRECT_SINGLE = "/wisher/";
+    private static final String DIRECT_MULTIPLE = "/wishers/";
 
-
-    public WisherServiceWebClient(@Value("${service.mock}") String urlMock) {
-        this.urlMock = urlMock;
-        this.webClientWisher = WebClient.create(this.urlMock);
+    public WisherServiceWebClient(EurekaUriProvider uriProvider) {
+        this.webClientWisher = WebClient.create(uriProvider.getUri(SERVICE_ID));
     }
 
     /**
@@ -48,7 +46,7 @@ public class WisherServiceWebClient implements WisherService {
     public boolean saveWisherDto(String token, WisherDto wisherDto) {
         var responseEntityMono = this.webClientWisher
                 .post()
-                .uri(URL_WISHER)
+                .uri(DIRECT_SINGLE)
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(wisherDto)
@@ -73,7 +71,7 @@ public class WisherServiceWebClient implements WisherService {
     public List<WisherDto> getAllWisherDtoByInterviewId(String token, String interviewId) {
         Optional<ResponseEntity<List<WisherDto>>> listResponseEntity = this.webClientWisher
                 .get()
-                .uri(URL_WISHERS + "dto/" + interviewId)
+                .uri(DIRECT_MULTIPLE + "dto/" + interviewId)
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -94,7 +92,7 @@ public class WisherServiceWebClient implements WisherService {
     public List<UsersApprovedInterviewsDTO> getUsersIdWithCountedApprovedInterviews(String token) {
         Optional<ResponseEntity<List<UsersApprovedInterviewsDTO>>> listResponseEntity = this.webClientWisher
                 .get()
-                .uri(URL_WISHERS + "approved/")
+                .uri(DIRECT_MULTIPLE + "approved/")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -116,7 +114,7 @@ public class WisherServiceWebClient implements WisherService {
     public UsersApprovedInterviewsDTO getUserIdWithCountedApprovedInterviews(String token, String userId) {
         Optional<ResponseEntity<UsersApprovedInterviewsDTO>> responseEntity = this.webClientWisher
                 .get()
-                .uri(URL_WISHERS + "approved/" + userId)
+                .uri(DIRECT_MULTIPLE + "approved/" + userId)
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -146,7 +144,7 @@ public class WisherServiceWebClient implements WisherService {
         param.add("newApprove", String.valueOf(newApprove));
         var setNewStatus = this.webClientWisher
                 .post()
-                .uri(URL_WISHERS + "approve/")
+                .uri(DIRECT_MULTIPLE + "approve/")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(param)
@@ -247,7 +245,7 @@ public class WisherServiceWebClient implements WisherService {
     public Long countWishers(List<WisherDto> wishers, int interviewId) {
         return wishers
                 .stream()
-                .map(wisherDto -> wisherDto.getInterviewId())
+                .map(WisherDto::getInterviewId)
                 .filter(integer -> integer.equals(interviewId))
                 .count();
     }

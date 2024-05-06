@@ -1,6 +1,7 @@
 package ru.job4j.site.service;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import ru.job4j.site.dto.*;
 
 import java.util.List;
@@ -17,8 +18,12 @@ import static org.mockito.Mockito.when;
  * @version 21.10.2023 23:28
  */
 class InterviewServiceTest {
+
     private final ProfilesService profilesService = mock(ProfilesService.class);
-    private final InterviewService interviewService = new InterviewService(profilesService);
+    private final EurekaUriProvider uriProvider =
+            new EurekaUriProvider(mock(DiscoveryClient.class));
+    private final InterviewService interviewService =
+            new InterviewService(profilesService, uriProvider);
 
     @Test
     void injectedNotNull() {

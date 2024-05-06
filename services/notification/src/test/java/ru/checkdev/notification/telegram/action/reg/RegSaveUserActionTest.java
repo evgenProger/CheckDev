@@ -1,7 +1,15 @@
 package ru.checkdev.notification.telegram.action.reg;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -9,9 +17,15 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
 import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
+import ru.checkdev.notification.service.EurekaUriProvider;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
 import ru.checkdev.notification.telegram.service.FakeTgCallConsole;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,6 +33,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Dmitry Stepanov, user Dmitry
  * @since 27.11.2023
  */
+
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class RegSaveUserActionTest {
     /**
      * Поле заведено для отладки тестов
@@ -31,6 +48,17 @@ class RegSaveUserActionTest {
             new UserTelegramRepositoryFake(
                     new SubscribeTopicRepositoryFake()));
 
+    @Mock
+    private DiscoveryClient discoveryClient;
+
+    private EurekaUriProvider uriProvider;
+
+    @BeforeEach
+    void setUp() {
+        discoveryClient = Mockito.mock(DiscoveryClient.class);
+        uriProvider = new EurekaUriProvider(discoveryClient);
+    }
+
     @Test
     void whenSaveActionNotEmailThenReturnMessageRepeat() {
         Chat chat = new Chat(1L, "type");
@@ -38,7 +66,9 @@ class RegSaveUserActionTest {
         Message message = new Message();
         message.setChat(chat);
         update.setMessage(message);
-        RegSaveUserAction regSaveUserAction = new RegSaveUserAction(sessionTg, new FakeTgCallConsole(), userTelegramService, "www");
+        RegSaveUserAction regSaveUserAction =
+                new RegSaveUserAction(sessionTg,
+                        new FakeTgCallConsole(uriProvider), userTelegramService, "www");
         BotApiMethod botApiMethod = regSaveUserAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String ls = System.lineSeparator();
@@ -47,7 +77,7 @@ class RegSaveUserActionTest {
     }
 
     @Test
-    void whenCallBackThenOk() {
+    void whenCallBackThenOk() throws URISyntaxException {
         Chat chat = new Chat(1L, "type");
         Update update = new Update();
         Message message = new Message();
@@ -55,10 +85,18 @@ class RegSaveUserActionTest {
         update.setMessage(message);
         String email = "email@email.ru";
         String name = "nameUser";
+
+        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
+        List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
+        Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
+        Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
+
         sessionTg.put(String.valueOf(chat.getId()), "email", email);
         sessionTg.put(String.valueOf(chat.getId()), "name", name);
         String urlSiteAuth = "www";
-        RegSaveUserAction regSaveUserAction = new RegSaveUserAction(sessionTg, new FakeTgCallConsole(), userTelegramService, urlSiteAuth);
+        RegSaveUserAction regSaveUserAction =
+                new RegSaveUserAction(sessionTg,
+                        new FakeTgCallConsole(uriProvider), userTelegramService, urlSiteAuth);
         BotApiMethod botApiMethod = regSaveUserAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String actual = sendMessage.getText();
@@ -84,7 +122,9 @@ class RegSaveUserActionTest {
         sessionTg.put(String.valueOf(chat.getId()), "email", email);
         sessionTg.put(String.valueOf(chat.getId()), "name", name);
         String urlSiteAuth = "www";
-        RegSaveUserAction regSaveUserAction = new RegSaveUserAction(sessionTg, new FakeTgCallConsole(), userTelegramService, urlSiteAuth);
+        RegSaveUserAction regSaveUserAction =
+                new RegSaveUserAction(sessionTg,
+                        new FakeTgCallConsole(uriProvider), userTelegramService, urlSiteAuth);
         BotApiMethod botApiMethod = regSaveUserAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String actual = sendMessage.getText();

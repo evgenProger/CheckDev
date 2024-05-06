@@ -1,11 +1,12 @@
 package ru.checkdev.notification.telegram.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import ru.checkdev.notification.domain.Profile;
 import ru.checkdev.notification.dto.ProfileTgDTO;
+import ru.checkdev.notification.service.EurekaUriProvider;
 
 import java.util.Calendar;
 
@@ -19,6 +20,7 @@ import java.util.Calendar;
 @org.springframework.context.annotation.Profile("develop")
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FakeTgCallConsole implements TgCall {
     /**
      * Поле заведено для отладки тестов
@@ -30,8 +32,9 @@ public class FakeTgCallConsole implements TgCall {
      * При указании данного ERROR_ID в качестве userId в моделях данных сервис бросает exception.
      */
     private static final String ERROR_ID = "-23";
-    @Value("${server.auth}")
-    private String urlServiceAuth;
+
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "auth";
 
     @Override
     public Mono<Profile> doGet(String url) {
@@ -40,7 +43,7 @@ public class FakeTgCallConsole implements TgCall {
         }
         Profile profile = new Profile(0, "FakeName", "FakeEmail",
                 "FakePassword", true, Calendar.getInstance());
-        log.info("Fake TgCall doGet method. Request URL: {}{}, Response model: {}", urlServiceAuth, url, profile);
+        log.info("Fake TgCall doGet method. Request URL: {}{}, Response model: {}", uriProvider.getUri(SERVICE_ID), url, profile);
         return Mono.just(profile);
     }
 
@@ -50,7 +53,7 @@ public class FakeTgCallConsole implements TgCall {
             throw new IllegalArgumentException("Service is error");
         }
         ProfileTgDTO profileTgDTO = new ProfileTgDTO(-23, profile.getUsername(), profile.getEmail());
-        log.info("Fake TgCall doPost method. Request URL: {}{}, model: {}", urlServiceAuth, url, profile);
+        log.info("Fake TgCall doPost method. Request URL: {}{}, model: {}", uriProvider.getUri(SERVICE_ID), url, profile);
         return Mono.just(profileTgDTO);
     }
 
@@ -60,7 +63,7 @@ public class FakeTgCallConsole implements TgCall {
             throw new IllegalArgumentException("Service is error");
         }
         ProfileTgDTO profileTgDTO = new ProfileTgDTO(-23, "FakeName", "fake@mail.ru");
-        log.info("Fake TgCall doPost method. Request URL: {}{}, model: {}", urlServiceAuth, url);
+        log.info("Fake TgCall doPost method. Request URL: {}{}, model: {}", uriProvider.getUri(SERVICE_ID), url);
         return Mono.just(profileTgDTO);
     }
 }

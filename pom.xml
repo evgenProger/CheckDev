@@ -16,6 +16,7 @@
         <module>services/notification</module>
         <module>services/site</module>
         <module>services/generator</module>
+        <module>services/eureka</module>
     </modules>
 
     <properties>

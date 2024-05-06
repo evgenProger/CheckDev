@@ -2,6 +2,7 @@ package ru.job4j.site.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.enums.StatusInterview;
 import ru.job4j.site.service.*;
+import ru.job4j.site.service.EurekaUriProvider;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -47,6 +49,8 @@ public class InterviewControllerTest {
     private WisherService wisherService;
     @MockBean
     private FeedbackService feedbackService;
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     @Test
     public void whenShowDetails() throws Exception {
@@ -78,6 +82,7 @@ public class InterviewControllerTest {
         when(wisherService.getInterviewStatistic(wishersDto)).thenReturn(new HashMap<>());
         when(wisherService.isWisher(userInfo.getId(), interview.getId(), wishersDto)).thenReturn(false);
         when(feedbackService.findByInterviewId(interview.getId())).thenReturn(Collections.emptyList());
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("https://service");
         mockMvc.perform(get("/interview/{id}", interview.getId())
                         .sessionAttr("token", token))
                 .andDo(print())
@@ -119,6 +124,7 @@ public class InterviewControllerTest {
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(topicsService.getById(1)).thenReturn(topic);
         when(interviewsService.findAllIdByNoFeedback(1)).thenReturn(Collections.emptyList());
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("https://service");
         mockMvc.perform(get("/interview/createForm")
                         .sessionAttr("token", token)
                         .param("topicId", "1"))
@@ -151,6 +157,7 @@ public class InterviewControllerTest {
         when(interviewService.create(token, interview)).thenReturn(interview);
         when(topicsService.getCategoryIdNameDTOByTopicId(1))
                 .thenReturn(new CategoryIdNameDTO(1, "some category"));
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("https://service");
         mockMvc.perform(post("/interview/create")
                         .flashAttr("interviewDTO", interview)
                         .sessionAttr("token", token)
@@ -244,6 +251,7 @@ public class InterviewControllerTest {
                 new Breadcrumb(interview.getTitle(), String.format("/interview/edit/%d", interview.getId())));
         when(authService.userInfo(token)).thenReturn(userInfo);
         when(interviewService.getById(token, interview.getId())).thenReturn(interview);
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("https://service");
         mockMvc.perform(get("/interview/edit/{id}", interview.getId())
                         .sessionAttr("token", token))
                 .andDo(print())
@@ -362,6 +370,7 @@ public class InterviewControllerTest {
                 .thenReturn(wishers);
         when(wisherService.getInterviewStatistic(wishers)).thenReturn(interviewStatistics);
         when(authService.userInfo(token)).thenReturn(userInfo);
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("https://service");
         mockMvc.perform(get(String.format("/interview/%d/participate", interviewId))
                         .sessionAttr("token", token)
                 )
@@ -388,6 +397,7 @@ public class InterviewControllerTest {
         interview.setSubmitterId(userInfo.getId());
         when(interviewService.getById(token, interviewId)).thenReturn(interview);
         when(authService.userInfo(token)).thenReturn(userInfo);
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("https://service");
         mockMvc.perform(get(String.format("/interview/%d/participate", interviewId))
                         .sessionAttr("token", token))
                 .andDo(print()).andExpectAll(status().is3xxRedirection(),
