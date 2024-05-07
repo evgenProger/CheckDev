@@ -3,6 +3,8 @@ package ru.checkdev.notification.telegram.action;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -11,6 +13,7 @@ import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
 import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
 import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
+import ru.checkdev.notification.service.EurekaUriProvider;
 import ru.checkdev.notification.service.InnerMessageService;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
@@ -35,7 +38,10 @@ class SaveInnerMessageActionTest {
                 new UserTelegramRepositoryFake(
                         new SubscribeTopicRepositoryFake()
                 ));
-        InnerMessageService innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(), userTelegramService);
+        var uriProvider = new EurekaUriProvider(Mockito.mock(DiscoveryClient.class));
+        InnerMessageService innerMessageService =
+                new InnerMessageService(new InnerMessageRepositoryFake(),
+                        userTelegramService, uriProvider);
         NotifyAction notifyAction = new NotifyAction(sessionTg, userTelegramService);
         SaveInnerMessageAction saveInnerMessageAction = new SaveInnerMessageAction(
                 sessionTg,

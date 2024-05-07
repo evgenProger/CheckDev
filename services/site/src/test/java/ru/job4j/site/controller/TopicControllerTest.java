@@ -12,6 +12,7 @@ import ru.job4j.site.dto.*;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.TopicsService;
+import ru.job4j.site.service.EurekaUriProvider;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,9 +35,10 @@ public class TopicControllerTest {
     private TopicsService topicsService;
     @MockBean
     private AuthService authService;
-
     @MockBean
     private NotificationService notifications;
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     @Test
     public void whenShowDetails() throws Exception {

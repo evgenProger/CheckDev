@@ -1,5 +1,6 @@
 package ru.checkdev.notification.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.checkdev.notification.dto.*;
@@ -15,6 +16,7 @@ import java.util.StringJoiner;
  */
 
 @Component
+@RequiredArgsConstructor
 public class MessagesGenerator {
 
     /**
@@ -24,15 +26,8 @@ public class MessagesGenerator {
      * @return String
      */
 
-    @Value("${service.urlSite}")
-    private String urlSite;
-
-    private static String urlSiteStatic;
-
-    @Value("${service.urlSite}")
-    public void setUrlSiteStatic(String urlSite) {
-        MessagesGenerator.urlSiteStatic = urlSite;
-    }
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "site";
 
     public String getMessageSubscribeTopic(InterviewNotifyDTO interviewNotifyDTO) {
         return String.format(
@@ -55,7 +50,7 @@ public class MessagesGenerator {
                 + wisherNotifyDTO.getUserName()
                 + System.lineSeparator()
                 + "Ссылка на собеседование: "
-                + urlSiteStatic
+                + uriProvider.getUri(SERVICE_ID)
                 + "/interview/"
                 + wisherNotifyDTO.getInterviewId();
     }

@@ -3,6 +3,7 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.job4j.site.domain.FilterProfile;
 import ru.job4j.site.dto.FilterDTO;
@@ -12,13 +13,18 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FilterService {
 
-    private static final String URL = "http://localhost:9912/filter/";
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "mock";
+    private static final String DIRECT = "/filter/";
 
     public FilterDTO save(String token, FilterDTO filter) throws JsonProcessingException {
         var mapper = new ObjectMapper();
-        var out = new RestAuthCall(URL).post(
+        var out = new RestAuthCall(String
+                .format("%s%s", uriProvider.getUri(SERVICE_ID), DIRECT))
+                .post(
                 token,
                 mapper.writeValueAsString(filter)
         );
@@ -26,7 +32,8 @@ public class FilterService {
     }
 
     public FilterDTO getByUserId(String token, int userId) throws JsonProcessingException {
-        var text = new RestAuthCall(String.format("%s%d", URL, userId))
+        var text = new RestAuthCall(String
+                .format("%s%s%d", uriProvider.getUri(SERVICE_ID), DIRECT, userId))
                 .get(token);
         return new ObjectMapper().readValue(text, new TypeReference<>() {
         });
@@ -34,7 +41,9 @@ public class FilterService {
 
     public void deleteByUserId(String token, int userId) throws JsonProcessingException {
         var mapper = new ObjectMapper();
-        new RestAuthCall(String.format("%sdelete/%d", URL, userId)).delete(
+        new RestAuthCall(String
+                .format("%s%sdelete/%d", uriProvider.getUri(SERVICE_ID), DIRECT, userId))
+                .delete(
                 token,
                 mapper.writeValueAsString(userId)
         );
@@ -42,7 +51,9 @@ public class FilterService {
 
     public List<FilterProfile> getProfiles() throws JsonProcessingException {
         var mapper = new ObjectMapper();
-        var text = new RestAuthCall(URL + "/profiles").get();
+        var text = new RestAuthCall(String
+                .format("%s%sprofiles", uriProvider.getUri(SERVICE_ID), DIRECT))
+                .get();
         return mapper.readValue(text, new TypeReference<>() {
         });
     }

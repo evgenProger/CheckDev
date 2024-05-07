@@ -1,6 +1,14 @@
 package ru.checkdev.notification.web;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.ResponseEntity;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.domain.SubscribeTopic;
@@ -10,14 +18,14 @@ import ru.checkdev.notification.dto.WisherNotifyDTO;
 import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
 import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
 import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
-import ru.checkdev.notification.service.InnerMessageService;
-import ru.checkdev.notification.service.MessagesGenerator;
-import ru.checkdev.notification.service.NotificationMessageTgFake;
-import ru.checkdev.notification.service.UserTelegramService;
+import ru.checkdev.notification.service.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -27,15 +35,45 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Dmitry Stepanov, user Dmitry
  * @since 28.11.2023
  */
+
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class NotificationInterviewControllerTest {
-    private final SubscribeTopicRepositoryFake subscribeTopicRepositoryFake = new SubscribeTopicRepositoryFake();
-    private final UserTelegramRepositoryFake userTelegramRepositoryFake = new UserTelegramRepositoryFake(subscribeTopicRepositoryFake);
-    private final UserTelegramService userTelegramService = new UserTelegramService(userTelegramRepositoryFake);
-    private final InnerMessageRepositoryFake innerMessageRepositoryFake = new InnerMessageRepositoryFake();
-    private final InnerMessageService innerMessageService = new InnerMessageService(innerMessageRepositoryFake, userTelegramService);
+
+    private final SubscribeTopicRepositoryFake subscribeTopicRepositoryFake =
+            new SubscribeTopicRepositoryFake();
+
+    private final UserTelegramRepositoryFake userTelegramRepositoryFake =
+            new UserTelegramRepositoryFake(subscribeTopicRepositoryFake);
+
+    private final UserTelegramService userTelegramService =
+            new UserTelegramService(userTelegramRepositoryFake);
+
+    private final InnerMessageRepositoryFake innerMessageRepositoryFake =
+            new InnerMessageRepositoryFake();
+
+    private final InnerMessageService innerMessageService =
+            new InnerMessageService(innerMessageRepositoryFake, userTelegramService,
+                    new EurekaUriProvider(Mockito.mock(DiscoveryClient.class)));
+
     private final NotificationMessageTgFake notificationMessage = new NotificationMessageTgFake();
-    private final MessagesGenerator messagesGenerator = new MessagesGenerator();
-    private final NotificationInterviewController notifyController = new NotificationInterviewController(userTelegramService, innerMessageService, notificationMessage, messagesGenerator);
+
+    @Mock
+    private DiscoveryClient discoveryClient;
+
+    private MessagesGenerator messagesGenerator;
+
+    private NotificationInterviewController notifyController;
+
+    @BeforeEach
+    void setUp() {
+        discoveryClient = Mockito.mock(DiscoveryClient.class);
+        EurekaUriProvider uriProvider = new EurekaUriProvider(discoveryClient);
+        messagesGenerator = new MessagesGenerator(uriProvider);
+        notifyController =
+                new NotificationInterviewController(userTelegramService,
+                        innerMessageService, notificationMessage, messagesGenerator);
+    }
 
     @Test
     void whenSendMessageSubscribeTopicThenReturnStatusOkBodyListOneMessage() {
@@ -83,7 +121,7 @@ class NotificationInterviewControllerTest {
     }
 
     @Test
-    void whenSendMessageSubmitterInterviewThenReturnStatusOkBodyInnerMessage() {
+    void whenSendMessageSubmitterInterviewThenReturnStatusOkBodyInnerMessage() throws URISyntaxException {
         var wisherNotifyDTO = WisherNotifyDTO.of()
                 .interviewId(1)
                 .interviewTitle("interview1")
@@ -91,6 +129,12 @@ class NotificationInterviewControllerTest {
                 .userId(3)
                 .contactBy("@contact")
                 .build();
+
+        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
+        List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
+        Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
+        Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
+
         var userTelegramSubmit = new UserTelegram(0, wisherNotifyDTO.getSubmitterId(), wisherNotifyDTO.getSubmitterId(), false);
         userTelegramRepositoryFake.save(userTelegramSubmit);
         var messageExpect = messagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
@@ -108,10 +152,12 @@ class NotificationInterviewControllerTest {
     }
 
     @Test
-    void whenUserNotInTgThenSaveInner() {
+    void whenUserNotInTgThenSaveInner() throws URISyntaxException {
         var userTelegramService = new UserTelegramService(userTelegramRepositoryFake);
         var innerMessageRepositoryFake = new InnerMessageRepositoryFake();
-        var innerMessageService = new InnerMessageService(innerMessageRepositoryFake, userTelegramService);
+        var uriProvider = new EurekaUriProvider(Mockito.mock(DiscoveryClient.class));
+        var innerMessageService =
+                new InnerMessageService(innerMessageRepositoryFake, userTelegramService, uriProvider);
         var wisherNotifyDTO = WisherNotifyDTO.of()
                 .interviewId(1)
                 .interviewTitle("interview1")
@@ -119,6 +165,12 @@ class NotificationInterviewControllerTest {
                 .userId(3)
                 .contactBy("@contact")
                 .build();
+
+        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
+        List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
+        Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
+        Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
+
         var controller = new NotificationInterviewController(userTelegramService, innerMessageService, notificationMessage, messagesGenerator);
         var actual = controller.sendMessageSubmitterInterview(wisherNotifyDTO);
         var msgs = innerMessageService.findByUserIdAndReadFalse(wisherNotifyDTO.getSubmitterId());

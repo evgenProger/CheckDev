@@ -1,6 +1,7 @@
 package ru.job4j.site.controller;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,7 @@ import ru.job4j.site.dto.UsersApprovedInterviewsDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.ProfilesService;
 import ru.job4j.site.service.WisherService;
+import ru.job4j.site.service.EurekaUriProvider;
 
 import java.util.Calendar;
 import java.util.List;
@@ -33,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class ProfilesControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -41,6 +44,8 @@ class ProfilesControllerTest {
     private WisherService wisherService;
     @MockBean
     private AuthService authService;
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     @Test
     void whenGetProfileByIdThenReturnPageProfileView() throws Exception {
@@ -53,13 +58,16 @@ class ProfilesControllerTest {
         var usersApprovedInterviewsDTO = new UsersApprovedInterviewsDTO(profile.getId(), 99);
         when(profilesService.getProfileById(id)).thenReturn(Optional.of(profile));
         when(authService.userInfo(token)).thenReturn(userInfo);
-        when(wisherService.getUserIdWithCountedApprovedInterviews(token, String.valueOf(profile.getId()))).thenReturn(usersApprovedInterviewsDTO);
+        when(wisherService.getUserIdWithCountedApprovedInterviews(token, String.valueOf(profile.getId())))
+                .thenReturn(usersApprovedInterviewsDTO);
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("https://service");
         this.mockMvc.perform(get("/profiles/{id}", profile.getId())
                         .sessionAttr("token", token))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("profile", profile))
-                .andExpect(model().attribute("approvedInterviews", usersApprovedInterviewsDTO.getApprovedInterviews()))
+                .andExpect(model().attribute("approvedInterviews",
+                        usersApprovedInterviewsDTO.getApprovedInterviews()))
                 .andExpect(view().name("profiles/profileView"));
     }
 

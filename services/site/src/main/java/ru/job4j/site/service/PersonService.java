@@ -23,9 +23,11 @@ import ru.job4j.site.util.RestAuthCall;
 @Slf4j
 @AllArgsConstructor
 public class PersonService {
+
     private static final String URL_PERSON_CURRENT = "/person/current";
     private static final String URL_PERSON_UPDATE = "/person/updateMultipart";
     private final WebClientAuthCall webClientAuthCall;
+    private final EurekaUriProvider uriProvider;
 
     /**
      * Метод получает модель PersonDTO по токену.
@@ -49,7 +51,8 @@ public class PersonService {
      * @param file      MultipartFile
      * @return ResponseEntity<String>
      */
-    public ResponseEntity<String> postUpdatePerson(String token, PersonDTO personDTO, MultipartFile file) {
+    public ResponseEntity<String> postUpdatePerson(String token, PersonDTO personDTO,
+                                                   MultipartFile file) {
         var builder = new MultipartBodyBuilder();
         builder.part("profile", personDTO, MediaType.APPLICATION_JSON);
         builder.part("file", file.getResource(), MediaType.IMAGE_JPEG);
@@ -58,8 +61,8 @@ public class PersonService {
     }
 
     public void updatePassword(String token, PersonDTO personDTO) throws JsonProcessingException {
-        new RestAuthCall(
-                "http://localhost:9900/person/changePassword")
+        new RestAuthCall(String
+                .format("%s/person/changePassword", uriProvider.getUri("auth")))
                 .update(token, new ObjectMapper().writeValueAsString(personDTO));
     }
 }

@@ -1,6 +1,14 @@
 package ru.checkdev.notification.telegram.action.forget;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -9,12 +17,20 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.checkdev.notification.domain.UserTelegram;
 import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
 import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
+import ru.checkdev.notification.service.EurekaUriProvider;
 import ru.checkdev.notification.service.UserTelegramService;
 import ru.checkdev.notification.telegram.SessionTg;
 import ru.checkdev.notification.telegram.service.FakeTgCallConsole;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class ForgetActionTest {
     /**
      * Поле заведено для отладки тестов
@@ -27,6 +43,17 @@ class ForgetActionTest {
                     new SubscribeTopicRepositoryFake()
             ));
 
+    @Mock
+    private DiscoveryClient discoveryClient;
+
+    private EurekaUriProvider uriProvider;
+
+    @BeforeEach
+    void setUp() {
+        discoveryClient = Mockito.mock(DiscoveryClient.class);
+        uriProvider = new EurekaUriProvider(discoveryClient);
+    }
+
     @Test
     void whenForgetActionNotChatIdThenMessageAccountNotRegistered() {
         Chat chat = new Chat(1L, "type");
@@ -36,7 +63,8 @@ class ForgetActionTest {
         message.setChat(chat);
         SessionTg sessionTg = new SessionTg();
         message.setChat(chat);
-        ForgetAction forgetAction = new ForgetAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
+        ForgetAction forgetAction =
+                new ForgetAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
         forgetAction.handle(update);
         BotApiMethod<Message> botApiMethod = forgetAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
@@ -45,7 +73,7 @@ class ForgetActionTest {
     }
 
     @Test
-    void whenForgetActionChatIdIsPresentThenMessageNewPassword() {
+    void whenForgetActionChatIdIsPresentThenMessageNewPassword() throws URISyntaxException {
         Chat chat = new Chat(1L, "type");
         Update update = new Update();
         Message message = new Message();
@@ -56,7 +84,14 @@ class ForgetActionTest {
         userTelegramService.save(userTelegram);
         message.setChat(chat);
         message.setText("password");
-        ForgetAction forgetAction = new ForgetAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
+        ForgetAction forgetAction =
+                new ForgetAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
+
+        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
+        List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
+        Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
+        Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
+
         BotApiMethod<Message> botApiMethod = forgetAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String sl = System.lineSeparator();
@@ -79,7 +114,8 @@ class ForgetActionTest {
         userTelegramService.save(userTelegram);
         message.setChat(chat);
         message.setText("password");
-        ForgetAction forgetAction = new ForgetAction(sessionTg, new FakeTgCallConsole(), userTelegramService);
+        ForgetAction forgetAction =
+                new ForgetAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
         BotApiMethod<Message> botApiMethod = forgetAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         var actual = sendMessage.getText();

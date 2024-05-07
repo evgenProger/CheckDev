@@ -12,6 +12,7 @@ import ru.job4j.site.SiteSrv;
 import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.dto.CredentialDTO;
 import ru.job4j.site.service.AuthService;
+import ru.job4j.site.service.EurekaUriProvider;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,9 @@ class LoginControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private AuthService authService;
+    @MockBean
+    private EurekaUriProvider uriProvider;
+
     private LoginController loginController;
 
     @BeforeEach

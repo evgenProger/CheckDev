@@ -1,8 +1,11 @@
 package ru.checkdev.notification.web;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
+import ru.checkdev.notification.service.EurekaUriProvider;
 import ru.checkdev.notification.service.InnerMessageService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,8 +17,9 @@ public class InnerMessageControllerFakeTest {
     public void whenFindBotMessageByUserId() {
         var botMessage = new InnerMessage(1, 10,
                 "text", null, false);
+        var uriProvider = new EurekaUriProvider(Mockito.mock(DiscoveryClient.class));
         var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(),
-                null);
+                null, uriProvider);
         var savedMsg = innerMessageService.saveMessage(botMessage);
         var controller = new InnerMessageController(
                 innerMessageService, null, null, null

@@ -1,7 +1,6 @@
 package ru.job4j.site.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,20 +23,19 @@ import java.util.*;
 @Service
 @Slf4j
 public class FeedbackServiceWebClient implements FeedbackService {
-    private final String urlMock;
+
     private WebClient webClientFeedback;
-    private static final String URL_FEEDBACK = "/feedback/";
+    private static final String SERVICE_ID = "mock";
+    private static final String DIRECT = "/feedback/";
 
     private final InterviewService interviewService;
     private final NotificationService notificationService;
 
     public FeedbackServiceWebClient(
-            @Value("${service.mock}") String urlMock,
             InterviewService interviewService,
-            NotificationService notificationService
-    ) {
-        this.urlMock = urlMock;
-        this.webClientFeedback = WebClient.create(this.urlMock);
+            NotificationService notificationService,
+            EurekaUriProvider uriProvider) {
+        this.webClientFeedback = WebClient.create(uriProvider.getUri(SERVICE_ID));
         this.interviewService = interviewService;
         this.notificationService = notificationService;
     }
@@ -63,7 +61,7 @@ public class FeedbackServiceWebClient implements FeedbackService {
         }
         var responseEntityMono = this.webClientFeedback
                 .post()
-                .uri(URL_FEEDBACK)
+                .uri(DIRECT)
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(feedbackDTO)
@@ -110,7 +108,7 @@ public class FeedbackServiceWebClient implements FeedbackService {
     public List<FeedbackDTO> findByInterviewId(int interviewId) {
         Optional<ResponseEntity<List<FeedbackDTO>>> listResponseEntity = this.webClientFeedback
                 .get()
-                .uri(URL_FEEDBACK + interviewId)
+                .uri(DIRECT + interviewId)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .toEntityList(FeedbackDTO.class)
@@ -155,7 +153,7 @@ public class FeedbackServiceWebClient implements FeedbackService {
      */
     @Override
     public List<FeedbackDTO> findByInterviewIdAndUserId(int interviewId, int userID) {
-        var uri = String.format("%s?iId=%d&uId=%d", URL_FEEDBACK, interviewId, userID);
+        var uri = String.format("%s?iId=%d&uId=%d", DIRECT, interviewId, userID);
         Optional<ResponseEntity<List<FeedbackDTO>>> listResponseEntity = this.webClientFeedback
                 .get()
                 .uri(uri)

@@ -14,6 +14,7 @@ import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
 import ru.job4j.site.service.NotificationService;
 import ru.job4j.site.service.TopicsService;
+import ru.job4j.site.service.EurekaUriProvider;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +40,8 @@ public class TopicsControllerTest {
     private CategoriesService categoriesService;
     @MockBean
     private NotificationService notifications;
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     @Test
     void whenShowTopicsCategoryEmptyThenRedirect() throws Exception {

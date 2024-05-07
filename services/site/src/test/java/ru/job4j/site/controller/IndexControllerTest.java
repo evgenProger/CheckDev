@@ -11,6 +11,7 @@ import ru.job4j.site.domain.Breadcrumb;
 import ru.job4j.site.domain.VacancyStatistic;
 import ru.job4j.site.dto.*;
 import ru.job4j.site.service.*;
+import ru.job4j.site.service.EurekaUriProvider;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -46,6 +47,8 @@ class IndexControllerTest {
     private AuthService authService;
     @MockBean
     private VacancyStatisticService vacancyStatisticService;
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     @Test
     void injectedNotNull() {

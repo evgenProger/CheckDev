@@ -3,6 +3,7 @@ package ru.job4j.site.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,32 +18,40 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class VacancyStatisticService {
 
-    private static final String URL = "http://localhost:9903/statistic/";
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "generator";
+    private static final String DIRECT = "/statistic/";
 
     public void create(String token, DirectionKey directionKey) throws JsonProcessingException {
-        String uri = String.format("%s%s", URL, "create");
+        String uri = String.format("%s%s%s", uriProvider.getUri(SERVICE_ID), DIRECT, "create");
         new RestAuthCall(uri).post(token, new ObjectMapper().writeValueAsString(directionKey));
     }
 
     public VacancyStatisticWithDates getAll() {
-        return getRequest(String.format("%s%s", URL, "get"));
+        return getRequest(String.format("%s%s%s",
+                uriProvider.getUri(SERVICE_ID), DIRECT, "get"));
     }
 
     public void update(String token, DirectionKey directionKey) throws JsonProcessingException {
         var json = new ObjectMapper()
                 .writerWithDefaultPrettyPrinter()
                 .writeValueAsString(directionKey);
-        new RestAuthCall(String.format("%s%s", URL, "update")).update(token, json);
+        new RestAuthCall(String
+                .format("%s%s%s", uriProvider.getUri(SERVICE_ID), DIRECT, "update"))
+                .update(token, json);
     }
 
     public VacancyStatisticWithDates renew() {
-        return getRequest(String.format("%s%s", URL, "renew"));
+        return getRequest(String
+                .format("%s%s%s", uriProvider.getUri(SERVICE_ID), DIRECT, "renew"));
     }
 
     public void delete(int id) {
-        new RestTemplate().delete(String.format("%s%s%d", URL, "delete/", id));
+        new RestTemplate().delete(String
+                .format("%s%s%s%d", uriProvider.getUri(SERVICE_ID), DIRECT, "delete/", id));
     }
 
     private VacancyStatisticWithDates getRequest(String uri) {

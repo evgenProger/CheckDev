@@ -1,9 +1,10 @@
 package ru.job4j.site.configuration;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
+import ru.job4j.site.service.EurekaUriProvider;
 
 /**
  * CheckDev пробное собеседование
@@ -13,15 +14,14 @@ import org.springframework.web.reactive.function.client.WebClient;
  * @since 19.09.2023
  */
 @Configuration
+@RequiredArgsConstructor
 public class WebClientAuthConfig {
-    /**
-     * Из app.properties получаем корневой адрес сервиса AUTH
-     */
-    @Value("${server.auth}")
-    private String urlAuth;
+
+    private final EurekaUriProvider uriProvider;
+    private static final String SERVICE_ID = "auth";
 
     @Bean
     public WebClient createWebClientAuth() {
-        return WebClient.create(urlAuth);
+        return WebClient.create(uriProvider.getUri(SERVICE_ID));
     }
 }

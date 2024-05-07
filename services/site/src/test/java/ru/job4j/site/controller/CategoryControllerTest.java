@@ -1,6 +1,7 @@
 package ru.job4j.site.controller;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +13,7 @@ import ru.job4j.site.dto.CategoryDTO;
 import ru.job4j.site.dto.UserInfoDTO;
 import ru.job4j.site.service.AuthService;
 import ru.job4j.site.service.CategoriesService;
+import ru.job4j.site.service.EurekaUriProvider;
 
 import java.util.List;
 
@@ -31,12 +33,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = SiteSrv.class)
 @AutoConfigureMockMvc
 class CategoryControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private CategoriesService categoriesService;
     @MockBean
     private AuthService authService;
+    @MockBean
+    private EurekaUriProvider uriProvider;
 
     @Test
     void whenGetCreateFormThenReturnViewCrateForm() throws Exception {
@@ -49,6 +54,7 @@ class CategoryControllerTest {
                 new Breadcrumb("Категории", "/categories/"),
                 new Breadcrumb("Создать категорию", "/category/createForm"));
         when(authService.userInfo(token)).thenReturn(userInfo);
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("https://service");
         mockMvc.perform(get("/category/createForm")
                         .sessionAttr("token", token))
                 .andDo(print())
@@ -85,6 +91,7 @@ class CategoryControllerTest {
                 new Breadcrumb("Редактировать категорию",
                         String.format("/category/editForm/%d/%s", id, name)));
         when(authService.userInfo(token)).thenReturn(userInfo);
+        when(uriProvider.getUri(Mockito.anyString())).thenReturn("https://service");
         mockMvc.perform(get("/category/editForm/{id}/{name}", id, name)
                         .sessionAttr("token", token))
                 .andDo(print())
