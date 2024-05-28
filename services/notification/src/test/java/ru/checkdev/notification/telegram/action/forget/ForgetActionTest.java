@@ -36,90 +36,78 @@ class ForgetActionTest {
      * Поле заведено для отладки тестов
      * При указании данного ERROR_ID в качестве userId в моделях данных сервис бросает exception.
      */
+    private static final Chat CHAT = new Chat(1L, "type");
     private static final String ERROR_ID = "-23";
-
-    private final UserTelegramService userTelegramService = new UserTelegramService(
-            new UserTelegramRepositoryFake(
-                    new SubscribeTopicRepositoryFake()
-            ));
 
     @Mock
     private DiscoveryClient discoveryClient;
-
+    @Mock
+    private ServiceInstance serviceInstance;
+    private UserTelegramService userTelegramService;
     private EurekaUriProvider uriProvider;
+    private SessionTg sessionTg;
+    private Update update;
+    private Message message;
+    ForgetAction forgetAction;
 
     @BeforeEach
     void setUp() {
-        discoveryClient = Mockito.mock(DiscoveryClient.class);
         uriProvider = new EurekaUriProvider(discoveryClient);
+        sessionTg = new SessionTg();
+        userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()));
+        update = new Update();
+        message = new Message();
+        forgetAction = new ForgetAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
     }
 
     @Test
     void whenForgetActionNotChatIdThenMessageAccountNotRegistered() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
         update.setMessage(message);
-        message.setChat(chat);
-        SessionTg sessionTg = new SessionTg();
-        message.setChat(chat);
-        ForgetAction forgetAction =
-                new ForgetAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
+        message.setChat(CHAT);
         forgetAction.handle(update);
+        String text = "Данный аккаунт Telegram на сайте не зарегистрирован";
+
         BotApiMethod<Message> botApiMethod = forgetAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = "Данный аккаунт Telegram на сайте не зарегистрирован";
+
         assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
     void whenForgetActionChatIdIsPresentThenMessageNewPassword() throws URISyntaxException {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
         update.setMessage(message);
-        message.setChat(chat);
-        SessionTg sessionTg = new SessionTg();
-        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId(), false);
-        userTelegramService.save(userTelegram);
-        message.setChat(chat);
+        message.setChat(CHAT);
         message.setText("password");
-        ForgetAction forgetAction =
-                new ForgetAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
-
-        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
+        UserTelegram userTelegram = new UserTelegram(0, 1, CHAT.getId(), false);
+        userTelegramService.save(userTelegram);
         List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
         Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
         Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
 
         BotApiMethod<Message> botApiMethod = forgetAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String sl = System.lineSeparator();
-        var actual = sendMessage.getText();
+        String actual = sendMessage.getText();
         String passInMessage = getPassInMessage(actual);
-        String text = "Ваш новый пароль:" + sl
-                + passInMessage;
+        String text = "Ваш новый пароль:" + System.lineSeparator() + passInMessage;
+
         assertThat(text).isEqualTo(actual);
     }
 
     @Test
     void whenForgetActionWebClientExceptionThenMessageServiceError() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
         update.setMessage(message);
-        message.setChat(chat);
-        SessionTg sessionTg = new SessionTg();
-        UserTelegram userTelegram = new UserTelegram(0, Integer.parseInt(ERROR_ID), chat.getId(), false);
-        userTelegramService.save(userTelegram);
-        message.setChat(chat);
+        message.setChat(CHAT);
         message.setText("password");
-        ForgetAction forgetAction =
-                new ForgetAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
+        UserTelegram userTelegram = new UserTelegram(0, Integer.parseInt(ERROR_ID), CHAT.getId(), false);
+        userTelegramService.save(userTelegram);
+        String expect = "Сервис не доступен попробуйте позже";
+
         BotApiMethod<Message> botApiMethod = forgetAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        var actual = sendMessage.getText();
-        var expect = "Сервис не доступен попробуйте позже";
+        String actual = sendMessage.getText();
+
         assertThat(actual).isEqualTo(expect);
     }
 

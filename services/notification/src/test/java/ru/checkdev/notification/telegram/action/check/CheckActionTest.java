@@ -32,84 +32,79 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 class CheckActionTest {
-    private UserTelegramService userTelegramService = new UserTelegramService(
-            new UserTelegramRepositoryFake(
-                    new SubscribeTopicRepositoryFake()));
+
+    private static final Chat CHAT = new Chat(1L, "type");
 
     @Mock
     private DiscoveryClient discoveryClient;
-
+    @Mock
+    private ServiceInstance serviceInstance;
+    private UserTelegramService userTelegramService;
     private EurekaUriProvider uriProvider;
+    private SessionTg sessionTg;
+    private CheckAction checkAction;
+    private Update update;
+    private Message message;
 
     @BeforeEach
     void setUp() {
-        discoveryClient = Mockito.mock(DiscoveryClient.class);
         uriProvider = new EurekaUriProvider(discoveryClient);
+        sessionTg = new SessionTg();
+        userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()));
+        checkAction = new CheckAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
+        update = new Update();
+        message = new Message();
     }
 
     @Test
     void whenNotChatId() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
         update.setMessage(message);
-        message.setChat(chat);
-        SessionTg sessionTg = new SessionTg();
-        message.setChat(chat);
-        CheckAction checkAction =
-                new CheckAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
+        message.setChat(CHAT);
         checkAction.handle(update);
+        String text = "Данный аккаунт Telegram на сайте не зарегистрирован";
+
         BotApiMethod<Message> botApiMethod = checkAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = "Данный аккаунт Telegram на сайте не зарегистрирован";
+
         assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
     void whenHandleChatIdIsPresentThenReturnMessage() throws URISyntaxException {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
         update.setMessage(message);
-        message.setChat(chat);
-        SessionTg sessionTg = new SessionTg();
-        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId(), false);
-
-        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
+        message.setChat(CHAT);
+        UserTelegram userTelegram = new UserTelegram(0, 1, CHAT.getId(), false);
         List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
         Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
         Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
-
         userTelegramService.save(userTelegram);
-        message.setChat(chat);
-        CheckAction checkAction =
-                new CheckAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
+        message.setChat(CHAT);
+        String ls = System.lineSeparator();
+        String text = "Имя:" + ls
+                + "FakeName" + ls
+                + "Email:" + ls
+                + "FakeEmail" + ls;
+
         BotApiMethod<Message> botApiMethod = checkAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String sl = System.lineSeparator();
-        String text = "Имя:" + sl
-                + "FakeName" + sl
-                + "Email:" + sl
-                + "FakeEmail" + sl;
+
         assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
     void whenHandleChatIdIsPresentThenReturnServiceError() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
         update.setMessage(message);
-        message.setChat(chat);
-        SessionTg sessionTg = new SessionTg();
-        UserTelegram userTelegram = new UserTelegram(0, -23, chat.getId(), false);
+        message.setChat(CHAT);
+        UserTelegram userTelegram = new UserTelegram(0, -23, CHAT.getId(), false);
         userTelegramService.save(userTelegram);
-        message.setChat(chat);
-        CheckAction checkAction =
-                new CheckAction(sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
+        message.setChat(CHAT);
+        String text = "Сервис не доступен попробуйте позже";
+
         BotApiMethod<Message> botApiMethod = checkAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
-        String text = "Сервис не доступен попробуйте позже";
+
         assertThat(text).isEqualTo(sendMessage.getText());
     }
 }

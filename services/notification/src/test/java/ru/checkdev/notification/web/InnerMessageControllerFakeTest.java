@@ -1,30 +1,33 @@
 package ru.checkdev.notification.web;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.mockito.Mock;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
 import ru.checkdev.notification.service.EurekaUriProvider;
 import ru.checkdev.notification.service.InnerMessageService;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class InnerMessageControllerFakeTest {
 
+    @Mock
+    private EurekaUriProvider uriProvider;
+
     @Test
     public void whenFindBotMessageByUserId() {
-        var botMessage = new InnerMessage(1, 10,
-                "text", null, false);
-        var uriProvider = new EurekaUriProvider(Mockito.mock(DiscoveryClient.class));
-        var innerMessageService = new InnerMessageService(new InnerMessageRepositoryFake(),
-                null, uriProvider);
-        var savedMsg = innerMessageService.saveMessage(botMessage);
-        var controller = new InnerMessageController(
-                innerMessageService, null, null, null
-        );
-        var resp = controller.findMessage(savedMsg.getUserId());
-        assertThat(resp.getBody()).containsOnly(savedMsg);
+        InnerMessage botMessage = new InnerMessage(1, 10, "text", null, false);
+        InnerMessageService innerMessageService = new InnerMessageService(
+                new InnerMessageRepositoryFake(), null, uriProvider);
+        InnerMessageController controller = new InnerMessageController(
+                innerMessageService, null, null, null);
+
+        InnerMessage savedMsg = innerMessageService.saveMessage(botMessage);
+        List<InnerMessage> resp = controller.findMessage(savedMsg.getUserId()).getBody();
+
+        assertThat(resp).contains(savedMsg);
     }
 }

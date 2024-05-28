@@ -4,44 +4,45 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.SubscribeCategory;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubscribeCategoryRepositoryTest {
 
-    private final SubscribeCategoryRepository repository = new SubscribeCategoryRepositoryFake();
+    private static final SubscribeCategory SUBSCRIBE_CATEGORY = new SubscribeCategory(0, 1, 1);
 
-    private SubscribeCategory subscribeCategory;
+    private SubscribeCategoryRepository repository;
 
     @BeforeEach
     void init() {
-        repository.deleteAll();
-        subscribeCategory = new SubscribeCategory(0, 1, 1);
-        repository.save(subscribeCategory);
+        repository = new SubscribeCategoryRepositoryFake();
+        repository.save(SUBSCRIBE_CATEGORY);
     }
 
     @Test
     void whenFindSubscribeCategoryByUserId() {
-        var result = repository.findByUserId(1);
-        assertThat(result.isEmpty()).isEqualTo(false);
-        assertThat(1).isEqualTo(result.size());
-        assertThat(result.get(0)).isEqualTo(subscribeCategory);
+        List<SubscribeCategory> result = repository.findByUserId(1);
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0)).isEqualTo(SUBSCRIBE_CATEGORY);
     }
 
     @Test
     void whenSubscribeCategoryNotFoundByUserId() {
-        assertThat(repository.findByUserId(2).isEmpty()).isEqualTo(true);
+        assertThat(repository.findByUserId(2)).isEmpty();
     }
 
     @Test
     void whenFindByUserIdAndCategoryId() {
-        var result = repository.findByUserIdAndCategoryId(1, 1);
-        assertThat(result != null).isEqualTo(true);
-        assertThat(result).isEqualTo(subscribeCategory);
+        SubscribeCategory result = repository.findByUserIdAndCategoryId(1, 1);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(SUBSCRIBE_CATEGORY);
     }
 
     @Test
     void whenNotFoundByUserIdAndCategoryId() {
-        var result = repository.findByUserIdAndCategoryId(2, 2);
-        assertThat(result != null).isEqualTo(false);
+        SubscribeCategory result = repository.findByUserIdAndCategoryId(2, 2);
+        assertThat(result).isNull();
     }
 }

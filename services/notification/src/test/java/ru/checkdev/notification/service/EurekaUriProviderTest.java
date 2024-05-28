@@ -22,22 +22,23 @@ public class EurekaUriProviderTest {
 
     @Mock
     private DiscoveryClient discoveryClient;
-
+    @Mock
+    private ServiceInstance serviceInstance;
     private EurekaUriProvider uriProvider;
 
     @BeforeEach
     void setUp() {
-        discoveryClient = Mockito.mock(DiscoveryClient.class);
         uriProvider = new EurekaUriProvider(discoveryClient);
     }
 
     @Test
     void whenGetUri() throws URISyntaxException {
-        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
         List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
         Mockito.when(discoveryClient.getInstances("serviceId")).thenReturn(serviceInstances);
         Mockito.when(serviceInstance.getUri()).thenReturn(new java.net.URI("https://example.com"));
+
         String uri = uriProvider.getUri("serviceId");
-        assertThat("https://example.com").isEqualTo(uri);
+
+        assertThat(uri).isEqualTo("https://example.com");
     }
 }

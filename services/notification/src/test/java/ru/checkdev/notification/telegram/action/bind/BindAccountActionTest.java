@@ -36,65 +36,63 @@ class BindAccountActionTest {
      * При указании данного email пользователя сервис бросает exception
      */
     private static final String ERROR_MAIL = "error@exception.er";
-
-    private final SessionTg sessionTg = new SessionTg();
-    private final UserTelegramService userTelegramService = new UserTelegramService(
-            new UserTelegramRepositoryFake(
-                    new SubscribeTopicRepositoryFake()));
+    private static final Chat CHAT = new Chat(1L, "type");
 
     @Mock
     private DiscoveryClient discoveryClient;
-
+    @Mock
+    private ServiceInstance serviceInstance;
     private EurekaUriProvider uriProvider;
+    private SessionTg sessionTg;
+    private Update update;
+    private Message message;
+    private UserTelegramService userTelegramService;
+    private BindAccountAction bindAccountAction;
+
 
     @BeforeEach
     void setUp() {
-        discoveryClient = Mockito.mock(DiscoveryClient.class);
         uriProvider = new EurekaUriProvider(discoveryClient);
+        sessionTg = new SessionTg();
+        update = new Update();
+        message = new Message();
+        userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()));
+        bindAccountAction = new BindAccountAction(
+                sessionTg, new FakeTgCallConsole(uriProvider), userTelegramService);
     }
 
     @Test
-    void whenBindThenMessageAccountHasBinded() throws URISyntaxException {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
-        message.setChat(chat);
+    void whenBindThenMessageAccountHasBound() throws URISyntaxException {
+        message.setChat(CHAT);
         update.setMessage(message);
-
-        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
         List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
         Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
         Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
+        sessionTg.put(String.valueOf(CHAT.getId()), "email", "email@email.ru");
+        sessionTg.put(String.valueOf(CHAT.getId()), "password", "password");
+        String expectMessage = "Ваш аккаунт CheckDev успешно привязан к данному аккаунту Telegram";
 
-        sessionTg.put(String.valueOf(chat.getId()), "email", "email@email.ru");
-        sessionTg.put(String.valueOf(chat.getId()), "password", "password");
-        BindAccountAction bindAccountAction =
-                new BindAccountAction(sessionTg,
-                        new FakeTgCallConsole(uriProvider), userTelegramService);
         BotApiMethod botApiMethod = bindAccountAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String actualMessage = sendMessage.getText();
-        String expectMessage = "Ваш аккаунт CheckDev успешно привязан к данному аккаунту Telegram";
+
         assertThat(userTelegramService.findByChatId(1L)).isPresent();
         assertThat(actualMessage).isEqualTo(expectMessage);
     }
 
     @Test
     void whenExceptionAtBindingThenMessageServiceIsUnavailable() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         update.setMessage(message);
-        sessionTg.put(String.valueOf(chat.getId()), "email", ERROR_MAIL);
-        BindAccountAction bindAccountAction =
-                new BindAccountAction(sessionTg,
-                        new FakeTgCallConsole(uriProvider), userTelegramService);
+        sessionTg.put(String.valueOf(CHAT.getId()), "email", ERROR_MAIL);
+        String expect = String.format("Сервис недоступен, попробуйте позже%s%s", System.lineSeparator(), "/start");
+
         BotApiMethod botApiMethod = bindAccountAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String actual = sendMessage.getText();
-        String ls = System.lineSeparator();
-        String expect = String.format("Сервис недоступен, попробуйте позже%s%s", ls, "/start");
+
         assertThat(actual).isEqualTo(expect);
     }
 }

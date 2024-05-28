@@ -1,5 +1,6 @@
 package ru.checkdev.notification.repository;
 
+import org.springframework.test.fake.CrudRepositoryFake;
 import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.dto.InnerMessageDTO;
 
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class InnerMessageRepositoryFake
-        extends CrudRepositoryFake<InnerMessage>
+        extends CrudRepositoryFake<InnerMessage, Integer>
         implements InnerMessageRepository {
 
     @Override

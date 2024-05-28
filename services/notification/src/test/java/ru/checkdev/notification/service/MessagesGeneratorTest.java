@@ -32,22 +32,20 @@ class MessagesGeneratorTest {
 
     @Mock
     private DiscoveryClient discoveryClient;
-
+    @Mock
+    private ServiceInstance serviceInstance;
     private EurekaUriProvider uriProvider;
-
     private MessagesGenerator messagesGenerator;
 
     @BeforeEach
     void setUp() {
-        discoveryClient = Mockito.mock(DiscoveryClient.class);
         uriProvider = new EurekaUriProvider(discoveryClient);
-        messagesGenerator =
-                new MessagesGenerator(uriProvider);
+        messagesGenerator = new MessagesGenerator(uriProvider);
     }
 
     @Test
     void generatorMessageSubscribeTopic() {
-        var interviewNotifDTO = InterviewNotifyDTO.of()
+        InterviewNotifyDTO interviewNotifyDTO = InterviewNotifyDTO.of()
                 .id(1)
                 .title("title")
                 .topicId(2)
@@ -55,12 +53,15 @@ class MessagesGeneratorTest {
                 .categoryId(3)
                 .categoryName("category")
                 .build();
-        var expected = String.format(
+        String expected = String.format(
                 "Вы подписаны на тему:%1$s, из категории:%2$s.%3$s"
                         + "По вашей подписке создана новое собеседование.",
-                interviewNotifDTO.getTopicName(), interviewNotifDTO.getCategoryName(),
+                interviewNotifyDTO.getTopicName(),
+                interviewNotifyDTO.getCategoryName(),
                 System.lineSeparator());
-        var actual = messagesGenerator.getMessageSubscribeTopic(interviewNotifDTO);
+
+        String actual = messagesGenerator.getMessageSubscribeTopic(interviewNotifyDTO);
+
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -74,18 +75,17 @@ class MessagesGeneratorTest {
                 .userName("Вася")
                 .contactBy("contact")
                 .build();
-
-        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
         List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
         when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
         when(serviceInstance.getUri()).thenReturn(new URI("null"));
-
         String expect = String.format(
                 "На ваше собеседование: %s добавился участник: %s%nСсылка на собеседование: null/interview/%s",
                 wisherNotifyDTO.getInterviewTitle(),
                 wisherNotifyDTO.getUserName(),
                 wisherNotifyDTO.getInterviewId());
+
         String actual = messagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
+
         assertThat(actual).isEqualTo(expect);
     }
 
@@ -104,7 +104,9 @@ class MessagesGeneratorTest {
                 cancelInterviewDTO.getInterviewTitle(),
                 cancelInterviewDTO.getSubmitterName(),
                 cancelInterviewDTO.getReasonOfCancel());
+
         String actual = messagesGenerator.getMessageCancelInterview(cancelInterviewDTO);
+
         assertThat(actual).isEqualTo(expect);
     }
 
@@ -121,7 +123,9 @@ class MessagesGeneratorTest {
                 "Пользователь %s одобрил на собеседование %s другого собеседника. Данное собеседование вам больше недоступно.",
                 wisherDismissedDTO.getSubmitterName(),
                 wisherDismissedDTO.getInterviewTitle());
+
         String actual = messagesGenerator.getMessageDismissedWisher(wisherDismissedDTO);
+
         assertThat(actual).isEqualTo(expect);
     }
 
@@ -137,7 +141,9 @@ class MessagesGeneratorTest {
         String expect = String.format(
                 "Вы приглашены на собеседование: %s.",
                 wisherApprovedDTO.getInterviewTitle()) + System.lineSeparator() + "Ссылка на собеседование: www";
+
         String actual = messagesGenerator.getMessageApprovedWisher(wisherApprovedDTO);
+
         assertThat(actual).isEqualTo(expect);
     }
 }

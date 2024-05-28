@@ -1,11 +1,12 @@
 package ru.checkdev.notification.repository;
 
+import org.springframework.test.fake.CrudRepositoryFake;
 import ru.checkdev.notification.domain.SubscribeCategory;
 
 import java.util.List;
 
 public class SubscribeCategoryRepositoryFake
-        extends CrudRepositoryFake<SubscribeCategory>
+        extends CrudRepositoryFake<SubscribeCategory, Integer>
         implements SubscribeCategoryRepository {
 
     @Override

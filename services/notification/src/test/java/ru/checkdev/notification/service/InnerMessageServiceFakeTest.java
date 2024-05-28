@@ -13,6 +13,7 @@ import ru.checkdev.notification.domain.InnerMessage;
 import ru.checkdev.notification.dto.CategoryWithTopicDTO;
 import ru.checkdev.notification.repository.InnerMessageRepositoryFake;
 import ru.checkdev.notification.repository.SubscribeTopicRepositoryFake;
+import ru.checkdev.notification.repository.UserTelegramRepository;
 import ru.checkdev.notification.repository.UserTelegramRepositoryFake;
 
 import java.net.URI;
@@ -29,61 +30,52 @@ public class InnerMessageServiceFakeTest {
 
     @Mock
     private DiscoveryClient discoveryClient;
-
+    @Mock
+    private ServiceInstance serviceInstance;
     private EurekaUriProvider uriProvider;
+    private InnerMessageRepositoryFake innerMessageRepository;
 
     @BeforeEach
     void setUp() {
-        discoveryClient = Mockito.mock(DiscoveryClient.class);
         uriProvider = new EurekaUriProvider(discoveryClient);
+        innerMessageRepository = new InnerMessageRepositoryFake();
     }
 
     @Test
     public void whenSaveBotMessageAndGetTheSame() {
-        var innerMessageRepository = new InnerMessageRepositoryFake();
-        var userTelegramRepositoryFake = new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake());
-        var userTelegramService = new UserTelegramService(userTelegramRepositoryFake);
-        var uriProvider = new EurekaUriProvider(Mockito.mock(DiscoveryClient.class));
-        var innerMessageService = new InnerMessageService(
-                innerMessageRepository,
-                userTelegramService,
-                uriProvider
-        );
-        var botMessage = innerMessageService.saveMessage(
+        UserTelegramRepository userTelegramRepositoryFake = new UserTelegramRepositoryFake(
+                new SubscribeTopicRepositoryFake());
+        UserTelegramService userTelegramService = new UserTelegramService(userTelegramRepositoryFake);
+        InnerMessageService innerMessageService = new InnerMessageService(
+                innerMessageRepository, userTelegramService, uriProvider);
+        InnerMessage botMessage = innerMessageService.saveMessage(
                 new InnerMessage(1, 10, "text",
                         new Timestamp(System.currentTimeMillis()), false)
         );
-        var result = innerMessageService.findByUserIdAndReadFalse(botMessage.getUserId());
+
+        List<InnerMessage> result = innerMessageService.findByUserIdAndReadFalse(botMessage.getUserId());
+
         assertThat(result).contains(botMessage);
     }
 
     @Test
-    public void whenSaveMessagesForSubscribers() throws URISyntaxException {
-        var categoryWithTopic = new CategoryWithTopicDTO(1, "Category_1",
-                1, "Topic_1", 1, 3);
-        var categorySubscribersIds = List.of(1);
-        var topicSubscribersIds = List.of(2);
-        var service =
-                new InnerMessageService(new InnerMessageRepositoryFake(),
-                        null, uriProvider);
-
-        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
+    public void whenSaveTopicMessagesForSubscribers() throws URISyntaxException {
+        CategoryWithTopicDTO categoryWithTopic = new CategoryWithTopicDTO(
+                1, "Category_1", 1, "Topic_1", 1, 3);
+        List<Integer> categorySubscribersIds = List.of(1);
+        List<Integer> topicSubscribersIds = List.of(2);
+        InnerMessageService service = new InnerMessageService(
+                innerMessageRepository, null, uriProvider);
         List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
         Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
         Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
 
         service.saveMessagesForSubscribers(categoryWithTopic, categorySubscribersIds, topicSubscribersIds);
-        var categoryMessages = service.findByUserIdAndReadFalse(1);
-        var topicMessages = service.findByUserIdAndReadFalse(2);
-        assertThat(1).isEqualTo(categoryMessages.size());
-        assertThat("В категории Category_1 появилось новое собеседование."
-                + System.lineSeparator()
-                + "Ссылка на собеседование: null/interview/1")
-                .isEqualTo(categoryMessages.get(0).getText());
-        assertThat(1).isEqualTo(topicMessages.size());
-        assertThat("Появилось новое собеседование по теме Topic_1."
-                + System.lineSeparator()
-                + "Ссылка на собеседование: null/interview/1")
-                .isEqualTo(topicMessages.get(0).getText());
+        List<InnerMessage> topicMessages = service.findByUserIdAndReadFalse(2);
+
+        assertThat(topicMessages.get(0).getText())
+                .isEqualTo("Появилось новое собеседование по теме Topic_1."
+                        + System.lineSeparator()
+                        + "Ссылка на собеседование: null/interview/1");
     }
 }

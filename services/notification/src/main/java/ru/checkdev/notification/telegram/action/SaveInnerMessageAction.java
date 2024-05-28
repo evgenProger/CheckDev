@@ -17,9 +17,9 @@ public class SaveInnerMessageAction implements Action {
 
     @Override
     public Optional<BotApiMethod> handle(Update update) {
-        var chatId = update.getMessage().getChatId();
+        Long chatId = update.getMessage().getChatId();
         InnerMessage innerMessage = new InnerMessage();
-        int userId = Integer.parseInt(sessionTg.get(chatId.toString(), "userId", ""));
+        int userId = Integer.parseInt(sessionTg.get(chatId.toString(), "userId", "-1"));
         innerMessage.setUserId(userId);
         innerMessage.setText(update.getMessage().getText());
         innerMessage.setCreated(new Timestamp(System.currentTimeMillis()));
