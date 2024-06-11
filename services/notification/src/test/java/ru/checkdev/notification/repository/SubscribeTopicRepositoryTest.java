@@ -4,44 +4,45 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.SubscribeTopic;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubscribeTopicRepositoryTest {
 
-    private final SubscribeTopicRepository repository = new SubscribeTopicRepositoryFake();
+    private static final SubscribeTopic SUBSCRIBE_TOPIC = new SubscribeTopic(0, 1, 1);
 
-    private SubscribeTopic subscribeTopic;
+    private SubscribeTopicRepository repository;
 
     @BeforeEach
     void init() {
-        subscribeTopic = new SubscribeTopic(0, 1, 1);
-        repository.deleteAll();
-        repository.save(subscribeTopic);
+        repository = new SubscribeTopicRepositoryFake();
+        repository.save(SUBSCRIBE_TOPIC);
     }
 
     @Test
     void whenFindSubscribeCategoryByUserId() {
-        var result = repository.findByUserId(1);
-        assertThat(result.isEmpty()).isEqualTo(false);
-        assertThat(1).isEqualTo(result.size());
-        assertThat(result.get(0)).isEqualTo(subscribeTopic);
+        List<SubscribeTopic> result = repository.findByUserId(1);
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0)).isEqualTo(SUBSCRIBE_TOPIC);
     }
 
     @Test
     void whenSubscribeCategoryNotFoundByUserId() {
-        assertThat(repository.findByUserId(2).isEmpty()).isTrue();
+        assertThat(repository.findByUserId(2)).isEmpty();
     }
 
     @Test
     void whenFindByUserIdAndCategoryId() {
-        var result = repository.findByUserIdAndTopicId(1, 1);
-        assertThat(result != null).isEqualTo(true);
-        assertThat(result).isEqualTo(subscribeTopic);
+        SubscribeTopic result = repository.findByUserIdAndTopicId(1, 1);
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(SUBSCRIBE_TOPIC);
     }
 
     @Test
     void whenNotFoundByUserIdAndCategoryId() {
-        var result = repository.findByUserIdAndTopicId(2, 2);
-        assertThat(result != null).isEqualTo(false);
+        SubscribeTopic result = repository.findByUserIdAndTopicId(2, 2);
+        assertThat(result).isNull();
     }
 }

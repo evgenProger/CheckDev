@@ -1,5 +1,6 @@
 package ru.checkdev.notification.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.SubscribeTopic;
 import ru.checkdev.notification.domain.UserTelegram;
@@ -12,104 +13,100 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class UserTelegramServiceFakeTest {
+
+    private static final long CHAT_ID = 333L;
+    private static final UserTelegram USER_TG = new UserTelegram(11, 10, CHAT_ID, false);
+
+    private UserTelegramService service;
+
+    @BeforeEach
+    void init() {
+        service = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()));
+    }
+
     @Test
-    void save() {
-        var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
-        var chatId = 333L;
-        service.save(new UserTelegram(11, 10, chatId, false));
-        var userTg = service.findByChatId(chatId);
+    void whenSaveUserTelegramAndFindByUserId() {
+        service.save(USER_TG);
+        Optional<UserTelegram> userTg = service.findByChatId(CHAT_ID);
         assertThat(userTg).isPresent();
         assertThat(userTg.get().getUserId()).isEqualTo(10);
     }
 
     @Test
-    void whenfindByChatIdThenReturnOptionalEmpty() {
-        var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
-        var chatId = 333L;
-        var actual = service.findByChatId(chatId);
+    void whenFindByChatIdThenReturnOptionalEmpty() {
+        Optional<UserTelegram> actual = service.findByChatId(CHAT_ID);
         assertThat(actual).isEmpty();
     }
 
     @Test
-    void whenfindByChatIdThenReturnOptionalUserID() {
-        var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
-        var chatId = 333L;
-        var userTg = new UserTelegram(11, 10, chatId, false);
-        service.save(userTg);
-        var actual = service.findByChatId(chatId);
+    void whenFindByChatIdThenReturnOptionalUserID() {
+        service.save(USER_TG);
+        Optional<UserTelegram> actual = service.findByChatId(CHAT_ID);
         assertThat(actual).isPresent();
-        assertThat(actual).contains(userTg);
+        assertThat(actual).contains(USER_TG);
     }
 
     @Test
     void whenFindByUserIdThenOptionalEmpty() {
-        var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
-        var actual = service.findByUserId(-1);
+        Optional<UserTelegram> actual = service.findByUserId(-1);
         assertThat(actual).isEmpty();
     }
 
     @Test
     void whenFindByUserIdThenOptionalUserTg() {
-        var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
-        var chatId = 333L;
-        var userTg = new UserTelegram(11, 10, chatId, false);
-        service.save(userTg);
-        var actual = service.findByUserId(userTg.getUserId());
+        service.save(USER_TG);
+        Optional<UserTelegram> actual = service.findByUserId(USER_TG.getUserId());
         assertThat(actual).isPresent();
-        assertThat(actual).contains(userTg);
+        assertThat(actual).contains(USER_TG);
     }
 
     @Test
     void whenFindAllByTopicIdAndUserIdNotWhenEmptyList() {
-        var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
-        var actual = service.findAllByTopicIdAndUserIdNot(-1, -1);
+        List<UserTelegram> actual = service.findAllByTopicIdAndUserIdNot(-1, -1);
         assertThat(actual.isEmpty()).isTrue();
     }
 
     @Test
-    void whenFindAllByTopicIdAndUserIdNotWhenList() {
-        var topicSubFake = new SubscribeTopicRepositoryFake();
-        var userTgFake = new UserTelegramRepositoryFake(topicSubFake);
-        var user1 = new UserTelegram(0, 1, 1111L, false);
-        var user2 = new UserTelegram(0, 2, 2222L, false);
-        var user3 = new UserTelegram(0, 3, 3333L, false);
-        userTgFake.save(user1);
-        userTgFake.save(user2);
-        userTgFake.save(user3);
-        var topicSub1 = new SubscribeTopic(0, user1.getUserId(), 22);
-        var topicSub2 = new SubscribeTopic(0, user2.getUserId(), 22);
-        var topicSub3 = new SubscribeTopic(0, user3.getUserId(), 22);
-        topicSubFake.save(topicSub1);
-        topicSubFake.save(topicSub2);
-        topicSubFake.save(topicSub3);
-        var service = new UserTelegramService(userTgFake);
-        var expect = List.of(user1, user2, user3);
-        var actual = service.findAllByTopicIdAndUserIdNot(topicSub1.getTopicId(), -1);
-        assertThat(actual).isEqualTo(expect);
-    }
-
-    @Test
     void whenSetNotifiableThenNotifiableValueChangedToTrue() {
-        var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
-        var user = new UserTelegram(0, 1, 1111L, false);
-        var expectedUser = new UserTelegram(1, 1, 1111L, true);
-
+        UserTelegram user = new UserTelegram(3, 1, 1111L, false);
         service.save(user);
         service.setNotifiableByChatId(user.getChatId());
-
-        assertThat(service.findByUserId(user.getUserId())).isEqualTo(Optional.of(expectedUser));
+        boolean notifiable = service.findByUserId(user.getUserId()).get().isNotifiable();
+        assertThat(notifiable).isTrue();
     }
 
     @Test
     void whenSetUnNotifiableThenNotifiableValueChangedToFalse() {
-        var service = new UserTelegramService(new UserTelegramRepositoryFake(new SubscribeTopicRepositoryFake()));
-        var user = new UserTelegram(0, 1, 1111L, true);
-        var expectedUser = new UserTelegram(1, 1, 1111L, false);
-
+        UserTelegram user = new UserTelegram(4, 1, 1111L, true);
         service.save(user);
         service.setUnNotifiableByChatId(user.getChatId());
+        boolean notifiable = service.findByUserId(user.getUserId()).get().isNotifiable();
+        assertThat(notifiable).isFalse();
+    }
 
-        assertThat(service.findByUserId(user.getUserId())).isEqualTo(Optional.of(expectedUser));
+    @Test
+    void whenFindAllByTopicIdAndUserIdNotWhenList() {
+        SubscribeTopicRepositoryFake topicSubFake = new SubscribeTopicRepositoryFake();
+        UserTelegramRepositoryFake userTgFake = new UserTelegramRepositoryFake(topicSubFake);
+        UserTelegram user1 = new UserTelegram(1, 1, 1111L, false);
+        UserTelegram user2 = new UserTelegram(2, 2, 2222L, false);
+        UserTelegram user3 = new UserTelegram(3, 3, 3333L, false);
+        userTgFake.save(user1);
+        userTgFake.save(user2);
+        userTgFake.save(user3);
+        SubscribeTopic topicSub1 = new SubscribeTopic(1, user1.getUserId(), 22);
+        SubscribeTopic topicSub2 = new SubscribeTopic(2, user2.getUserId(), 22);
+        SubscribeTopic topicSub3 = new SubscribeTopic(3, user3.getUserId(), 22);
+        topicSubFake.save(topicSub1);
+        topicSubFake.save(topicSub2);
+        topicSubFake.save(topicSub3);
+        UserTelegramService service = new UserTelegramService(userTgFake);
+        List<UserTelegram> expect = List.of(user1, user2, user3);
+        List<UserTelegram> actual = service.findAllByTopicIdAndUserIdNot(topicSub1.getTopicId(), -1);
+
+        assertThat(actual).isEqualTo(expect);
     }
 
 }

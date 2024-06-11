@@ -1,5 +1,6 @@
 package ru.checkdev.notification.repository;
 
+import org.springframework.test.fake.CrudRepositoryFake;
 import ru.checkdev.notification.domain.SubscribeTopic;
 
 import java.util.List;
@@ -12,8 +13,9 @@ import java.util.List;
  * @since 17.11.2023
  */
 public class SubscribeTopicRepositoryFake
-        extends CrudRepositoryFake<SubscribeTopic>
+        extends CrudRepositoryFake<SubscribeTopic, Integer>
         implements SubscribeTopicRepository {
+
     @Override
     public List<SubscribeTopic> findByUserId(int id) {
         return memory.values()
@@ -33,7 +35,8 @@ public class SubscribeTopicRepositoryFake
 
     @Override
     public List<Integer> findUserIdByTopicIdExcludeCurrent(int topicId, int excludedUserId) {
-        return memory.values().stream()
+        return memory.values()
+                .stream()
                 .filter(subscribeTopic -> subscribeTopic.getTopicId() == topicId
                         && subscribeTopic.getUserId() != excludedUserId)
                 .map(SubscribeTopic::getUserId)

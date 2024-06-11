@@ -19,14 +19,14 @@ class UserTelegramTest {
     }
 
     @Test
-    void getChatId() {
-        assertThat(userTelegram.getChatId()).isEqualTo(555L);
-    }
-
-    @Test
     void setId() {
         userTelegram.setId(2);
         assertThat(userTelegram.getId()).isEqualTo(2);
+    }
+
+    @Test
+    void getChatId() {
+        assertThat(userTelegram.getChatId()).isEqualTo(555L);
     }
 
     @Test

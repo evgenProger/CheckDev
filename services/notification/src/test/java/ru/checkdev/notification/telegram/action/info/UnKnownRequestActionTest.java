@@ -20,12 +20,14 @@ class UnKnownRequestActionTest {
         message.setChat(chat);
         UnKnownRequestAction unKnownRequestAction = new UnKnownRequestAction();
         unKnownRequestAction.handle(update);
-        BotApiMethod botApiMethod = unKnownRequestAction.handle(update).get();
-        SendMessage sendMessage = (SendMessage) botApiMethod;
         String expect = String.format(
                 "Команда не поддерживается! Список доступных команд: %s/start",
                 System.lineSeparator());
+
+        BotApiMethod botApiMethod = unKnownRequestAction.handle(update).get();
+        SendMessage sendMessage = (SendMessage) botApiMethod;
         String actual = sendMessage.getText();
+
         assertThat(actual).isEqualTo(expect);
     }
 }

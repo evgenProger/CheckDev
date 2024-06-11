@@ -1,5 +1,6 @@
 package ru.checkdev.notification.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.SubscribeCategory;
 import ru.checkdev.notification.repository.SubscribeCategoryRepositoryFake;
@@ -10,56 +11,47 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubscribeCategoryServiceFakeTest {
 
+    private SubscribeCategoryService service;
+
+    @BeforeEach
+    void init() {
+        service = new SubscribeCategoryService(new SubscribeCategoryRepositoryFake());
+    }
+
     @Test
     public void whenGetAllSubCatReturnContainsValue() {
-        var service = new SubscribeCategoryService(new SubscribeCategoryRepositoryFake());
-        var subscribeCategory1 = service.save(new SubscribeCategory(2, 1, 1));
-        var subscribeCategory2 = service.save(new SubscribeCategory(1, 2, 2));
-        assertThat(service.findAll())
-                .contains(subscribeCategory1, subscribeCategory2);
+        SubscribeCategory subscribeCategory1 = service.save(new SubscribeCategory(2, 1, 1));
+        SubscribeCategory subscribeCategory2 = service.save(new SubscribeCategory(1, 2, 2));
+        assertThat(service.findAll()).contains(subscribeCategory1, subscribeCategory2);
     }
 
     @Test
     public void whenDeleteSubCatItIsNotExist() {
-        var service = new SubscribeCategoryService(new SubscribeCategoryRepositoryFake());
-        var subscribeCategory = service.save(new SubscribeCategory(2, 3, 3));
+        SubscribeCategory subscribeCategory = service.save(new SubscribeCategory(2, 3, 3));
         service.delete(subscribeCategory);
-        assertThat(service.findAll())
-                .doesNotContain(subscribeCategory);
+        assertThat(service.findAll()).doesNotContain(subscribeCategory);
     }
 
     @Test
     public void requestByUserIdReturnCorrectValue() {
-        var service = new SubscribeCategoryService(new SubscribeCategoryRepositoryFake());
-        var subscribeCategory = service.save(new SubscribeCategory(1, 2, 2));
-        assertThat(service.findCategoriesByUserId(subscribeCategory.getUserId()))
-                .isEqualTo(List.of(2));
-        service.delete(subscribeCategory);
+        SubscribeCategory subscribeCategory = service.save(new SubscribeCategory(1, 2, 2));
+        List<Integer> actual = service.findCategoriesByUserId(subscribeCategory.getUserId());
+        assertThat(actual).isEqualTo(List.of(2));
     }
 
     @Test
     public void whenFindUserIdsByCategoryId() {
-        var service = new SubscribeCategoryService(new SubscribeCategoryRepositoryFake());
-        var subscribeCategory1 = service
-                .save(new SubscribeCategory(1, 1, 4));
-        var subscribeCategory2 = service
-                .save(new SubscribeCategory(2, 2, 4));
-        assertThat(service.findUserIdsByCategoryIdExcludeCurrent(4, 3).size())
-                .isEqualTo(2);
-        service.delete(subscribeCategory1);
-        service.delete(subscribeCategory2);
+        service.save(new SubscribeCategory(1, 1, 4));
+        service.save(new SubscribeCategory(2, 2, 4));
+        List<Integer> actual = service.findUserIdsByCategoryIdExcludeCurrent(4, 3);
+        assertThat(actual.size()).isEqualTo(2);
     }
 
     @Test
     public void whenFindUserIdsByCategoryIdExcludeFirst() {
-        var service = new SubscribeCategoryService(new SubscribeCategoryRepositoryFake());
-        var subscribeCategory1 = service
-                .save(new SubscribeCategory(1, 1, 4));
-        var subscribeCategory2 = service
-                .save(new SubscribeCategory(2, 2, 4));
-        assertThat(service.findUserIdsByCategoryIdExcludeCurrent(4, 1).size())
-                .isEqualTo(1);
-        service.delete(subscribeCategory1);
-        service.delete(subscribeCategory2);
+        service.save(new SubscribeCategory(1, 1, 4));
+        service.save(new SubscribeCategory(2, 2, 4));
+        List<Integer> actual = service.findUserIdsByCategoryIdExcludeCurrent(4, 1);
+        assertThat(actual.size()).isEqualTo(1);
     }
 }

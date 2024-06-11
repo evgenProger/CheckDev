@@ -27,7 +27,7 @@ public class NotificationMessageTgFake implements NotificationMessage<UserTelegr
     public List<InnerMessage> sendMessage(List<UserTelegram> targets, String message) {
         List<InnerMessage> innerMessages = new ArrayList<>();
         for (UserTelegram user : targets) {
-            var innerMessage = InnerMessage.of()
+            InnerMessage innerMessage = InnerMessage.of()
                     .userId(user.getUserId())
                     .text(message)
                     .created(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
@@ -47,12 +47,11 @@ public class NotificationMessageTgFake implements NotificationMessage<UserTelegr
      */
     @Override
     public InnerMessage sendMessage(UserTelegram target, String message) {
-        var innerMessage = InnerMessage.of()
+        return InnerMessage.of()
                 .userId(target.getUserId())
                 .text(message)
                 .created(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
                 .read(true)
                 .build();
-        return innerMessage;
     }
 }

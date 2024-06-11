@@ -1,5 +1,6 @@
 package ru.checkdev.notification.telegram.action.reg;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,41 +18,51 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 27.11.2023
  */
 class RegCheckEmailActionTest {
-    private final SessionTg sessionTg = new SessionTg();
+
+    private static final Chat CHAT = new Chat(1L, "type");
+
+    private RegCheckEmailAction regCheckEmailAction;
+    private SessionTg sessionTg;
+    private Message message;
+    private Update update;
+
+    @BeforeEach
+    public void init() {
+        sessionTg = new SessionTg();
+        regCheckEmailAction = new RegCheckEmailAction(sessionTg);
+        message = new Message();
+        update = new Update();
+    }
 
     @Test
     void whenRegCheckEmailActionEmailNotValidThenReturnMessageEmailIncorrect() {
-        Update update = new Update();
-        Chat chat = new Chat(1L, "type");
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         message.setText("email.ru");
         update.setMessage(message);
-        sessionTg.put(String.valueOf(chat.getId()), "email", message.getText());
-        RegCheckEmailAction regCheckEmailAction = new RegCheckEmailAction(sessionTg);
-        SendMessage sendMessage = (SendMessage) regCheckEmailAction.handle(update).get();
-        String actual = sendMessage.getText();
+        sessionTg.put(String.valueOf(CHAT.getId()), "email", message.getText());
         String ls = System.lineSeparator();
         String expect = new StringBuilder().append("Email: ")
                 .append(message.getText())
                 .append(" не корректный.").append(ls)
                 .append("попробуйте снова.").append(ls)
                 .append("/new").toString();
+
+        SendMessage sendMessage = (SendMessage) regCheckEmailAction.handle(update).get();
+        String actual = sendMessage.getText();
+
         assertThat(actual).isEqualTo(expect);
     }
 
 
     @Test
     void whenRegCheckEmailActionEmailCorrectThenReturnEmptyMessage() {
-        Update update = new Update();
-        Chat chat = new Chat(1L, "type");
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         message.setText("email@email.ru");
         update.setMessage(message);
-        sessionTg.put(String.valueOf(chat.getId()), "email", message.getText());
-        RegCheckEmailAction regCheckEmailAction = new RegCheckEmailAction(sessionTg);
+        sessionTg.put(String.valueOf(CHAT.getId()), "email", message.getText());
+
         Optional<BotApiMethod> botApiMessage = regCheckEmailAction.handle(update);
+
         assertThat(botApiMessage).isEmpty();
     }
 }

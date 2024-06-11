@@ -1,5 +1,6 @@
 package ru.checkdev.notification.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.SubscribeTopic;
 import ru.checkdev.notification.domain.UserTelegram;
@@ -17,152 +18,165 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @version 18.11.2023 00:46
  */
 class UserTelegramRepositoryTest {
-    private final SubscribeTopicRepositoryFake topicFake = new SubscribeTopicRepositoryFake();
-    private final UserTelegramRepositoryFake userTelegramFake = new UserTelegramRepositoryFake(topicFake);
 
+    private static final UserTelegram USER_TG = new UserTelegram(11, 10, 333L, false);
+    private static final UserTelegram USER_TG_NOTIFIABLE = new UserTelegram(11, 10, 333L, true);
+
+    private SubscribeTopicRepositoryFake topicFake;
+    private UserTelegramRepositoryFake userTelegramFake;
+
+    @BeforeEach
+    public void init() {
+        topicFake = new SubscribeTopicRepositoryFake();
+        userTelegramFake = new UserTelegramRepositoryFake(topicFake);
+    }
 
     @Test
     void whenFindByChatIdThenReturnOptionalEmpty() {
-        var actual = userTelegramFake.findByChatId(-1);
+        Optional<UserTelegram> actual = userTelegramFake.findByChatId(-1);
         assertThat(actual).isEmpty();
     }
 
     @Test
     void whenFindByChatIdThenReturnOptionalUserTelegram() {
-        var userTelegram = new UserTelegram(0, 1, 1111L, true);
-        userTelegramFake.save(userTelegram);
-        var actual = userTelegramFake.findByChatId(userTelegram.getChatId());
-        assertThat(actual).isPresent().contains(userTelegram);
+        userTelegramFake.save(USER_TG);
+        Optional<UserTelegram> actual = userTelegramFake.findByChatId(USER_TG.getChatId());
+        assertThat(actual).contains(USER_TG);
     }
 
     @Test
     void whenFindChatIdInUserIdsWhenEmptyList() {
-        var actual = userTelegramFake.findChatIdInUserIdsIfNotifiable(List.of(1, 2, 3));
+        List<Long> actual = userTelegramFake.findChatIdInUserIdsIfNotifiable(List.of(1, 2, 3));
         assertThat(actual).isEmpty();
     }
 
     @Test
     void whenFindChatIdByUserIdThenGetNotifiableUsersChatId() {
-        var user = new UserTelegram(0, 1, 1111L, true);
-        userTelegramFake.save(user);
-        assertThat(Optional.of(1111L)).isEqualTo(userTelegramFake.findChatIdByUserIdIfNotifiable(1));
+        userTelegramFake.save(USER_TG_NOTIFIABLE);
+        Optional<Long> actualUserId = userTelegramFake.findChatIdByUserIdIfNotifiable(10);
+        assertThat(Optional.of(333L)).isEqualTo(actualUserId);
     }
 
     @Test
     void whenFindChatIdByUserIdAndUserNotNotifiableThenGetOptionalEmpty() {
-        var user = new UserTelegram(0, 1, 1111L, false);
-        userTelegramFake.save(user);
-        assertThat(userTelegramFake.findChatIdByUserIdIfNotifiable(user.getUserId())).isEmpty();
+        userTelegramFake.save(USER_TG);
+        Optional<Long> actualChatId = userTelegramFake.findChatIdByUserIdIfNotifiable(USER_TG.getUserId());
+        assertThat(actualChatId).isEmpty();
     }
 
     @Test
     void whenTryToFindChatIdByInvalidUserId() {
-        var user = new UserTelegram(0, 1, 1111L, true);
-        userTelegramFake.save(user);
-        assertThat(Optional.empty()).isEqualTo(userTelegramFake.findChatIdByUserIdIfNotifiable(27));
+        userTelegramFake.save(USER_TG);
+        Optional<Long> actualChatId = userTelegramFake.findChatIdByUserIdIfNotifiable(-100);
+        assertThat(actualChatId).isEmpty();
     }
-
-    @Test
-    void whenFindChatIdInUserIdsThenGetListWithOnlyNotifiableUsersChatID() {
-        var user1 = new UserTelegram(0, 1, 1111L, true);
-        var user2 = new UserTelegram(0, 2, 2222L, false);
-        var user3 = new UserTelegram(0, 3, 3333L, true);
-        userTelegramFake.save(user1);
-        userTelegramFake.save(user2);
-        userTelegramFake.save(user3);
-        List<Integer> userIds = List.of(user1.getUserId(), user2.getUserId(), user3.getUserId());
-        List<Long> expect = List.of(user1.getChatId(), user3.getChatId());
-        var actual = userTelegramFake.findChatIdInUserIdsIfNotifiable(userIds);
-        assertThat(actual).isEqualTo(expect);
-    }
-
-    @Test
-    void whenFindChatIdInUserIdsWhenListChatIDFirst() {
-        var user1 = new UserTelegram(0, 1, 1111L, true);
-        var user2 = new UserTelegram(0, 2, 2222L, true);
-        var user3 = new UserTelegram(0, 3, 3333L, true);
-        userTelegramFake.save(user1);
-        userTelegramFake.save(user2);
-        userTelegramFake.save(user3);
-        List<Integer> userIds = List.of(user1.getUserId());
-        List<Long> expect = List.of(user1.getChatId());
-        var actual = userTelegramFake.findChatIdInUserIdsIfNotifiable(userIds);
-        assertThat(actual).isEqualTo(expect);
-    }
-
 
     @Test
     void whenFindByUserIdThenOptionalEmpty() {
-        var actual = userTelegramFake.findByUserId(-1);
+        Optional<UserTelegram> actual = userTelegramFake.findByUserId(-1);
         assertThat(actual).isEmpty();
     }
 
     @Test
     void whenFindByUserIdThenOptionalUserTelegram() {
-        var user1 = new UserTelegram(0, 1, 1111L, false);
-        userTelegramFake.save(user1);
-        var actual = userTelegramFake.findByUserId(user1.getUserId());
-        assertThat(actual).isPresent().contains(user1);
+        userTelegramFake.save(USER_TG);
+        Optional<UserTelegram> actual = userTelegramFake.findByUserId(USER_TG.getUserId());
+        assertThat(actual).contains(USER_TG);
     }
 
     @Test
     void whenFindAllByTopicIdAndUserIdNotWhenEmptyList() {
-        var actual = userTelegramFake.findAllByTopicIdAndUserIdNot(-1, -1);
+        List<UserTelegram> actual = userTelegramFake.findAllByTopicIdAndUserIdNot(-1, -1);
         assertThat(actual).isEmpty();
     }
 
     @Test
-    void whenFindAllByTopicIdAndUserIdNotWhenListAllUser() {
-        var user1 = new UserTelegram(0, 1, 1111L, true);
-        var user2 = new UserTelegram(0, 2, 2222L, false);
-        var user3 = new UserTelegram(0, 3, 3333L, true);
+    void whenFindChatIdInUserIdsThenGetListWithOnlyNotifiableUsersChatID() {
+        UserTelegram user1 = new UserTelegram(1, 1, 1111L, true);
+        UserTelegram user2 = new UserTelegram(2, 2, 2222L, false);
+        UserTelegram user3 = new UserTelegram(3, 3, 3333L, true);
+        List<Integer> userIds = List.of(user1.getUserId(), user2.getUserId(), user3.getUserId());
+        List<Long> expect = List.of(user1.getChatId(), user3.getChatId());
+
         userTelegramFake.save(user1);
         userTelegramFake.save(user2);
         userTelegramFake.save(user3);
-        var topicSub1 = new SubscribeTopic(0, user1.getUserId(), 22);
-        var topicSub2 = new SubscribeTopic(0, user2.getUserId(), 22);
-        var topicSub3 = new SubscribeTopic(0, user3.getUserId(), 22);
+        List<Long> actual = userTelegramFake.findChatIdInUserIdsIfNotifiable(userIds);
+
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    @Test
+    void whenFindChatIdInUserIdsWhenListChatIDFirst() {
+        UserTelegram user1 = new UserTelegram(1, 1, 1111L, true);
+        UserTelegram user2 = new UserTelegram(2, 2, 2222L, true);
+        UserTelegram user3 = new UserTelegram(3, 3, 3333L, true);
+        userTelegramFake.save(user1);
+        userTelegramFake.save(user2);
+        userTelegramFake.save(user3);
+        List<Integer> userIds = List.of(user1.getUserId());
+        List<Long> expect = List.of(user1.getChatId());
+        List<Long> actual = userTelegramFake.findChatIdInUserIdsIfNotifiable(userIds);
+
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    @Test
+    void whenFindAllByTopicIdAndUserIdNotWhenListAllUser() {
+        UserTelegram user1 = new UserTelegram(1, 1, 1111L, true);
+        UserTelegram user2 = new UserTelegram(2, 2, 2222L, false);
+        UserTelegram user3 = new UserTelegram(3, 3, 3333L, true);
+        userTelegramFake.save(user1);
+        userTelegramFake.save(user2);
+        userTelegramFake.save(user3);
+        SubscribeTopic topicSub1 = new SubscribeTopic(1, user1.getUserId(), 22);
+        SubscribeTopic topicSub2 = new SubscribeTopic(2, user2.getUserId(), 22);
+        SubscribeTopic topicSub3 = new SubscribeTopic(3, user3.getUserId(), 22);
         topicFake.save(topicSub1);
         topicFake.save(topicSub2);
         topicFake.save(topicSub3);
-        var expect = List.of(user1, user2, user3);
-        var actual = userTelegramFake.findAllByTopicIdAndUserIdNot(topicSub1.getTopicId(), -1);
+        List<UserTelegram> expect = List.of(user1, user2, user3);
+        List<UserTelegram> actual = userTelegramFake.findAllByTopicIdAndUserIdNot(topicSub1.getTopicId(), -1);
+
         assertThat(actual).isEqualTo(expect);
     }
 
     @Test
     void whenFindAllByTopicIdAndUserIdNotWhenListNoFirstUser() {
-        var user1 = new UserTelegram(0, 1, 1111L, true);
-        var user2 = new UserTelegram(0, 2, 2222L, false);
-        var user3 = new UserTelegram(0, 3, 3333L, true);
+        UserTelegram user1 = new UserTelegram(1, 1, 1111L, true);
+        UserTelegram user2 = new UserTelegram(2, 2, 2222L, false);
+        UserTelegram user3 = new UserTelegram(3, 3, 3333L, true);
         userTelegramFake.save(user1);
         userTelegramFake.save(user2);
         userTelegramFake.save(user3);
-        var topicSub1 = new SubscribeTopic(0, user1.getUserId(), 22);
-        var topicSub2 = new SubscribeTopic(0, user2.getUserId(), 22);
-        var topicSub3 = new SubscribeTopic(0, user3.getUserId(), 22);
+        SubscribeTopic topicSub1 = new SubscribeTopic(1, user1.getUserId(), 22);
+        SubscribeTopic topicSub2 = new SubscribeTopic(2, user2.getUserId(), 22);
+        SubscribeTopic topicSub3 = new SubscribeTopic(3, user3.getUserId(), 22);
         topicFake.save(topicSub1);
         topicFake.save(topicSub2);
         topicFake.save(topicSub3);
-        var expect = List.of(user2, user3);
-        var actual = userTelegramFake.findAllByTopicIdAndUserIdNot(topicSub1.getTopicId(), user1.getUserId());
+        List<UserTelegram> expect = List.of(user2, user3);
+        List<UserTelegram> actual = userTelegramFake.findAllByTopicIdAndUserIdNot(topicSub1.getTopicId(), user1.getUserId());
+
         assertThat(actual).isEqualTo(expect);
     }
 
     @Test
     void whenSetNotifiableThenNotifiableValueChanged() {
-        var userNotifiable = new UserTelegram(0, 1, 1111L, true);
-        var userUnNotifiable = new UserTelegram(0, 2, 2222L, false);
+        UserTelegram userNotifiable = new UserTelegram(1, 1, 1111L, true);
+        UserTelegram userUnNotifiable = new UserTelegram(2, 2, 2222L, false);
         userTelegramFake.save(userNotifiable);
         userTelegramFake.save(userUnNotifiable);
-        var expectedUserNotifiable = new UserTelegram(1, 1, 1111L, false);
-        var expectedUserUnNotifiable = new UserTelegram(2, 2, 2222L, true);
+        UserTelegram expectedUserNotifiable = new UserTelegram(1, 1, 1111L, false);
+        UserTelegram expectedUserUnNotifiable = new UserTelegram(2, 2, 2222L, true);
 
         userTelegramFake.setNotifiable(userNotifiable.getChatId(), false);
         userTelegramFake.setNotifiable(userUnNotifiable.getChatId(), true);
+        Optional<UserTelegram> actualUser1 = userTelegramFake.findByUserId(1);
+        Optional<UserTelegram> actualUser2 = userTelegramFake.findByUserId(2);
 
-        assertThat(userTelegramFake.findByUserId(1)).isEqualTo(Optional.of(expectedUserNotifiable));
-        assertThat(userTelegramFake.findByUserId(2)).isEqualTo(Optional.of(expectedUserUnNotifiable));
+        assertThat(actualUser1).isEqualTo(Optional.of(expectedUserNotifiable));
+        assertThat(actualUser2).isEqualTo(Optional.of(expectedUserUnNotifiable));
     }
 
 }

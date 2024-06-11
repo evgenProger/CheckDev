@@ -1,5 +1,6 @@
 package ru.checkdev.notification.telegram.action.bind;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,40 +16,49 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class UnbindAccountActionTest {
 
-    private final UserTelegramService userTelegramService = new UserTelegramService(
-            new UserTelegramRepositoryFake(
-                    new SubscribeTopicRepositoryFake()));
+    private static final Chat CHAT = new Chat(1L, "type");
+
+    private UserTelegramService userTelegramService;
+    private UnbindAccountAction unbindAccountAction;
+    private Update update;
+    private Message message;
+
+    @BeforeEach
+    void setUp() {
+        userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()));
+        unbindAccountAction = new UnbindAccountAction(userTelegramService);
+        update = new Update();
+        message = new Message();
+    }
 
     @Test
     void whenUnbindWithUserTelegramThenOk() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         update.setMessage(message);
         UserTelegram userTelegram = new UserTelegram(0, 0, 1L, false);
         userTelegramService.save(userTelegram);
-        UnbindAccountAction unbindAccountAction = new UnbindAccountAction(userTelegramService);
+        String expectMessage = "Ваш аккаунт CheckDev отвязан от текущего аккаунта Telegram";
+
         BotApiMethod botApiMethod = unbindAccountAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String actualMessage = sendMessage.getText();
-        String expectMessage = "Ваш аккаунт CheckDev отвязан от текущего аккаунта Telegram";
+
         assertThat(userTelegramService.findByChatId(1L)).isEmpty();
         assertThat(actualMessage).isEqualTo(expectMessage);
     }
 
     @Test
     void whenUnbindWithoutUserTelegramThenMessageAccountIsNotBind() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         update.setMessage(message);
-        UnbindAccountAction unbindAccountAction = new UnbindAccountAction(userTelegramService);
+        String expectMessage = "К данному аккаунту телеграм не привязан аккаунт CheckDev";
+
         BotApiMethod botApiMethod = unbindAccountAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String actualMessage = sendMessage.getText();
-        String expectMessage = "К данному аккаунту телеграм не привязан аккаунт CheckDev";
+
         assertThat(actualMessage).isEqualTo(expectMessage);
     }
 

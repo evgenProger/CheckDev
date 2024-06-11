@@ -15,7 +15,35 @@ public class SubscribeCategoryTest {
 
     @Test
     public void testGetId() {
-        assertThat(0).isEqualTo(subscribeCategory.getId());
+        assertThat(subscribeCategory.getId()).isEqualTo(0);
+    }
+
+    @Test
+    public void testSetId() {
+        subscribeCategory.setId(10);
+        assertThat(subscribeCategory.getId()).isEqualTo(10);
+    }
+
+    @Test
+    public void testGetUserId() {
+        assertThat(subscribeCategory.getUserId()).isEqualTo(1);
+    }
+
+    @Test
+    public void testSetUserId() {
+        subscribeCategory.setUserId(11);
+        assertThat(subscribeCategory.getUserId()).isEqualTo(11);
+    }
+
+    @Test
+    public void testGetCategoryId() {
+        assertThat(subscribeCategory.getCategoryId()).isEqualTo(2);
+    }
+
+    @Test
+    public void testSetCategoryId() {
+        subscribeCategory.setCategoryId(12);
+        assertThat(subscribeCategory.getCategoryId()).isEqualTo(12);
     }
 
     @Test
@@ -25,19 +53,10 @@ public class SubscribeCategoryTest {
     }
 
     @Test
-    public void testGetUserId() {
-        assertThat(1).isEqualTo(subscribeCategory.getUserId());
-    }
-
-    @Test
     public void whenFieldsConstructorNotNull() {
         SubscribeCategory subscribeCategory = new SubscribeCategory(0, 1, 1);
-        assertThat(subscribeCategory).isNotNull();
-    }
-
-    @Test
-    public void testGetCategoryId() {
-        assertThat(2).isEqualTo(subscribeCategory.getCategoryId());
+        assertThat(subscribeCategory.getUserId()).isNotZero();
+        assertThat(subscribeCategory.getCategoryId()).isNotZero();
     }
 
     @Test
@@ -45,23 +64,5 @@ public class SubscribeCategoryTest {
         SubscribeCategory subscribeCategory = new SubscribeCategory(0, 1, 1);
         subscribeCategory.setId(1);
         assertThat(subscribeCategory.getId()).isEqualTo(1);
-    }
-
-    @Test
-    public void testSetId() {
-        subscribeCategory.setId(10);
-        assertThat(10).isEqualTo(subscribeCategory.getId());
-    }
-
-    @Test
-    public void testSetUserId() {
-        subscribeCategory.setUserId(11);
-        assertThat(11).isEqualTo(subscribeCategory.getUserId());
-    }
-
-    @Test
-    public void testSetCategoryId() {
-        subscribeCategory.setCategoryId(12);
-        assertThat(12).isEqualTo(subscribeCategory.getCategoryId());
     }
 }

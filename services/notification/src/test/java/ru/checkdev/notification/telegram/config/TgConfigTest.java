@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import ru.checkdev.notification.domain.Profile;
 
 import java.util.Calendar;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,34 +20,34 @@ class TgConfigTest {
 
     @Test
     void whenIsEmailThenReturnTrue() {
-        var email = "mail@mail.ru";
-        var actual = tgConfig.isEmail(email);
-        assertThat(actual).isTrue();
+        String email = "mail@mail.ru";
+        assertThat(tgConfig.isEmail(email)).isTrue();
     }
 
     @Test
     void whenIsEmailThenReturnFalse() {
-        var email = "mail.ru";
-        var actual = tgConfig.isEmail(email);
-        assertThat(actual).isFalse();
+        String email = "mail.ru";
+        assertThat(tgConfig.isEmail(email)).isFalse();
     }
 
     @Test
     void whenGetPasswordThenLengthPassSize() {
-        var pass = tgConfig.getPassword();
+        String pass = tgConfig.getPassword();
         assertThat(pass.length()).isEqualTo(passSize);
     }
 
     @Test
     void whenGetPasswordThenNotStartWishPrefix() {
-        var pass = tgConfig.getPassword();
+        String pass = tgConfig.getPassword();
         assertThat(pass.startsWith("tg/")).isFalse();
     }
 
     @Test
     void whenGetObjectToMapThenReturnObjectMap() {
-        var profile = new Profile(0, "username", "mail", "pass", true, Calendar.getInstance());
-        var map = tgConfig.getObjectToMap(profile);
+        Profile profile = new Profile(
+                0, "username", "mail", "pass", true, Calendar.getInstance());
+        Map<String, String> map = tgConfig.getObjectToMap(profile);
+
         assertThat(map.get("username")).isEqualTo(profile.getUsername());
         assertThat(map.get("email")).isEqualTo(profile.getEmail());
         assertThat(map.get("password")).isEqualTo(profile.getPassword());
@@ -55,8 +56,9 @@ class TgConfigTest {
 
     @Test
     void whenGetNameFromEmailGetPrefixEmail() {
-        var email = "emailPrefix@emailDomen.ru";
-        var actual = tgConfig.getNameFromEmail(email);
-        assertThat(email.startsWith(actual)).isTrue();
+        String email = "emailPrefix@emailDomen.ru";
+        String name = "emailPrefix";
+        String actual = tgConfig.getNameFromEmail(email);
+        assertThat(actual).isEqualTo(name);
     }
 }

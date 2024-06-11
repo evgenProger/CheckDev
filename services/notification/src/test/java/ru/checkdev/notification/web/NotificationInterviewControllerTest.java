@@ -40,44 +40,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 class NotificationInterviewControllerTest {
 
-    private final SubscribeTopicRepositoryFake subscribeTopicRepositoryFake =
-            new SubscribeTopicRepositoryFake();
-
+    private final SubscribeTopicRepositoryFake subscribeTopicRepositoryFake = new SubscribeTopicRepositoryFake();
+    private final InnerMessageRepositoryFake innerMessageRepositoryFake = new InnerMessageRepositoryFake();
+    private final NotificationMessageTgFake notificationMessage = new NotificationMessageTgFake();
     private final UserTelegramRepositoryFake userTelegramRepositoryFake =
             new UserTelegramRepositoryFake(subscribeTopicRepositoryFake);
-
     private final UserTelegramService userTelegramService =
             new UserTelegramService(userTelegramRepositoryFake);
 
-    private final InnerMessageRepositoryFake innerMessageRepositoryFake =
-            new InnerMessageRepositoryFake();
-
-    private final InnerMessageService innerMessageService =
-            new InnerMessageService(innerMessageRepositoryFake, userTelegramService,
-                    new EurekaUriProvider(Mockito.mock(DiscoveryClient.class)));
-
-    private final NotificationMessageTgFake notificationMessage = new NotificationMessageTgFake();
-
     @Mock
     private DiscoveryClient discoveryClient;
-
+    @Mock
+    private ServiceInstance serviceInstance;
     private MessagesGenerator messagesGenerator;
-
     private NotificationInterviewController notifyController;
+    private InnerMessageService innerMessageService;
 
     @BeforeEach
     void setUp() {
-        discoveryClient = Mockito.mock(DiscoveryClient.class);
         EurekaUriProvider uriProvider = new EurekaUriProvider(discoveryClient);
         messagesGenerator = new MessagesGenerator(uriProvider);
-        notifyController =
-                new NotificationInterviewController(userTelegramService,
-                        innerMessageService, notificationMessage, messagesGenerator);
+        innerMessageService = new InnerMessageService(
+                innerMessageRepositoryFake, userTelegramService, uriProvider);
+        notifyController = new NotificationInterviewController(
+                userTelegramService, innerMessageService, notificationMessage, messagesGenerator);
     }
 
     @Test
     void whenSendMessageSubscribeTopicThenReturnStatusOkBodyListOneMessage() {
-        var interviewNotify = InterviewNotifyDTO.of()
+        InterviewNotifyDTO interviewNotify = InterviewNotifyDTO.of()
                 .id(1)
                 .submitterId(2)
                 .title("interview1")
@@ -86,27 +77,30 @@ class NotificationInterviewControllerTest {
                 .categoryId(2)
                 .categoryName("category2")
                 .build();
-        var userTelegram = new UserTelegram(0, 5, 5L, false);
-        var userTelegramSubmit = new UserTelegram(0, interviewNotify.getSubmitterId(), interviewNotify.getSubmitterId(), false);
+        UserTelegram userTelegram = new UserTelegram(0, 5, 5L, false);
+        UserTelegram userTelegramSubmit = new UserTelegram(
+                1, interviewNotify.getSubmitterId(), interviewNotify.getSubmitterId(), false);
         subscribeTopicRepositoryFake.save(new SubscribeTopic(0, userTelegram.getUserId(), interviewNotify.getTopicId()));
-        subscribeTopicRepositoryFake.save(new SubscribeTopic(0, userTelegramSubmit.getUserId(), interviewNotify.getTopicId()));
+        subscribeTopicRepositoryFake.save(new SubscribeTopic(1, userTelegramSubmit.getUserId(), interviewNotify.getTopicId()));
         userTelegramService.save(userTelegram);
         userTelegramService.save(userTelegramSubmit);
-        var messageExpect = messagesGenerator.getMessageSubscribeTopic(interviewNotify);
-        var innerMessageExpect = InnerMessage.of()
+        String messageExpect = messagesGenerator.getMessageSubscribeTopic(interviewNotify);
+        InnerMessage innerMessageExpect = InnerMessage.of()
                 .userId(userTelegram.getUserId())
                 .text(messageExpect)
                 .created(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)))
                 .read(true)
                 .build();
-        var expect = ResponseEntity.ok(List.of(innerMessageExpect));
-        var actual = notifyController.sendMessageSubscribeTopic(interviewNotify);
+
+        ResponseEntity<List<InnerMessage>> expect = ResponseEntity.ok(List.of(innerMessageExpect));
+        ResponseEntity<List<InnerMessage>> actual = notifyController.sendMessageSubscribeTopic(interviewNotify);
+
         assertThat(actual).isEqualTo(expect);
     }
 
     @Test
     void whenSendMessageSubscribeTopicThenReturnStatusOkBodyListEmpty() {
-        var interviewNotify = InterviewNotifyDTO.of()
+        InterviewNotifyDTO interviewNotify = InterviewNotifyDTO.of()
                 .id(1)
                 .submitterId(2)
                 .title("interview1")
@@ -115,29 +109,29 @@ class NotificationInterviewControllerTest {
                 .categoryId(2)
                 .categoryName("category2")
                 .build();
-        var expect = ResponseEntity.ok(emptyList());
-        var actual = notifyController.sendMessageSubscribeTopic(interviewNotify);
+
+        ResponseEntity<List<InnerMessage>> expect = ResponseEntity.ok(emptyList());
+        ResponseEntity<List<InnerMessage>> actual = notifyController.sendMessageSubscribeTopic(interviewNotify);
+
         assertThat(actual).isEqualTo(expect);
     }
 
     @Test
     void whenSendMessageSubmitterInterviewThenReturnStatusOkBodyInnerMessage() throws URISyntaxException {
-        var wisherNotifyDTO = WisherNotifyDTO.of()
+        WisherNotifyDTO wisherNotifyDTO = WisherNotifyDTO.of()
                 .interviewId(1)
                 .interviewTitle("interview1")
                 .submitterId(2)
                 .userId(3)
                 .contactBy("@contact")
                 .build();
-
-        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
         List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
         Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
         Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
-
-        var userTelegramSubmit = new UserTelegram(0, wisherNotifyDTO.getSubmitterId(), wisherNotifyDTO.getSubmitterId(), false);
+        UserTelegram userTelegramSubmit = new UserTelegram(
+                0, wisherNotifyDTO.getSubmitterId(), wisherNotifyDTO.getSubmitterId(), false);
         userTelegramRepositoryFake.save(userTelegramSubmit);
-        var messageExpect = messagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
+        String messageExpect = messagesGenerator.getMessageParticipateWisher(wisherNotifyDTO);
         InnerMessage innerMessageExpect = InnerMessage.of()
                 .id(1)
                 .userId(wisherNotifyDTO.getSubmitterId())
@@ -146,34 +140,29 @@ class NotificationInterviewControllerTest {
                 .read(false)
                 .interviewId(wisherNotifyDTO.getInterviewId())
                 .build();
-        var expect = ResponseEntity.ok(innerMessageExpect);
-        var actual = notifyController.sendMessageSubmitterInterview(wisherNotifyDTO);
+
+        ResponseEntity<InnerMessage> expect = ResponseEntity.ok(innerMessageExpect);
+        ResponseEntity<InnerMessage> actual = notifyController.sendMessageSubmitterInterview(wisherNotifyDTO);
+
         assertThat(actual).isEqualTo(expect);
     }
 
     @Test
     void whenUserNotInTgThenSaveInner() throws URISyntaxException {
-        var userTelegramService = new UserTelegramService(userTelegramRepositoryFake);
-        var innerMessageRepositoryFake = new InnerMessageRepositoryFake();
-        var uriProvider = new EurekaUriProvider(Mockito.mock(DiscoveryClient.class));
-        var innerMessageService =
-                new InnerMessageService(innerMessageRepositoryFake, userTelegramService, uriProvider);
-        var wisherNotifyDTO = WisherNotifyDTO.of()
+        WisherNotifyDTO wisherNotifyDTO = WisherNotifyDTO.of()
                 .interviewId(1)
                 .interviewTitle("interview1")
                 .submitterId(2)
                 .userId(3)
                 .contactBy("@contact")
                 .build();
-
-        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
         List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
         Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
         Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
 
-        var controller = new NotificationInterviewController(userTelegramService, innerMessageService, notificationMessage, messagesGenerator);
-        var actual = controller.sendMessageSubmitterInterview(wisherNotifyDTO);
-        var msgs = innerMessageService.findByUserIdAndReadFalse(wisherNotifyDTO.getSubmitterId());
-        assertThat(msgs.iterator().next()).isEqualTo(actual.getBody());
+        ResponseEntity<InnerMessage> actual = notifyController.sendMessageSubmitterInterview(wisherNotifyDTO);
+        List<InnerMessage> messages = innerMessageService.findByUserIdAndReadFalse(wisherNotifyDTO.getSubmitterId());
+
+        assertThat(messages.iterator().next()).isEqualTo(actual.getBody());
     }
 }

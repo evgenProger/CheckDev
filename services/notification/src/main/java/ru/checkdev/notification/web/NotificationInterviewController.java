@@ -43,7 +43,7 @@ public class NotificationInterviewController {
      * Метод обрабатывает пост запрос для рассылки уведомлений
      * подписчикам на тему.
      *
-     * @param interviewNotifyDTO InterviewNotiDTO
+     * @param interviewNotifyDTO InterviewNotifyDTO
      * @return ResponseEntity<List < InnerMessage>>
      */
     @PostMapping("/topic/")
@@ -84,7 +84,7 @@ public class NotificationInterviewController {
 
     /**
      * Метод обрабатывает пост запрос для отправки уведомления участнику собеседования,
-     * о том что автор собеснедования отменил его.
+     * о том что автор собеседования отменил его.
      *
      * @param cancelInterviewDTO CancelInterviewNotificationDTO
      * @return ResponseEntity.
@@ -107,7 +107,6 @@ public class NotificationInterviewController {
                 );
         return ResponseEntity.ok(innerMessage);
     }
-
 
     /**
      * Метод обрабатывает пост запрос для отправки уведомления участнику собеседования,

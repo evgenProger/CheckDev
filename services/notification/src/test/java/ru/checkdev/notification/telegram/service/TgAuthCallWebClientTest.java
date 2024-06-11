@@ -42,29 +42,33 @@ class TgAuthCallWebClientTest {
     @Disabled
     @Test
     void whenDoGetThenReturnPersonDTO() {
-        Integer personId = 100;
-        var created = new Calendar.Builder()
+        int personId = 100;
+        Calendar created = new Calendar.Builder()
                 .set(Calendar.DAY_OF_MONTH, 23)
                 .set(Calendar.MONTH, Calendar.OCTOBER)
                 .set(Calendar.YEAR, 2023)
                 .build();
-        var profile = new Profile(0, "username", "mail", "password", true, created);
+        Profile profile = new Profile(
+                0, "username", "mail", "password", true, created);
         when(webClientMock.get()).thenReturn(requestHeadersUriMock);
         when(requestHeadersUriMock.uri("/person/" + personId)).thenReturn(requestHeadersMock);
         when(requestHeadersMock.retrieve()).thenReturn(responseMock);
         when(responseMock.bodyToMono(Profile.class)).thenReturn(Mono.just(profile));
+
         Profile actual = tgAuthCallWebClint.doGet("/person/" + personId).block();
+
         assertThat(actual).isEqualTo(profile);
     }
 
     @Disabled
     @Test
     void whenDoGetThenReturnExceptionError() {
-        Integer personId = 100;
+        int personId = 100;
         when(webClientMock.get()).thenReturn(requestHeadersUriMock);
         when(requestHeadersUriMock.uri("/person/" + personId)).thenReturn(requestHeadersMock);
         when(requestHeadersMock.retrieve()).thenReturn(responseMock);
         when(responseMock.bodyToMono(Profile.class)).thenReturn(Mono.error(new Throwable("Error")));
+
         assertThatThrownBy(() -> tgAuthCallWebClint.doGet("/person/" + personId).block())
                 .isInstanceOf(Throwable.class)
                 .hasMessageContaining("Error");
@@ -73,19 +77,22 @@ class TgAuthCallWebClientTest {
     @Disabled
     @Test
     void whenDoPostSavePersonThenReturnNewPerson() {
-        var created = new Calendar.Builder()
+        Calendar created = new Calendar.Builder()
                 .set(Calendar.DAY_OF_MONTH, 23)
                 .set(Calendar.MONTH, Calendar.OCTOBER)
                 .set(Calendar.YEAR, 2023)
                 .build();
-        var profile = new Profile(0, "username", "mail", "password", true, created);
+        Profile profile = new Profile(
+                0, "username", "mail", "password", true, created);
         when(webClientMock.post()).thenReturn(requestBodyUriMock);
         when(requestBodyUriMock.uri("/person/created")).thenReturn(requestBodyMock);
         when(requestBodyMock.bodyValue(profile)).thenReturn(requestHeadersMock);
         when(requestHeadersMock.retrieve()).thenReturn(responseMock);
         when(responseMock.bodyToMono(Object.class)).thenReturn(Mono.just(profile));
         Mono<Object> objectMono = tgAuthCallWebClint.doPost("/person/created", profile);
+
         Profile actual = (Profile) objectMono.block();
+
         assertThat(actual).isEqualTo(profile);
     }
 }

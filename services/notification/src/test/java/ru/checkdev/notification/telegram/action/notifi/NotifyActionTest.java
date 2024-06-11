@@ -18,69 +18,66 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class NotifyActionTest {
 
+    private static final Chat CHAT = new Chat(1L, "type");
+
     private SessionTg sessionTg;
     private UserTelegramService userTelegramService;
     private NotifyAction action;
+    private Update update;
+    private Message message;
 
     @BeforeEach
     void init() {
         sessionTg = new SessionTg();
         userTelegramService = new UserTelegramService(
                 new UserTelegramRepositoryFake(
-                        new SubscribeTopicRepositoryFake()
-                ));
+                        new SubscribeTopicRepositoryFake()));
         action = new NotifyAction(sessionTg, userTelegramService);
+        update = new Update();
+        message = new Message();
     }
 
     @Test
     void whenNoChatIdRegisteredThenReturnMessageAccountNotRegistered() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         update.setMessage(message);
-
-        BotApiMethod<Message> actualMessage = action.handle(update).get();
         String expected = "Данный аккаунт Telegram не зарегистрирован на сайте."
                 + System.lineSeparator()
                 + "Для регистрации, пожалуйста, воспользуйтесь командой /start";
+
+        BotApiMethod<Message> actualMessage = action.handle(update).get();
         String actual = ((SendMessage) actualMessage).getText();
+
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void whenUserAlreadyNotifiableThenReturnMessageAlreadyNotifiableAndSessionTgSaveUserId() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         update.setMessage(message);
-
-        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId(), true);
+        UserTelegram userTelegram = new UserTelegram(0, 1, CHAT.getId(), true);
         userTelegramService.save(userTelegram);
 
         BotApiMethod<Message> handledMessage = action.handle(update).get();
         String actualMessage = ((SendMessage) handledMessage).getText();
-        String actualUserId = sessionTg.get(String.valueOf(chat.getId()), "userId", "");
+        String actualUserId = sessionTg.get(String.valueOf(CHAT.getId()), "userId", "");
+
         assertThat(actualMessage).isEqualTo("Уведомления в телеграмм уже включены.");
         assertThat(actualUserId).isEqualTo(String.valueOf(userTelegram.getUserId()));
     }
 
     @Test
     void whenHandleMessageThenReturnNotificationsActivatedMessageAndSessionTgSaveUserIdAndNotifiableChanged() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         update.setMessage(message);
-
-        UserTelegram userTelegram = new UserTelegram(0, 1, chat.getId(), false);
+        UserTelegram userTelegram = new UserTelegram(0, 1, CHAT.getId(), false);
         userTelegramService.save(userTelegram);
 
         BotApiMethod<Message> handledMessage = action.handle(update).get();
         String actualMessage = ((SendMessage) handledMessage).getText();
-        String actualUserId = sessionTg.get(String.valueOf(chat.getId()), "userId", "");
+        String actualUserId = sessionTg.get(String.valueOf(CHAT.getId()), "userId", "");
         UserTelegram tgUserFromDB = userTelegramService.findByUserId(userTelegram.getUserId()).get();
+
         assertThat(actualMessage).isEqualTo("Вы подписались на уведомления с сайта телеграмм бота.");
         assertThat(actualUserId).isEqualTo(String.valueOf(userTelegram.getUserId()));
         assertThat(tgUserFromDB.isNotifiable()).isTrue();

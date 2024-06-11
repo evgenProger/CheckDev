@@ -1,6 +1,5 @@
 package ru.checkdev.notification.telegram.action.reg;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,94 +41,87 @@ class RegSaveUserActionTest {
      * При указании данного email пользователя сервис бросает exception
      */
     private static final String ERROR_MAIL = "error@exception.er";
-
-    private final SessionTg sessionTg = new SessionTg();
-    private final UserTelegramService userTelegramService = new UserTelegramService(
-            new UserTelegramRepositoryFake(
-                    new SubscribeTopicRepositoryFake()));
+    private static final Chat CHAT = new Chat(1L, "type");
+    private static final String URL_SITE_AUTH = "www";
 
     @Mock
     private DiscoveryClient discoveryClient;
-
+    @Mock
+    private ServiceInstance serviceInstance;
     private EurekaUriProvider uriProvider;
+    private SessionTg sessionTg;
+    private Message message;
+    private Update update;
+    private UserTelegramService userTelegramService;
+    private RegSaveUserAction regSaveUserAction;
 
     @BeforeEach
     void setUp() {
-        discoveryClient = Mockito.mock(DiscoveryClient.class);
         uriProvider = new EurekaUriProvider(discoveryClient);
+        sessionTg = new SessionTg();
+        userTelegramService = new UserTelegramService(
+                new UserTelegramRepositoryFake(
+                        new SubscribeTopicRepositoryFake()));
+        regSaveUserAction =
+                new RegSaveUserAction(sessionTg,
+                        new FakeTgCallConsole(uriProvider), userTelegramService, URL_SITE_AUTH);
+        message = new Message();
+        update = new Update();
     }
 
     @Test
     void whenSaveActionNotEmailThenReturnMessageRepeat() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         update.setMessage(message);
-        RegSaveUserAction regSaveUserAction =
-                new RegSaveUserAction(sessionTg,
-                        new FakeTgCallConsole(uriProvider), userTelegramService, "www");
-        BotApiMethod botApiMethod = regSaveUserAction.handle(update).get();
-        SendMessage sendMessage = (SendMessage) botApiMethod;
         String ls = System.lineSeparator();
         String text = "Пройдите регистрацию заново" + ls + "/new";
-        Assertions.assertThat(text).isEqualTo(sendMessage.getText());
+
+        BotApiMethod botApiMethod = regSaveUserAction.handle(update).get();
+        SendMessage sendMessage = (SendMessage) botApiMethod;
+
+        assertThat(text).isEqualTo(sendMessage.getText());
     }
 
     @Test
     void whenCallBackThenOk() throws URISyntaxException {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         update.setMessage(message);
         String email = "email@email.ru";
         String name = "nameUser";
-
-        ServiceInstance serviceInstance = Mockito.mock(ServiceInstance.class);
         List<ServiceInstance> serviceInstances = Collections.singletonList(serviceInstance);
         Mockito.when(discoveryClient.getInstances(Mockito.anyString())).thenReturn(serviceInstances);
         Mockito.when(serviceInstance.getUri()).thenReturn(new URI("null"));
+        sessionTg.put(String.valueOf(CHAT.getId()), "email", email);
+        sessionTg.put(String.valueOf(CHAT.getId()), "name", name);
 
-        sessionTg.put(String.valueOf(chat.getId()), "email", email);
-        sessionTg.put(String.valueOf(chat.getId()), "name", name);
-        String urlSiteAuth = "www";
-        RegSaveUserAction regSaveUserAction =
-                new RegSaveUserAction(sessionTg,
-                        new FakeTgCallConsole(uriProvider), userTelegramService, urlSiteAuth);
         BotApiMethod botApiMethod = regSaveUserAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String actual = sendMessage.getText();
         String ls = System.lineSeparator();
-        String passwordInMessage = getPassInMessage(actual, urlSiteAuth);
+        String passwordInMessage = getPassInMessage(actual, URL_SITE_AUTH);
         String expect = new StringBuilder().append("Вы зарегистрированы: ").append(ls)
                 .append("Имя: ").append(name).append(ls)
                 .append("Email: ").append(email).append(ls)
                 .append("Пароль : ").append(passwordInMessage).append(ls)
-                .append(urlSiteAuth).toString();
+                .append(URL_SITE_AUTH).toString();
+
         assertThat(actual).isEqualTo(expect);
     }
 
     @Test
     void whenCallBackThenErrorService() {
-        Chat chat = new Chat(1L, "type");
-        Update update = new Update();
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         update.setMessage(message);
-        String email = ERROR_MAIL;
         String name = "nameUser";
-        sessionTg.put(String.valueOf(chat.getId()), "email", email);
-        sessionTg.put(String.valueOf(chat.getId()), "name", name);
-        String urlSiteAuth = "www";
-        RegSaveUserAction regSaveUserAction =
-                new RegSaveUserAction(sessionTg,
-                        new FakeTgCallConsole(uriProvider), userTelegramService, urlSiteAuth);
+        sessionTg.put(String.valueOf(CHAT.getId()), "email", ERROR_MAIL);
+        sessionTg.put(String.valueOf(CHAT.getId()), "name", name);
+        String ls = System.lineSeparator();
+        String expect = String.format("Сервис не доступен попробуйте позже%s%s", ls, "/start");
+
         BotApiMethod botApiMethod = regSaveUserAction.handle(update).get();
         SendMessage sendMessage = (SendMessage) botApiMethod;
         String actual = sendMessage.getText();
-        String ls = System.lineSeparator();
-        String expect = String.format("Сервис не доступен попробуйте позже%s%s", ls, "/start");
+
         assertThat(actual).isEqualTo(expect);
     }
 

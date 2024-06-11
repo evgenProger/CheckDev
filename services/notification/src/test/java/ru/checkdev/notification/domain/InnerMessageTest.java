@@ -1,5 +1,6 @@
 package ru.checkdev.notification.domain;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
@@ -7,6 +8,46 @@ import java.sql.Timestamp;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class InnerMessageTest {
+    private InnerMessage botMessage;
+
+    @BeforeEach
+    public void setUp() {
+        botMessage = new InnerMessage(0, 1, "text",
+                new Timestamp(System.currentTimeMillis()), false);
+    }
+
+    @Test
+    void getId() {
+        assertThat(botMessage.getId()).isEqualTo(0);
+    }
+
+    @Test
+    void setId() {
+        botMessage.setId(11);
+        assertThat(botMessage.getId()).isEqualTo(11);
+    }
+
+    @Test
+    void getText() {
+        assertThat(botMessage.getText()).isEqualTo("text");
+    }
+
+    @Test
+    void setText() {
+        botMessage.setText("other text");
+        assertThat(botMessage.getText()).isEqualTo("other text");
+    }
+
+    @Test
+    void isRead() {
+        assertThat(botMessage.isRead()).isEqualTo(false);
+    }
+
+    @Test
+    void setRead() {
+        botMessage.setRead(true);
+        assertThat(botMessage.isRead()).isEqualTo(true);
+    }
 
     @Test
     public void whenDefaultConstructorNotNull() {
@@ -16,61 +57,14 @@ public class InnerMessageTest {
 
     @Test
     public void whenFieldsConstructorNotNull() {
-        var botMessage = new InnerMessage(0, 1, "text",
-                new Timestamp(System.currentTimeMillis()), false);
-        assertThat(botMessage).isNotNull();
+        assertThat(botMessage.getUserId()).isNotZero();
+        assertThat(botMessage.getText()).isNotNull();
+        assertThat(botMessage.getCreated()).isNotNull();
     }
 
     @Test
     public void whenIDSetAndGetEquals() {
-        var botMessage = new InnerMessage(0, 1, "text",
-                new Timestamp(System.currentTimeMillis()), false);
         botMessage.setId(1);
-        assertThat(1).isEqualTo(botMessage.getId());
-    }
-
-    @Test
-    void getId() {
-        var botMessage = new InnerMessage(0, 1, "text",
-                new Timestamp(System.currentTimeMillis()), false);
-        assertThat(0).isEqualTo(botMessage.getId());
-    }
-
-    @Test
-    void getText() {
-        var botMessage = new InnerMessage(0, 1, "text",
-                new Timestamp(System.currentTimeMillis()), false);
-        assertThat("text").isEqualTo(botMessage.getText());
-    }
-
-    @Test
-    void isRead() {
-        var botMessage = new InnerMessage(0, 1, "text",
-                new Timestamp(System.currentTimeMillis()), false);
-        assertThat(botMessage.isRead()).isEqualTo(false);
-    }
-
-    @Test
-    void setId() {
-        var botMessage = new InnerMessage(0, 1, "text",
-                new Timestamp(System.currentTimeMillis()), false);
-        botMessage.setId(11);
-        assertThat(11).isEqualTo(botMessage.getId());
-    }
-
-    @Test
-    void setText() {
-        var botMessage = new InnerMessage(0, 1, "text",
-                new Timestamp(System.currentTimeMillis()), false);
-        botMessage.setText("txet");
-        assertThat("txet").isEqualTo(botMessage.getText());
-    }
-
-    @Test
-    void setRead() {
-        var botMessage = new InnerMessage(0, 1, "text",
-                new Timestamp(System.currentTimeMillis()), false);
-        botMessage.setRead(true);
-        assertThat(botMessage.isRead()).isEqualTo(true);
+        assertThat(botMessage.getId()).isEqualTo(1);
     }
 }

@@ -1,5 +1,6 @@
 package ru.checkdev.notification.telegram.action.reg;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -16,20 +17,33 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 27.11.2023
  */
 class RegPutNameActionTest {
-    private final SessionTg sessionTg = new SessionTg();
+
+    private static final Chat CHAT = new Chat(1L, "type");
+
+    private RegPutNameAction regPutNameAction;
+    private SessionTg sessionTg;
+    private Message message;
+    private Update update;
+
+    @BeforeEach
+    public void init() {
+        sessionTg = new SessionTg();
+        regPutNameAction = new RegPutNameAction(sessionTg);
+        message = new Message();
+        update = new Update();
+    }
+
 
     @Test
     void whenPutNameActionThenReturnSessionTgName() {
-        RegPutNameAction regPutNameAction = new RegPutNameAction(sessionTg);
-        Update update = new Update();
-        Chat chat = new Chat(1L, "type");
-        Message message = new Message();
-        message.setChat(chat);
+        message.setChat(CHAT);
         message.setText("newUserName");
         update.setMessage(message);
+        String expect = message.getText();
+
         Optional<BotApiMethod> handleResult = regPutNameAction.handle(update);
-        var actual = sessionTg.get(String.valueOf(chat.getId()), "name", "");
-        var expect = message.getText();
+        String actual = sessionTg.get(String.valueOf(CHAT.getId()), "name", "");
+
         assertThat(handleResult).isEmpty();
         assertThat(actual).isEqualTo(expect);
     }
