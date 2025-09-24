@@ -20,7 +20,7 @@ import ru.checkdev.notification.domain.Profile;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class TgAuthCallWebClint implements TgCall {
+public class TgAuthCallWebClient implements TgCall {
     @Value("${server.auth}")
     private String urlServiceAuth;
 

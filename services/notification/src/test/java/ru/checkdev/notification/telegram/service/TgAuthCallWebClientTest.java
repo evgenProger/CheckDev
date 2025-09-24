@@ -37,7 +37,7 @@ class TgAuthCallWebClientTest {
     @Mock
     private WebClient.ResponseSpec responseMock;
     @Mock
-    private TgAuthCallWebClint tgAuthCallWebClint;
+    private TgAuthCallWebClient tgAuthCallWebClient;
 
     @Disabled
     @Test
@@ -55,7 +55,7 @@ class TgAuthCallWebClientTest {
         when(requestHeadersMock.retrieve()).thenReturn(responseMock);
         when(responseMock.bodyToMono(Profile.class)).thenReturn(Mono.just(profile));
 
-        Profile actual = tgAuthCallWebClint.doGet("/person/" + personId).block();
+        Profile actual = tgAuthCallWebClient.doGet("/person/" + personId).block();
 
         assertThat(actual).isEqualTo(profile);
     }
@@ -69,7 +69,7 @@ class TgAuthCallWebClientTest {
         when(requestHeadersMock.retrieve()).thenReturn(responseMock);
         when(responseMock.bodyToMono(Profile.class)).thenReturn(Mono.error(new Throwable("Error")));
 
-        assertThatThrownBy(() -> tgAuthCallWebClint.doGet("/person/" + personId).block())
+        assertThatThrownBy(() -> tgAuthCallWebClient.doGet("/person/" + personId).block())
                 .isInstanceOf(Throwable.class)
                 .hasMessageContaining("Error");
     }
@@ -89,7 +89,7 @@ class TgAuthCallWebClientTest {
         when(requestBodyMock.bodyValue(profile)).thenReturn(requestHeadersMock);
         when(requestHeadersMock.retrieve()).thenReturn(responseMock);
         when(responseMock.bodyToMono(Object.class)).thenReturn(Mono.just(profile));
-        Mono<Object> objectMono = tgAuthCallWebClint.doPost("/person/created", profile);
+        Mono<Object> objectMono = tgAuthCallWebClient.doPost("/person/created", profile);
 
         Profile actual = (Profile) objectMono.block();
 
